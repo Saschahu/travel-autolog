@@ -4,6 +4,8 @@ import { MobileLayout } from '@/components/layout/MobileLayout';
 import { AppHeader } from '@/components/layout/AppHeader';
 import { JobEntryForm } from '@/components/forms/JobEntryForm';
 import { JobStatusCard } from '@/components/dashboard/JobStatusCard';
+import { JobFilterDropdown, type JobFilter } from '@/components/dashboard/JobFilterDropdown';
+import { useEmailService } from '@/hooks/useEmailService';
 import { SettingsDialog } from '@/components/settings/SettingsDialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -33,7 +35,7 @@ type DayData = {
 type Job = {
   id: string;
   customerName: string;
-  status: 'active' | 'completed' | 'pending';
+  status: 'open' | 'active' | 'completed' | 'completed-sent' | 'pending';
   startDate: Date;
   estimatedDays?: number;
   currentDay?: number;
@@ -48,32 +50,29 @@ const Index = () => {
   const { profile } = useUserProfile();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [jobFilter, setJobFilter] = useState<JobFilter>('all');
+  const { sendJobReport } = useEmailService();
 const [jobs, setJobs] = useState<Job[]>([
     { 
       id: 'job-1', 
       customerName: 'Siemens AG', 
-      status: 'active', 
+      status: 'open', 
       startDate: new Date('2025-01-15'), 
       estimatedDays: 3, 
-      currentDay: 2,
-      workStartTime: '08:30',
-      workEndTime: '16:45',
-      totalHours: 16.5,
-      days: [
-        { day: 1, travelStart: '07:00', travelEnd: '08:30', workStart: '08:30', workEnd: '16:45', departureStart: '17:00', departureEnd: '18:30' },
-        { day: 2, workStart: '08:00', workEnd: '17:00' },
-      ]
+      currentDay: 0,
+      totalHours: '0h 0m',
+      days: []
     },
     { 
       id: 'job-2', 
       customerName: 'ABB Industrial', 
-      status: 'completed', 
+      status: 'active', 
       startDate: new Date('2025-01-10'), 
       estimatedDays: 2, 
       currentDay: 2,
       workStartTime: '09:00',
       workEndTime: '17:30',
-      totalHours: 17.0,
+      totalHours: '17h 0m',
       days: [
         { day: 1, travelStart: '08:00', travelEnd: '09:00', workStart: '09:00', workEnd: '17:30', departureStart: '17:30', departureEnd: '18:30' },
         { day: 2, workStart: '08:30', workEnd: '16:00', departureStart: '16:00', departureEnd: '17:00' },
@@ -82,20 +81,31 @@ const [jobs, setJobs] = useState<Job[]>([
     { 
       id: 'job-3', 
       customerName: 'Hydro Norge', 
-      status: 'pending', 
+      status: 'completed', 
       startDate: new Date('2025-01-20'), 
       estimatedDays: 1, 
-      currentDay: 0,
-      days: []
+      currentDay: 1,
+      workStartTime: '08:00',
+      workEndTime: '16:00',
+      totalHours: '8h 0m',
+      days: [
+        { day: 1, travelStart: '07:00', travelEnd: '08:00', workStart: '08:00', workEnd: '16:00', departureStart: '16:00', departureEnd: '17:00' },
+      ]
     },
     { 
       id: 'job-4', 
       customerName: 'Schneider Electric', 
-      status: 'pending', 
+      status: 'completed-sent', 
       startDate: new Date('2025-01-22'), 
       estimatedDays: 2, 
-      currentDay: 0,
-      days: []
+      currentDay: 2,
+      workStartTime: '08:30',
+      workEndTime: '17:00',
+      totalHours: '17h 0m',
+      days: [
+        { day: 1, travelStart: '07:30', travelEnd: '08:30', workStart: '08:30', workEnd: '17:00', departureStart: '17:00', departureEnd: '18:00' },
+        { day: 2, workStart: '08:00', workEnd: '16:30', departureStart: '16:30', departureEnd: '17:30' },
+      ]
     },
   ]);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
@@ -229,6 +239,22 @@ const [jobs, setJobs] = useState<Job[]>([
     }));
   };
 
+  const handleComplete = async (job: Job) => {
+    const success = await sendJobReport(job);
+    if (success) {
+      setJobs(prev => prev.map(j => 
+        j.id === job.id 
+          ? { ...j, status: 'completed-sent' as const }
+          : j
+      ));
+    }
+  };
+
+  const filteredJobs = jobs.filter(job => {
+    if (jobFilter === 'all') return true;
+    return job.status === jobFilter;
+  });
+
   const handleLeavingHomeSelection = (type: 'work' | 'private') => {
     if (type === 'work') {
       setActiveTab('new-job');
@@ -288,20 +314,23 @@ const [jobs, setJobs] = useState<Job[]>([
 
       {/* Current Jobs */}
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Aktuelle Aufträge</h2>
-          <Button size="sm" className="gap-2">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex-1">
+            <JobFilterDropdown value={jobFilter} onValueChange={setJobFilter} />
+          </div>
+          <Button size="sm" className="gap-2 ml-2">
             <Plus className="h-4 w-4" />
             Neuer Job
           </Button>
         </div>
         
-        {jobs.map((job) => (
+        {filteredJobs.map((job) => (
           <JobStatusCard 
             key={job.id} 
             {...job}
             onDetails={() => handleDetails(job)}
             onEdit={() => handleEdit(job)}
+            onComplete={() => handleComplete(job)}
           />
         ))}
       </div>

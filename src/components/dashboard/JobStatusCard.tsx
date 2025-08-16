@@ -7,7 +7,7 @@ import { de } from 'date-fns/locale';
 
 interface JobStatusCardProps {
   customerName: string;
-  status: 'active' | 'completed' | 'pending';
+  status: 'open' | 'active' | 'completed' | 'completed-sent' | 'pending';
   startDate: Date;
   estimatedDays?: number;
   currentDay?: number;
@@ -16,6 +16,7 @@ interface JobStatusCardProps {
   totalHours?: number | string;
   onDetails?: () => void;
   onEdit?: () => void;
+  onComplete?: () => void;
 }
 
 export const JobStatusCard = ({ 
@@ -29,12 +30,17 @@ export const JobStatusCard = ({
   totalHours,
   onDetails,
   onEdit,
+  onComplete,
 }: JobStatusCardProps) => {
   const getStatusIcon = () => {
     switch (status) {
+      case 'open':
+        return <AlertCircle className="h-4 w-4" />;
       case 'active':
         return <Clock className="h-4 w-4" />;
       case 'completed':
+        return <CheckCircle className="h-4 w-4" />;
+      case 'completed-sent':
         return <CheckCircle className="h-4 w-4" />;
       case 'pending':
         return <AlertCircle className="h-4 w-4" />;
@@ -43,9 +49,13 @@ export const JobStatusCard = ({
 
   const getStatusColor = () => {
     switch (status) {
+      case 'open':
+        return 'outline';
       case 'active':
         return 'default';
       case 'completed':
+        return 'secondary';
+      case 'completed-sent':
         return 'secondary';
       case 'pending':
         return 'outline';
@@ -54,10 +64,14 @@ export const JobStatusCard = ({
 
   const getStatusText = () => {
     switch (status) {
+      case 'open':
+        return 'Offen';
       case 'active':
         return 'Aktiv';
       case 'completed':
         return 'Abgeschlossen';
+      case 'completed-sent':
+        return 'Abgeschlossen & Gesendet';
       case 'pending':
         return 'Ausstehend';
     }
@@ -135,6 +149,11 @@ export const JobStatusCard = ({
           <Button size="sm" className="flex-1" onClick={onEdit}>
             Bearbeiten
           </Button>
+          {status === 'completed' && onComplete && (
+            <Button size="sm" variant="secondary" onClick={onComplete}>
+              Report senden
+            </Button>
+          )}
         </div>
       </CardContent>
     </Card>

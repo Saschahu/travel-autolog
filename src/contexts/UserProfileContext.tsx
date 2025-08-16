@@ -4,6 +4,8 @@ import { Preferences } from '@capacitor/preferences';
 export interface UserProfile {
   name: string;
   homeAddress: string;
+  email: string;
+  preferredEmailApp: string;
   preferredLanguage: 'en' | 'de' | 'no';
   gpsEnabled: boolean;
 }
@@ -17,6 +19,8 @@ interface UserProfileContextType {
 const defaultProfile: UserProfile = {
   name: '',
   homeAddress: '',
+  email: '',
+  preferredEmailApp: 'default',
   preferredLanguage: 'de',
   gpsEnabled: false
 };

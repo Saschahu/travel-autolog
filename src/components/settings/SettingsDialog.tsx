@@ -25,6 +25,8 @@ export const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
   const [formData, setFormData] = useState({
     name: '',
     homeAddress: '',
+    email: '',
+    preferredEmailApp: 'default',
     preferredLanguage: 'de' as 'en' | 'de' | 'no',
     gpsEnabled: false
   });
@@ -34,6 +36,8 @@ export const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
     setFormData({
       name: profile.name,
       homeAddress: profile.homeAddress,
+      email: profile.email,
+      preferredEmailApp: profile.preferredEmailApp,
       preferredLanguage: profile.preferredLanguage,
       gpsEnabled: profile.gpsEnabled
     });
@@ -107,6 +111,38 @@ export const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
                   onChange={(e) => setFormData(prev => ({ ...prev, homeAddress: e.target.value }))}
                   placeholder="Musterstraße 123, 12345 Berlin"
                 />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="email">{t('email')}</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                  placeholder="max@example.com"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="emailApp">{t('preferredEmailApp')}</Label>
+                <Select
+                  value={formData.preferredEmailApp}
+                  onValueChange={(value) => 
+                    setFormData(prev => ({ ...prev, preferredEmailApp: value }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="default">Standard Email App</SelectItem>
+                    <SelectItem value="gmail">Gmail</SelectItem>
+                    <SelectItem value="outlook">Outlook</SelectItem>
+                    <SelectItem value="yahoo">Yahoo Mail</SelectItem>
+                    <SelectItem value="protonmail">ProtonMail</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
               <div className="space-y-2">

@@ -1,9 +1,10 @@
 import { useUserProfile } from '@/contexts/UserProfileContext';
-import { Share } from '@capacitor/share';
+import { useExcelExport } from '@/hooks/useExcelExport';
 import { useToast } from '@/hooks/use-toast';
 
 export const useEmailService = () => {
   const { profile } = useUserProfile();
+  const { sendJobReportByEmail } = useExcelExport();
   const { toast } = useToast();
 
   const sendJobReport = async (jobData: any) => {
@@ -17,20 +18,8 @@ export const useEmailService = () => {
     }
 
     try {
-      const reportText = generateReportText(jobData);
-      
-      await Share.share({
-        title: `Auftragsbericht - ${jobData.customerName}`,
-        text: reportText,
-        url: `mailto:${profile.email}?subject=${encodeURIComponent(`Auftragsbericht - ${jobData.customerName}`)}&body=${encodeURIComponent(reportText)}`,
-      });
-
-      toast({
-        title: 'Erfolgreich',
-        description: 'Report wurde an E-Mail-App gesendet',
-      });
-
-      return true;
+      // Use Excel export service to send detailed report
+      return await sendJobReportByEmail(jobData);
     } catch (error) {
       console.error('Error sending report:', error);
       toast({
@@ -40,24 +29,6 @@ export const useEmailService = () => {
       });
       return false;
     }
-  };
-
-  const generateReportText = (jobData: any) => {
-    return `
-Auftragsbericht
-
-Kunde: ${jobData.customerName}
-Datum: ${jobData.startDate}
-Status: ${jobData.status}
-
-Arbeitszeiten:
-- Arbeitsbeginn: ${jobData.workStartTime || 'Nicht erfasst'}
-- Arbeitsende: ${jobData.workEndTime || 'Nicht erfasst'}
-- Gesamtzeit: ${jobData.totalHours || 'Nicht berechnet'}
-
-Mit freundlichen Grüßen
-${profile.name}
-    `.trim();
   };
 
   return { sendJobReport };

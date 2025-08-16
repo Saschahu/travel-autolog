@@ -6,6 +6,7 @@ import { JobEntryForm } from '@/components/forms/JobEntryForm';
 import { JobStatusCard } from '@/components/dashboard/JobStatusCard';
 import { JobFilterDropdown, type JobFilter } from '@/components/dashboard/JobFilterDropdown';
 import { useEmailService } from '@/hooks/useEmailService';
+import { ExportPage } from '@/components/export/ExportPage';
 import { SettingsDialog } from '@/components/settings/SettingsDialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -362,27 +363,8 @@ const [jobs, setJobs] = useState<Job[]>([
             <LocationSettings />
           </TabsContent>
           
-          <TabsContent value="export" className="p-4 mt-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <FileText className="h-5 w-5 text-primary" />
-                  Excel Export
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-sm text-muted-foreground">
-                  Exportiere deine Reisedaten in das norwegische Travelcosts-Format.
-                </p>
-                <Button className="w-full" disabled>
-                  <FileText className="h-4 w-4 mr-2" />
-                  KW03_2025-01-15_Siemens.xlsx erstellen
-                </Button>
-                <Badge variant="outline" className="w-full justify-center">
-                  Coming Soon - Excel Integration
-                </Badge>
-              </CardContent>
-            </Card>
+          <TabsContent value="export" className="mt-6">
+            <ExportPage jobs={jobs} />
           </TabsContent>
         </Tabs>
 

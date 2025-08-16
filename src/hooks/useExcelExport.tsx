@@ -180,17 +180,28 @@ export const useExcelExport = () => {
       return false;
     }
 
+    const platform = Capacitor.getPlatform();
+
     try {
-      // Verwende das professionelle Template für Einzelaufträge
-      const workbook = generateJobExcel([job], 'single');
-      const excelBuffer = XLSX.write(workbook, { type: 'array', bookType: 'xlsx' });
-      const blob = new Blob([excelBuffer], { 
-        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' 
-      });
+      // ExcelJS-Template für Einzelauftrag generieren
+      const templateData: JobTemplateData = {
+        customerName: job.customerName || '',
+        jobId: job.id || '',
+        startDate: new Date(job.startDate || new Date()),
+        endDate: job.endDate ? new Date(job.endDate) : undefined,
+        dailyEntries: generateDailyEntries(job),
+        totalHours: job.totalHours || '0h 0m',
+        status: getStatusText(job.status || 'open'),
+        estimatedDays: job.estimatedDays || 0,
+        currentDay: job.currentDay || 0,
+      };
+
+      const buffer = await generateSingleJobTemplateBuffer(templateData);
+      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       const url = URL.createObjectURL(blob);
-      
-      const filename = `Arbeitszeit-Nachweis_${job.customerName.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.xlsx`;
-      
+
+      const filename = `Arbeitszeit-Nachweis_${job.customerName?.replace(/\s+/g, '_') || 'Kunde'}_${new Date().toISOString().split('T')[0]}.xlsx`;
+
       const emailBody = `
 Arbeitszeit-Nachweis - ${job.customerName}
 
@@ -207,16 +218,27 @@ Mit freundlichen Grüßen
 ${profile.name || 'ServiceTracker'}
       `.trim();
 
-      await Share.share({
-        title: `Arbeitszeit-Nachweis - ${job.customerName}`,
-        text: emailBody,
-        url: `mailto:${profile.email}?subject=${encodeURIComponent(`Arbeitszeit-Nachweis - ${job.customerName}`)}&body=${encodeURIComponent(emailBody)}`,
-        dialogTitle: 'Report per E-Mail senden'
-      });
+      if (platform !== 'web') {
+        await Share.share({
+          title: `Arbeitszeit-Nachweis - ${job.customerName}`,
+          text: emailBody,
+          url,
+          dialogTitle: 'Report per E-Mail senden'
+        });
+      } else {
+        // Web: Datei herunterladen als Fallback
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      }
 
       toast({
-        title: 'Report gesendet',
-        description: 'Der Arbeitszeit-Nachweis wurde zur E-Mail-App weitergeleitet',
+        title: 'Report erstellt',
+        description: platform !== 'web' ? 'Zur E-Mail-App weitergeleitet' : 'Download gestartet',
       });
 
       return true;

@@ -32,7 +32,7 @@ interface LocationMapProps {
   className?: string;
 }
 
-const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_PUBLIC_TOKEN;
+const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_PUBLIC_TOKEN || 'MAPBOX_PUBLIC_TOKEN_FROM_SUPABASE';
 
 export const LocationMap: React.FC<LocationMapProps> = ({
   currentLocation,

@@ -12,6 +12,16 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
+type DayData = {
+  day: number;
+  travelStart?: string;
+  travelEnd?: string;
+  workStart?: string;
+  workEnd?: string;
+  departureStart?: string;
+  departureEnd?: string;
+};
+
 type Job = {
   id: string;
   customerName: string;
@@ -19,14 +29,15 @@ type Job = {
   startDate: Date;
   estimatedDays?: number;
   currentDay?: number;
-  workStartTime?: string;
-  workEndTime?: string;
+  workStartTime?: string; // Legacy for display
+  workEndTime?: string; // Legacy for display
   totalHours?: number;
+  days?: DayData[];
 };
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [jobs, setJobs] = useState<Job[]>([
+const [jobs, setJobs] = useState<Job[]>([
     { 
       id: 'job-1', 
       customerName: 'Siemens AG', 
@@ -36,7 +47,11 @@ const Index = () => {
       currentDay: 2,
       workStartTime: '08:30',
       workEndTime: '16:45',
-      totalHours: 16.5
+      totalHours: 16.5,
+      days: [
+        { day: 1, travelStart: '07:00', travelEnd: '08:30', workStart: '08:30', workEnd: '16:45', departureStart: '17:00', departureEnd: '18:30' },
+        { day: 2, workStart: '08:00', workEnd: '17:00' },
+      ]
     },
     { 
       id: 'job-2', 
@@ -47,7 +62,11 @@ const Index = () => {
       currentDay: 2,
       workStartTime: '09:00',
       workEndTime: '17:30',
-      totalHours: 17.0
+      totalHours: 17.0,
+      days: [
+        { day: 1, travelStart: '08:00', travelEnd: '09:00', workStart: '09:00', workEnd: '17:30', departureStart: '17:30', departureEnd: '18:30' },
+        { day: 2, workStart: '08:30', workEnd: '16:00', departureStart: '16:00', departureEnd: '17:00' },
+      ]
     },
     { 
       id: 'job-3', 
@@ -55,7 +74,8 @@ const Index = () => {
       status: 'pending', 
       startDate: new Date('2025-01-20'), 
       estimatedDays: 1, 
-      currentDay: 0 
+      currentDay: 0,
+      days: []
     },
     { 
       id: 'job-4', 
@@ -63,7 +83,8 @@ const Index = () => {
       status: 'pending', 
       startDate: new Date('2025-01-22'), 
       estimatedDays: 2, 
-      currentDay: 0 
+      currentDay: 0,
+      days: []
     },
   ]);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
@@ -71,11 +92,10 @@ const Index = () => {
   const [editOpen, setEditOpen] = useState(false);
   const [editData, setEditData] = useState({
     customerName: '',
-    workStartTime: '',
-    workEndTime: '',
     totalHours: 0,
     estimatedDays: 1,
     currentDay: 0,
+    days: [] as DayData[],
   });
 
 
@@ -86,13 +106,22 @@ const Index = () => {
 
   const handleEdit = (job: Job) => {
     setSelectedJob(job);
+    
+    // Ensure we have at least estimatedDays worth of day entries
+    const days = [...(job.days || [])];
+    const estimatedDays = job.estimatedDays || 1;
+    
+    // Fill missing days
+    for (let i = days.length; i < estimatedDays; i++) {
+      days.push({ day: i + 1 });
+    }
+    
     setEditData({
       customerName: job.customerName,
-      workStartTime: job.workStartTime || '',
-      workEndTime: job.workEndTime || '',
       totalHours: job.totalHours || 0,
-      estimatedDays: job.estimatedDays || 1,
+      estimatedDays: estimatedDays,
       currentDay: job.currentDay || 0,
+      days: days,
     });
     setEditOpen(true);
   };
@@ -104,15 +133,47 @@ const Index = () => {
         ? { 
             ...j, 
             customerName: editData.customerName,
-            workStartTime: editData.workStartTime,
-            workEndTime: editData.workEndTime,
             totalHours: editData.totalHours,
             estimatedDays: editData.estimatedDays,
             currentDay: editData.currentDay,
+            days: editData.days,
+            // Update legacy fields for display
+            workStartTime: editData.days[0]?.workStart,
+            workEndTime: editData.days[editData.currentDay - 1]?.workEnd,
           } 
         : j
     ));
     setEditOpen(false);
+  };
+
+  const updateDayField = (dayIndex: number, field: keyof DayData, value: string) => {
+    setEditData(prev => ({
+      ...prev,
+      days: prev.days.map((day, index) => 
+        index === dayIndex ? { ...day, [field]: value } : day
+      )
+    }));
+  };
+
+  const updateEstimatedDays = (newEstimatedDays: number) => {
+    const days = [...editData.days];
+    
+    // Add missing days
+    for (let i = days.length; i < newEstimatedDays; i++) {
+      days.push({ day: i + 1 });
+    }
+    
+    // Remove excess days
+    if (days.length > newEstimatedDays) {
+      days.splice(newEstimatedDays);
+    }
+    
+    setEditData(prev => ({
+      ...prev,
+      estimatedDays: newEstimatedDays,
+      days: days,
+      currentDay: Math.min(prev.currentDay, newEstimatedDays)
+    }));
   };
 
   const renderDashboard = () => (
@@ -257,51 +318,31 @@ const Index = () => {
         </Dialog>
 
         <Dialog open={editOpen} onOpenChange={setEditOpen}>
-          <DialogContent className="max-w-md">
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden">
             <DialogHeader>
               <DialogTitle>Auftrag bearbeiten</DialogTitle>
-              <DialogDescription>Alle Job-Daten bearbeiten</DialogDescription>
+              <DialogDescription>Alle Job-Daten und tägliche Zeiten bearbeiten</DialogDescription>
             </DialogHeader>
-            <div className="space-y-4 max-h-96 overflow-y-auto">
-              <div>
-                <Label htmlFor="edit-customer">Kundenname</Label>
-                <Input 
-                  id="edit-customer" 
-                  value={editData.customerName} 
-                  onChange={(e) => setEditData(prev => ({ ...prev, customerName: e.target.value }))} 
-                />
-              </div>
-              
+            <div className="space-y-4 overflow-y-auto flex-1">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <Label htmlFor="edit-work-start">Arbeit Start</Label>
+                  <Label htmlFor="edit-customer">Kundenname</Label>
                   <Input 
-                    id="edit-work-start" 
-                    type="time"
-                    value={editData.workStartTime} 
-                    onChange={(e) => setEditData(prev => ({ ...prev, workStartTime: e.target.value }))} 
+                    id="edit-customer" 
+                    value={editData.customerName} 
+                    onChange={(e) => setEditData(prev => ({ ...prev, customerName: e.target.value }))} 
                   />
                 </div>
                 <div>
-                  <Label htmlFor="edit-work-end">Arbeit Ende</Label>
+                  <Label htmlFor="edit-total-hours">Gesamtstunden</Label>
                   <Input 
-                    id="edit-work-end" 
-                    type="time"
-                    value={editData.workEndTime} 
-                    onChange={(e) => setEditData(prev => ({ ...prev, workEndTime: e.target.value }))} 
+                    id="edit-total-hours" 
+                    type="number"
+                    step="0.5"
+                    value={editData.totalHours} 
+                    onChange={(e) => setEditData(prev => ({ ...prev, totalHours: parseFloat(e.target.value) || 0 }))} 
                   />
                 </div>
-              </div>
-              
-              <div>
-                <Label htmlFor="edit-total-hours">Gesamtstunden</Label>
-                <Input 
-                  id="edit-total-hours" 
-                  type="number"
-                  step="0.5"
-                  value={editData.totalHours} 
-                  onChange={(e) => setEditData(prev => ({ ...prev, totalHours: parseFloat(e.target.value) || 0 }))} 
-                />
               </div>
               
               <div className="grid grid-cols-2 gap-3">
@@ -312,7 +353,7 @@ const Index = () => {
                     type="number"
                     min="1"
                     value={editData.estimatedDays} 
-                    onChange={(e) => setEditData(prev => ({ ...prev, estimatedDays: parseInt(e.target.value) || 1 }))} 
+                    onChange={(e) => updateEstimatedDays(parseInt(e.target.value) || 1)} 
                   />
                 </div>
                 <div>
@@ -321,10 +362,78 @@ const Index = () => {
                     id="edit-current-day" 
                     type="number"
                     min="0"
+                    max={editData.estimatedDays}
                     value={editData.currentDay} 
                     onChange={(e) => setEditData(prev => ({ ...prev, currentDay: parseInt(e.target.value) || 0 }))} 
                   />
                 </div>
+              </div>
+
+              {/* Daily Time Entries */}
+              <div className="space-y-4">
+                <h4 className="font-medium text-sm">Tägliche Zeiten</h4>
+                {editData.days.map((day, dayIndex) => (
+                  <div key={dayIndex} className="border rounded-lg p-4 space-y-3">
+                    <h5 className="font-medium text-sm text-primary">Tag {day.day}</h5>
+                    
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <div>
+                        <Label htmlFor={`travel-start-${dayIndex}`}>Anreise Start</Label>
+                        <Input 
+                          id={`travel-start-${dayIndex}`}
+                          type="time"
+                          value={day.travelStart || ''} 
+                          onChange={(e) => updateDayField(dayIndex, 'travelStart', e.target.value)} 
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor={`travel-end-${dayIndex}`}>Anreise Ende</Label>
+                        <Input 
+                          id={`travel-end-${dayIndex}`}
+                          type="time"
+                          value={day.travelEnd || ''} 
+                          onChange={(e) => updateDayField(dayIndex, 'travelEnd', e.target.value)} 
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor={`work-start-${dayIndex}`}>Arbeit Start</Label>
+                        <Input 
+                          id={`work-start-${dayIndex}`}
+                          type="time"
+                          value={day.workStart || ''} 
+                          onChange={(e) => updateDayField(dayIndex, 'workStart', e.target.value)} 
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor={`work-end-${dayIndex}`}>Arbeit Ende</Label>
+                        <Input 
+                          id={`work-end-${dayIndex}`}
+                          type="time"
+                          value={day.workEnd || ''} 
+                          onChange={(e) => updateDayField(dayIndex, 'workEnd', e.target.value)} 
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor={`departure-start-${dayIndex}`}>Abreise Start</Label>
+                        <Input 
+                          id={`departure-start-${dayIndex}`}
+                          type="time"
+                          value={day.departureStart || ''} 
+                          onChange={(e) => updateDayField(dayIndex, 'departureStart', e.target.value)} 
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor={`departure-end-${dayIndex}`}>Abreise Ende</Label>
+                        <Input 
+                          id={`departure-end-${dayIndex}`}
+                          type="time"
+                          value={day.departureEnd || ''} 
+                          onChange={(e) => updateDayField(dayIndex, 'departureEnd', e.target.value)} 
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
             <DialogFooter>

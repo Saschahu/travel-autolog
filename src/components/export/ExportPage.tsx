@@ -7,6 +7,7 @@ import { Separator } from '@/components/ui/separator';
 import { Download, FileSpreadsheet, Mail, Calendar } from 'lucide-react';
 import { useExcelExport } from '@/hooks/useExcelExport';
 import { JobFilterDropdown, type JobFilter } from '@/components/dashboard/JobFilterDropdown';
+import { ExcelUpload } from './ExcelUpload';
 
 interface ExportPageProps {
   jobs: any[];
@@ -97,6 +98,9 @@ export const ExportPage = ({ jobs }: ExportPageProps) => {
           </Button>
         </CardContent>
       </Card>
+
+      {/* Excel Upload */}
+      <ExcelUpload />
 
       {/* Export History */}
       <Card>

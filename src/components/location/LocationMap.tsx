@@ -32,7 +32,7 @@ interface LocationMapProps {
   className?: string;
 }
 
-const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_PUBLIC_TOKEN || 'MAPBOX_PUBLIC_TOKEN_FROM_SUPABASE';
+const MAPBOX_TOKEN = null; // Force token input
 
 export const LocationMap: React.FC<LocationMapProps> = ({
   currentLocation,
@@ -49,7 +49,7 @@ export const LocationMap: React.FC<LocationMapProps> = ({
     const stored = localStorage.getItem('mapbox_token');
     if (stored) {
       setLocalToken(stored);
-    } else if (!MAPBOX_TOKEN) {
+    } else {
       setShowTokenInput(true);
     }
   }, []);
@@ -61,7 +61,7 @@ export const LocationMap: React.FC<LocationMapProps> = ({
     }
   };
   
-  const activeToken = MAPBOX_TOKEN || localToken;
+  const activeToken = localToken;
 
   // Fallback center point (Deutschland)
   const centerLat = currentLocation?.latitude || homeLocation?.latitude || 51.1657;

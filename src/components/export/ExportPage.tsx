@@ -8,6 +8,7 @@ import { Download, FileSpreadsheet, Mail, Calendar } from 'lucide-react';
 import { useExcelExport } from '@/hooks/useExcelExport';
 import { JobFilterDropdown, type JobFilter } from '@/components/dashboard/JobFilterDropdown';
 import { ExcelUpload } from './ExcelUpload';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface ExportPageProps {
   jobs: any[];
@@ -18,8 +19,11 @@ export const ExportPage = ({ jobs }: ExportPageProps) => {
   const { exportToExcel } = useExcelExport();
   const [exportFilter, setExportFilter] = useState<JobFilter>('all');
   const [isExporting, setIsExporting] = useState(false);
+  const [selectedJobId, setSelectedJobId] = useState<string | 'all'>('all');
 
   const getFilteredJobs = () => {
+    // Wenn ein bestimmter Auftrag gewählt ist, hat das Vorrang
+    if (selectedJobId !== 'all') return jobs.filter(j => j.id === selectedJobId);
     if (exportFilter === 'all') return jobs;
     return jobs.filter(job => job.status === exportFilter);
   };
@@ -32,7 +36,10 @@ export const ExportPage = ({ jobs }: ExportPageProps) => {
         return;
       }
       
-      const filename = `Auftraege_${exportFilter}_${new Date().toISOString().split('T')[0]}.xlsx`;
+      const dateStr = new Date().toISOString().split('T')[0];
+      const filename = filteredJobs.length === 1
+        ? `Arbeitszeit-Nachweis_${(filteredJobs[0].customerName || 'Kunde').replace(/\s+/g,'_')}_${dateStr}.xlsx`
+        : `Auftraege_${exportFilter}_${dateStr}.xlsx`;
       await exportToExcel(filteredJobs, filename);
     } finally {
       setIsExporting(false);
@@ -61,6 +68,21 @@ export const ExportPage = ({ jobs }: ExportPageProps) => {
           <div>
             <label className="text-sm font-medium mb-2 block">Zu exportierende Aufträge:</label>
             <JobFilterDropdown value={exportFilter} onValueChange={setExportFilter} />
+          </div>
+
+          <div>
+            <label className="text-sm font-medium mb-2 block">Einzelauftrag (Template, optional):</label>
+            <Select value={selectedJobId} onValueChange={(v) => setSelectedJobId(v as any)}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Alle" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Alle</SelectItem>
+                {jobs.map(j => (
+                  <SelectItem key={j.id} value={j.id}>{`${j.customerName || 'Unbenannt'} — ${j.id}`}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
           
           {/* Export Statistics */}

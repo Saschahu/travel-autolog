@@ -3,9 +3,10 @@ import { Button } from '@/components/ui/button';
 
 interface AppHeaderProps {
   title?: string;
+  onSettingsClick?: () => void;
 }
 
-export const AppHeader = ({ title = "ServiceTracker" }: AppHeaderProps) => {
+export const AppHeader = ({ title = "ServiceTracker", onSettingsClick }: AppHeaderProps) => {
   return (
     <header className="sticky top-0 z-50 bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60 border-b">
       <div className="flex items-center justify-between px-4 py-3">
@@ -13,7 +14,7 @@ export const AppHeader = ({ title = "ServiceTracker" }: AppHeaderProps) => {
           <Clock className="h-6 w-6 text-primary" />
           <h1 className="font-semibold text-lg text-card-foreground">{title}</h1>
         </div>
-        <Button variant="ghost" size="sm">
+        <Button variant="ghost" size="sm" onClick={onSettingsClick}>
           <Settings className="h-5 w-5" />
         </Button>
       </div>

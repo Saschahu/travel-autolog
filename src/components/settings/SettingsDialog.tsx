@@ -1,0 +1,196 @@
+import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import { User, MapPin, Globe, Navigation } from 'lucide-react';
+import { useUserProfile } from '@/contexts/UserProfileContext';
+import { useToast } from '@/hooks/use-toast';
+
+interface SettingsDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+export const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
+  const { t, i18n } = useTranslation();
+  const { profile, updateProfile } = useUserProfile();
+  const { toast } = useToast();
+  
+  const [formData, setFormData] = useState({
+    name: '',
+    homeAddress: '',
+    preferredLanguage: 'de' as 'en' | 'de' | 'no',
+    gpsEnabled: false
+  });
+
+  // Update form when profile changes
+  useEffect(() => {
+    setFormData({
+      name: profile.name,
+      homeAddress: profile.homeAddress,
+      preferredLanguage: profile.preferredLanguage,
+      gpsEnabled: profile.gpsEnabled
+    });
+  }, [profile]);
+
+  const handleSave = async () => {
+    try {
+      await updateProfile(formData);
+      
+      // Change app language if language was updated
+      if (formData.preferredLanguage !== profile.preferredLanguage) {
+        i18n.changeLanguage(formData.preferredLanguage);
+      }
+      
+      toast({
+        title: t('success'),
+        description: 'Profile updated successfully',
+      });
+      
+      onOpenChange(false);
+    } catch (error) {
+      toast({
+        title: t('error'),
+        description: 'Failed to update profile',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const languageOptions = [
+    { value: 'de', label: 'Deutsch' },
+    { value: 'en', label: 'English' },
+    { value: 'no', label: 'Norsk' }
+  ];
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <User className="h-5 w-5 text-primary" />
+            {t('settings')}
+          </DialogTitle>
+        </DialogHeader>
+
+        <div className="space-y-6">
+          {/* User Profile */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-base">
+                <User className="h-4 w-4 text-primary" />
+                {t('userProfile')}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="name">{t('name')}</Label>
+                <Input
+                  id="name"
+                  value={formData.name}
+                  onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                  placeholder="Max Mustermann"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="homeAddress">{t('homeAddress')}</Label>
+                <Input
+                  id="homeAddress"
+                  value={formData.homeAddress}
+                  onChange={(e) => setFormData(prev => ({ ...prev, homeAddress: e.target.value }))}
+                  placeholder="Musterstraße 123, 12345 Berlin"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="language">{t('preferredLanguage')}</Label>
+                <Select
+                  value={formData.preferredLanguage}
+                  onValueChange={(value: 'en' | 'de' | 'no') => 
+                    setFormData(prev => ({ ...prev, preferredLanguage: value }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {languageOptions.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        <div className="flex items-center gap-2">
+                          <Globe className="h-4 w-4" />
+                          {option.label}
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Separator />
+
+          {/* GPS Settings */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-base">
+                <Navigation className="h-4 w-4 text-primary" />
+                {t('gpsSettings')}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label htmlFor="gps-enabled">{t('enableGps')}</Label>
+                  <p className="text-xs text-muted-foreground">
+                    Enable location tracking and notifications
+                  </p>
+                </div>
+                <Switch
+                  id="gps-enabled"
+                  checked={formData.gpsEnabled}
+                  onCheckedChange={(checked) => 
+                    setFormData(prev => ({ ...prev, gpsEnabled: checked }))
+                  }
+                />
+              </div>
+
+              {formData.homeAddress && (
+                <div className="space-y-2">
+                  <Label className="flex items-center gap-2">
+                    <MapPin className="h-4 w-4" />
+                    {t('homeLocation')}
+                  </Label>
+                  <div className="p-3 bg-muted rounded-md">
+                    <p className="text-sm text-muted-foreground">
+                      {formData.homeAddress}
+                    </p>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    This address will be used for GPS home detection
+                  </p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          <div className="flex gap-2 pt-4">
+            <Button variant="outline" onClick={() => onOpenChange(false)} className="flex-1">
+              {t('cancel')}
+            </Button>
+            <Button onClick={handleSave} className="flex-1">
+              {t('save')}
+            </Button>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};

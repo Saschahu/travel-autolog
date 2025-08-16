@@ -1,12 +1,14 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { MobileLayout } from '@/components/layout/MobileLayout';
 import { AppHeader } from '@/components/layout/AppHeader';
 import { JobEntryForm } from '@/components/forms/JobEntryForm';
 import { JobStatusCard } from '@/components/dashboard/JobStatusCard';
+import { SettingsDialog } from '@/components/settings/SettingsDialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Plus, FileText, Clock, TrendingUp } from 'lucide-react';
+import { Plus, FileText, Clock, TrendingUp, Settings, Navigation, BarChart3 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -14,6 +16,7 @@ import { Label } from '@/components/ui/label';
 import { LeavingHomeDialog } from '@/components/location/LeavingHomeDialog';
 import { LocationSettings } from '@/components/location/LocationSettings';
 import { useLocation } from '@/hooks/useLocation';
+import { useUserProfile } from '@/contexts/UserProfileContext';
 import { useToast } from '@/hooks/use-toast';
 import React from 'react';
 
@@ -41,7 +44,10 @@ type Job = {
 };
 
 const Index = () => {
+  const { t, i18n } = useTranslation();
+  const { profile } = useUserProfile();
   const [activeTab, setActiveTab] = useState('dashboard');
+  const [settingsOpen, setSettingsOpen] = useState(false);
 const [jobs, setJobs] = useState<Job[]>([
     { 
       id: 'job-1', 
@@ -238,6 +244,13 @@ const [jobs, setJobs] = useState<Job[]>([
     }
   };
 
+  // Initialize language based on user profile
+  useEffect(() => {
+    if (profile.preferredLanguage && i18n.language !== profile.preferredLanguage) {
+      i18n.changeLanguage(profile.preferredLanguage);
+    }
+  }, [profile.preferredLanguage, i18n]);
+
   // Monitor leaving home status
   React.useEffect(() => {
     if (hasLeftHome && !leavingHomeOpen) {
@@ -314,15 +327,27 @@ const [jobs, setJobs] = useState<Job[]>([
 
   return (
     <MobileLayout>
-      <AppHeader />
+      <AppHeader onSettingsClick={() => setSettingsOpen(true)} />
       
       <div className="flex-1">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-4 mx-4 mt-4">
-            <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
-            <TabsTrigger value="new-job">Neuer Job</TabsTrigger>
-            <TabsTrigger value="location">GPS</TabsTrigger>
-            <TabsTrigger value="export">Export</TabsTrigger>
+            <TabsTrigger value="dashboard" className="flex items-center gap-2">
+              <BarChart3 className="h-4 w-4" />
+              {t('dashboard')}
+            </TabsTrigger>
+            <TabsTrigger value="new-job" className="flex items-center gap-2">
+              <Plus className="h-4 w-4" />
+              {t('newEntry')}
+            </TabsTrigger>
+            <TabsTrigger value="location" className="flex items-center gap-2">
+              <Navigation className="h-4 w-4" />
+              {t('gps')}
+            </TabsTrigger>
+            <TabsTrigger value="export" className="flex items-center gap-2">
+              <FileText className="h-4 w-4" />
+              Export
+            </TabsTrigger>
           </TabsList>
           
           <TabsContent value="dashboard" className="p-4 mt-6">
@@ -526,6 +551,12 @@ const [jobs, setJobs] = useState<Job[]>([
           isOpen={leavingHomeOpen}
           onClose={() => setLeavingHomeOpen(false)}
           onSelection={handleLeavingHomeSelection}
+        />
+
+        {/* Settings Dialog */}
+        <SettingsDialog
+          open={settingsOpen}
+          onOpenChange={setSettingsOpen}
         />
       </div>
     </MobileLayout>

@@ -31,7 +31,7 @@ type Job = {
   currentDay?: number;
   workStartTime?: string; // Legacy for display
   workEndTime?: string; // Legacy for display
-  totalHours?: number;
+  totalHours?: number | string;
   days?: DayData[];
 };
 
@@ -92,7 +92,7 @@ const [jobs, setJobs] = useState<Job[]>([
   const [editOpen, setEditOpen] = useState(false);
   const [editData, setEditData] = useState({
     customerName: '',
-    totalHours: 0,
+    totalHours: '',
     estimatedDays: 1,
     currentDay: 0,
     days: [] as DayData[],
@@ -118,7 +118,7 @@ const [jobs, setJobs] = useState<Job[]>([
     
     setEditData({
       customerName: job.customerName,
-      totalHours: job.totalHours || 0,
+      totalHours: job.totalHours?.toString() || '0h 0m',
       estimatedDays: estimatedDays,
       currentDay: job.currentDay || 0,
       days: days,
@@ -152,24 +152,44 @@ const [jobs, setJobs] = useState<Job[]>([
         index === dayIndex ? { ...day, [field]: value } : day
       );
       
-      // Auto-calculate total hours when work times change
-      let totalHours = 0;
+      // Calculate total time (travel + work) for all days
+      let totalMinutes = 0;
+      
       newDays.forEach(day => {
+        // Calculate travel time (anreise)
+        if (day.travelStart && day.travelEnd) {
+          const [startHours, startMinutes] = day.travelStart.split(':').map(Number);
+          const [endHours, endMinutes] = day.travelEnd.split(':').map(Number);
+          const travelMinutes = (endHours * 60 + endMinutes) - (startHours * 60 + startMinutes);
+          if (travelMinutes > 0) totalMinutes += travelMinutes;
+        }
+        
+        // Calculate work time
         if (day.workStart && day.workEnd) {
           const [startHours, startMinutes] = day.workStart.split(':').map(Number);
           const [endHours, endMinutes] = day.workEnd.split(':').map(Number);
-          const startTime = startHours + startMinutes / 60;
-          const endTime = endHours + endMinutes / 60;
-          if (endTime > startTime) {
-            totalHours += endTime - startTime;
-          }
+          const workMinutes = (endHours * 60 + endMinutes) - (startHours * 60 + startMinutes);
+          if (workMinutes > 0) totalMinutes += workMinutes;
+        }
+        
+        // Calculate departure time (abreise)
+        if (day.departureStart && day.departureEnd) {
+          const [startHours, startMinutes] = day.departureStart.split(':').map(Number);
+          const [endHours, endMinutes] = day.departureEnd.split(':').map(Number);
+          const departureMinutes = (endHours * 60 + endMinutes) - (startHours * 60 + startMinutes);
+          if (departureMinutes > 0) totalMinutes += departureMinutes;
         }
       });
+      
+      // Convert to hours and minutes format
+      const hours = Math.floor(totalMinutes / 60);
+      const minutes = totalMinutes % 60;
+      const totalTimeString = `${hours}h ${minutes}m`;
       
       return {
         ...prev,
         days: newDays,
-        totalHours: Math.round(totalHours * 10) / 10 // Round to 1 decimal
+        totalHours: totalTimeString
       };
     });
   };
@@ -353,17 +373,17 @@ const [jobs, setJobs] = useState<Job[]>([
                   />
                 </div>
                 <div>
-                  <Label htmlFor="edit-total-hours">Gesamtstunden (automatisch berechnet)</Label>
+                  <Label htmlFor="edit-total-hours">Gesamtzeit (Reise + Arbeit)</Label>
                   <Input 
                     id="edit-total-hours" 
-                    type="number"
-                    step="0.1"
+                    type="text"
                     value={editData.totalHours} 
                     readOnly
-                    className="bg-muted"
+                    className="bg-muted font-mono"
+                    placeholder="0h 0m"
                   />
                   <p className="text-xs text-muted-foreground mt-1">
-                    Wird automatisch aus den täglichen Arbeitszeiten berechnet
+                    Automatisch berechnet: Anreise + Arbeitszeit + Abreise
                   </p>
                 </div>
               </div>

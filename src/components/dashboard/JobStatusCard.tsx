@@ -13,7 +13,7 @@ interface JobStatusCardProps {
   currentDay?: number;
   workStartTime?: string;
   workEndTime?: string;
-  totalHours?: number;
+  totalHours?: number | string;
   onDetails?: () => void;
   onEdit?: () => void;
 }
@@ -99,7 +99,7 @@ export const JobStatusCard = ({
             </div>
             {totalHours && (
               <div className="text-sm font-medium text-primary">
-                Gesamt: {totalHours}h
+                Gesamt: {totalHours}
               </div>
             )}
           </div>

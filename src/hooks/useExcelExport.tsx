@@ -205,7 +205,6 @@ ${profile.name || 'ServiceTracker'}
     }
   };
 
-  // Helper functions
   const generateDailyEntries = (job: any) => {
     const entries = [];
     const startDate = new Date(job.startDate || new Date());
@@ -220,8 +219,12 @@ ${profile.name || 'ServiceTracker'}
       
       entries.push({
         date: entryDate,
-        workStart: dayData.workStartTime || job.workStartTime || '',
-        workEnd: dayData.workEndTime || job.workEndTime || '',
+        travelStart: dayData.travelStartTime || (i === 0 ? '07:00' : ''),
+        travelEnd: dayData.travelEndTime || (i === 0 ? '08:00' : ''),
+        workStart: dayData.workStartTime || job.workStartTime || '08:00',
+        workEnd: dayData.workEndTime || job.workEndTime || '17:00',
+        departureStart: dayData.departureStartTime || (i === (job.currentDay || 1) - 1 ? '17:00' : ''),
+        departureEnd: dayData.departureEndTime || (i === (job.currentDay || 1) - 1 ? '18:00' : ''),
         breakTime: dayData.breakTime || '30min',
         totalHours: dayData.totalHours || (i === 0 ? job.totalHours : ''),
         description: dayData.description || `Arbeiten für ${job.customerName}`

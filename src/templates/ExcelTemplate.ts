@@ -7,8 +7,12 @@ export interface JobTemplateData {
   endDate?: Date;
   dailyEntries: Array<{
     date: Date;
+    travelStart?: string;
+    travelEnd?: string;
     workStart?: string;
     workEnd?: string;
+    departureStart?: string;
+    departureEnd?: string;
     breakTime?: string;
     totalHours?: string;
     description?: string;
@@ -29,65 +33,136 @@ export class ExcelTemplate {
   }
 
   private initializeTemplate() {
-    // Header-Bereich (Zeilen 1-5)
-    this.addMergedCell('A1:G1', 'ARBEITSZEIT-NACHWEIS', 'header');
-    this.addMergedCell('A2:G2', '', 'subheader');
+    // Header-Bereich (Zeilen 1-3)
+    this.addMergedCell('A1:M1', 'ARBEITSZEIT-NACHWEIS', 'header');
+    this.setCellValue('A2', 'Auftragnehmer:', 'label');
+    this.addMergedCell('B2:E2', '', 'input');
     
     // Auftraggeber-Bereich (rechts oben)
-    this.setCellValue('I1', 'AUFTRAGGEBER:', 'label');
-    this.addMergedCell('I2:L2', '', 'input');
-    this.setCellValue('I3', 'AUFTRAG-NR:', 'label');
-    this.addMergedCell('I4:L4', '', 'input');
+    this.setCellValue('G2', 'Auftraggeber:', 'label');
+    this.addMergedCell('H2:L2', '', 'input');
+    this.setCellValue('G3', 'Auftrag-Nr.:', 'label');
+    this.addMergedCell('H3:L3', '', 'input');
     
-    // Haupttabelle Header (Zeile 6)
+    // Erste Tabelle - Anreise (Zeilen 5-8)
+    this.setCellValue('A5', 'ANREISE', 'sectionHeader');
     this.setCellValue('A6', 'DATUM', 'tableHeader');
     this.setCellValue('B6', 'TAG', 'tableHeader');
-    this.setCellValue('C6', 'VON', 'tableHeader');
-    this.setCellValue('D6', 'BIS', 'tableHeader');
-    this.setCellValue('E6', 'PAUSE', 'tableHeader');
-    this.setCellValue('F6', 'STUNDEN', 'tableHeader');
-    this.setCellValue('G6', 'TÄTIGKEITSBESCHREIBUNG', 'tableHeader');
+    this.setCellValue('C6', 'START', 'tableHeader');
+    this.setCellValue('D6', 'ENDE', 'tableHeader');
+    this.setCellValue('E6', 'STUNDEN', 'tableHeader');
+    this.setCellValue('F6', 'BESCHREIBUNG', 'tableHeader');
     
-    // Zusammenfassung rechts
-    this.setCellValue('I6', 'GESAMTSTUNDEN:', 'label');
-    this.addMergedCell('K6:L6', '', 'totalHours');
+    // Zweite Tabelle - Arbeitszeit (Zeilen 10-15)
+    this.setCellValue('A10', 'ARBEITSZEIT', 'sectionHeader');
+    this.setCellValue('A11', 'DATUM', 'tableHeader');
+    this.setCellValue('B11', 'TAG', 'tableHeader');
+    this.setCellValue('C11', 'VON', 'tableHeader');
+    this.setCellValue('D11', 'BIS', 'tableHeader');
+    this.setCellValue('E11', 'PAUSE', 'tableHeader');
+    this.setCellValue('F11', 'STUNDEN', 'tableHeader');
+    this.setCellValue('G11', 'TÄTIGKEITSBESCHREIBUNG', 'tableHeader');
     
-    // Unterschrift-Bereich (unten)
-    this.setCellValue('A25', 'AUFTRAGNEHMER:', 'label');
-    this.addMergedCell('C25:E25', '', 'signature');
-    this.setCellValue('A26', 'Datum/Unterschrift', 'small');
+    // Dritte Tabelle - Abreise (Zeilen 17-20)
+    this.setCellValue('A17', 'ABREISE', 'sectionHeader');
+    this.setCellValue('A18', 'DATUM', 'tableHeader');
+    this.setCellValue('B18', 'TAG', 'tableHeader');
+    this.setCellValue('C18', 'START', 'tableHeader');
+    this.setCellValue('D18', 'ENDE', 'tableHeader');
+    this.setCellValue('E18', 'STUNDEN', 'tableHeader');
+    this.setCellValue('F18', 'BESCHREIBUNG', 'tableHeader');
     
-    this.setCellValue('G25', 'AUFTRAGGEBER:', 'label');
-    this.addMergedCell('I25:L25', '', 'signature');
-    this.setCellValue('G26', 'Datum/Unterschrift', 'small');
+    // Zusammenfassung rechts (Zeilen 5-20)
+    this.setCellValue('I5', 'ZUSAMMENFASSUNG', 'sectionHeader');
+    this.setCellValue('I6', 'Anreisestunden:', 'label');
+    this.setCellValue('L6', '', 'summaryValue');
+    this.setCellValue('I7', 'Arbeitsstunden:', 'label');
+    this.setCellValue('L7', '', 'summaryValue');
+    this.setCellValue('I8', 'Abreisestunden:', 'label');
+    this.setCellValue('L8', '', 'summaryValue');
+    this.setCellValue('I9', 'Gesamtstunden:', 'totalLabel');
+    this.setCellValue('L9', '', 'totalValue');
+    
+    // Status und weitere Infos
+    this.setCellValue('I11', 'Zeitraum:', 'label');
+    this.setCellValue('L11', '', 'summaryValue');
+    this.setCellValue('I12', 'Status:', 'label');
+    this.setCellValue('L12', '', 'summaryValue');
+    
+    // Unterschrift-Bereich (Zeilen 25-28)
+    this.setCellValue('A25', 'AUFTRAGNEHMER:', 'signatureLabel');
+    this.addMergedCell('C25:F25', '', 'signature');
+    this.setCellValue('A26', 'Datum/Unterschrift', 'signatureSmall');
+    
+    this.setCellValue('I25', 'AUFTRAGGEBER:', 'signatureLabel');
+    this.addMergedCell('K25:M25', '', 'signature');
+    this.setCellValue('I26', 'Datum/Unterschrift', 'signatureSmall');
+    
+    // Zusätzliche Infos unten
+    this.setCellValue('A22', 'Bemerkungen:', 'label');
+    this.addMergedCell('A23:M24', '', 'remarksBox');
   }
 
   public fillJobData(data: JobTemplateData): XLSX.WorkSheet {
     // Auftraggeber ausfüllen
-    this.setCellValue('I2', data.customerName, 'data');
-    this.setCellValue('I4', data.jobId, 'data');
+    this.setCellValue('H2', data.customerName, 'data');
+    this.setCellValue('H3', data.jobId, 'data');
     
-    // Gesamtstunden
-    this.setCellValue('K6', data.totalHours, 'totalData');
+    // Zeitraum und Status
+    this.setCellValue('L11', `${this.formatDate(data.startDate)} - ${data.endDate ? this.formatDate(data.endDate) : 'laufend'}`, 'data');
+    this.setCellValue('L12', this.getStatusText(data.status), 'data');
     
-    // Tägliche Einträge ab Zeile 7
+    // Einträge aufteilen in Kategorien
+    const travelEntries = data.dailyEntries.filter(e => e.travelStart || e.travelEnd);
+    const workEntries = data.dailyEntries.filter(e => e.workStart || e.workEnd);
+    const departureEntries = data.dailyEntries.filter(e => e.departureStart || e.departureEnd);
+    
+    // Anreise-Einträge ab Zeile 7
     let row = 7;
-    data.dailyEntries.forEach((entry, index) => {
+    travelEntries.forEach((entry) => {
+      this.setCellValue(`A${row}`, this.formatDate(entry.date), 'tableData');
+      this.setCellValue(`B${row}`, this.getDayName(entry.date), 'tableData');
+      this.setCellValue(`C${row}`, entry.travelStart || '', 'tableData');
+      this.setCellValue(`D${row}`, entry.travelEnd || '', 'tableData');
+      this.setCellValue(`E${row}`, this.calculateHours(entry.travelStart, entry.travelEnd), 'tableData');
+      this.setCellValue(`F${row}`, entry.description || 'Anreise', 'tableData');
+      row++;
+    });
+    
+    // Arbeitszeit-Einträge ab Zeile 12
+    row = 12;
+    workEntries.forEach((entry) => {
       this.setCellValue(`A${row}`, this.formatDate(entry.date), 'tableData');
       this.setCellValue(`B${row}`, this.getDayName(entry.date), 'tableData');
       this.setCellValue(`C${row}`, entry.workStart || '', 'tableData');
       this.setCellValue(`D${row}`, entry.workEnd || '', 'tableData');
       this.setCellValue(`E${row}`, entry.breakTime || '', 'tableData');
-      this.setCellValue(`F${row}`, entry.totalHours || '', 'tableData');
+      this.setCellValue(`F${row}`, this.calculateHours(entry.workStart, entry.workEnd, entry.breakTime), 'tableData');
       this.setCellValue(`G${row}`, entry.description || '', 'tableData');
       row++;
     });
     
-    // Status und Fortschritt
-    this.setCellValue('I8', 'STATUS:', 'label');
-    this.setCellValue('K8', this.getStatusText(data.status), 'data');
-    this.setCellValue('I9', 'FORTSCHRITT:', 'label');
-    this.setCellValue('K9', `${data.currentDay}/${data.estimatedDays} Tage`, 'data');
+    // Abreise-Einträge ab Zeile 19
+    row = 19;
+    departureEntries.forEach((entry) => {
+      this.setCellValue(`A${row}`, this.formatDate(entry.date), 'tableData');
+      this.setCellValue(`B${row}`, this.getDayName(entry.date), 'tableData');
+      this.setCellValue(`C${row}`, entry.departureStart || '', 'tableData');
+      this.setCellValue(`D${row}`, entry.departureEnd || '', 'tableData');
+      this.setCellValue(`E${row}`, this.calculateHours(entry.departureStart, entry.departureEnd), 'tableData');
+      this.setCellValue(`F${row}`, entry.description || 'Abreise', 'tableData');
+      row++;
+    });
+    
+    // Zusammenfassung berechnen
+    const travelHours = this.sumHours(travelEntries.map(e => this.calculateHours(e.travelStart, e.travelEnd)));
+    const workHours = this.sumHours(workEntries.map(e => this.calculateHours(e.workStart, e.workEnd, e.breakTime)));
+    const departureHours = this.sumHours(departureEntries.map(e => this.calculateHours(e.departureStart, e.departureEnd)));
+    
+    this.setCellValue('L6', travelHours, 'summaryData');
+    this.setCellValue('L7', workHours, 'summaryData');
+    this.setCellValue('L8', departureHours, 'summaryData');
+    this.setCellValue('L9', data.totalHours, 'totalData');
     
     this.applyFormatting();
     return this.worksheet;
@@ -122,87 +197,161 @@ export class ExcelTemplate {
     
     const styles = {
       header: {
-        font: { bold: true, size: 16 },
-        alignment: { horizontal: 'center' },
+        font: { bold: true, size: 16, color: { rgb: 'FFFFFF' } },
+        alignment: { horizontal: 'center', vertical: 'center' },
         fill: { fgColor: { rgb: '366092' } }
       },
-      subheader: {
-        font: { bold: true, size: 12 },
-        fill: { fgColor: { rgb: 'D9E2F3' } }
+      sectionHeader: {
+        font: { bold: true, size: 12, color: { rgb: 'FFFFFF' } },
+        alignment: { horizontal: 'center', vertical: 'center' },
+        fill: { fgColor: { rgb: '4472C4' } },
+        border: this.getAllBorders()
       },
       tableHeader: {
         font: { bold: true, size: 10 },
-        alignment: { horizontal: 'center' },
-        fill: { fgColor: { rgb: 'E7E6E6' } },
-        border: {
-          top: { style: 'thin' },
-          bottom: { style: 'thin' },
-          left: { style: 'thin' },
-          right: { style: 'thin' }
-        }
+        alignment: { horizontal: 'center', vertical: 'center' },
+        fill: { fgColor: { rgb: 'D9E2F3' } },
+        border: this.getAllBorders()
       },
       tableData: {
         font: { size: 9 },
-        alignment: { horizontal: 'left' },
-        border: {
-          top: { style: 'thin' },
-          bottom: { style: 'thin' },
-          left: { style: 'thin' },
-          right: { style: 'thin' }
-        }
+        alignment: { horizontal: 'center', vertical: 'center' },
+        border: this.getAllBorders()
       },
       label: {
-        font: { bold: true, size: 9 }
+        font: { bold: true, size: 9 },
+        alignment: { horizontal: 'left', vertical: 'center' }
       },
       data: {
-        font: { size: 9 }
+        font: { size: 9 },
+        alignment: { horizontal: 'left', vertical: 'center' }
       },
-      totalHours: {
+      summaryValue: {
+        font: { size: 10 },
+        alignment: { horizontal: 'center', vertical: 'center' },
+        border: this.getAllBorders(),
+        fill: { fgColor: { rgb: 'F2F2F2' } }
+      },
+      summaryData: {
+        font: { bold: true, size: 10 },
+        alignment: { horizontal: 'center', vertical: 'center' },
+        border: this.getAllBorders()
+      },
+      totalLabel: {
         font: { bold: true, size: 11 },
+        alignment: { horizontal: 'left', vertical: 'center' },
+        fill: { fgColor: { rgb: 'FFFF00' } }
+      },
+      totalValue: {
+        font: { bold: true, size: 12 },
+        alignment: { horizontal: 'center', vertical: 'center' },
         fill: { fgColor: { rgb: 'FFFF00' } },
-        border: {
-          top: { style: 'medium' },
-          bottom: { style: 'medium' },
-          left: { style: 'medium' },
-          right: { style: 'medium' }
-        }
+        border: this.getAllBorders('medium')
       },
       totalData: {
-        font: { bold: true, size: 11 }
+        font: { bold: true, size: 11 },
+        alignment: { horizontal: 'center', vertical: 'center' }
+      },
+      input: {
+        border: this.getAllBorders(),
+        fill: { fgColor: { rgb: 'FFFFFF' } }
       },
       signature: {
-        border: {
-          bottom: { style: 'thin' }
-        }
+        border: { bottom: { style: 'thin', color: { rgb: '000000' } } }
       },
-      small: {
+      signatureLabel: {
+        font: { bold: true, size: 10 },
+        alignment: { horizontal: 'left', vertical: 'center' }
+      },
+      signatureSmall: {
         font: { size: 8 },
-        alignment: { horizontal: 'center' }
+        alignment: { horizontal: 'center', vertical: 'center' }
+      },
+      remarksBox: {
+        border: this.getAllBorders(),
+        fill: { fgColor: { rgb: 'F8F8F8' } }
       }
     };
     
     Object.assign(this.worksheet[cell].s, styles[style as keyof typeof styles] || {});
   }
 
+  private getAllBorders(weight: 'thin' | 'medium' = 'thin') {
+    return {
+      top: { style: weight, color: { rgb: '000000' } },
+      bottom: { style: weight, color: { rgb: '000000' } },
+      left: { style: weight, color: { rgb: '000000' } },
+      right: { style: weight, color: { rgb: '000000' } }
+    };
+  }
+
   private applyFormatting() {
     // Spaltenbreiten setzen
     this.worksheet['!cols'] = [
       { wch: 12 }, // A - Datum
-      { wch: 8 },  // B - Tag  
-      { wch: 8 },  // C - Von
-      { wch: 8 },  // D - Bis
-      { wch: 8 },  // E - Pause
-      { wch: 10 }, // F - Stunden
-      { wch: 30 }, // G - Beschreibung
+      { wch: 6 },  // B - Tag  
+      { wch: 8 },  // C - Von/Start
+      { wch: 8 },  // D - Bis/Ende
+      { wch: 8 },  // E - Pause/Stunden
+      { wch: 10 }, // F - Stunden/Beschreibung
+      { wch: 25 }, // G - Beschreibung
       { wch: 2 },  // H - Leer
       { wch: 15 }, // I - Labels
       { wch: 2 },  // J - Leer
-      { wch: 15 }, // K - Werte
-      { wch: 15 }  // L - Zusatz
+      { wch: 2 },  // K - Leer
+      { wch: 15 }, // L - Werte
+      { wch: 15 }  // M - Zusatz
     ];
     
     // Zeilenhöhen
-    this.worksheet['!rows'] = Array(30).fill({ hpt: 15 });
+    this.worksheet['!rows'] = Array(30).fill({ hpt: 18 });
+    this.worksheet['!rows'][0] = { hpt: 25 }; // Header größer
+  }
+
+  private calculateHours(startTime?: string, endTime?: string, breakTime?: string): string {
+    if (!startTime || !endTime) return '';
+    
+    const start = this.parseTime(startTime);
+    const end = this.parseTime(endTime);
+    const breakMinutes = breakTime ? this.parseBreakTime(breakTime) : 0;
+    
+    if (start && end) {
+      let diffMinutes = (end.hours * 60 + end.minutes) - (start.hours * 60 + start.minutes);
+      if (diffMinutes < 0) diffMinutes += 24 * 60; // Über Mitternacht
+      diffMinutes -= breakMinutes;
+      
+      const hours = Math.floor(diffMinutes / 60);
+      const minutes = diffMinutes % 60;
+      return `${hours}:${minutes.toString().padStart(2, '0')}`;
+    }
+    return '';
+  }
+
+  private parseTime(timeStr: string): { hours: number; minutes: number } | null {
+    const match = timeStr.match(/(\d{1,2}):(\d{2})/);
+    if (match) {
+      return { hours: parseInt(match[1]), minutes: parseInt(match[2]) };
+    }
+    return null;
+  }
+
+  private parseBreakTime(breakStr: string): number {
+    const match = breakStr.match(/(\d+)/);
+    return match ? parseInt(match[1]) : 0;
+  }
+
+  private sumHours(hourStrings: string[]): string {
+    let totalMinutes = 0;
+    hourStrings.forEach(hourStr => {
+      const match = hourStr.match(/(\d+):(\d+)/);
+      if (match) {
+        totalMinutes += parseInt(match[1]) * 60 + parseInt(match[2]);
+      }
+    });
+    
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    return `${hours}:${minutes.toString().padStart(2, '0')}`;
   }
 
   private formatDate(date: Date): string {

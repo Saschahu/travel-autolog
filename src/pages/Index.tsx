@@ -282,31 +282,6 @@ const [jobs, setJobs] = useState<Job[]>([
 
   const renderDashboard = () => (
     <div className="space-y-6">
-      {/* Quick Stats */}
-      <div className="grid grid-cols-2 gap-4">
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Aktive Jobs</p>
-                <p className="text-2xl font-bold text-primary">2</p>
-              </div>
-              <Clock className="h-8 w-8 text-primary/60" />
-            </div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">Diese Woche</p>
-                <p className="text-2xl font-bold text-success">47.5h</p>
-              </div>
-              <TrendingUp className="h-8 w-8 text-success/60" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
 
       {/* Current Jobs */}
       <div className="space-y-4">

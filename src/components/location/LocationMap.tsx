@@ -77,7 +77,7 @@ export const LocationMap: React.FC<LocationMapProps> = ({
     }
   }, [activeToken]);
 
-  if (!activeToken) {
+  if (!activeToken || showTokenInput) {
     return (
       <Card className={className}>
         <CardHeader>
@@ -87,41 +87,35 @@ export const LocationMap: React.FC<LocationMapProps> = ({
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {showTokenInput ? (
-            <div className="space-y-3">
-              <p className="text-sm text-muted-foreground">
-                Geben Sie Ihr Mapbox Public Access Token ein (beginnt mit "pk."):
-              </p>
-              <div className="space-y-2">
-                <Label htmlFor="mapbox-token">Mapbox Token</Label>
-                <Input
-                  id="mapbox-token"
-                  type="text"
-                  placeholder="pk.eyJ1IjoieW91ci11c2VybmFtZSIsImEiOiJjbGo..."
-                  value={localToken}
-                  onChange={(e) => setLocalToken(e.target.value)}
-                />
-              </div>
-              <Button onClick={handleTokenSave} disabled={!localToken.trim()}>
-                Token speichern
-              </Button>
-              <p className="text-xs text-muted-foreground">
-                Ihr Token wird lokal im Browser gespeichert. Holen Sie sich Ihr Token von{' '}
-                <a 
-                  href="https://account.mapbox.com/access-tokens/" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="text-primary underline"
-                >
-                  mapbox.com
-                </a>
-              </p>
+          <div className="space-y-3">
+            <p className="text-sm text-muted-foreground">
+              Geben Sie Ihr Mapbox Public Access Token ein (beginnt mit "pk."):
+            </p>
+            <div className="space-y-2">
+              <Label htmlFor="mapbox-token">Mapbox Token</Label>
+              <Input
+                id="mapbox-token"
+                type="text"
+                placeholder="pk.eyJ1IjoieW91ci11c2VybmFtZSIsImEiOiJjbGo..."
+                value={localToken}
+                onChange={(e) => setLocalToken(e.target.value)}
+              />
             </div>
-          ) : (
-            <div className="flex items-center justify-center h-32 text-muted-foreground">
-              Mapbox Token erforderlich für Kartenanzeige
-            </div>
-          )}
+            <Button onClick={handleTokenSave} disabled={!localToken.trim()}>
+              Token speichern
+            </Button>
+            <p className="text-xs text-muted-foreground">
+              Ihr Token wird dauerhaft im Browser gespeichert. Holen Sie sich Ihr Token von{' '}
+              <a 
+                href="https://account.mapbox.com/access-tokens/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-primary underline"
+              >
+                mapbox.com
+              </a>
+            </p>
+          </div>
         </CardContent>
       </Card>
     );

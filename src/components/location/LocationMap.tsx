@@ -3,6 +3,9 @@ import React, { useEffect, useRef } from 'react';
 import Map, { Marker, NavigationControl, GeolocateControl } from 'react-map-gl';
 import { MapPin, Home, Clock } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 
 interface LocationData {
   latitude: number;
@@ -38,6 +41,27 @@ export const LocationMap: React.FC<LocationMapProps> = ({
   className = "h-[400px] w-full"
 }) => {
   const mapRef = useRef();
+  const [localToken, setLocalToken] = React.useState<string>('');
+  const [showTokenInput, setShowTokenInput] = React.useState(false);
+  
+  // Check for locally stored token
+  React.useEffect(() => {
+    const stored = localStorage.getItem('mapbox_token');
+    if (stored) {
+      setLocalToken(stored);
+    } else if (!MAPBOX_TOKEN) {
+      setShowTokenInput(true);
+    }
+  }, []);
+  
+  const handleTokenSave = () => {
+    if (localToken.trim()) {
+      localStorage.setItem('mapbox_token', localToken.trim());
+      setShowTokenInput(false);
+    }
+  };
+  
+  const activeToken = MAPBOX_TOKEN || localToken;
 
   // Fallback center point (Deutschland)
   const centerLat = currentLocation?.latitude || homeLocation?.latitude || 51.1657;
@@ -49,7 +73,7 @@ export const LocationMap: React.FC<LocationMapProps> = ({
     }
   }, []);
 
-  if (!MAPBOX_TOKEN) {
+  if (!activeToken) {
     return (
       <Card className={className}>
         <CardHeader>
@@ -58,10 +82,42 @@ export const LocationMap: React.FC<LocationMapProps> = ({
             Standortkarte
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="flex items-center justify-center h-32 text-muted-foreground">
-            Mapbox Token erforderlich für Kartenanzeige
-          </div>
+        <CardContent className="space-y-4">
+          {showTokenInput ? (
+            <div className="space-y-3">
+              <p className="text-sm text-muted-foreground">
+                Geben Sie Ihr Mapbox Public Access Token ein (beginnt mit "pk."):
+              </p>
+              <div className="space-y-2">
+                <Label htmlFor="mapbox-token">Mapbox Token</Label>
+                <Input
+                  id="mapbox-token"
+                  type="text"
+                  placeholder="pk.eyJ1IjoieW91ci11c2VybmFtZSIsImEiOiJjbGo..."
+                  value={localToken}
+                  onChange={(e) => setLocalToken(e.target.value)}
+                />
+              </div>
+              <Button onClick={handleTokenSave} disabled={!localToken.trim()}>
+                Token speichern
+              </Button>
+              <p className="text-xs text-muted-foreground">
+                Ihr Token wird lokal im Browser gespeichert. Holen Sie sich Ihr Token von{' '}
+                <a 
+                  href="https://account.mapbox.com/access-tokens/" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-primary underline"
+                >
+                  mapbox.com
+                </a>
+              </p>
+            </div>
+          ) : (
+            <div className="flex items-center justify-center h-32 text-muted-foreground">
+              Mapbox Token erforderlich für Kartenanzeige
+            </div>
+          )}
         </CardContent>
       </Card>
     );
@@ -79,7 +135,7 @@ export const LocationMap: React.FC<LocationMapProps> = ({
         <div className="h-80 relative rounded-lg overflow-hidden">
           <Map
             ref={mapRef}
-            mapboxAccessToken={MAPBOX_TOKEN}
+            mapboxAccessToken={activeToken}
             initialViewState={{
               longitude: centerLng,
               latitude: centerLat,

@@ -11,6 +11,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { LeavingHomeDialog } from '@/components/location/LeavingHomeDialog';
+import { LocationSettings } from '@/components/location/LocationSettings';
+import { useLocation } from '@/hooks/useLocation';
+import { useToast } from '@/hooks/use-toast';
+import React from 'react';
 
 type DayData = {
   day: number;
@@ -90,6 +95,9 @@ const [jobs, setJobs] = useState<Job[]>([
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
+  const [leavingHomeOpen, setLeavingHomeOpen] = useState(false);
+  const { hasLeftHome } = useLocation();
+  const { toast } = useToast();
   const [editData, setEditData] = useState({
     customerName: '',
     totalHours: '',
@@ -215,6 +223,28 @@ const [jobs, setJobs] = useState<Job[]>([
     }));
   };
 
+  const handleLeavingHomeSelection = (type: 'work' | 'private') => {
+    if (type === 'work') {
+      setActiveTab('new-job');
+      toast({
+        title: 'Arbeitsreise gestartet',
+        description: 'Du kannst jetzt einen neuen Job erfassen',
+      });
+    } else {
+      toast({
+        title: 'Private Reise',
+        description: 'Viel Spaß bei deinen privaten Aktivitäten!',
+      });
+    }
+  };
+
+  // Monitor leaving home status
+  React.useEffect(() => {
+    if (hasLeftHome && !leavingHomeOpen) {
+      setLeavingHomeOpen(true);
+    }
+  }, [hasLeftHome, leavingHomeOpen]);
+
   const renderDashboard = () => (
     <div className="space-y-6">
       {/* Quick Stats */}
@@ -288,9 +318,10 @@ const [jobs, setJobs] = useState<Job[]>([
       
       <div className="flex-1">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mx-4 mt-4">
+          <TabsList className="grid w-full grid-cols-4 mx-4 mt-4">
             <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
             <TabsTrigger value="new-job">Neuer Job</TabsTrigger>
+            <TabsTrigger value="location">GPS</TabsTrigger>
             <TabsTrigger value="export">Export</TabsTrigger>
           </TabsList>
           
@@ -300,6 +331,10 @@ const [jobs, setJobs] = useState<Job[]>([
           
           <TabsContent value="new-job" className="mt-6">
             <JobEntryForm />
+          </TabsContent>
+          
+          <TabsContent value="location" className="mt-6">
+            <LocationSettings />
           </TabsContent>
           
           <TabsContent value="export" className="p-4 mt-6">
@@ -485,6 +520,13 @@ const [jobs, setJobs] = useState<Job[]>([
             </DialogFooter>
           </DialogContent>
         </Dialog>
+
+        {/* Leaving Home Dialog */}
+        <LeavingHomeDialog
+          isOpen={leavingHomeOpen}
+          onClose={() => setLeavingHomeOpen(false)}
+          onSelection={handleLeavingHomeSelection}
+        />
       </div>
     </MobileLayout>
   );

@@ -50,57 +50,87 @@ export const JobEntryForm = () => {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="grid grid-cols-2 gap-3">
+        <div className="space-y-3">
           <div>
             <Label htmlFor="travel-start" className="text-sm font-medium">Anreise Start</Label>
-            <Input
-              id="travel-start"
-              type="time"
-              value={jobData.travelStart || ''}
-              onChange={(e) => updateField('travelStart', e.target.value)}
-              className="mt-1"
-            />
+            <div className="flex gap-2 mt-1">
+              <Input
+                id="travel-start"
+                type="time"
+                value={jobData.travelStart || ''}
+                onChange={(e) => updateField('travelStart', e.target.value)}
+                className="flex-1"
+              />
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => updateField('travelStart', getCurrentTime())}
+              >
+                Jetzt
+              </Button>
+            </div>
           </div>
+          
           <div>
             <Label htmlFor="travel-end" className="text-sm font-medium">Anreise Ende</Label>
-            <Input
-              id="travel-end"
-              type="time"
-              value={jobData.travelEnd || ''}
-              onChange={(e) => updateField('travelEnd', e.target.value)}
-              className="mt-1"
-            />
+            <div className="flex gap-2 mt-1">
+              <Input
+                id="travel-end"
+                type="time"
+                value={jobData.travelEnd || ''}
+                onChange={(e) => updateField('travelEnd', e.target.value)}
+                className="flex-1"
+              />
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => updateField('travelEnd', getCurrentTime())}
+              >
+                Jetzt
+              </Button>
+            </div>
           </div>
+          
           <div>
             <Label htmlFor="work-start" className="text-sm font-medium">Arbeit Start</Label>
-            <Input
-              id="work-start"
-              type="time"
-              value={jobData.workStart || ''}
-              onChange={(e) => updateField('workStart', e.target.value)}
-              className="mt-1"
-            />
+            <div className="flex gap-2 mt-1">
+              <Input
+                id="work-start"
+                type="time"
+                value={jobData.workStart || ''}
+                onChange={(e) => updateField('workStart', e.target.value)}
+                className="flex-1"
+              />
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => updateField('workStart', getCurrentTime())}
+              >
+                Jetzt
+              </Button>
+            </div>
           </div>
+          
           <div>
             <Label htmlFor="work-end" className="text-sm font-medium">Arbeit Ende</Label>
-            <Input
-              id="work-end"
-              type="time"
-              value={jobData.workEnd || ''}
-              onChange={(e) => updateField('workEnd', e.target.value)}
-              className="mt-1"
-            />
+            <div className="flex gap-2 mt-1">
+              <Input
+                id="work-end"
+                type="time"
+                value={jobData.workEnd || ''}
+                onChange={(e) => updateField('workEnd', e.target.value)}
+                className="flex-1"
+              />
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => updateField('workEnd', getCurrentTime())}
+              >
+                Jetzt
+              </Button>
+            </div>
           </div>
         </div>
-        
-        <Button 
-          variant="outline" 
-          size="sm" 
-          onClick={() => updateField('workStart', getCurrentTime())}
-          className="w-full"
-        >
-          Jetzt als Arbeitsbeginn markieren
-        </Button>
       </CardContent>
     </Card>
   );

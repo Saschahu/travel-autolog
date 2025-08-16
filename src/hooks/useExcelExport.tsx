@@ -1,6 +1,7 @@
 import * as XLSX from 'xlsx';
 import { useUserProfile } from '@/contexts/UserProfileContext';
 import { Share } from '@capacitor/share';
+import { Capacitor } from '@capacitor/core';
 import { useToast } from '@/hooks/use-toast';
 import { ExcelTemplate, JobTemplateData } from '@/templates/ExcelTemplate';
 import { ExcelFormatter } from '@/utils/excelFormatter';
@@ -81,38 +82,65 @@ export const useExcelExport = () => {
   };
 
   const exportToExcel = async (jobs: any[], filename?: string) => {
+    const workbook = generateJobExcel(jobs);
+    const excelBuffer = XLSX.write(workbook, { type: 'array', bookType: 'xlsx' });
+
+    const blob = new Blob([excelBuffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    });
+
+    const url = URL.createObjectURL(blob);
+    const defaultFilename = filename || `Auftraege_${new Date().toISOString().split('T')[0]}.xlsx`;
+
+    const triggerDownload = () => {
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = defaultFilename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    };
+
     try {
-      const workbook = generateJobExcel(jobs);
-      const excelBuffer = XLSX.write(workbook, { type: 'array', bookType: 'xlsx' });
-      
-      const blob = new Blob([excelBuffer], { 
-        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' 
-      });
-      
-      const url = URL.createObjectURL(blob);
-      const defaultFilename = filename || `Auftraege_${new Date().toISOString().split('T')[0]}.xlsx`;
-      
-      await Share.share({
-        title: 'Excel Export - Aufträge',
-        text: `Excel-Report: ${defaultFilename}`,
-        url: url,
-        dialogTitle: 'Excel-Datei teilen'
-      });
+      // On native platforms use the Share sheet, on web trigger a file download
+      const platform = Capacitor.getPlatform();
+      if (platform !== 'web') {
+        await Share.share({
+          title: 'Excel Export - Aufträge',
+          text: `Excel-Report: ${defaultFilename}`,
+          url: url,
+          dialogTitle: 'Excel-Datei teilen'
+        });
+      } else {
+        triggerDownload();
+      }
 
       toast({
         title: 'Excel Export erfolgreich',
-        description: 'Die Excel-Datei wurde erstellt und kann geteilt werden',
+        description: platform !== 'web' ? 'Die Excel-Datei wurde erstellt und kann geteilt werden' : 'Download gestartet',
       });
 
       return true;
     } catch (error) {
-      console.error('Excel export error:', error);
-      toast({
-        title: 'Export Fehler',
-        description: 'Die Excel-Datei konnte nicht erstellt werden',
-        variant: 'destructive',
-      });
-      return false;
+      // Fallback: if share fails (e.g., permission denied), try download
+      console.warn('Share failed, falling back to download:', error);
+      try {
+        triggerDownload();
+        toast({
+          title: 'Excel Export erfolgreich',
+          description: 'Download gestartet',
+        });
+        return true;
+      } catch (fallbackError) {
+        console.error('Excel export error:', fallbackError);
+        toast({
+          title: 'Export Fehler',
+          description: 'Die Excel-Datei konnte nicht erstellt werden',
+          variant: 'destructive',
+        });
+        return false;
+      }
     }
   };
 

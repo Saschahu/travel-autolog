@@ -68,10 +68,10 @@ export const LocationMap: React.FC<LocationMapProps> = ({
   const centerLng = currentLocation?.longitude || homeLocation?.longitude || 10.4515;
 
   useEffect(() => {
-    if (!MAPBOX_TOKEN) {
-      console.warn('Mapbox Token fehlt. Bitte MAPBOX_PUBLIC_TOKEN in den Secrets hinterlegen.');
+    if (!activeToken) {
+      console.warn('Mapbox Token fehlt. Bitte Token eingeben.');
     }
-  }, []);
+  }, [activeToken]);
 
   if (!activeToken) {
     return (

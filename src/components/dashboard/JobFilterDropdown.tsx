@@ -12,8 +12,8 @@ export const JobFilterDropdown = ({ value, onValueChange }: JobFilterDropdownPro
   const { t } = useTranslation();
   
   const filterOptions = [
-    { value: 'active' as const, label: 'Aktive' },
-    { value: 'open' as const, label: 'Offene (noch aktive)' },
+    { value: 'open' as const, label: 'Offene (noch abzuarbeiten)' },
+    { value: 'active' as const, label: 'Aktive (gerade in Bearbeitung)' },
     { value: 'completed' as const, label: 'Abgeschlossene' },
     { value: 'completed-sent' as const, label: 'Abgeschlossene und gesendet' },
     { value: 'all' as const, label: 'Alle Aufträge' }

@@ -50,13 +50,13 @@ const Index = () => {
   const { profile } = useUserProfile();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const [jobFilter, setJobFilter] = useState<JobFilter>('active');
+  const [jobFilter, setJobFilter] = useState<JobFilter>('open');
   const { sendJobReport } = useEmailService();
 const [jobs, setJobs] = useState<Job[]>([
     { 
       id: 'job-1', 
       customerName: 'Siemens AG', 
-      status: 'pending', 
+      status: 'open', 
       startDate: new Date('2025-01-15'), 
       estimatedDays: 3, 
       currentDay: 0,
@@ -81,16 +81,12 @@ const [jobs, setJobs] = useState<Job[]>([
     { 
       id: 'job-3', 
       customerName: 'Hydro Norge', 
-      status: 'completed', 
+      status: 'open', 
       startDate: new Date('2025-01-20'), 
       estimatedDays: 1, 
-      currentDay: 1,
-      workStartTime: '08:00',
-      workEndTime: '16:00',
-      totalHours: '8h 0m',
-      days: [
-        { day: 1, travelStart: '07:00', travelEnd: '08:00', workStart: '08:00', workEnd: '16:00', departureStart: '16:00', departureEnd: '17:00' },
-      ]
+      currentDay: 0,
+      totalHours: '0h 0m',
+      days: []
     },
     { 
       id: 'job-4', 

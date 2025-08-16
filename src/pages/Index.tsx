@@ -334,14 +334,18 @@ const [jobs, setJobs] = useState<Job[]>([
                   />
                 </div>
                 <div>
-                  <Label htmlFor="edit-total-hours">Gesamtstunden</Label>
+                  <Label htmlFor="edit-total-hours">Gesamtstunden (bereits gearbeitet)</Label>
                   <Input 
                     id="edit-total-hours" 
                     type="number"
                     step="0.5"
+                    placeholder="z.B. 16.5"
                     value={editData.totalHours} 
                     onChange={(e) => setEditData(prev => ({ ...prev, totalHours: parseFloat(e.target.value) || 0 }))} 
                   />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Summe aller bisher geleisteten Arbeitsstunden für diesen Job
+                  </p>
                 </div>
               </div>
               

@@ -130,6 +130,46 @@ export const JobEntryForm = () => {
               </Button>
             </div>
           </div>
+          
+          <div>
+            <Label htmlFor="return-start" className="text-sm font-medium">Heimreise Start</Label>
+            <div className="flex gap-2 mt-1">
+              <Input
+                id="return-start"
+                type="time"
+                value={jobData.departureStart || ''}
+                onChange={(e) => updateField('departureStart', e.target.value)}
+                className="flex-1"
+              />
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => updateField('departureStart', getCurrentTime())}
+              >
+                Jetzt
+              </Button>
+            </div>
+          </div>
+          
+          <div>
+            <Label htmlFor="return-end" className="text-sm font-medium">Heimreise Ende</Label>
+            <div className="flex gap-2 mt-1">
+              <Input
+                id="return-end"
+                type="time"
+                value={jobData.departureEnd || ''}
+                onChange={(e) => updateField('departureEnd', e.target.value)}
+                className="flex-1"
+              />
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => updateField('departureEnd', getCurrentTime())}
+              >
+                Jetzt
+              </Button>
+            </div>
+          </div>
         </div>
       </CardContent>
     </Card>

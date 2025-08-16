@@ -201,6 +201,122 @@ export const JobEntryForm = () => {
     </Card>
   );
 
+  const renderTravelSection = () => (
+    <Card className="border-primary/20">
+      <CardHeader className="pb-3">
+        <CardTitle className="flex items-center gap-2 text-lg">
+          <Car className="h-5 w-5 text-primary" />
+          Reise & Unterkunft
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <Label htmlFor="departure-start" className="text-sm font-medium">Abfahrt Start</Label>
+            <Input
+              id="departure-start"
+              type="time"
+              value={jobData.departureStart || ''}
+              onChange={(e) => updateField('departureStart', e.target.value)}
+              className="mt-1"
+            />
+          </div>
+          <div>
+            <Label htmlFor="departure-end" className="text-sm font-medium">Abfahrt Ende</Label>
+            <Input
+              id="departure-end"
+              type="time"
+              value={jobData.departureEnd || ''}
+              onChange={(e) => updateField('departureEnd', e.target.value)}
+              className="mt-1"
+            />
+          </div>
+        </div>
+
+        <div className="space-y-3">
+          <div>
+            <Label htmlFor="hotel-name" className="text-sm font-medium">
+              <Hotel className="h-4 w-4 inline mr-1" />
+              Hotel Name (optional)
+            </Label>
+            <Input
+              id="hotel-name"
+              placeholder="Hotel Name"
+              value={jobData.hotelName || ''}
+              onChange={(e) => updateField('hotelName', e.target.value)}
+              className="mt-1"
+            />
+          </div>
+          <div>
+            <Label htmlFor="hotel-address" className="text-sm font-medium">Hotel Adresse</Label>
+            <Input
+              id="hotel-address"
+              placeholder="Automatisch über Maps API"
+              value={jobData.hotelAddress || ''}
+              onChange={(e) => updateField('hotelAddress', e.target.value)}
+              className="mt-1"
+            />
+          </div>
+          <div>
+            <Label htmlFor="hotel-nights" className="text-sm font-medium">Anzahl Nächte</Label>
+            <Input
+              id="hotel-nights"
+              type="number"
+              min="0"
+              placeholder="0"
+              value={jobData.hotelNights || ''}
+              onChange={(e) => updateField('hotelNights', parseInt(e.target.value) || 0)}
+              className="mt-1"
+            />
+          </div>
+        </div>
+
+        <Separator />
+
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <Label htmlFor="km-outbound" className="text-sm font-medium">KM Hinfahrt</Label>
+            <Input
+              id="km-outbound"
+              type="number"
+              min="0"
+              placeholder="0"
+              value={jobData.kilometersOutbound || ''}
+              onChange={(e) => updateField('kilometersOutbound', parseInt(e.target.value) || 0)}
+              className="mt-1"
+            />
+          </div>
+          <div>
+            <Label htmlFor="km-return" className="text-sm font-medium">KM Rückfahrt</Label>
+            <Input
+              id="km-return"
+              type="number"
+              min="0"
+              placeholder="0"
+              value={jobData.kilometersReturn || ''}
+              onChange={(e) => updateField('kilometersReturn', parseInt(e.target.value) || 0)}
+              className="mt-1"
+            />
+          </div>
+        </div>
+
+        <div>
+          <Label htmlFor="toll-amount" className="text-sm font-medium">Maut (NOK)</Label>
+          <Input
+            id="toll-amount"
+            type="number"
+            min="0"
+            step="0.01"
+            placeholder="0.00"
+            value={jobData.tollAmount || ''}
+            onChange={(e) => updateField('tollAmount', parseFloat(e.target.value) || 0)}
+            className="mt-1"
+          />
+        </div>
+      </CardContent>
+    </Card>
+  );
+
   const steps = [
     { id: 'times', label: 'Zeiten', icon: Clock },
     { id: 'customer', label: 'Kunde', icon: User },
@@ -238,6 +354,7 @@ export const JobEntryForm = () => {
       {currentStep === 'times' && renderTimeSection()}
       {currentStep === 'customer' && renderCustomerSection()}
       {currentStep === 'machine' && renderMachineSection()}
+      {currentStep === 'travel' && renderTravelSection()}
 
       {/* Navigation Buttons */}
       <div className="flex justify-between pt-4">
@@ -259,11 +376,14 @@ export const JobEntryForm = () => {
             const currentIndex = steps.findIndex(s => s.id === currentStep);
             if (currentIndex < steps.length - 1) {
               setCurrentStep(steps[currentIndex + 1].id as any);
+            } else if (currentStep === 'travel') {
+              // Save job data
+              console.log('Saving job data:', jobData);
+              alert('Job erfolgreich gespeichert! (Funktionalität wird noch implementiert)');
             }
           }}
-          disabled={currentStep === 'travel'}
         >
-          Weiter
+          {currentStep === 'travel' ? 'Job Speichern' : 'Weiter'}
         </Button>
       </div>
     </div>

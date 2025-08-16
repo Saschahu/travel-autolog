@@ -47,8 +47,10 @@ export const LocationMap: React.FC<LocationMapProps> = ({
   // Check for locally stored token
   React.useEffect(() => {
     const stored = localStorage.getItem('mapbox_token');
+    console.log('Gespeichertes Token gefunden:', stored ? stored.substring(0, 10) + '...' : 'keins');
     if (stored) {
       setLocalToken(stored);
+      setShowTokenInput(false);
     } else {
       setShowTokenInput(true);
     }
@@ -58,6 +60,7 @@ export const LocationMap: React.FC<LocationMapProps> = ({
     if (localToken.trim()) {
       localStorage.setItem('mapbox_token', localToken.trim());
       setShowTokenInput(false);
+      console.log('Token gespeichert:', localToken.substring(0, 10) + '...');
     }
   };
   
@@ -68,6 +71,7 @@ export const LocationMap: React.FC<LocationMapProps> = ({
   const centerLng = currentLocation?.longitude || homeLocation?.longitude || 10.4515;
 
   useEffect(() => {
+    console.log('Active token check:', activeToken ? activeToken.substring(0, 10) + '...' : 'kein Token');
     if (!activeToken) {
       console.warn('Mapbox Token fehlt. Bitte Token eingeben.');
     }

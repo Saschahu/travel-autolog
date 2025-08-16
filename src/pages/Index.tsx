@@ -66,10 +66,17 @@ const Index = () => {
       currentDay: 0 
     },
   ]);
-const [selectedJob, setSelectedJob] = useState<Job | null>(null);
-const [detailsOpen, setDetailsOpen] = useState(false);
-const [editOpen, setEditOpen] = useState(false);
-const [editCustomerName, setEditCustomerName] = useState('');
+  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const [editOpen, setEditOpen] = useState(false);
+  const [editData, setEditData] = useState({
+    customerName: '',
+    workStartTime: '',
+    workEndTime: '',
+    totalHours: 0,
+    estimatedDays: 1,
+    currentDay: 0,
+  });
 
 
   const handleDetails = (job: Job) => {
@@ -79,13 +86,32 @@ const [editCustomerName, setEditCustomerName] = useState('');
 
   const handleEdit = (job: Job) => {
     setSelectedJob(job);
-    setEditCustomerName(job.customerName);
+    setEditData({
+      customerName: job.customerName,
+      workStartTime: job.workStartTime || '',
+      workEndTime: job.workEndTime || '',
+      totalHours: job.totalHours || 0,
+      estimatedDays: job.estimatedDays || 1,
+      currentDay: job.currentDay || 0,
+    });
     setEditOpen(true);
   };
 
   const saveEdit = () => {
     if (!selectedJob) return;
-    setJobs(prev => prev.map(j => j.id === selectedJob.id ? { ...j, customerName: editCustomerName } : j));
+    setJobs(prev => prev.map(j => 
+      j.id === selectedJob.id 
+        ? { 
+            ...j, 
+            customerName: editData.customerName,
+            workStartTime: editData.workStartTime,
+            workEndTime: editData.workEndTime,
+            totalHours: editData.totalHours,
+            estimatedDays: editData.estimatedDays,
+            currentDay: editData.currentDay,
+          } 
+        : j
+    ));
     setEditOpen(false);
   };
 
@@ -231,14 +257,75 @@ const [editCustomerName, setEditCustomerName] = useState('');
         </Dialog>
 
         <Dialog open={editOpen} onOpenChange={setEditOpen}>
-          <DialogContent>
+          <DialogContent className="max-w-md">
             <DialogHeader>
               <DialogTitle>Auftrag bearbeiten</DialogTitle>
-              <DialogDescription>Kundenname anpassen</DialogDescription>
+              <DialogDescription>Alle Job-Daten bearbeiten</DialogDescription>
             </DialogHeader>
-            <div className="space-y-2">
-              <Label htmlFor="edit-customer">Kundenname</Label>
-              <Input id="edit-customer" value={editCustomerName} onChange={(e) => setEditCustomerName(e.target.value)} />
+            <div className="space-y-4 max-h-96 overflow-y-auto">
+              <div>
+                <Label htmlFor="edit-customer">Kundenname</Label>
+                <Input 
+                  id="edit-customer" 
+                  value={editData.customerName} 
+                  onChange={(e) => setEditData(prev => ({ ...prev, customerName: e.target.value }))} 
+                />
+              </div>
+              
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <Label htmlFor="edit-work-start">Arbeit Start</Label>
+                  <Input 
+                    id="edit-work-start" 
+                    type="time"
+                    value={editData.workStartTime} 
+                    onChange={(e) => setEditData(prev => ({ ...prev, workStartTime: e.target.value }))} 
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="edit-work-end">Arbeit Ende</Label>
+                  <Input 
+                    id="edit-work-end" 
+                    type="time"
+                    value={editData.workEndTime} 
+                    onChange={(e) => setEditData(prev => ({ ...prev, workEndTime: e.target.value }))} 
+                  />
+                </div>
+              </div>
+              
+              <div>
+                <Label htmlFor="edit-total-hours">Gesamtstunden</Label>
+                <Input 
+                  id="edit-total-hours" 
+                  type="number"
+                  step="0.5"
+                  value={editData.totalHours} 
+                  onChange={(e) => setEditData(prev => ({ ...prev, totalHours: parseFloat(e.target.value) || 0 }))} 
+                />
+              </div>
+              
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <Label htmlFor="edit-estimated-days">Geplante Tage</Label>
+                  <Input 
+                    id="edit-estimated-days" 
+                    type="number"
+                    min="1"
+                    value={editData.estimatedDays} 
+                    onChange={(e) => setEditData(prev => ({ ...prev, estimatedDays: parseInt(e.target.value) || 1 }))} 
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="edit-current-day">Aktueller Tag</Label>
+                  <Input 
+                    id="edit-current-day" 
+                    type="number"
+                    min="0"
+                    value={editData.currentDay} 
+                    onChange={(e) => setEditData(prev => ({ ...prev, currentDay: parseInt(e.target.value) || 0 }))} 
+                  />
+                </div>
+              </div>
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setEditOpen(false)}>Abbrechen</Button>

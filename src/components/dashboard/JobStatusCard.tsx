@@ -11,6 +11,9 @@ interface JobStatusCardProps {
   startDate: Date;
   estimatedDays?: number;
   currentDay?: number;
+  workStartTime?: string;
+  workEndTime?: string;
+  totalHours?: number;
   onDetails?: () => void;
   onEdit?: () => void;
 }
@@ -21,6 +24,9 @@ export const JobStatusCard = ({
   startDate, 
   estimatedDays = 1,
   currentDay = 1,
+  workStartTime,
+  workEndTime,
+  totalHours,
   onDetails,
   onEdit,
 }: JobStatusCardProps) => {
@@ -73,6 +79,31 @@ export const JobStatusCard = ({
           <MapPin className="h-4 w-4" />
           <span>Startdatum: {format(startDate, 'dd.MM.yyyy', { locale: de })}</span>
         </div>
+
+        {(workStartTime || workEndTime || totalHours) && (
+          <div className="bg-secondary/30 p-3 rounded-md space-y-2">
+            <h4 className="text-sm font-medium">Arbeitszeiten</h4>
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              {workStartTime && (
+                <div>
+                  <span className="text-muted-foreground">Start:</span>
+                  <div className="font-mono">{workStartTime}</div>
+                </div>
+              )}
+              {workEndTime && (
+                <div>
+                  <span className="text-muted-foreground">Ende:</span>
+                  <div className="font-mono">{workEndTime}</div>
+                </div>
+              )}
+            </div>
+            {totalHours && (
+              <div className="text-sm font-medium text-primary">
+                Gesamt: {totalHours}h
+              </div>
+            )}
+          </div>
+        )}
         
         {status === 'active' && (
           <div className="space-y-2">

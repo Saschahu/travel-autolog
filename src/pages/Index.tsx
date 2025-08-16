@@ -19,16 +19,53 @@ type Job = {
   startDate: Date;
   estimatedDays?: number;
   currentDay?: number;
+  workStartTime?: string;
+  workEndTime?: string;
+  totalHours?: number;
 };
 
 const Index = () => {
-const [activeTab, setActiveTab] = useState('dashboard');
-const [jobs, setJobs] = useState<Job[]>([
-  { id: 'job-1', customerName: 'Siemens AG', status: 'active', startDate: new Date('2025-01-15'), estimatedDays: 3, currentDay: 2 },
-  { id: 'job-2', customerName: 'ABB Industrial', status: 'completed', startDate: new Date('2025-01-10'), estimatedDays: 2, currentDay: 2 },
-  { id: 'job-3', customerName: 'Hydro Norge', status: 'pending', startDate: new Date('2025-01-20'), estimatedDays: 1, currentDay: 0 },
-  { id: 'job-4', customerName: 'Schneider Electric', status: 'pending', startDate: new Date('2025-01-22'), estimatedDays: 2, currentDay: 0 },
-]);
+  const [activeTab, setActiveTab] = useState('dashboard');
+  const [jobs, setJobs] = useState<Job[]>([
+    { 
+      id: 'job-1', 
+      customerName: 'Siemens AG', 
+      status: 'active', 
+      startDate: new Date('2025-01-15'), 
+      estimatedDays: 3, 
+      currentDay: 2,
+      workStartTime: '08:30',
+      workEndTime: '16:45',
+      totalHours: 16.5
+    },
+    { 
+      id: 'job-2', 
+      customerName: 'ABB Industrial', 
+      status: 'completed', 
+      startDate: new Date('2025-01-10'), 
+      estimatedDays: 2, 
+      currentDay: 2,
+      workStartTime: '09:00',
+      workEndTime: '17:30',
+      totalHours: 17.0
+    },
+    { 
+      id: 'job-3', 
+      customerName: 'Hydro Norge', 
+      status: 'pending', 
+      startDate: new Date('2025-01-20'), 
+      estimatedDays: 1, 
+      currentDay: 0 
+    },
+    { 
+      id: 'job-4', 
+      customerName: 'Schneider Electric', 
+      status: 'pending', 
+      startDate: new Date('2025-01-22'), 
+      estimatedDays: 2, 
+      currentDay: 0 
+    },
+  ]);
 const [selectedJob, setSelectedJob] = useState<Job | null>(null);
 const [detailsOpen, setDetailsOpen] = useState(false);
 const [editOpen, setEditOpen] = useState(false);
@@ -176,6 +213,15 @@ const [editCustomerName, setEditCustomerName] = useState('');
               <div><span className="font-medium">Startdatum:</span> {selectedJob ? selectedJob.startDate.toLocaleDateString() : ''}</div>
               {selectedJob?.estimatedDays !== undefined && (
                 <div><span className="font-medium">Tage:</span> {selectedJob?.currentDay}/{selectedJob?.estimatedDays}</div>
+              )}
+              {selectedJob?.workStartTime && (
+                <div><span className="font-medium">Arbeitsbeginn:</span> {selectedJob.workStartTime}</div>
+              )}
+              {selectedJob?.workEndTime && (
+                <div><span className="font-medium">Arbeitsende:</span> {selectedJob.workEndTime}</div>
+              )}
+              {selectedJob?.totalHours && (
+                <div><span className="font-medium">Gesamtstunden:</span> {selectedJob.totalHours}h</div>
               )}
             </div>
             <DialogFooter>

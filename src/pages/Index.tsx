@@ -8,26 +8,49 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Plus, FileText, Clock, TrendingUp } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+
+type Job = {
+  id: string;
+  customerName: string;
+  status: 'active' | 'completed' | 'pending';
+  startDate: Date;
+  estimatedDays?: number;
+  currentDay?: number;
+};
 
 const Index = () => {
-  const [activeTab, setActiveTab] = useState('dashboard');
+const [activeTab, setActiveTab] = useState('dashboard');
+const [jobs, setJobs] = useState<Job[]>([
+  { id: 'job-1', customerName: 'Siemens AG', status: 'active', startDate: new Date('2025-01-15'), estimatedDays: 3, currentDay: 2 },
+  { id: 'job-2', customerName: 'ABB Industrial', status: 'completed', startDate: new Date('2025-01-10'), estimatedDays: 2, currentDay: 2 },
+  { id: 'job-3', customerName: 'Hydro Norge', status: 'pending', startDate: new Date('2025-01-20'), estimatedDays: 1, currentDay: 0 },
+  { id: 'job-4', customerName: 'Schneider Electric', status: 'pending', startDate: new Date('2025-01-22'), estimatedDays: 2, currentDay: 0 },
+]);
+const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+const [detailsOpen, setDetailsOpen] = useState(false);
+const [editOpen, setEditOpen] = useState(false);
+const [editCustomerName, setEditCustomerName] = useState('');
 
-  const mockJobs = [
-    {
-      customerName: "Siemens AG",
-      status: 'active' as const,
-      startDate: new Date('2025-01-15'),
-      estimatedDays: 3,
-      currentDay: 2
-    },
-    {
-      customerName: "ABB Industrial",
-      status: 'completed' as const,
-      startDate: new Date('2025-01-10'),
-      estimatedDays: 2,
-      currentDay: 2
-    }
-  ];
+
+  const handleDetails = (job: Job) => {
+    setSelectedJob(job);
+    setDetailsOpen(true);
+  };
+
+  const handleEdit = (job: Job) => {
+    setSelectedJob(job);
+    setEditCustomerName(job.customerName);
+    setEditOpen(true);
+  };
+
+  const saveEdit = () => {
+    if (!selectedJob) return;
+    setJobs(prev => prev.map(j => j.id === selectedJob.id ? { ...j, customerName: editCustomerName } : j));
+    setEditOpen(false);
+  };
 
   const renderDashboard = () => (
     <div className="space-y-6">
@@ -67,8 +90,13 @@ const Index = () => {
           </Button>
         </div>
         
-        {mockJobs.map((job, index) => (
-          <JobStatusCard key={index} {...job} />
+        {jobs.map((job) => (
+          <JobStatusCard 
+            key={job.id} 
+            {...job}
+            onDetails={() => handleDetails(job)}
+            onEdit={() => handleEdit(job)}
+          />
         ))}
       </div>
 
@@ -134,6 +162,44 @@ const Index = () => {
             </Card>
           </TabsContent>
         </Tabs>
+
+        {/* Modals */}
+        <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Auftragsdetails</DialogTitle>
+              <DialogDescription>Informationen zum ausgewählten Auftrag</DialogDescription>
+            </DialogHeader>
+            <div className="space-y-2 text-sm">
+              <div><span className="font-medium">Kunde:</span> {selectedJob?.customerName}</div>
+              <div><span className="font-medium">Status:</span> {selectedJob?.status}</div>
+              <div><span className="font-medium">Startdatum:</span> {selectedJob ? selectedJob.startDate.toLocaleDateString() : ''}</div>
+              {selectedJob?.estimatedDays !== undefined && (
+                <div><span className="font-medium">Tage:</span> {selectedJob?.currentDay}/{selectedJob?.estimatedDays}</div>
+              )}
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setDetailsOpen(false)}>Schließen</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={editOpen} onOpenChange={setEditOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Auftrag bearbeiten</DialogTitle>
+              <DialogDescription>Kundenname anpassen</DialogDescription>
+            </DialogHeader>
+            <div className="space-y-2">
+              <Label htmlFor="edit-customer">Kundenname</Label>
+              <Input id="edit-customer" value={editCustomerName} onChange={(e) => setEditCustomerName(e.target.value)} />
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setEditOpen(false)}>Abbrechen</Button>
+              <Button onClick={saveEdit}>Speichern</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </MobileLayout>
   );

@@ -11,6 +11,8 @@ interface JobStatusCardProps {
   startDate: Date;
   estimatedDays?: number;
   currentDay?: number;
+  onDetails?: () => void;
+  onEdit?: () => void;
 }
 
 export const JobStatusCard = ({ 
@@ -18,7 +20,9 @@ export const JobStatusCard = ({
   status, 
   startDate, 
   estimatedDays = 1,
-  currentDay = 1 
+  currentDay = 1,
+  onDetails,
+  onEdit,
 }: JobStatusCardProps) => {
   const getStatusIcon = () => {
     switch (status) {
@@ -94,10 +98,10 @@ export const JobStatusCard = ({
         )}
 
         <div className="flex gap-2 pt-2">
-          <Button variant="outline" size="sm" className="flex-1">
+          <Button variant="outline" size="sm" className="flex-1" onClick={onDetails}>
             Details
           </Button>
-          <Button size="sm" className="flex-1">
+          <Button size="sm" className="flex-1" onClick={onEdit}>
             Bearbeiten
           </Button>
         </div>

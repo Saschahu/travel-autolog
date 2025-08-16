@@ -318,12 +318,12 @@ const [jobs, setJobs] = useState<Job[]>([
         </Dialog>
 
         <Dialog open={editOpen} onOpenChange={setEditOpen}>
-          <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden">
-            <DialogHeader>
+          <DialogContent className="max-w-2xl h-[90vh] flex flex-col">
+            <DialogHeader className="flex-shrink-0">
               <DialogTitle>Auftrag bearbeiten</DialogTitle>
               <DialogDescription>Alle Job-Daten und tägliche Zeiten bearbeiten</DialogDescription>
             </DialogHeader>
-            <div className="space-y-4 overflow-y-auto flex-1">
+            <div className="flex-1 overflow-y-auto space-y-4 pr-2">
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <Label htmlFor="edit-customer">Kundenname</Label>
@@ -436,7 +436,7 @@ const [jobs, setJobs] = useState<Job[]>([
                 ))}
               </div>
             </div>
-            <DialogFooter>
+            <DialogFooter className="flex-shrink-0 mt-4">
               <Button variant="outline" onClick={() => setEditOpen(false)}>Abbrechen</Button>
               <Button onClick={saveEdit}>Speichern</Button>
             </DialogFooter>

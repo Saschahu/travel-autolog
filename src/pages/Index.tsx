@@ -147,12 +147,31 @@ const [jobs, setJobs] = useState<Job[]>([
   };
 
   const updateDayField = (dayIndex: number, field: keyof DayData, value: string) => {
-    setEditData(prev => ({
-      ...prev,
-      days: prev.days.map((day, index) => 
+    setEditData(prev => {
+      const newDays = prev.days.map((day, index) => 
         index === dayIndex ? { ...day, [field]: value } : day
-      )
-    }));
+      );
+      
+      // Auto-calculate total hours when work times change
+      let totalHours = 0;
+      newDays.forEach(day => {
+        if (day.workStart && day.workEnd) {
+          const [startHours, startMinutes] = day.workStart.split(':').map(Number);
+          const [endHours, endMinutes] = day.workEnd.split(':').map(Number);
+          const startTime = startHours + startMinutes / 60;
+          const endTime = endHours + endMinutes / 60;
+          if (endTime > startTime) {
+            totalHours += endTime - startTime;
+          }
+        }
+      });
+      
+      return {
+        ...prev,
+        days: newDays,
+        totalHours: Math.round(totalHours * 10) / 10 // Round to 1 decimal
+      };
+    });
   };
 
   const updateEstimatedDays = (newEstimatedDays: number) => {
@@ -334,17 +353,17 @@ const [jobs, setJobs] = useState<Job[]>([
                   />
                 </div>
                 <div>
-                  <Label htmlFor="edit-total-hours">Gesamtstunden (bereits gearbeitet)</Label>
+                  <Label htmlFor="edit-total-hours">Gesamtstunden (automatisch berechnet)</Label>
                   <Input 
                     id="edit-total-hours" 
                     type="number"
-                    step="0.5"
-                    placeholder="z.B. 16.5"
+                    step="0.1"
                     value={editData.totalHours} 
-                    onChange={(e) => setEditData(prev => ({ ...prev, totalHours: parseFloat(e.target.value) || 0 }))} 
+                    readOnly
+                    className="bg-muted"
                   />
                   <p className="text-xs text-muted-foreground mt-1">
-                    Summe aller bisher geleisteten Arbeitsstunden für diesen Job
+                    Wird automatisch aus den täglichen Arbeitszeiten berechnet
                   </p>
                 </div>
               </div>

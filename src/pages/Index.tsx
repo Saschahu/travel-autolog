@@ -18,6 +18,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { LeavingHomeDialog } from '@/components/location/LeavingHomeDialog';
 import { LocationSettings } from '@/components/location/LocationSettings';
+import { LocationTracker } from '@/components/location/LocationTracker';
 import { useLocation } from '@/hooks/useLocation';
 import { useUserProfile } from '@/contexts/UserProfileContext';
 import { useToast } from '@/hooks/use-toast';
@@ -359,8 +360,8 @@ const [jobs, setJobs] = useState<Job[]>([
             <JobEntryForm />
           </TabsContent>
           
-          <TabsContent value="location" className="mt-6">
-            <LocationSettings />
+          <TabsContent value="location" className="p-4 mt-6">
+            <LocationTracker />
           </TabsContent>
           
           <TabsContent value="export" className="mt-6">

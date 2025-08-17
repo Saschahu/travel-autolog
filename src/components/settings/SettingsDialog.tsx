@@ -246,7 +246,7 @@ export const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
               {saving ? 'Speichern…' : 'Speichern'}
             </Button>
           </div>
-          </div>
+        </div>
         </form>
       </DialogContent>
     </Dialog>

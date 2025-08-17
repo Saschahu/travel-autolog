@@ -291,7 +291,11 @@ const [jobs, setJobs] = useState<Job[]>([
           <div className="flex-1">
             <JobFilterDropdown value={jobFilter} onValueChange={setJobFilter} />
           </div>
-          <Button size="sm" className="gap-2 ml-2">
+          <Button 
+            size="sm" 
+            className="gap-2 ml-2"
+            onClick={() => setActiveTab('new-job')}
+          >
             <Plus className="h-4 w-4" />
             Neuer Job
           </Button>

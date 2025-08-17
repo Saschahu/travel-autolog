@@ -1,7 +1,154 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Geolocation } from '@capacitor/geolocation';
-import { LocalNotifications } from '@capacitor/local-notifications';
-import { Preferences } from '@capacitor/preferences';
+
+// Check if we're running in a web browser or mobile app
+const isWeb = typeof window !== 'undefined' && !window.hasOwnProperty('Capacitor');
+
+// Fallback implementations for web
+const WebGeolocation = {
+  requestPermissions: async () => {
+    try {
+      const result = await navigator.permissions.query({name: 'geolocation'});
+      return { location: result.state === 'granted' ? 'granted' : 'denied' };
+    } catch {
+      return { location: 'granted' }; // Assume granted for compatibility
+    }
+  },
+  getCurrentPosition: (options: any) => {
+    return new Promise((resolve, reject) => {
+      if (!navigator.geolocation) {
+        reject(new Error('Geolocation is not supported by this browser.'));
+        return;
+      }
+      
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          resolve({
+            coords: {
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+              accuracy: position.coords.accuracy,
+              altitude: position.coords.altitude,
+              altitudeAccuracy: position.coords.altitudeAccuracy,
+              heading: position.coords.heading,
+              speed: position.coords.speed
+            },
+            timestamp: position.timestamp
+          });
+        },
+        (error) => reject(error),
+        {
+          enableHighAccuracy: options.enableHighAccuracy,
+          timeout: options.timeout,
+          maximumAge: options.maximumAge
+        }
+      );
+    });
+  },
+  watchPosition: (options: any, callback: any) => {
+    if (!navigator.geolocation) {
+      callback(null, new Error('Geolocation is not supported by this browser.'));
+      return 'web_watch_id';
+    }
+    
+    const watchId = navigator.geolocation.watchPosition(
+      (position) => {
+        callback({
+          coords: {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            accuracy: position.coords.accuracy,
+            altitude: position.coords.altitude,
+            altitudeAccuracy: position.coords.altitudeAccuracy,
+            heading: position.coords.heading,
+            speed: position.coords.speed
+          },
+          timestamp: position.timestamp
+        }, null);
+      },
+      (error) => callback(null, error),
+      {
+        enableHighAccuracy: options.enableHighAccuracy,
+        timeout: options.timeout,
+        maximumAge: options.maximumAge
+      }
+    );
+    
+    return Promise.resolve(`web_${watchId}`);
+  },
+  clearWatch: async (options: any) => {
+    const watchId = options.id.replace('web_', '');
+    if (navigator.geolocation && !isNaN(parseInt(watchId))) {
+      navigator.geolocation.clearWatch(parseInt(watchId));
+    }
+  }
+};
+
+const WebLocalNotifications = {
+  requestPermissions: async () => {
+    try {
+      if ('Notification' in window) {
+        const permission = await Notification.requestPermission();
+        return { display: permission };
+      }
+      return { display: 'denied' };
+    } catch {
+      return { display: 'denied' };
+    }
+  },
+  schedule: async (options: any) => {
+    if ('Notification' in window && Notification.permission === 'granted') {
+      const notification = options.notifications[0];
+      new Notification(notification.title, {
+        body: notification.body,
+        icon: '/favicon.ico',
+        tag: notification.id.toString()
+      });
+    }
+  }
+};
+
+const WebPreferences = {
+  get: async (options: any) => {
+    try {
+      const value = localStorage.getItem(options.key);
+      return { value };
+    } catch {
+      return { value: null };
+    }
+  },
+  set: async (options: any) => {
+    try {
+      localStorage.setItem(options.key, options.value);
+    } catch (error) {
+      console.error('Error setting preference:', error);
+    }
+  }
+};
+
+// Use appropriate APIs based on environment
+let Geolocation: any, LocalNotifications: any, Preferences: any;
+
+if (isWeb) {
+  Geolocation = WebGeolocation;
+  LocalNotifications = WebLocalNotifications;
+  Preferences = WebPreferences;
+} else {
+  // Import Capacitor APIs only when not in web environment
+  try {
+    const CapacitorGeolocation = require('@capacitor/geolocation').Geolocation;
+    const CapacitorLocalNotifications = require('@capacitor/local-notifications').LocalNotifications;
+    const CapacitorPreferences = require('@capacitor/preferences').Preferences;
+    
+    Geolocation = CapacitorGeolocation;
+    LocalNotifications = CapacitorLocalNotifications;
+    Preferences = CapacitorPreferences;
+  } catch {
+    // Fallback to web implementations if Capacitor imports fail
+    Geolocation = WebGeolocation;
+    LocalNotifications = WebLocalNotifications;
+    Preferences = WebPreferences;
+  }
+}
 
 interface LocationData {
   latitude: number;
@@ -21,6 +168,8 @@ export const useLocation = () => {
   const [isAtHome, setIsAtHome] = useState(true);
   const [hasLeftHome, setHasLeftHome] = useState(false);
   const [isTracking, setIsTracking] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [hasPermissions, setHasPermissions] = useState<boolean>(false);
 
   // Calculate distance between two coordinates in meters
   const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
@@ -78,14 +227,24 @@ export const useLocation = () => {
   // Request location permissions
   const requestPermissions = useCallback(async () => {
     try {
+      setError(null);
       const permissions = await Geolocation.requestPermissions();
       
       // Request notification permissions
       await LocalNotifications.requestPermissions();
       
-      return permissions.location === 'granted';
+      const granted = permissions.location === 'granted';
+      setHasPermissions(granted);
+      
+      if (!granted) {
+        setError('GPS-Berechtigung wurde verweigert. Bitte erlaube den Standortzugriff in den Browser-Einstellungen.');
+      }
+      
+      return granted;
     } catch (error) {
       console.error('Error requesting permissions:', error);
+      setError('Fehler beim Anfordern der GPS-Berechtigung: ' + error.message);
+      setHasPermissions(false);
       return false;
     }
   }, []);
@@ -93,10 +252,16 @@ export const useLocation = () => {
   // Get current position
   const getCurrentPosition = useCallback(async () => {
     try {
+      setError(null);
+      console.log('Getting current position...');
+      
       const position = await Geolocation.getCurrentPosition({
         enableHighAccuracy: true,
-        timeout: 10000
+        timeout: 15000,
+        maximumAge: 60000
       });
+      
+      console.log('Position received:', position);
       
       const locationData: LocationData = {
         latitude: position.coords.latitude,
@@ -105,9 +270,23 @@ export const useLocation = () => {
       };
       
       setCurrentLocation(locationData);
+      setHasPermissions(true);
       return locationData;
     } catch (error) {
       console.error('Error getting current position:', error);
+      let errorMessage = 'Fehler beim Abrufen der Position: ';
+      
+      if (error.code === 1) {
+        errorMessage += 'GPS-Berechtigung verweigert. Bitte erlaube den Standortzugriff.';
+      } else if (error.code === 2) {
+        errorMessage += 'Position nicht verfügbar. Überprüfe deine Internetverbindung.';
+      } else if (error.code === 3) {
+        errorMessage += 'Zeitüberschreitung. Versuche es erneut.';
+      } else {
+        errorMessage += error.message || 'Unbekannter Fehler';
+      }
+      
+      setError(errorMessage);
       return null;
     }
   }, []);
@@ -215,9 +394,21 @@ export const useLocation = () => {
     }
   }, []);
 
-  // Initialize
+  // Initialize permissions check
   useEffect(() => {
+    const checkPermissions = async () => {
+      try {
+        if (isWeb && navigator.permissions) {
+          const result = await navigator.permissions.query({name: 'geolocation'});
+          setHasPermissions(result.state === 'granted');
+        }
+      } catch (error) {
+        console.log('Could not check permissions:', error);
+      }
+    };
+    
     loadHomeLocation();
+    checkPermissions();
   }, [loadHomeLocation]);
 
   return {
@@ -226,6 +417,8 @@ export const useLocation = () => {
     isAtHome,
     hasLeftHome,
     isTracking,
+    error,
+    hasPermissions,
     setCurrentAsHome,
     saveHomeLocation,
     getCurrentPosition,

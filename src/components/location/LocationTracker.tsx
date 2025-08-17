@@ -18,16 +18,14 @@ export const LocationTracker: React.FC = () => {
     homeLocation,
     isTracking,
     isAtHome,
+    error,
+    hasPermissions,
     startTracking,
     stopTracking,
     setCurrentAsHome,
     getCurrentPosition,
     requestPermissions
   } = useLocation();
-
-  // Mock permissions and error for now - these would come from the hook in real implementation
-  const hasPermissions = true;
-  const error = null;
 
   const handleStartTracking = async () => {
     if (!hasPermissions) {

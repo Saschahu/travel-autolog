@@ -222,10 +222,25 @@ export const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
           </Card>
 
           <div className="flex gap-2 pt-4">
-            <Button variant="outline" onClick={() => onOpenChange(false)} className="flex-1">
+            <Button 
+              type="button"
+              variant="outline" 
+              onClick={() => {
+                console.log('Cancel button clicked');
+                onOpenChange(false);
+              }} 
+              className="flex-1"
+            >
               {t('cancel')}
             </Button>
-            <Button onClick={handleSave} className="flex-1">
+            <Button 
+              type="button"
+              onClick={() => {
+                console.log('Save button clicked');
+                handleSave();
+              }} 
+              className="flex-1"
+            >
               {t('save')}
             </Button>
           </div>

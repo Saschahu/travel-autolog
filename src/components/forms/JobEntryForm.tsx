@@ -23,6 +23,7 @@ interface JobData {
   departureEndDate: string;
   customerName: string;
   customerAddress: string;
+  evaticNo: string;
   manufacturer: string;
   model: string;
   serialNumber: string;
@@ -280,6 +281,16 @@ export const JobEntryForm = () => {
           />
         </div>
         <div>
+          <Label htmlFor="evatic-no" className="text-sm font-medium">Evatic No</Label>
+          <Input
+            id="evatic-no"
+            placeholder="Evatic Nummer"
+            value={jobData.evaticNo || ''}
+            onChange={(e) => updateField('evaticNo', e.target.value)}
+            className="mt-1"
+          />
+        </div>
+        <div>
           <Label htmlFor="customer-address" className="text-sm font-medium">Kundenadresse</Label>
           <div className="flex gap-2 mt-1">
             <Input
@@ -525,17 +536,27 @@ export const JobEntryForm = () => {
         
         <Button
           onClick={() => {
-            const currentIndex = steps.findIndex(s => s.id === currentStep);
-            if (currentIndex < steps.length - 1) {
-              setCurrentStep(steps[currentIndex + 1].id as any);
-            } else if (currentStep === 'travel') {
-              // Save job data
-              console.log('Saving job data:', jobData);
-              alert('Job erfolgreich gespeichert! (Funktionalität wird noch implementiert)');
+            if (currentStep === 'customer') {
+              // Save customer data
+              console.log('Saving customer data:', { 
+                customerName: jobData.customerName,
+                evaticNo: jobData.evaticNo,
+                customerAddress: jobData.customerAddress 
+              });
+              alert('Kunde erfolgreich gespeichert! (Funktionalität wird noch implementiert)');
+            } else {
+              const currentIndex = steps.findIndex(s => s.id === currentStep);
+              if (currentIndex < steps.length - 1) {
+                setCurrentStep(steps[currentIndex + 1].id as any);
+              } else if (currentStep === 'travel') {
+                // Save job data
+                console.log('Saving job data:', jobData);
+                alert('Job erfolgreich gespeichert! (Funktionalität wird noch implementiert)');
+              }
             }
           }}
         >
-          {currentStep === 'travel' ? 'Job Speichern' : 'Weiter'}
+          {currentStep === 'customer' ? 'Kunde Speichern' : currentStep === 'travel' ? 'Job Speichern' : 'Weiter'}
         </Button>
       </div>
     </div>

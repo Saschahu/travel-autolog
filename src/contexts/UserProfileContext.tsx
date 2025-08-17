@@ -49,8 +49,20 @@ export const UserProfileProvider: React.FC<UserProfileProviderProps> = ({ childr
   }, []);
 
   const loadProfile = async () => {
+    const storageKey = 'userProfile';
     try {
-      const { value } = await Preferences.get({ key: 'userProfile' });
+      let value: string | null = null;
+      try {
+        const res = await Preferences.get({ key: storageKey });
+        value = res.value ?? null;
+      } catch (e) {
+        console.warn('Capacitor Preferences.get failed, falling back to localStorage', e);
+        value = localStorage.getItem(storageKey);
+      }
+      // Extra fallback in case value is still null
+      if (!value) {
+        value = localStorage.getItem(storageKey);
+      }
       if (value) {
         const savedProfile = JSON.parse(value);
         setProfile({ ...defaultProfile, ...savedProfile });
@@ -63,13 +75,20 @@ export const UserProfileProvider: React.FC<UserProfileProviderProps> = ({ childr
   };
 
   const updateProfile = async (updates: Partial<UserProfile>) => {
+    const storageKey = 'userProfile';
     try {
       const newProfile = { ...profile, ...updates };
       setProfile(newProfile);
-      await Preferences.set({
-        key: 'userProfile',
-        value: JSON.stringify(newProfile)
-      });
+      const serialized = JSON.stringify(newProfile);
+      try {
+        await Preferences.set({
+          key: storageKey,
+          value: serialized
+        });
+      } catch (e) {
+        console.warn('Capacitor Preferences.set failed, falling back to localStorage', e);
+        localStorage.setItem(storageKey, serialized);
+      }
     } catch (error) {
       console.error('Error saving user profile:', error);
       throw error;

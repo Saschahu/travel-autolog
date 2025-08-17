@@ -254,14 +254,31 @@ export const useLocation = () => {
     try {
       setError(null);
       console.log('Getting current position...');
+      setError('GPS wird abgerufen...');
       
+      // Check if we have permissions first
+      console.log('Checking permissions...');
+      const permissions = await Geolocation.checkPermissions();
+      console.log('Current permissions:', permissions);
+      
+      if (permissions.location !== 'granted') {
+        console.log('No permissions, requesting...');
+        const granted = await requestPermissions();
+        if (!granted) {
+          setError('GPS-Berechtigung wurde verweigert.');
+          return null;
+        }
+      }
+      
+      console.log('Getting position with high accuracy...');
       const position = await Geolocation.getCurrentPosition({
         enableHighAccuracy: true,
-        timeout: 15000,
-        maximumAge: 60000
+        timeout: 30000,
+        maximumAge: 10000
       });
       
       console.log('Position received:', position);
+      setError('Position erfolgreich abgerufen!');
       
       const locationData: LocationData = {
         latitude: position.coords.latitude,

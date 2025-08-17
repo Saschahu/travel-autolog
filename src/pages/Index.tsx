@@ -520,6 +520,10 @@ const Index = () => {
         <SettingsDialog
           open={settingsOpen}
           onOpenChange={setSettingsOpen}
+          onSaved={() => {
+            setSettingsOpen(false);
+            setActiveTab('dashboard');
+          }}
         />
       </div>
     </MobileLayout>

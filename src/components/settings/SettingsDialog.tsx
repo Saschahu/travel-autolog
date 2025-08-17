@@ -15,9 +15,10 @@ import { useToast } from '@/hooks/use-toast';
 interface SettingsDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onSaved?: () => void;
 }
 
-export const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
+export const SettingsDialog = ({ open, onOpenChange, onSaved }: SettingsDialogProps) => {
   const { t, i18n } = useTranslation();
   const { profile, updateProfile } = useUserProfile();
   const { toast } = useToast();
@@ -71,6 +72,7 @@ export const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
       console.log('Calling onOpenChange(false)');
       onOpenChange(false);
       console.log('Dialog should be closed now');
+      onSaved?.();
       
     } catch (error) {
       console.error('Error in handleSave:', error);

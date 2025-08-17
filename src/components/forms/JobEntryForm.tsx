@@ -281,16 +281,6 @@ export const JobEntryForm = () => {
           />
         </div>
         <div>
-          <Label htmlFor="evatic-no" className="text-sm font-medium">Evatic No</Label>
-          <Input
-            id="evatic-no"
-            placeholder="Evatic Nummer"
-            value={jobData.evaticNo || ''}
-            onChange={(e) => updateField('evaticNo', e.target.value)}
-            className="mt-1"
-          />
-        </div>
-        <div>
           <Label htmlFor="customer-address" className="text-sm font-medium">Kundenadresse</Label>
           <div className="flex gap-2 mt-1">
             <Input
@@ -304,6 +294,16 @@ export const JobEntryForm = () => {
               <MapPin className="h-4 w-4" />
             </Button>
           </div>
+        </div>
+        <div>
+          <Label htmlFor="evatic-no" className="text-sm font-medium">Evatic No</Label>
+          <Input
+            id="evatic-no"
+            placeholder="Evatic Nummer"
+            value={jobData.evaticNo || ''}
+            onChange={(e) => updateField('evaticNo', e.target.value)}
+            className="mt-1"
+          />
         </div>
       </CardContent>
     </Card>

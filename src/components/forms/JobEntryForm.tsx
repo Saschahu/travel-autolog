@@ -10,11 +10,17 @@ import { Badge } from '@/components/ui/badge';
 
 interface JobData {
   travelStart: string;
+  travelStartDate: string;
   travelEnd: string;
+  travelEndDate: string;
   workStart: string;
+  workStartDate: string;
   workEnd: string;
+  workEndDate: string;
   departureStart: string;
+  departureStartDate: string;
   departureEnd: string;
+  departureEndDate: string;
   customerName: string;
   customerAddress: string;
   manufacturer: string;
@@ -41,6 +47,10 @@ export const JobEntryForm = () => {
     return new Date().toTimeString().slice(0, 5);
   };
 
+  const getCurrentDate = () => {
+    return new Date().toISOString().split('T')[0];
+  };
+
   const renderTimeSection = () => (
     <Card className="border-primary/20">
       <CardHeader className="pb-3">
@@ -50,124 +60,196 @@ export const JobEntryForm = () => {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="space-y-3">
+        <div className="space-y-4">
           <div>
             <Label htmlFor="travel-start" className="text-sm font-medium">Anreise Start</Label>
-            <div className="flex gap-2 mt-1">
+            <div className="grid grid-cols-2 gap-2 mt-1">
               <Input
-                id="travel-start"
-                type="time"
-                value={jobData.travelStart || ''}
-                onChange={(e) => updateField('travelStart', e.target.value)}
-                className="flex-1"
+                id="travel-start-date"
+                type="date"
+                placeholder="Datum"
+                value={jobData.travelStartDate || ''}
+                onChange={(e) => updateField('travelStartDate', e.target.value)}
               />
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => updateField('travelStart', getCurrentTime())}
-              >
-                Jetzt
-              </Button>
+              <div className="flex gap-2">
+                <Input
+                  id="travel-start"
+                  type="time"
+                  value={jobData.travelStart || ''}
+                  onChange={(e) => updateField('travelStart', e.target.value)}
+                  className="flex-1"
+                />
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => {
+                    updateField('travelStart', getCurrentTime());
+                    updateField('travelStartDate', getCurrentDate());
+                  }}
+                >
+                  Jetzt
+                </Button>
+              </div>
             </div>
           </div>
           
           <div>
             <Label htmlFor="travel-end" className="text-sm font-medium">Anreise Ende</Label>
-            <div className="flex gap-2 mt-1">
+            <div className="grid grid-cols-2 gap-2 mt-1">
               <Input
-                id="travel-end"
-                type="time"
-                value={jobData.travelEnd || ''}
-                onChange={(e) => updateField('travelEnd', e.target.value)}
-                className="flex-1"
+                id="travel-end-date"
+                type="date"
+                placeholder="Datum"
+                value={jobData.travelEndDate || ''}
+                onChange={(e) => updateField('travelEndDate', e.target.value)}
               />
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => updateField('travelEnd', getCurrentTime())}
-              >
-                Jetzt
-              </Button>
+              <div className="flex gap-2">
+                <Input
+                  id="travel-end"
+                  type="time"
+                  value={jobData.travelEnd || ''}
+                  onChange={(e) => updateField('travelEnd', e.target.value)}
+                  className="flex-1"
+                />
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => {
+                    updateField('travelEnd', getCurrentTime());
+                    updateField('travelEndDate', getCurrentDate());
+                  }}
+                >
+                  Jetzt
+                </Button>
+              </div>
             </div>
           </div>
           
           <div>
             <Label htmlFor="work-start" className="text-sm font-medium">Arbeit Start</Label>
-            <div className="flex gap-2 mt-1">
+            <div className="grid grid-cols-2 gap-2 mt-1">
               <Input
-                id="work-start"
-                type="time"
-                value={jobData.workStart || ''}
-                onChange={(e) => updateField('workStart', e.target.value)}
-                className="flex-1"
+                id="work-start-date"
+                type="date"
+                placeholder="Datum"
+                value={jobData.workStartDate || ''}
+                onChange={(e) => updateField('workStartDate', e.target.value)}
               />
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => updateField('workStart', getCurrentTime())}
-              >
-                Jetzt
-              </Button>
+              <div className="flex gap-2">
+                <Input
+                  id="work-start"
+                  type="time"
+                  value={jobData.workStart || ''}
+                  onChange={(e) => updateField('workStart', e.target.value)}
+                  className="flex-1"
+                />
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => {
+                    updateField('workStart', getCurrentTime());
+                    updateField('workStartDate', getCurrentDate());
+                  }}
+                >
+                  Jetzt
+                </Button>
+              </div>
             </div>
           </div>
           
           <div>
             <Label htmlFor="work-end" className="text-sm font-medium">Arbeit Ende</Label>
-            <div className="flex gap-2 mt-1">
+            <div className="grid grid-cols-2 gap-2 mt-1">
               <Input
-                id="work-end"
-                type="time"
-                value={jobData.workEnd || ''}
-                onChange={(e) => updateField('workEnd', e.target.value)}
-                className="flex-1"
+                id="work-end-date"
+                type="date"
+                placeholder="Datum"
+                value={jobData.workEndDate || ''}
+                onChange={(e) => updateField('workEndDate', e.target.value)}
               />
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => updateField('workEnd', getCurrentTime())}
-              >
-                Jetzt
-              </Button>
+              <div className="flex gap-2">
+                <Input
+                  id="work-end"
+                  type="time"
+                  value={jobData.workEnd || ''}
+                  onChange={(e) => updateField('workEnd', e.target.value)}
+                  className="flex-1"
+                />
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => {
+                    updateField('workEnd', getCurrentTime());
+                    updateField('workEndDate', getCurrentDate());
+                  }}
+                >
+                  Jetzt
+                </Button>
+              </div>
             </div>
           </div>
           
           <div>
             <Label htmlFor="return-start" className="text-sm font-medium">Heimreise Start</Label>
-            <div className="flex gap-2 mt-1">
+            <div className="grid grid-cols-2 gap-2 mt-1">
               <Input
-                id="return-start"
-                type="time"
-                value={jobData.departureStart || ''}
-                onChange={(e) => updateField('departureStart', e.target.value)}
-                className="flex-1"
+                id="return-start-date"
+                type="date"
+                placeholder="Datum"
+                value={jobData.departureStartDate || ''}
+                onChange={(e) => updateField('departureStartDate', e.target.value)}
               />
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => updateField('departureStart', getCurrentTime())}
-              >
-                Jetzt
-              </Button>
+              <div className="flex gap-2">
+                <Input
+                  id="return-start"
+                  type="time"
+                  value={jobData.departureStart || ''}
+                  onChange={(e) => updateField('departureStart', e.target.value)}
+                  className="flex-1"
+                />
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => {
+                    updateField('departureStart', getCurrentTime());
+                    updateField('departureStartDate', getCurrentDate());
+                  }}
+                >
+                  Jetzt
+                </Button>
+              </div>
             </div>
           </div>
           
           <div>
             <Label htmlFor="return-end" className="text-sm font-medium">Heimreise Ende</Label>
-            <div className="flex gap-2 mt-1">
+            <div className="grid grid-cols-2 gap-2 mt-1">
               <Input
-                id="return-end"
-                type="time"
-                value={jobData.departureEnd || ''}
-                onChange={(e) => updateField('departureEnd', e.target.value)}
-                className="flex-1"
+                id="return-end-date"
+                type="date"
+                placeholder="Datum"
+                value={jobData.departureEndDate || ''}
+                onChange={(e) => updateField('departureEndDate', e.target.value)}
               />
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => updateField('departureEnd', getCurrentTime())}
-              >
-                Jetzt
-              </Button>
+              <div className="flex gap-2">
+                <Input
+                  id="return-end"
+                  type="time"
+                  value={jobData.departureEnd || ''}
+                  onChange={(e) => updateField('departureEnd', e.target.value)}
+                  className="flex-1"
+                />
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => {
+                    updateField('departureEnd', getCurrentTime());
+                    updateField('departureEndDate', getCurrentDate());
+                  }}
+                >
+                  Jetzt
+                </Button>
+              </div>
             </div>
           </div>
         </div>

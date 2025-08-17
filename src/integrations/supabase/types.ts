@@ -14,7 +14,111 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      jobs: {
+        Row: {
+          created_at: string
+          current_day: number | null
+          customer_address: string | null
+          customer_name: string
+          departure_end_date: string | null
+          departure_end_time: string | null
+          departure_start_date: string | null
+          departure_start_time: string | null
+          estimated_days: number | null
+          evatic_no: string | null
+          hotel_address: string | null
+          hotel_name: string | null
+          hotel_nights: number | null
+          id: string
+          kilometers_outbound: number | null
+          kilometers_return: number | null
+          manufacturer: string | null
+          model: string | null
+          serial_number: string | null
+          status: string
+          toll_amount: number | null
+          travel_end_date: string | null
+          travel_end_time: string | null
+          travel_start_date: string | null
+          travel_start_time: string | null
+          updated_at: string
+          user_id: string
+          work_end_date: string | null
+          work_end_time: string | null
+          work_performed: string | null
+          work_start_date: string | null
+          work_start_time: string | null
+        }
+        Insert: {
+          created_at?: string
+          current_day?: number | null
+          customer_address?: string | null
+          customer_name: string
+          departure_end_date?: string | null
+          departure_end_time?: string | null
+          departure_start_date?: string | null
+          departure_start_time?: string | null
+          estimated_days?: number | null
+          evatic_no?: string | null
+          hotel_address?: string | null
+          hotel_name?: string | null
+          hotel_nights?: number | null
+          id?: string
+          kilometers_outbound?: number | null
+          kilometers_return?: number | null
+          manufacturer?: string | null
+          model?: string | null
+          serial_number?: string | null
+          status?: string
+          toll_amount?: number | null
+          travel_end_date?: string | null
+          travel_end_time?: string | null
+          travel_start_date?: string | null
+          travel_start_time?: string | null
+          updated_at?: string
+          user_id: string
+          work_end_date?: string | null
+          work_end_time?: string | null
+          work_performed?: string | null
+          work_start_date?: string | null
+          work_start_time?: string | null
+        }
+        Update: {
+          created_at?: string
+          current_day?: number | null
+          customer_address?: string | null
+          customer_name?: string
+          departure_end_date?: string | null
+          departure_end_time?: string | null
+          departure_start_date?: string | null
+          departure_start_time?: string | null
+          estimated_days?: number | null
+          evatic_no?: string | null
+          hotel_address?: string | null
+          hotel_name?: string | null
+          hotel_nights?: number | null
+          id?: string
+          kilometers_outbound?: number | null
+          kilometers_return?: number | null
+          manufacturer?: string | null
+          model?: string | null
+          serial_number?: string | null
+          status?: string
+          toll_amount?: number | null
+          travel_end_date?: string | null
+          travel_end_time?: string | null
+          travel_start_date?: string | null
+          travel_start_time?: string | null
+          updated_at?: string
+          user_id?: string
+          work_end_date?: string | null
+          work_end_time?: string | null
+          work_performed?: string | null
+          work_start_date?: string | null
+          work_start_time?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

@@ -22,6 +22,7 @@ import { LocationTracker } from '@/components/location/LocationTracker';
 import { useLocation } from '@/hooks/useLocation';
 import { useUserProfile } from '@/contexts/UserProfileContext';
 import { useToast } from '@/hooks/use-toast';
+import { useJobs, type Job } from '@/hooks/useJobs';
 import React from 'react';
 
 type DayData = {
@@ -34,19 +35,6 @@ type DayData = {
   departureEnd?: string;
 };
 
-type Job = {
-  id: string;
-  customerName: string;
-  status: 'open' | 'active' | 'completed' | 'completed-sent' | 'pending';
-  startDate: Date;
-  estimatedDays?: number;
-  currentDay?: number;
-  workStartTime?: string; // Legacy for display
-  workEndTime?: string; // Legacy for display
-  totalHours?: number | string;
-  days?: DayData[];
-};
-
 const Index = () => {
   const { t, i18n } = useTranslation();
   const { profile } = useUserProfile();
@@ -54,58 +42,7 @@ const Index = () => {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [jobFilter, setJobFilter] = useState<JobFilter>('open');
   const { sendJobReport } = useEmailService();
-const [jobs, setJobs] = useState<Job[]>([
-    { 
-      id: 'job-1', 
-      customerName: 'Siemens AG', 
-      status: 'open', 
-      startDate: new Date('2025-01-15'), 
-      estimatedDays: 3, 
-      currentDay: 0,
-      totalHours: '0h 0m',
-      days: []
-    },
-    { 
-      id: 'job-2', 
-      customerName: 'ABB Industrial', 
-      status: 'active', 
-      startDate: new Date('2025-01-10'), 
-      estimatedDays: 2, 
-      currentDay: 2,
-      workStartTime: '09:00',
-      workEndTime: '17:30',
-      totalHours: '17h 0m',
-      days: [
-        { day: 1, travelStart: '08:00', travelEnd: '09:00', workStart: '09:00', workEnd: '17:30', departureStart: '17:30', departureEnd: '18:30' },
-        { day: 2, workStart: '08:30', workEnd: '16:00', departureStart: '16:00', departureEnd: '17:00' },
-      ]
-    },
-    { 
-      id: 'job-3', 
-      customerName: 'Hydro Norge', 
-      status: 'open', 
-      startDate: new Date('2025-01-20'), 
-      estimatedDays: 1, 
-      currentDay: 0,
-      totalHours: '0h 0m',
-      days: []
-    },
-    { 
-      id: 'job-4', 
-      customerName: 'Schneider Electric', 
-      status: 'completed-sent', 
-      startDate: new Date('2025-01-22'), 
-      estimatedDays: 2, 
-      currentDay: 2,
-      workStartTime: '08:30',
-      workEndTime: '17:00',
-      totalHours: '17h 0m',
-      days: [
-        { day: 1, travelStart: '07:30', travelEnd: '08:30', workStart: '08:30', workEnd: '17:00', departureStart: '17:00', departureEnd: '18:00' },
-        { day: 2, workStart: '08:00', workEnd: '16:30', departureStart: '16:30', departureEnd: '17:30' },
-      ]
-    },
-  ]);
+  const { jobs, isLoading: isLoadingJobs, fetchJobs, setJobs } = useJobs();
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
@@ -275,6 +212,13 @@ const [jobs, setJobs] = useState<Job[]>([
     }
   }, [profile.preferredLanguage, i18n]);
 
+  // Fetch jobs on component mount and when activeTab changes to dashboard
+  useEffect(() => {
+    if (activeTab === 'dashboard') {
+      fetchJobs();
+    }
+  }, [activeTab, fetchJobs]);
+
   // Monitor leaving home status
   React.useEffect(() => {
     if (hasLeftHome && !leavingHomeOpen) {
@@ -361,7 +305,7 @@ const [jobs, setJobs] = useState<Job[]>([
           </TabsContent>
           
           <TabsContent value="new-job" className="mt-6">
-            <JobEntryForm />
+            <JobEntryForm onJobSaved={() => fetchJobs()} />
           </TabsContent>
           
           <TabsContent value="location" className="p-4 mt-6">

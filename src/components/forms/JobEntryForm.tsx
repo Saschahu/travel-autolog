@@ -7,6 +7,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
 import { Clock, MapPin, User, Wrench, Hotel, Car } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 interface JobData {
   travelStart: string;
@@ -36,9 +38,15 @@ interface JobData {
   tollAmount: number;
 }
 
-export const JobEntryForm = () => {
+interface JobEntryFormProps {
+  onJobSaved?: () => void;
+}
+
+export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
   const [jobData, setJobData] = useState<Partial<JobData>>({});
   const [currentStep, setCurrentStep] = useState<'customer' | 'machine' | 'times' | 'travel'>('customer');
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
 
   const updateField = (field: keyof JobData, value: string | number) => {
     setJobData(prev => ({ ...prev, [field]: value }));
@@ -50,6 +58,76 @@ export const JobEntryForm = () => {
 
   const getCurrentDate = () => {
     return new Date().toISOString().split('T')[0];
+  };
+
+  const saveJobData = async () => {
+    setIsLoading(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        throw new Error('Benutzer nicht angemeldet');
+      }
+
+      const { data, error } = await supabase
+        .from('jobs')
+        .insert({
+          user_id: user.id,
+          customer_name: jobData.customerName || '',
+          customer_address: jobData.customerAddress || null,
+          evatic_no: jobData.evaticNo || null,
+          manufacturer: jobData.manufacturer || null,
+          model: jobData.model || null,
+          serial_number: jobData.serialNumber || null,
+          work_performed: jobData.workPerformed || null,
+          hotel_name: jobData.hotelName || null,
+          hotel_address: jobData.hotelAddress || null,
+          hotel_nights: jobData.hotelNights || 0,
+          kilometers_outbound: jobData.kilometersOutbound || 0,
+          kilometers_return: jobData.kilometersReturn || 0,
+          toll_amount: jobData.tollAmount || 0,
+          travel_start_time: jobData.travelStart || null,
+          travel_start_date: jobData.travelStartDate || null,
+          travel_end_time: jobData.travelEnd || null,
+          travel_end_date: jobData.travelEndDate || null,
+          work_start_time: jobData.workStart || null,
+          work_start_date: jobData.workStartDate || null,
+          work_end_time: jobData.workEnd || null,
+          work_end_date: jobData.workEndDate || null,
+          departure_start_time: jobData.departureStart || null,
+          departure_start_date: jobData.departureStartDate || null,
+          departure_end_time: jobData.departureEnd || null,
+          departure_end_date: jobData.departureEndDate || null,
+          status: 'open'
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      toast({
+        title: 'Erfolgreich gespeichert',
+        description: currentStep === 'customer' 
+          ? 'Kundendaten wurden erfolgreich gespeichert' 
+          : 'Job wurde erfolgreich gespeichert'
+      });
+
+      // Reset form
+      setJobData({});
+      setCurrentStep('customer');
+      
+      // Notify parent component
+      onJobSaved?.();
+      
+    } catch (error) {
+      console.error('Fehler beim Speichern:', error);
+      toast({
+        title: 'Fehler',
+        description: 'Fehler beim Speichern der Daten',
+        variant: 'destructive'
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const renderTimeSection = () => (
@@ -538,25 +616,20 @@ export const JobEntryForm = () => {
           onClick={() => {
             if (currentStep === 'customer') {
               // Save customer data
-              console.log('Saving customer data:', { 
-                customerName: jobData.customerName,
-                evaticNo: jobData.evaticNo,
-                customerAddress: jobData.customerAddress 
-              });
-              alert('Kunde erfolgreich gespeichert! (Funktionalität wird noch implementiert)');
+              saveJobData();
             } else {
               const currentIndex = steps.findIndex(s => s.id === currentStep);
               if (currentIndex < steps.length - 1) {
                 setCurrentStep(steps[currentIndex + 1].id as any);
               } else if (currentStep === 'travel') {
-                // Save job data
-                console.log('Saving job data:', jobData);
-                alert('Job erfolgreich gespeichert! (Funktionalität wird noch implementiert)');
+                // Save complete job data
+                saveJobData();
               }
             }
           }}
+          disabled={isLoading || (currentStep === 'customer' && !jobData.customerName)}
         >
-          {currentStep === 'customer' ? 'Kunde Speichern' : currentStep === 'travel' ? 'Job Speichern' : 'Weiter'}
+          {isLoading ? 'Speichern...' : currentStep === 'customer' ? 'Kunde Speichern' : currentStep === 'travel' ? 'Job Speichern' : 'Weiter'}
         </Button>
       </div>
     </div>

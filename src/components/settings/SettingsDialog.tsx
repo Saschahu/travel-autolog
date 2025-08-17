@@ -45,23 +45,27 @@ export const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
 
   const handleSave = async () => {
     try {
+      console.log('Saving profile...', formData);
       await updateProfile(formData);
+      console.log('Profile saved successfully');
       
       // Change app language if language was updated
       if (formData.preferredLanguage !== profile.preferredLanguage) {
+        console.log('Changing language to:', formData.preferredLanguage);
         i18n.changeLanguage(formData.preferredLanguage);
       }
       
       toast({
-        title: t('success'),
-        description: 'Profile updated successfully',
+        title: 'Erfolg',
+        description: 'Profil erfolgreich gespeichert',
       });
       
       onOpenChange(false);
     } catch (error) {
+      console.error('Error saving profile:', error);
       toast({
-        title: t('error'),
-        description: 'Failed to update profile',
+        title: 'Fehler',
+        description: 'Profil konnte nicht gespeichert werden',
         variant: 'destructive',
       });
     }

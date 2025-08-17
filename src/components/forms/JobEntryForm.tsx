@@ -46,6 +46,8 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
   const [jobData, setJobData] = useState<Partial<JobData>>({});
   const [currentStep, setCurrentStep] = useState<'customer' | 'machine' | 'times' | 'travel'>('customer');
   const [isLoading, setIsLoading] = useState(false);
+  const [currentJobId, setCurrentJobId] = useState<string | null>(null);
+  const [isEditingJob, setIsEditingJob] = useState(false);
   const { toast } = useToast();
 
   const updateField = (field: keyof JobData, value: string | number) => {
@@ -60,10 +62,10 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
     return new Date().toISOString().split('T')[0];
   };
 
-  const saveJobData = async () => {
+  const saveJobData = async (isPartialSave = false) => {
     setIsLoading(true);
     try {
-      console.log('Starting saveJobData with data:', jobData);
+      console.log('Starting saveJobData with data:', jobData, 'currentJobId:', currentJobId);
       
       const { data: { user } } = await supabase.auth.getUser();
       console.log('User data:', user);
@@ -72,56 +74,83 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
         throw new Error('Benutzer nicht angemeldet - bitte melde dich an');
       }
 
-      const { data, error } = await supabase
-        .from('jobs')
-        .insert({
-          user_id: user.id,
-          customer_name: jobData.customerName || '',
-          customer_address: jobData.customerAddress || null,
-          evatic_no: jobData.evaticNo || null,
-          manufacturer: jobData.manufacturer || null,
-          model: jobData.model || null,
-          serial_number: jobData.serialNumber || null,
-          work_performed: jobData.workPerformed || null,
-          hotel_name: jobData.hotelName || null,
-          hotel_address: jobData.hotelAddress || null,
-          hotel_nights: jobData.hotelNights || 0,
-          kilometers_outbound: jobData.kilometersOutbound || 0,
-          kilometers_return: jobData.kilometersReturn || 0,
-          toll_amount: jobData.tollAmount || 0,
-          travel_start_time: jobData.travelStart || null,
-          travel_start_date: jobData.travelStartDate || null,
-          travel_end_time: jobData.travelEnd || null,
-          travel_end_date: jobData.travelEndDate || null,
-          work_start_time: jobData.workStart || null,
-          work_start_date: jobData.workStartDate || null,
-          work_end_time: jobData.workEnd || null,
-          work_end_date: jobData.workEndDate || null,
-          departure_start_time: jobData.departureStart || null,
-          departure_start_date: jobData.departureStartDate || null,
-          departure_end_time: jobData.departureEnd || null,
-          departure_end_date: jobData.departureEndDate || null,
-          status: 'open'
-        })
-        .select()
-        .single();
+      const jobPayload = {
+        user_id: user.id,
+        customer_name: jobData.customerName || '',
+        customer_address: jobData.customerAddress || null,
+        evatic_no: jobData.evaticNo || null,
+        manufacturer: jobData.manufacturer || null,
+        model: jobData.model || null,
+        serial_number: jobData.serialNumber || null,
+        work_performed: jobData.workPerformed || null,
+        hotel_name: jobData.hotelName || null,
+        hotel_address: jobData.hotelAddress || null,
+        hotel_nights: jobData.hotelNights || 0,
+        kilometers_outbound: jobData.kilometersOutbound || 0,
+        kilometers_return: jobData.kilometersReturn || 0,
+        toll_amount: jobData.tollAmount || 0,
+        travel_start_time: jobData.travelStart || null,
+        travel_start_date: jobData.travelStartDate || null,
+        travel_end_time: jobData.travelEnd || null,
+        travel_end_date: jobData.travelEndDate || null,
+        work_start_time: jobData.workStart || null,
+        work_start_date: jobData.workStartDate || null,
+        work_end_time: jobData.workEnd || null,
+        work_end_date: jobData.workEndDate || null,
+        departure_start_time: jobData.departureStart || null,
+        departure_start_date: jobData.departureStartDate || null,
+        departure_end_time: jobData.departureEnd || null,
+        departure_end_date: jobData.departureEndDate || null,
+        status: isPartialSave ? 'open' : 'completed'
+      };
 
-      console.log('Insert result:', { data, error });
+      let data, error;
+
+      if (currentJobId && isEditingJob) {
+        // Update existing job
+        const result = await supabase
+          .from('jobs')
+          .update(jobPayload)
+          .eq('id', currentJobId)
+          .select()
+          .single();
+        data = result.data;
+        error = result.error;
+      } else {
+        // Create new job
+        const result = await supabase
+          .from('jobs')
+          .insert(jobPayload)
+          .select()
+          .single();
+        data = result.data;
+        error = result.error;
+        
+        if (!error && data) {
+          setCurrentJobId(data.id);
+          setIsEditingJob(true);
+        }
+      }
+
+      console.log('Save result:', { data, error });
       if (error) throw error;
 
+      const actionText = isPartialSave ? 'gespeichert' : 'abgeschlossen';
       toast({
-        title: 'Erfolgreich gespeichert',
-        description: currentStep === 'customer' 
-          ? 'Kundendaten wurden erfolgreich gespeichert' 
-          : 'Job wurde erfolgreich gespeichert'
+        title: `Erfolgreich ${actionText}`,
+        description: isPartialSave 
+          ? `Job-Daten wurden gespeichert. Du kannst weitere Daten hinzufügen.`
+          : `Job wurde vollständig ${actionText}!`
       });
 
-      // Reset form
-      setJobData({});
-      setCurrentStep('customer');
-      
-      // Notify parent component
-      onJobSaved?.();
+      if (!isPartialSave) {
+        // Reset form only when job is completed
+        setJobData({});
+        setCurrentStep('customer');
+        setCurrentJobId(null);
+        setIsEditingJob(false);
+        onJobSaved?.();
+      }
       
     } catch (error) {
       console.error('Detailed error beim Speichern:', error);
@@ -135,6 +164,17 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const startNewJob = () => {
+    setJobData({});
+    setCurrentStep('customer');
+    setCurrentJobId(null);
+    setIsEditingJob(false);
+    toast({
+      title: 'Neuer Job',
+      description: 'Neues Job-Formular gestartet'
+    });
   };
 
   const renderTimeSection = () => (
@@ -604,40 +644,79 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
       {currentStep === 'times' && renderTimeSection()}
       {currentStep === 'travel' && renderTravelSection()}
 
+      {/* Status Indicator */}
+      {isEditingJob && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-center">
+          <p className="text-sm text-blue-700">
+            📝 Job wird bearbeitet • ID: {currentJobId?.slice(0, 8)}... 
+            {currentStep !== 'customer' && <span className="ml-2">Du kannst weitere Daten hinzufügen</span>}
+          </p>
+        </div>
+      )}
+
       {/* Navigation Buttons */}
-      <div className="flex justify-between pt-4">
-        <Button
-          variant="outline"
-          onClick={() => {
-            const currentIndex = steps.findIndex(s => s.id === currentStep);
-            if (currentIndex > 0) {
-              setCurrentStep(steps[currentIndex - 1].id as any);
-            }
-          }}
-          disabled={currentStep === 'customer'}
-        >
-          Zurück
-        </Button>
-        
-        <Button
-          onClick={() => {
-            if (currentStep === 'customer') {
-              // Save customer data
-              saveJobData();
-            } else {
+      <div className="flex justify-between pt-4 gap-2">
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            onClick={() => {
               const currentIndex = steps.findIndex(s => s.id === currentStep);
-              if (currentIndex < steps.length - 1) {
-                setCurrentStep(steps[currentIndex + 1].id as any);
-              } else if (currentStep === 'travel') {
-                // Save complete job data
-                saveJobData();
+              if (currentIndex > 0) {
+                setCurrentStep(steps[currentIndex - 1].id as any);
               }
-            }
-          }}
-          disabled={isLoading || (currentStep === 'customer' && !jobData.customerName)}
-        >
-          {isLoading ? 'Speichern...' : currentStep === 'customer' ? 'Kunde Speichern' : currentStep === 'travel' ? 'Job Speichern' : 'Weiter'}
-        </Button>
+            }}
+            disabled={currentStep === 'customer'}
+          >
+            Zurück
+          </Button>
+          
+          {isEditingJob && (
+            <Button
+              variant="secondary"
+              onClick={startNewJob}
+              disabled={isLoading}
+            >
+              Neuer Job
+            </Button>
+          )}
+        </div>
+        
+        <div className="flex gap-2">
+          {/* Save partial data button (only if editing and not on customer step) */}
+          {isEditingJob && currentStep !== 'customer' && (
+            <Button
+              variant="outline"
+              onClick={() => saveJobData(true)}
+              disabled={isLoading}
+            >
+              {isLoading ? 'Speichern...' : 'Speichern'}
+            </Button>
+          )}
+          
+          {/* Main action button */}
+          <Button
+            onClick={() => {
+              if (currentStep === 'customer') {
+                // Save customer data (partial save)
+                saveJobData(true);
+              } else {
+                const currentIndex = steps.findIndex(s => s.id === currentStep);
+                if (currentIndex < steps.length - 1) {
+                  setCurrentStep(steps[currentIndex + 1].id as any);
+                } else if (currentStep === 'travel') {
+                  // Complete the job
+                  saveJobData(false);
+                }
+              }
+            }}
+            disabled={isLoading || (currentStep === 'customer' && !jobData.customerName)}
+          >
+            {isLoading ? 'Speichern...' : 
+             currentStep === 'customer' ? 'Kunde Speichern' : 
+             currentStep === 'travel' ? 'Job Abschließen' : 
+             'Weiter'}
+          </Button>
+        </div>
       </div>
     </div>
   );

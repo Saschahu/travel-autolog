@@ -31,7 +31,7 @@ interface JobData {
 
 export const JobEntryForm = () => {
   const [jobData, setJobData] = useState<Partial<JobData>>({});
-  const [currentStep, setCurrentStep] = useState<'times' | 'customer' | 'machine' | 'travel'>('times');
+  const [currentStep, setCurrentStep] = useState<'customer' | 'machine' | 'times' | 'travel'>('customer');
 
   const updateField = (field: keyof JobData, value: string | number) => {
     setJobData(prev => ({ ...prev, [field]: value }));
@@ -388,9 +388,9 @@ export const JobEntryForm = () => {
   );
 
   const steps = [
-    { id: 'times', label: 'Zeiten', icon: Clock },
     { id: 'customer', label: 'Kunde', icon: User },
     { id: 'machine', label: 'Maschine', icon: Wrench },
+    { id: 'times', label: 'Zeiten', icon: Clock },
     { id: 'travel', label: 'Reise', icon: Car },
   ];
 
@@ -421,9 +421,9 @@ export const JobEntryForm = () => {
       <Separator />
 
       {/* Current Step Content */}
-      {currentStep === 'times' && renderTimeSection()}
       {currentStep === 'customer' && renderCustomerSection()}
       {currentStep === 'machine' && renderMachineSection()}
+      {currentStep === 'times' && renderTimeSection()}
       {currentStep === 'travel' && renderTravelSection()}
 
       {/* Navigation Buttons */}
@@ -436,7 +436,7 @@ export const JobEntryForm = () => {
               setCurrentStep(steps[currentIndex - 1].id as any);
             }
           }}
-          disabled={currentStep === 'times'}
+          disabled={currentStep === 'customer'}
         >
           Zurück
         </Button>

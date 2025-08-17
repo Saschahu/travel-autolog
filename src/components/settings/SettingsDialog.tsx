@@ -241,9 +241,9 @@ export const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
               Abbrechen
             </Button>
             <Button 
-              type="submit"
-              onClick={(e) => { e.preventDefault(); if (saving) return; console.log('Save button onClick'); handleSave(); }}
-              className="flex-1 h-12 text-base font-medium touch-manipulation"
+              type="button"
+              onClick={() => { if (saving) return; console.log('Save button onClick'); handleSave(); }}
+              className="flex-1 h-12 text-base font-medium touch-manipulation pointer-events-auto"
             >
               {saving ? 'Speichern…' : 'Speichern'}
             </Button>

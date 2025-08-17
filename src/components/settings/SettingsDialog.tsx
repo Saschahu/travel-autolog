@@ -45,9 +45,11 @@ export const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
   }, [profile]);
 
   const handleSave = async () => {
+    if (saving) return;
     setSaving(true);
     try {
       console.log('Saving profile...', formData);
+      toast({ title: 'Speichern', description: 'Wird gespeichert…' });
       await updateProfile(formData);
       console.log('Profile saved successfully');
       
@@ -240,7 +242,7 @@ export const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
             </Button>
             <Button 
               type="submit"
-              disabled={saving}
+              onClick={(e) => { e.preventDefault(); if (saving) return; console.log('Save button onClick'); handleSave(); }}
               className="flex-1 h-12 text-base font-medium touch-manipulation"
             >
               {saving ? 'Speichern…' : 'Speichern'}

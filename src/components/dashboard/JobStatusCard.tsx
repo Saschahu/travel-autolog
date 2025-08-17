@@ -1,11 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Clock, MapPin, CheckCircle, AlertCircle } from 'lucide-react';
+import { Clock, MapPin, CheckCircle, AlertCircle, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
 
 interface JobStatusCardProps {
+  id: string;
   customerName: string;
   status: 'open' | 'active' | 'completed' | 'completed-sent' | 'pending';
   startDate: Date;
@@ -17,9 +18,11 @@ interface JobStatusCardProps {
   onDetails?: () => void;
   onEdit?: () => void;
   onComplete?: () => void;
+  onDelete?: (id: string) => void;
 }
 
 export const JobStatusCard = ({ 
+  id,
   customerName, 
   status, 
   startDate, 
@@ -31,6 +34,7 @@ export const JobStatusCard = ({
   onDetails,
   onEdit,
   onComplete,
+  onDelete,
 }: JobStatusCardProps) => {
   const getStatusIcon = () => {
     switch (status) {
@@ -152,6 +156,16 @@ export const JobStatusCard = ({
           {status === 'completed' && onComplete && (
             <Button size="sm" variant="secondary" onClick={onComplete}>
               Report senden
+            </Button>
+          )}
+          {onDelete && (
+            <Button 
+              size="sm" 
+              variant="destructive" 
+              onClick={() => onDelete(id)}
+              className="px-2"
+            >
+              <Trash2 className="h-4 w-4" />
             </Button>
           )}
         </div>

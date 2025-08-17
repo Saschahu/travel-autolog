@@ -23,6 +23,7 @@ import { useLocation } from '@/hooks/useLocation';
 import { useUserProfile } from '@/contexts/UserProfileContext';
 import { useToast } from '@/hooks/use-toast';
 import { useJobs, type Job } from '@/hooks/useJobs';
+import { supabase } from '@/integrations/supabase/client';
 import React from 'react';
 
 type DayData = {
@@ -185,6 +186,36 @@ const Index = () => {
     }
   };
 
+  const handleDelete = async (jobId: string) => {
+    const confirmDelete = window.confirm('Möchtest du diesen Job wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.');
+    
+    if (!confirmDelete) return;
+    
+    try {
+      const { error } = await supabase
+        .from('jobs')
+        .delete()
+        .eq('id', jobId);
+
+      if (error) throw error;
+
+      // Remove from local state
+      setJobs(prev => prev.filter(j => j.id !== jobId));
+      
+      toast({
+        title: 'Job gelöscht',
+        description: 'Der Job wurde erfolgreich gelöscht'
+      });
+    } catch (error) {
+      console.error('Error deleting job:', error);
+      toast({
+        title: 'Fehler',
+        description: 'Fehler beim Löschen des Jobs',
+        variant: 'destructive'
+      });
+    }
+  };
+
   const filteredJobs = jobs.filter(job => {
     if (jobFilter === 'all') return true;
     return job.status === jobFilter;
@@ -252,6 +283,7 @@ const Index = () => {
             onDetails={() => handleDetails(job)}
             onEdit={() => handleEdit(job)}
             onComplete={() => handleComplete(job)}
+            onDelete={handleDelete}
           />
         ))}
       </div>

@@ -63,7 +63,10 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
   const saveJobData = async () => {
     setIsLoading(true);
     try {
+      console.log('Starting saveJobData with data:', jobData);
+      
       const { data: { user } } = await supabase.auth.getUser();
+      console.log('User data:', user);
       if (!user) {
         throw new Error('Benutzer nicht angemeldet');
       }
@@ -102,6 +105,7 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
         .select()
         .single();
 
+      console.log('Insert result:', { data, error });
       if (error) throw error;
 
       toast({
@@ -119,7 +123,9 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
       onJobSaved?.();
       
     } catch (error) {
-      console.error('Fehler beim Speichern:', error);
+      console.error('Detailed error beim Speichern:', error);
+      console.error('Error message:', error.message);
+      console.error('Error details:', JSON.stringify(error, null, 2));
       toast({
         title: 'Fehler',
         description: 'Fehler beim Speichern der Daten',

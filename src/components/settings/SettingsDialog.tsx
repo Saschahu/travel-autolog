@@ -232,6 +232,8 @@ export const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
             <Button 
               type="button"
               onClick={() => { if (saving) return; console.log('Save button onClick'); handleSave(); }}
+              onPointerUp={() => { if (saving) return; console.log('Save button pointerUp'); handleSave(); }}
+              onTouchStart={() => { if (saving) return; console.log('Save button touchStart'); handleSave(); }}
               className="w-full h-12 text-base font-medium touch-manipulation pointer-events-auto"
             >
               {saving ? 'Speichern…' : 'Speichern'}

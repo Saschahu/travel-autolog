@@ -231,19 +231,8 @@ export const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
           <div className="flex gap-2 pt-4 sticky bottom-0 bg-background border-t p-4 -m-4 mt-0">
             <Button 
               type="button"
-              variant="outline" 
-              onClick={() => {
-                console.log('Dashboard button clicked');
-                onOpenChange(false);
-              }} 
-              className="flex-1 h-12 text-base font-medium touch-manipulation"
-            >
-              Dashboard
-            </Button>
-            <Button 
-              type="button"
               onClick={() => { if (saving) return; console.log('Save button onClick'); handleSave(); }}
-              className="flex-1 h-12 text-base font-medium touch-manipulation pointer-events-auto"
+              className="w-full h-12 text-base font-medium touch-manipulation pointer-events-auto"
             >
               {saving ? 'Speichern…' : 'Speichern'}
             </Button>

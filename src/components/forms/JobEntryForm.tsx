@@ -143,6 +143,15 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
           : `Job wurde vollständig ${actionText}!`
       });
 
+      // After saving customer data, automatically go to next step
+      if (isPartialSave && currentStep === 'customer' && !error && data) {
+        setCurrentStep('machine');
+        toast({
+          title: 'Weiter zur Maschine',
+          description: 'Kunde gespeichert! Jetzt Maschinendaten eingeben.'
+        });
+      }
+
       if (!isPartialSave) {
         // Reset form only when job is completed
         setJobData({});
@@ -620,14 +629,26 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
           const Icon = step.icon;
           const isActive = currentStep === step.id;
           const isCompleted = steps.findIndex(s => s.id === currentStep) > index;
+          const isAccessible = isEditingJob || step.id === 'customer'; // Make all tabs accessible when editing
           
           return (
             <Button
               key={step.id}
               variant={isActive ? "default" : isCompleted ? "secondary" : "outline"}
               size="sm"
-              onClick={() => setCurrentStep(step.id as any)}
-              className="flex-1 mx-1"
+              onClick={() => {
+                if (isAccessible) {
+                  setCurrentStep(step.id as any);
+                } else {
+                  toast({
+                    title: 'Erst Kunde speichern',
+                    description: 'Bitte speichere zuerst die Kundendaten',
+                    variant: 'destructive'
+                  });
+                }
+              }}
+              className={`flex-1 mx-1 ${!isAccessible ? 'opacity-50 cursor-not-allowed' : ''}`}
+              disabled={!isAccessible}
             >
               <Icon className="h-4 w-4 mr-1" />
               <span className="hidden sm:inline">{step.label}</span>

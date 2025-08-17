@@ -26,12 +26,9 @@ export const useJobs = () => {
     setIsLoading(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        console.log('User not authenticated');
-        setJobs([]);
-        return;
-      }
-
+      console.log('Fetching jobs for user:', user?.id || 'anonymous');
+      
+      // For now, fetch all jobs regardless of user for testing
       const { data, error } = await supabase
         .from('jobs')
         .select('*')

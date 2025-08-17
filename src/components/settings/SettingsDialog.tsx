@@ -30,6 +30,7 @@ export const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
     preferredLanguage: 'de' as 'en' | 'de' | 'no',
     gpsEnabled: false
   });
+  const [saving, setSaving] = useState(false);
 
   // Update form when profile changes
   useEffect(() => {
@@ -44,6 +45,7 @@ export const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
   }, [profile]);
 
   const handleSave = async () => {
+    setSaving(true);
     try {
       console.log('Saving profile...', formData);
       await updateProfile(formData);
@@ -68,6 +70,8 @@ export const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
         description: 'Profil konnte nicht gespeichert werden',
         variant: 'destructive',
       });
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -87,7 +91,8 @@ export const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-6">
+        <form onSubmit={(e) => { e.preventDefault(); console.log('Settings form submitted'); handleSave(); }}>
+          <div className="space-y-6">
           {/* User Profile */}
           <Card>
             <CardHeader>
@@ -234,17 +239,15 @@ export const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
               Abbrechen
             </Button>
             <Button 
-              type="button"
-              onClick={() => {
-                console.log('Save button clicked');
-                handleSave();
-              }} 
+              type="submit"
+              disabled={saving}
               className="flex-1 h-12 text-base font-medium touch-manipulation"
             >
-              Speichern
+              {saving ? 'Speichern…' : 'Speichern'}
             </Button>
           </div>
-        </div>
+          </div>
+        </form>
       </DialogContent>
     </Dialog>
   );

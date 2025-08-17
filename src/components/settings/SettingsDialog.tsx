@@ -16,9 +16,10 @@ interface SettingsDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSaved?: () => void;
+  onGoDashboard?: () => void;
 }
 
-export const SettingsDialog = ({ open, onOpenChange, onSaved }: SettingsDialogProps) => {
+export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: SettingsDialogProps) => {
   const { t, i18n } = useTranslation();
   const { profile, updateProfile } = useUserProfile();
   const { toast } = useToast();
@@ -239,9 +240,17 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved }: SettingsDialogPr
           </Card>
 
           <div className="flex gap-2 pt-4 sticky bottom-0 bg-background border-t p-4 -m-4 mt-0">
+            <Button 
+              type="button"
+              variant="outline"
+              onClick={() => { console.log('Dashboard button clicked'); onOpenChange(false); onGoDashboard?.(); }}
+              className="flex-1 h-12 text-base font-medium touch-manipulation"
+            >
+              Dashboard
+            </Button>
             <div 
               style={{ 
-                width: '100%', 
+                flex: 1, 
                 height: '48px', 
                 background: 'hsl(var(--primary))', 
                 color: 'hsl(var(--primary-foreground))',

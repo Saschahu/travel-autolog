@@ -524,6 +524,10 @@ const Index = () => {
             setSettingsOpen(false);
             setActiveTab('dashboard');
           }}
+          onGoDashboard={() => {
+            setSettingsOpen(false);
+            setActiveTab('dashboard');
+          }}
         />
       </div>
     </MobileLayout>

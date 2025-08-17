@@ -233,12 +233,12 @@ export const SettingsDialog = ({ open, onOpenChange }: SettingsDialogProps) => {
               type="button"
               variant="outline" 
               onClick={() => {
-                console.log('Cancel button clicked');
+                console.log('Dashboard button clicked');
                 onOpenChange(false);
               }} 
               className="flex-1 h-12 text-base font-medium touch-manipulation"
             >
-              Abbrechen
+              Dashboard
             </Button>
             <Button 
               type="button"

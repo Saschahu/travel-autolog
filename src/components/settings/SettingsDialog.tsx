@@ -239,17 +239,30 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved }: SettingsDialogPr
           </Card>
 
           <div className="flex gap-2 pt-4 sticky bottom-0 bg-background border-t p-4 -m-4 mt-0">
-            <button 
-              type="button"
+            <div 
+              style={{ 
+                width: '100%', 
+                height: '48px', 
+                background: 'hsl(var(--primary))', 
+                color: 'hsl(var(--primary-foreground))',
+                borderRadius: '6px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '16px',
+                fontWeight: '500',
+                cursor: 'pointer',
+                userSelect: 'none',
+                touchAction: 'manipulation'
+              }}
               onClick={() => { 
-                console.log('Native button clicked');
+                console.log('DIV clicked!');
                 if (saving) return; 
                 handleSave(); 
               }}
-              className="w-full h-12 text-base font-medium touch-manipulation bg-primary text-primary-foreground hover:bg-primary/90 rounded-md border border-input transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
             >
               {saving ? 'Speichern…' : 'Speichern'}
-            </button>
+            </div>
           </div>
         </div>
         </form>

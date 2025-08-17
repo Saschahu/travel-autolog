@@ -5,6 +5,14 @@ const isWeb = typeof window !== 'undefined' && !window.hasOwnProperty('Capacitor
 
 // Fallback implementations for web
 const WebGeolocation = {
+  checkPermissions: async () => {
+    try {
+      const result = await navigator.permissions.query({name: 'geolocation'});
+      return { location: result.state === 'granted' ? 'granted' : 'denied' };
+    } catch {
+      return { location: 'granted' }; // Assume granted for compatibility
+    }
+  },
   requestPermissions: async () => {
     try {
       const result = await navigator.permissions.query({name: 'geolocation'});

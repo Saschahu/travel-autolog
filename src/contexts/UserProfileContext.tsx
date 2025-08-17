@@ -76,19 +76,34 @@ export const UserProfileProvider: React.FC<UserProfileProviderProps> = ({ childr
 
   const updateProfile = async (updates: Partial<UserProfile>) => {
     const storageKey = 'userProfile';
+    console.log('updateProfile called with:', updates);
     try {
       const newProfile = { ...profile, ...updates };
+      console.log('New profile:', newProfile);
       setProfile(newProfile);
+      
       const serialized = JSON.stringify(newProfile);
+      console.log('Serialized profile:', serialized);
+      
+      // Try Capacitor Preferences first, fallback to localStorage
+      let saved = false;
       try {
         await Preferences.set({
           key: storageKey,
           value: serialized
         });
+        console.log('Saved via Capacitor Preferences');
+        saved = true;
       } catch (e) {
-        console.warn('Capacitor Preferences.set failed, falling back to localStorage', e);
-        localStorage.setItem(storageKey, serialized);
+        console.warn('Capacitor Preferences.set failed:', e);
       }
+      
+      if (!saved) {
+        localStorage.setItem(storageKey, serialized);
+        console.log('Saved via localStorage fallback');
+      }
+      
+      console.log('Profile update completed successfully');
     } catch (error) {
       console.error('Error saving user profile:', error);
       throw error;

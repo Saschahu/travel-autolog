@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { User, MapPin, Settings, Home, Clock, Globe } from 'lucide-react';
+import { User, MapPin, Settings, Home, Clock, Globe, FolderOpen } from 'lucide-react';
 import { OvertimeSettings } from '@/components/settings/OvertimeSettings';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
@@ -31,7 +31,8 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
     email: '',
     preferredEmailApp: 'default',
     preferredLanguage: 'de' as 'en' | 'de' | 'no',
-    gpsEnabled: false
+    gpsEnabled: false,
+    localStoragePath: ''
   });
   const [saving, setSaving] = useState(false);
 
@@ -43,7 +44,8 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
       email: profile.email,
       preferredEmailApp: profile.preferredEmailApp,
       preferredLanguage: profile.preferredLanguage,
-      gpsEnabled: profile.gpsEnabled
+      gpsEnabled: profile.gpsEnabled,
+      localStoragePath: profile.localStoragePath
     });
   }, [profile]);
 
@@ -106,8 +108,9 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
         </DialogHeader>
 
         <Tabs defaultValue="profile" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="profile">Profil</TabsTrigger>
+            <TabsTrigger value="export">Export</TabsTrigger>
             <TabsTrigger value="gps">GPS</TabsTrigger>
             <TabsTrigger value="overtime">Overtime</TabsTrigger>
           </TabsList>
@@ -155,26 +158,6 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
                       />
                     </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="emailApp">{t('preferredEmailApp')}</Label>
-                      <Select
-                        value={formData.preferredEmailApp}
-                        onValueChange={(value) => 
-                          setFormData(prev => ({ ...prev, preferredEmailApp: value }))
-                        }
-                      >
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="default">Standard Email App</SelectItem>
-                          <SelectItem value="gmail">Gmail</SelectItem>
-                          <SelectItem value="outlook">Outlook</SelectItem>
-                          <SelectItem value="yahoo">Yahoo Mail</SelectItem>
-                          <SelectItem value="protonmail">ProtonMail</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
 
                     <div className="space-y-2">
                       <Label htmlFor="language">{t('preferredLanguage')}</Label>
@@ -221,6 +204,57 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
                 </div>
               </div>
             </form>
+          </TabsContent>
+
+          <TabsContent value="export" className="space-y-6">
+            {/* Export Settings */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-base">
+                  <FolderOpen className="h-4 w-4 text-primary" />
+                  Export & E-Mail Einstellungen
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="localStoragePath">Lokaler Speicherpfad</Label>
+                  <Input
+                    id="localStoragePath"
+                    value={formData.localStoragePath}
+                    onChange={(e) => setFormData(prev => ({ ...prev, localStoragePath: e.target.value }))}
+                    placeholder="z.B. /Downloads oder C:\Dokumente\ServiceTracker"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Optional: Pfad für lokale Speicherung der Excel-Dateien. Wenn leer, wird der Standard-Download-Ordner verwendet.
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="emailApp">Bevorzugte E-Mail-Anwendung</Label>
+                  <Select
+                    value={formData.preferredEmailApp}
+                    onValueChange={(value) => 
+                      setFormData(prev => ({ ...prev, preferredEmailApp: value }))
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="default">Standard E-Mail App</SelectItem>
+                      <SelectItem value="gmail">Gmail</SelectItem>
+                      <SelectItem value="outlook">Outlook</SelectItem>
+                      <SelectItem value="yahoo">Yahoo Mail</SelectItem>
+                      <SelectItem value="protonmail">ProtonMail</SelectItem>
+                      <SelectItem value="thunderbird">Thunderbird</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-muted-foreground">
+                    Diese E-Mail-App wird beim "Per E-Mail versenden" geöffnet
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           <TabsContent value="gps" className="space-y-6">

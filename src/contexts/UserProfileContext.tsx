@@ -8,6 +8,7 @@ export interface UserProfile {
   preferredEmailApp: string;
   preferredLanguage: 'en' | 'de' | 'no';
   gpsEnabled: boolean;
+  localStoragePath: string;
 }
 
 interface UserProfileContextType {
@@ -22,7 +23,8 @@ const defaultProfile: UserProfile = {
   email: '',
   preferredEmailApp: 'default',
   preferredLanguage: 'de',
-  gpsEnabled: false
+  gpsEnabled: false,
+  localStoragePath: ''
 };
 
 const UserProfileContext = createContext<UserProfileContextType | undefined>(undefined);

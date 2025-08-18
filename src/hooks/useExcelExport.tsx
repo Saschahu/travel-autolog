@@ -202,8 +202,8 @@ export const useExcelExport = () => {
 
       const filename = `Arbeitszeit-Nachweis_${job.customerName?.replace(/\s+/g, '_') || 'Kunde'}_${new Date().toISOString().split('T')[0]}.xlsx`;
 
-      const emailBody = `
-Arbeitszeit-Nachweis - ${job.customerName}
+      const emailSubject = `Arbeitszeit-Nachweis - ${job.customerName}`;
+      const emailBody = `Arbeitszeit-Nachweis - ${job.customerName}
 
 Auftragsdetails:
 - Kunde: ${job.customerName}
@@ -215,31 +215,54 @@ Auftragsdetails:
 Im Anhang finden Sie den detaillierten Arbeitszeit-Nachweis.
 
 Mit freundlichen Grüßen
-${profile.name || 'ServiceTracker'}
-      `.trim();
+${profile.name || 'ServiceTracker'}`;
 
       if (platform !== 'web') {
+        // Mobile: Nutze nativen Share-Dialog
         await Share.share({
-          title: `Arbeitszeit-Nachweis - ${job.customerName}`,
+          title: emailSubject,
           text: emailBody,
           url,
           dialogTitle: 'Report per E-Mail senden'
         });
+        
+        toast({
+          title: 'E-Mail-App geöffnet',
+          description: 'Report wurde zur E-Mail-App weitergeleitet',
+        });
       } else {
-        // Web: Datei herunterladen als Fallback
+        // Web: Erst Datei herunterladen, dann E-Mail-App öffnen
         const a = document.createElement('a');
         a.href = url;
         a.download = filename;
+        
+        // Prüfe ob lokaler Speicherpfad definiert ist
+        if (profile.localStoragePath) {
+          // Hinweis für Benutzer
+          toast({
+            title: 'Datei heruntergeladen',
+            description: `Bitte verschieben Sie die Datei nach: ${profile.localStoragePath}`,
+            duration: 5000,
+          });
+        }
+        
         document.body.appendChild(a);
         a.click();
         a.remove();
-        URL.revokeObjectURL(url);
+        
+        // E-Mail-App öffnen mit vorbereitetem Text
+        const mailtoUrl = constructMailtoUrl(profile.email, emailSubject, emailBody, profile.preferredEmailApp);
+        window.open(mailtoUrl, '_blank');
+        
+        toast({
+          title: 'E-Mail-App geöffnet',
+          description: 'Download gestartet und E-Mail-App geöffnet. Bitte Datei anhängen.',
+          duration: 5000,
+        });
+        
+        // URL nach kurzer Zeit freigeben
+        setTimeout(() => URL.revokeObjectURL(url), 5000);
       }
-
-      toast({
-        title: 'Report erstellt',
-        description: platform !== 'web' ? 'Zur E-Mail-App weitergeleitet' : 'Download gestartet',
-      });
 
       return true;
     } catch (error) {
@@ -250,6 +273,29 @@ ${profile.name || 'ServiceTracker'}
         variant: 'destructive',
       });
       return false;
+    }
+  };
+
+  // Hilfsfunktion für E-Mail-URLs
+  const constructMailtoUrl = (email: string, subject: string, body: string, preferredApp: string) => {
+    const encodedSubject = encodeURIComponent(subject);
+    const encodedBody = encodeURIComponent(body + '\n\n[Bitte Excel-Datei anhängen: Sie finden die heruntergeladene Datei in Ihrem Download-Ordner]');
+    
+    let baseUrl = `mailto:${email}?subject=${encodedSubject}&body=${encodedBody}`;
+    
+    // Spezielle URLs für verschiedene E-Mail-Apps (nur wenn verfügbar)
+    switch (preferredApp) {
+      case 'gmail':
+        // Gmail Web URL
+        return `https://mail.google.com/mail/?view=cm&to=${email}&su=${encodedSubject}&body=${encodedBody}`;
+      case 'outlook':
+        // Outlook Web URL
+        return `https://outlook.live.com/mail/0/deeplink/compose?to=${email}&subject=${encodedSubject}&body=${encodedBody}`;
+      case 'yahoo':
+        // Yahoo Mail URL
+        return `https://compose.mail.yahoo.com/?to=${email}&subject=${encodedSubject}&body=${encodedBody}`;
+      default:
+        return baseUrl;
     }
   };
 

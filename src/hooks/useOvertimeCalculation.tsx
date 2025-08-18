@@ -142,154 +142,136 @@ export const useOvertimeCalculation = () => {
 
   const calculateOvertime = (job: Job): OvertimeCalculation => {
     const timeBreakdown = calculateTimeBreakdown(job);
-    const totalMinutes = timeBreakdown.travelTime + timeBreakdown.workTime + timeBreakdown.departureTime;
-    const actualWorkedHours = formatMinutesToHours(totalMinutes);
     
-    // Create time slots from job times with dates - check both individual fields and days_data
-    const timeSlots: TimeSlot[] = [];
+    // For multi-day jobs, we need to calculate overtime per day
+    let totalRegularHours = 0;
+    let totalOvertime1Hours = 0;
+    let totalOvertime2Hours = 0;
+    let totalSaturdayHours = 0;
+    let totalSundayHours = 0;
     
-    // Individual time fields
-    if (job.travelStart && job.travelEnd) {
-      timeSlots.push({
-        start: job.travelStart,
-        end: job.travelEnd,
-        startDate: job.travelStartDate,
-        endDate: job.travelEndDate,
-        duration: timeBreakdown.travelTime
-      });
-    }
-    
-    if (job.workStart && job.workEnd) {
-      timeSlots.push({
-        start: job.workStart,
-        end: job.workEnd,
-        startDate: job.workStartDate,
-        endDate: job.workEndDate,
-        duration: timeBreakdown.workTime
-      });
-    }
-    
-    if (job.departureStart && job.departureEnd) {
-      timeSlots.push({
-        start: job.departureStart,
-        end: job.departureEnd,
-        startDate: job.departureStartDate,
-        endDate: job.departureEndDate,
-        duration: timeBreakdown.departureTime
-      });
-    }
-
-    // If no individual slots but we have days_data, use that
-    if (timeSlots.length === 0 && job.days && Array.isArray(job.days)) {
+    // If we have days data, calculate per day
+    if (job.days && Array.isArray(job.days) && job.days.length > 0) {
       job.days.forEach((day: any) => {
+        let dayTotalMinutes = 0;
+        
+        // Calculate total minutes for this day
         if (day.travelStart && day.travelEnd) {
-          timeSlots.push({
-            start: day.travelStart,
-            end: day.travelEnd,
-            startDate: day.date,
-            endDate: day.date,
-            duration: (() => {
-              const startMinutes = parseTime(day.travelStart);
-              const endMinutes = parseTime(day.travelEnd);
-              return endMinutes > startMinutes ? endMinutes - startMinutes : (24 * 60) - startMinutes + endMinutes;
-            })()
-          });
+          const startMinutes = parseTime(day.travelStart);
+          const endMinutes = parseTime(day.travelEnd);
+          dayTotalMinutes += endMinutes > startMinutes ? endMinutes - startMinutes : (24 * 60) - startMinutes + endMinutes;
         }
         
         if (day.workStart && day.workEnd) {
-          timeSlots.push({
-            start: day.workStart,
-            end: day.workEnd,
-            startDate: day.date,
-            endDate: day.date,
-            duration: (() => {
-              const startMinutes = parseTime(day.workStart);
-              const endMinutes = parseTime(day.workEnd);
-              return endMinutes > startMinutes ? endMinutes - startMinutes : (24 * 60) - startMinutes + endMinutes;
-            })()
-          });
+          const startMinutes = parseTime(day.workStart);
+          const endMinutes = parseTime(day.workEnd);
+          dayTotalMinutes += endMinutes > startMinutes ? endMinutes - startMinutes : (24 * 60) - startMinutes + endMinutes;
         }
         
         if (day.departureStart && day.departureEnd) {
-          timeSlots.push({
-            start: day.departureStart,
-            end: day.departureEnd,
-            startDate: day.date,
-            endDate: day.date,
-            duration: (() => {
-              const startMinutes = parseTime(day.departureStart);
-              const endMinutes = parseTime(day.departureEnd);
-              return endMinutes > startMinutes ? endMinutes - startMinutes : (24 * 60) - startMinutes + endMinutes;
-            })()
-          });
+          const startMinutes = parseTime(day.departureStart);
+          const endMinutes = parseTime(day.departureEnd);
+          dayTotalMinutes += endMinutes > startMinutes ? endMinutes - startMinutes : (24 * 60) - startMinutes + endMinutes;
+        }
+        
+        const dayHours = formatMinutesToHours(dayTotalMinutes);
+        const dayOfWeek = getDayOfWeek(day.date);
+        
+        // Calculate regular vs overtime for this day
+        const dayRegularHours = Math.min(dayHours, overtimeSettings.overtimeThreshold1);
+        const dayOvertime1Hours = Math.max(0, Math.min(dayHours - overtimeSettings.overtimeThreshold1, overtimeSettings.overtimeThreshold2 - overtimeSettings.overtimeThreshold1));
+        const dayOvertime2Hours = Math.max(0, dayHours - overtimeSettings.overtimeThreshold2);
+        
+        totalRegularHours += dayRegularHours;
+        totalOvertime1Hours += dayOvertime1Hours;
+        totalOvertime2Hours += dayOvertime2Hours;
+        
+        // Weekend hours
+        if (dayOfWeek === 6) { // Saturday
+          totalSaturdayHours += dayHours;
+        } else if (dayOfWeek === 0) { // Sunday
+          totalSundayHours += dayHours;
         }
       });
+    } else {
+      // Single day calculation (fallback)
+      const totalMinutes = timeBreakdown.travelTime + timeBreakdown.workTime + timeBreakdown.departureTime;
+      const totalHours = formatMinutesToHours(totalMinutes);
+      
+      totalRegularHours = Math.min(totalHours, overtimeSettings.overtimeThreshold1);
+      totalOvertime1Hours = Math.max(0, Math.min(totalHours - overtimeSettings.overtimeThreshold1, overtimeSettings.overtimeThreshold2 - overtimeSettings.overtimeThreshold1));
+      totalOvertime2Hours = Math.max(0, totalHours - overtimeSettings.overtimeThreshold2);
+      
+      // Check if single day falls on weekend
+      const dayOfWeek = getDayOfWeek(job.travelStartDate || job.workStartDate || job.departureStartDate);
+      if (dayOfWeek === 6) {
+        totalSaturdayHours = totalHours;
+      } else if (dayOfWeek === 0) {
+        totalSundayHours = totalHours;
+      }
     }
-
-    // Calculate weekend hours
-    const { saturdayHours, sundayHours } = calculateWeekendHours(timeSlots);
     
-    // Calculate regular vs overtime hours based on total worked time
-    const regularHours = Math.min(actualWorkedHours, overtimeSettings.overtimeThreshold1);
-    const overtime1Hours = Math.max(0, Math.min(actualWorkedHours - overtimeSettings.overtimeThreshold1, overtimeSettings.overtimeThreshold2 - overtimeSettings.overtimeThreshold1));
-    const overtime2Hours = Math.max(0, actualWorkedHours - overtimeSettings.overtimeThreshold2);
+    const actualWorkedHours = totalRegularHours + totalOvertime1Hours + totalOvertime2Hours;
     
     // Build overtime breakdown
     const overtimeBreakdown = [];
     
     // Hour-based overtime
-    if (overtime1Hours > 0) {
+    if (totalOvertime1Hours > 0) {
       overtimeBreakdown.push({
         type: `Überstunden ${overtimeSettings.overtimeThreshold1}-${overtimeSettings.overtimeThreshold2}h`,
-        hours: overtime1Hours,
+        hours: totalOvertime1Hours,
         rate: overtimeSettings.overtimeRate1,
-        amount: overtime1Hours * (overtimeSettings.overtimeRate1 / 100)
+        amount: totalOvertime1Hours * (overtimeSettings.overtimeRate1 / 100)
       });
     }
     
-    if (overtime2Hours > 0) {
+    if (totalOvertime2Hours > 0) {
       overtimeBreakdown.push({
         type: `Überstunden über ${overtimeSettings.overtimeThreshold2}h`,
-        hours: overtime2Hours,
+        hours: totalOvertime2Hours,
         rate: overtimeSettings.overtimeRate2,
-        amount: overtime2Hours * (overtimeSettings.overtimeRate2 / 100)
+        amount: totalOvertime2Hours * (overtimeSettings.overtimeRate2 / 100)
       });
     }
     
     // Weekend overtime (if enabled)
     if (overtimeSettings.weekendEnabled) {
-      if (saturdayHours > 0) {
+      if (totalSaturdayHours > 0) {
         overtimeBreakdown.push({
           type: 'Samstag',
-          hours: saturdayHours,
+          hours: totalSaturdayHours,
           rate: overtimeSettings.saturdayRate,
-          amount: saturdayHours * (overtimeSettings.saturdayRate / 100)
+          amount: totalSaturdayHours * (overtimeSettings.saturdayRate / 100)
         });
       }
       
-      if (sundayHours > 0) {
+      if (totalSundayHours > 0) {
         overtimeBreakdown.push({
           type: 'Sonntag/Feiertag',
-          hours: sundayHours,
+          hours: totalSundayHours,
           rate: overtimeSettings.sundayRate,
-          amount: sundayHours * (overtimeSettings.sundayRate / 100)
+          amount: totalSundayHours * (overtimeSettings.sundayRate / 100)
         });
       }
     }
     
-    const totalOvertimeHours = overtime1Hours + overtime2Hours;
+    const totalOvertimeHours = totalOvertime1Hours + totalOvertime2Hours;
     const totalOvertimeAmount = overtimeBreakdown.reduce((sum, item) => sum + item.amount, 0);
-    const guaranteedHours = overtimeSettings.guaranteedHours;
+    
+    // For multi-day jobs, calculate guaranteed hours per day
+    const numberOfDays = job.days && Array.isArray(job.days) ? job.days.length : 1;
+    const guaranteedHours = overtimeSettings.guaranteedHours * numberOfDays;
     const totalPayableHours = guaranteedHours + totalOvertimeAmount;
 
     return {
       guaranteedHours,
       actualWorkedHours,
-      regularHours,
-      overtime1Hours,
-      overtime2Hours,
-      saturdayHours,
-      sundayHours,
+      regularHours: totalRegularHours,
+      overtime1Hours: totalOvertime1Hours,
+      overtime2Hours: totalOvertime2Hours,
+      saturdayHours: totalSaturdayHours,
+      sundayHours: totalSundayHours,
       overtimeBreakdown,
       totalOvertimeHours,
       totalOvertimeAmount,

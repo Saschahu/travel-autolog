@@ -41,12 +41,12 @@ export const OvertimeTab = ({ job }: OvertimeTabProps) => {
               <div className="font-mono text-lg">{overtimeCalculation.actualWorkedHours.toFixed(2)}h</div>
             </div>
             <div className="space-y-2">
-              <div className="text-sm text-muted-foreground">Kernarbeitszeit (8-16h)</div>
-              <div className="font-mono text-lg">{overtimeCalculation.coreHours.toFixed(2)}h</div>
+              <div className="text-sm text-muted-foreground">Reguläre Stunden</div>
+              <div className="font-mono text-lg">{overtimeCalculation.regularHours.toFixed(2)}h</div>
             </div>
             <div className="space-y-2">
               <div className="text-sm text-muted-foreground">Überstunden</div>
-              <div className="font-mono text-lg text-orange-600">{overtimeCalculation.overtimeHours.toFixed(2)}h</div>
+              <div className="font-mono text-lg text-orange-600">{overtimeCalculation.totalOvertimeHours.toFixed(2)}h</div>
             </div>
           </div>
         </CardContent>
@@ -63,29 +63,29 @@ export const OvertimeTab = ({ job }: OvertimeTabProps) => {
         <CardContent className="space-y-4">
           {/* Regular vs Overtime Hours */}
           <div className="flex justify-between items-center p-3 bg-secondary/30 rounded-md">
-            <div className="text-sm">Kernarbeitszeit (8-16 Uhr)</div>
-            <div className="font-mono">{overtimeCalculation.coreHours.toFixed(2)}h</div>
+            <div className="text-sm">Reguläre Stunden (bis 8h)</div>
+            <div className="font-mono">{overtimeCalculation.regularHours.toFixed(2)}h</div>
           </div>
           
           <div className="flex justify-between items-center p-3 bg-orange-50 border border-orange-200 rounded-md">
-            <div className="text-sm text-orange-800">Überstunden (außerhalb 8-16 Uhr)</div>
-            <div className="font-mono text-orange-800">{overtimeCalculation.overtimeHours.toFixed(2)}h</div>
+            <div className="text-sm text-orange-800">Überstunden gesamt</div>
+            <div className="font-mono text-orange-800">{overtimeCalculation.totalOvertimeHours.toFixed(2)}h</div>
           </div>
 
-          {/* Overtime Slots */}
+          {/* Overtime Breakdown */}
           <div className="space-y-2">
-            {overtimeCalculation.overtimeSlots.map((slot) => (
-              <div key={slot.slotId} className="flex justify-between items-center p-3 border rounded-md">
+            {overtimeCalculation.overtimeBreakdown.map((item, index) => (
+              <div key={index} className="flex justify-between items-center p-3 border rounded-md">
                 <div className="space-y-1">
-                  <div className="text-sm font-medium">{slot.name}</div>
-                  <Badge variant={slot.isWeekend ? "default" : "secondary"}>
-                    {slot.rate}% Zuschlag {slot.isWeekend && "• Wochenende"}
+                  <div className="text-sm font-medium">{item.type}</div>
+                  <Badge variant={item.type.includes('Samstag') || item.type.includes('Sonntag') ? "default" : "secondary"}>
+                    {item.rate}% Zuschlag
                   </Badge>
                 </div>
                 <div className="text-right space-y-1">
-                  <div className="font-mono text-sm">{slot.hours.toFixed(2)}h</div>
+                  <div className="font-mono text-sm">{item.hours.toFixed(2)}h</div>
                   <div className="font-mono text-sm text-muted-foreground">
-                    +{slot.amount.toFixed(2)}h
+                    +{item.amount.toFixed(2)}h
                   </div>
                 </div>
               </div>
@@ -104,7 +104,7 @@ export const OvertimeTab = ({ job }: OvertimeTabProps) => {
                   {overtimeCalculation.totalPayableHours.toFixed(2)}h
                 </div>
                 <div className="font-mono text-sm text-blue-600">
-                  ({overtimeCalculation.guaranteedHours}h + {overtimeCalculation.totalAmount.toFixed(2)}h Zuschlag)
+                  ({overtimeCalculation.guaranteedHours}h + {overtimeCalculation.totalOvertimeAmount.toFixed(2)}h Zuschlag)
                 </div>
               </div>
             </div>

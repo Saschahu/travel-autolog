@@ -15,36 +15,6 @@ export const OvertimeSettings = () => {
   const { toast } = useToast();
   const [localSettings, setLocalSettings] = useState<OvertimeSettingsType>(overtimeSettings);
 
-  const handleAddSlot = () => {
-    const newSlot = {
-      id: Date.now().toString(),
-      start: '08:00',
-      end: '16:00',
-      rate: 50,
-      name: 'Neue Zeitspanne'
-    };
-    
-    setLocalSettings(prev => ({
-      ...prev,
-      timeSlots: [...prev.timeSlots, newSlot]
-    }));
-  };
-
-  const handleRemoveSlot = (id: string) => {
-    setLocalSettings(prev => ({
-      ...prev,
-      timeSlots: prev.timeSlots.filter(slot => slot.id !== id)
-    }));
-  };
-
-  const handleSlotChange = (id: string, field: string, value: string | number) => {
-    setLocalSettings(prev => ({
-      ...prev,
-      timeSlots: prev.timeSlots.map(slot => 
-        slot.id === id ? { ...slot, [field]: value } : slot
-      )
-    }));
-  };
 
   const handleSave = () => {
     saveSettings(localSettings);
@@ -64,63 +34,82 @@ export const OvertimeSettings = () => {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {localSettings.timeSlots.map((slot) => (
-            <div key={slot.id} className="p-4 border rounded-lg space-y-4">
-              <div className="flex items-center justify-between">
-                <Badge variant="outline">{slot.name}</Badge>
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={() => handleRemoveSlot(slot.id)}
-                  className="h-8 w-8 p-0"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
+          {/* Hour-based Overtime Settings */}
+          <div className="p-4 border rounded-lg space-y-4">
+            <div className="space-y-1">
+              <Label>Stundenbasierte Überstunden</Label>
+              <p className="text-sm text-muted-foreground">
+                Überstunden basierend auf Gesamtarbeitszeit pro Tag
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="overtime-threshold-1">Erste Überstunden ab (Stunden)</Label>
+                <Input
+                  id="overtime-threshold-1"
+                  type="number"
+                  min="1"
+                  max="24"
+                  value={localSettings.overtimeThreshold1}
+                  onChange={(e) => 
+                    setLocalSettings(prev => ({ 
+                      ...prev, 
+                      overtimeThreshold1: parseInt(e.target.value) || 8 
+                    }))
+                  }
+                />
               </div>
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor={`name-${slot.id}`}>Name</Label>
-                  <Input
-                    id={`name-${slot.id}`}
-                    value={slot.name}
-                    onChange={(e) => handleSlotChange(slot.id, 'name', e.target.value)}
-                    placeholder="Zeitspanne Name"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor={`rate-${slot.id}`}>Zuschlag (%)</Label>
-                  <Input
-                    id={`rate-${slot.id}`}
-                    type="number"
-                    min="0"
-                    max="200"
-                    value={slot.rate}
-                    onChange={(e) => handleSlotChange(slot.id, 'rate', parseInt(e.target.value) || 0)}
-                    placeholder="50"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor={`start-${slot.id}`}>Start-Zeit</Label>
-                  <Input
-                    id={`start-${slot.id}`}
-                    type="time"
-                    value={slot.start}
-                    onChange={(e) => handleSlotChange(slot.id, 'start', e.target.value)}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor={`end-${slot.id}`}>End-Zeit</Label>
-                  <Input
-                    id={`end-${slot.id}`}
-                    type="time"
-                    value={slot.end}
-                    onChange={(e) => handleSlotChange(slot.id, 'end', e.target.value)}
-                  />
-                </div>
+              <div className="space-y-2">
+                <Label htmlFor="overtime-rate-1">Zuschlag 8-12h (%)</Label>
+                <Input
+                  id="overtime-rate-1"
+                  type="number"
+                  min="0"
+                  max="200"
+                  value={localSettings.overtimeRate1}
+                  onChange={(e) => 
+                    setLocalSettings(prev => ({ 
+                      ...prev, 
+                      overtimeRate1: parseInt(e.target.value) || 50 
+                    }))
+                  }
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="overtime-threshold-2">Zweite Überstunden ab (Stunden)</Label>
+                <Input
+                  id="overtime-threshold-2"
+                  type="number"
+                  min="1"
+                  max="24"
+                  value={localSettings.overtimeThreshold2}
+                  onChange={(e) => 
+                    setLocalSettings(prev => ({ 
+                      ...prev, 
+                      overtimeThreshold2: parseInt(e.target.value) || 12 
+                    }))
+                  }
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="overtime-rate-2">Zuschlag über 12h (%)</Label>
+                <Input
+                  id="overtime-rate-2"
+                  type="number"
+                  min="0"
+                  max="200"
+                  value={localSettings.overtimeRate2}
+                  onChange={(e) => 
+                    setLocalSettings(prev => ({ 
+                      ...prev, 
+                      overtimeRate2: parseInt(e.target.value) || 100 
+                    }))
+                  }
+                />
               </div>
             </div>
-          ))}
+          </div>
           
           {/* Weekend Settings */}
           <div className="p-4 border rounded-lg space-y-4">
@@ -141,96 +130,77 @@ export const OvertimeSettings = () => {
             </div>
             
             {localSettings.weekendEnabled && (
-              <div className="space-y-2">
-                <Label htmlFor="weekend-rate">Wochenend-Zuschlag (%)</Label>
-                <Input
-                  id="weekend-rate"
-                  type="number"
-                  min="0"
-                  max="200"
-                  value={localSettings.weekendRate}
-                  onChange={(e) => 
-                    setLocalSettings(prev => ({ 
-                      ...prev, 
-                      weekendRate: parseInt(e.target.value) || 0 
-                    }))
-                  }
-                  placeholder="100"
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="saturday-rate">Samstag-Zuschlag (%)</Label>
+                  <Input
+                    id="saturday-rate"
+                    type="number"
+                    min="0"
+                    max="200"
+                    value={localSettings.saturdayRate}
+                    onChange={(e) => 
+                      setLocalSettings(prev => ({ 
+                        ...prev, 
+                        saturdayRate: parseInt(e.target.value) || 50 
+                      }))
+                    }
+                    placeholder="50"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="sunday-rate">Sonntag/Feiertag-Zuschlag (%)</Label>
+                  <Input
+                    id="sunday-rate"
+                    type="number"
+                    min="0"
+                    max="200"
+                    value={localSettings.sundayRate}
+                    onChange={(e) => 
+                      setLocalSettings(prev => ({ 
+                        ...prev, 
+                        sundayRate: parseInt(e.target.value) || 100 
+                      }))
+                    }
+                    placeholder="100"
+                  />
+                </div>
               </div>
             )}
           </div>
           
           
-          {/* Core Work Hours Settings */}
+          {/* Guaranteed Hours Settings */}
           <div className="p-4 border rounded-lg space-y-4">
             <div className="space-y-1">
-              <Label>Kernarbeitszeit</Label>
+              <Label>Garantierte Stunden</Label>
               <p className="text-sm text-muted-foreground">
-                Reguläre Arbeitszeiten - alles außerhalb ist Überstunden
+                Mindestbezahlung pro Tag, unabhängig von der tatsächlichen Arbeitszeit
               </p>
             </div>
             
-            <div className="grid grid-cols-3 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="core-start">Start</Label>
-                <Input
-                  id="core-start"
-                  type="time"
-                  value={localSettings.coreWorkStart}
-                  onChange={(e) => 
-                    setLocalSettings(prev => ({ 
-                      ...prev, 
-                      coreWorkStart: e.target.value 
-                    }))
-                  }
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="core-end">Ende</Label>
-                <Input
-                  id="core-end"
-                  type="time"
-                  value={localSettings.coreWorkEnd}
-                  onChange={(e) => 
-                    setLocalSettings(prev => ({ 
-                      ...prev, 
-                      coreWorkEnd: e.target.value 
-                    }))
-                  }
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="guaranteed-hours">Garantierte Stunden</Label>
-                <Input
-                  id="guaranteed-hours"
-                  type="number"
-                  min="1"
-                  max="24"
-                  value={localSettings.guaranteedHours}
-                  onChange={(e) => 
-                    setLocalSettings(prev => ({ 
-                      ...prev, 
-                      guaranteedHours: parseInt(e.target.value) || 8 
-                    }))
-                  }
-                />
-              </div>
+            <div className="space-y-2">
+              <Label htmlFor="guaranteed-hours">Garantierte Stunden pro Tag</Label>
+              <Input
+                id="guaranteed-hours"
+                type="number"
+                min="1"
+                max="24"
+                value={localSettings.guaranteedHours}
+                onChange={(e) => 
+                  setLocalSettings(prev => ({ 
+                    ...prev, 
+                    guaranteedHours: parseInt(e.target.value) || 8 
+                  }))
+                }
+              />
             </div>
           </div>
           
           <div className="flex gap-2">
             <Button
-              variant="outline"
-              onClick={handleAddSlot}
-              className="flex-1"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              Zeitspanne hinzufügen
-            </Button>
-            <Button
               onClick={handleSave}
-              className="flex-1"
+              className="w-full"
             >
               <Save className="h-4 w-4 mr-2" />
               Speichern
@@ -244,11 +214,11 @@ export const OvertimeSettings = () => {
           <CardTitle className="text-base">Hinweise</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2 text-sm text-muted-foreground">
-          <p>• <strong>Kernarbeitszeit:</strong> Reguläre Arbeitszeit (Standard: 8-16 Uhr)</p>
           <p>• <strong>Garantierte Stunden:</strong> Mindestbezahlung pro Tag (Standard: 8h)</p>
-          <p>• <strong>Überstunden:</strong> Alle Zeiten außerhalb der Kernarbeitszeit</p>
-          <p>• <strong>Zuschläge:</strong> Prozentuale Aufschläge für verschiedene Uhrzeiten</p>
-          <p>• <strong>Wochenend-Zuschläge:</strong> Freitag Abend bis Montag Morgen (100%)</p>
+          <p>• <strong>8-12 Stunden:</strong> 50% Zuschlag auf Überstunden</p>
+          <p>• <strong>Über 12 Stunden:</strong> 100% Zuschlag auf Überstunden</p>
+          <p>• <strong>Samstag:</strong> 50% Zuschlag auf alle Stunden</p>
+          <p>• <strong>Sonntag/Feiertag:</strong> 100% Zuschlag auf alle Stunden</p>
           <p>• <strong>Bezahlung:</strong> Mindestens garantierte Stunden + Überstundenzuschläge</p>
         </CardContent>
       </Card>

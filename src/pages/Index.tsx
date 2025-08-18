@@ -53,6 +53,8 @@ const Index = () => {
   const { toast } = useToast();
   const [editData, setEditData] = useState({
     customerName: '',
+    customerAddress: '',
+    evaticNo: '',
     totalHours: '',
     estimatedDays: 1,
     currentDay: 0,
@@ -61,6 +63,12 @@ const Index = () => {
     model: '',
     serialNumber: '',
     workPerformed: '',
+    hotelName: '',
+    hotelAddress: '',
+    hotelNights: 0,
+    kilometersOutbound: 0,
+    kilometersReturn: 0,
+    tollAmount: 0,
   });
 
 
@@ -83,6 +91,8 @@ const Index = () => {
     
     setEditData({
       customerName: job.customerName,
+      customerAddress: job.customerAddress || '',
+      evaticNo: job.evaticNo || '',
       totalHours: job.totalHours?.toString() || '0h 0m',
       estimatedDays: estimatedDays,
       currentDay: job.currentDay || 0,
@@ -91,6 +101,12 @@ const Index = () => {
       model: job.model || '',
       serialNumber: job.serialNumber || '',
       workPerformed: job.workPerformed || '',
+      hotelName: job.hotelName || '',
+      hotelAddress: job.hotelAddress || '',
+      hotelNights: job.hotelNights || 0,
+      kilometersOutbound: job.kilometersOutbound || 0,
+      kilometersReturn: job.kilometersReturn || 0,
+      tollAmount: job.tollAmount || 0,
     });
     setEditOpen(true);
   };
@@ -104,15 +120,23 @@ const Index = () => {
         .from('jobs')
         .update({
           customer_name: editData.customerName,
+          customer_address: editData.customerAddress,
+          evatic_no: editData.evaticNo,
           estimated_days: editData.estimatedDays,
           current_day: editData.currentDay,
-          days_data: editData.days, // Store the days array as JSON
+          days_data: editData.days,
           work_start_time: editData.days[0]?.workStart,
           work_end_time: editData.days[editData.currentDay - 1]?.workEnd,
           manufacturer: editData.manufacturer,
           model: editData.model,
           serial_number: editData.serialNumber,
           work_performed: editData.workPerformed,
+          hotel_name: editData.hotelName,
+          hotel_address: editData.hotelAddress,
+          hotel_nights: editData.hotelNights,
+          kilometers_outbound: editData.kilometersOutbound,
+          kilometers_return: editData.kilometersReturn,
+          toll_amount: editData.tollAmount,
         })
         .eq('id', selectedJob.id);
 
@@ -124,6 +148,8 @@ const Index = () => {
           ? { 
               ...j, 
               customerName: editData.customerName,
+              customerAddress: editData.customerAddress,
+              evaticNo: editData.evaticNo,
               totalHours: editData.totalHours,
               estimatedDays: editData.estimatedDays,
               currentDay: editData.currentDay,
@@ -132,6 +158,12 @@ const Index = () => {
               model: editData.model,
               serialNumber: editData.serialNumber,
               workPerformed: editData.workPerformed,
+              hotelName: editData.hotelName,
+              hotelAddress: editData.hotelAddress,
+              hotelNights: editData.hotelNights,
+              kilometersOutbound: editData.kilometersOutbound,
+              kilometersReturn: editData.kilometersReturn,
+              tollAmount: editData.tollAmount,
               // Update legacy fields for display
               workStartTime: editData.days[0]?.workStart,
               workEndTime: editData.days[editData.currentDay - 1]?.workEnd,
@@ -433,179 +465,289 @@ const Index = () => {
         </Dialog>
 
         <Dialog open={editOpen} onOpenChange={setEditOpen}>
-          <DialogContent className="max-w-2xl h-[90vh] flex flex-col">
+          <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
             <DialogHeader className="flex-shrink-0">
               <DialogTitle>Auftrag bearbeiten</DialogTitle>
-              <DialogDescription>Alle Job-Daten und tägliche Zeiten bearbeiten</DialogDescription>
+              <DialogDescription>Alle Job-Daten bearbeiten</DialogDescription>
             </DialogHeader>
-            <div className="flex-1 overflow-y-auto space-y-4 pr-2">
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <Label htmlFor="edit-customer">Kundenname</Label>
-                  <Input 
-                    id="edit-customer" 
-                    value={editData.customerName} 
-                    onChange={(e) => setEditData(prev => ({ ...prev, customerName: e.target.value }))} 
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="edit-total-hours">Gesamtzeit (Reise + Arbeit)</Label>
-                  <Input 
-                    id="edit-total-hours" 
-                    type="text"
-                    value={editData.totalHours} 
-                    readOnly
-                    className="bg-muted font-mono"
-                    placeholder="0h 0m"
-                  />
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Automatisch berechnet: Anreise + Arbeitszeit + Abreise
-                  </p>
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <Label htmlFor="edit-estimated-days">Geplante Tage</Label>
-                  <Input 
-                    id="edit-estimated-days" 
-                    type="number"
-                    min="1"
-                    value={editData.estimatedDays} 
-                    onChange={(e) => updateEstimatedDays(parseInt(e.target.value) || 1)} 
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="edit-current-day">Aktueller Tag</Label>
-                  <Input 
-                    id="edit-current-day" 
-                    type="number"
-                    min="0"
-                    max={editData.estimatedDays}
-                    value={editData.currentDay} 
-                    onChange={(e) => setEditData(prev => ({ ...prev, currentDay: parseInt(e.target.value) || 0 }))} 
-                  />
-                </div>
-              </div>
-
-              {/* Machine Details Section */}
-              <div className="space-y-3">
-                <h4 className="font-medium text-sm">Maschinendetails</h4>
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <Label htmlFor="edit-manufacturer">Hersteller</Label>
-                    <Input 
-                      id="edit-manufacturer"
-                      value={editData.manufacturer} 
-                      onChange={(e) => setEditData(prev => ({ ...prev, manufacturer: e.target.value }))} 
-                      placeholder="z.B. Siemens"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="edit-model">Modell</Label>
-                    <Input 
-                      id="edit-model"
-                      value={editData.model} 
-                      onChange={(e) => setEditData(prev => ({ ...prev, model: e.target.value }))} 
-                      placeholder="z.B. S7-1200"
-                    />
-                  </div>
-                  <div className="col-span-2">
-                    <Label htmlFor="edit-serial">Seriennummer</Label>
-                    <Input 
-                      id="edit-serial"
-                      value={editData.serialNumber} 
-                      onChange={(e) => setEditData(prev => ({ ...prev, serialNumber: e.target.value }))} 
-                      placeholder="Seriennummer"
-                    />
-                  </div>
-                  <div className="col-span-2">
-                    <Label htmlFor="edit-work-performed">Durchgeführte Arbeiten</Label>
-                    <Input 
-                      id="edit-work-performed"
-                      value={editData.workPerformed} 
-                      onChange={(e) => setEditData(prev => ({ ...prev, workPerformed: e.target.value }))} 
-                      placeholder="Beschreibung der durchgeführten Arbeiten"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Daily Time Entries */}
-              <div className="space-y-4">
-                <h4 className="font-medium text-sm">Tägliche Zeiten</h4>
-                {editData.days.map((day, dayIndex) => (
-                  <div key={dayIndex} className="border rounded-lg p-4 space-y-3">
-                    <div className="flex items-center gap-3">
-                      <h5 className="font-medium text-sm text-primary">Tag {day.day}</h5>
-                      <Input 
-                        type="date"
-                        value={day.date || ''} 
-                        onChange={(e) => updateDayField(dayIndex, 'date', e.target.value)}
-                        className="w-auto text-xs"
-                      />
+            
+            <div className="flex-1 overflow-hidden">
+              <Tabs defaultValue="customer" className="h-full flex flex-col">
+                <TabsList className="grid w-full grid-cols-3 flex-shrink-0">
+                  <TabsTrigger value="customer">Kundendaten</TabsTrigger>
+                  <TabsTrigger value="machine">Maschine</TabsTrigger>
+                  <TabsTrigger value="times">Zeiten</TabsTrigger>
+                </TabsList>
+                
+                <div className="flex-1 overflow-y-auto mt-4">
+                  <TabsContent value="customer" className="space-y-4 mt-0">
+                    <div className="space-y-4">
+                      <div>
+                        <Label htmlFor="edit-customer">Kundenname *</Label>
+                        <Input 
+                          id="edit-customer" 
+                          value={editData.customerName} 
+                          onChange={(e) => setEditData(prev => ({ ...prev, customerName: e.target.value }))} 
+                          placeholder="Name des Kunden"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="edit-customer-address">Kundenadresse</Label>
+                        <Input 
+                          id="edit-customer-address" 
+                          value={editData.customerAddress} 
+                          onChange={(e) => setEditData(prev => ({ ...prev, customerAddress: e.target.value }))} 
+                          placeholder="Vollständige Adresse des Kunden"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="edit-evatic">EVATIC-Nummer</Label>
+                        <Input 
+                          id="edit-evatic" 
+                          value={editData.evaticNo} 
+                          onChange={(e) => setEditData(prev => ({ ...prev, evaticNo: e.target.value }))} 
+                          placeholder="EVATIC-Nummer (falls vorhanden)"
+                        />
+                      </div>
+                      
+                      <div className="border-t pt-4">
+                        <h4 className="font-medium text-sm mb-3">Hotel & Übernachtung</h4>
+                        <div className="space-y-3">
+                          <div>
+                            <Label htmlFor="edit-hotel-name">Hotel Name</Label>
+                            <Input 
+                              id="edit-hotel-name" 
+                              value={editData.hotelName} 
+                              onChange={(e) => setEditData(prev => ({ ...prev, hotelName: e.target.value }))} 
+                              placeholder="Name des Hotels"
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor="edit-hotel-address">Hotel Adresse</Label>
+                            <Input 
+                              id="edit-hotel-address" 
+                              value={editData.hotelAddress} 
+                              onChange={(e) => setEditData(prev => ({ ...prev, hotelAddress: e.target.value }))} 
+                              placeholder="Adresse des Hotels"
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor="edit-hotel-nights">Anzahl Nächte</Label>
+                            <Input 
+                              id="edit-hotel-nights" 
+                              type="number"
+                              min="0"
+                              value={editData.hotelNights} 
+                              onChange={(e) => setEditData(prev => ({ ...prev, hotelNights: parseInt(e.target.value) || 0 }))} 
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div className="border-t pt-4">
+                        <h4 className="font-medium text-sm mb-3">Reisekosten</h4>
+                        <div className="grid grid-cols-3 gap-3">
+                          <div>
+                            <Label htmlFor="edit-km-outbound">Kilometer Hinfahrt</Label>
+                            <Input 
+                              id="edit-km-outbound" 
+                              type="number"
+                              min="0"
+                              value={editData.kilometersOutbound} 
+                              onChange={(e) => setEditData(prev => ({ ...prev, kilometersOutbound: parseInt(e.target.value) || 0 }))} 
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor="edit-km-return">Kilometer Rückfahrt</Label>
+                            <Input 
+                              id="edit-km-return" 
+                              type="number"
+                              min="0"
+                              value={editData.kilometersReturn} 
+                              onChange={(e) => setEditData(prev => ({ ...prev, kilometersReturn: parseInt(e.target.value) || 0 }))} 
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor="edit-toll">Mautgebühren (€)</Label>
+                            <Input 
+                              id="edit-toll" 
+                              type="number"
+                              min="0"
+                              step="0.01"
+                              value={editData.tollAmount} 
+                              onChange={(e) => setEditData(prev => ({ ...prev, tollAmount: parseFloat(e.target.value) || 0 }))} 
+                            />
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    
-                    <div className="grid grid-cols-2 gap-2 text-xs">
+                  </TabsContent>
+                  
+                  <TabsContent value="machine" className="space-y-4 mt-0">
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <Label htmlFor="edit-manufacturer">Hersteller</Label>
+                          <Input 
+                            id="edit-manufacturer"
+                            value={editData.manufacturer} 
+                            onChange={(e) => setEditData(prev => ({ ...prev, manufacturer: e.target.value }))} 
+                            placeholder="z.B. Siemens, ABB, Schneider"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="edit-model">Modell/Typ</Label>
+                          <Input 
+                            id="edit-model"
+                            value={editData.model} 
+                            onChange={(e) => setEditData(prev => ({ ...prev, model: e.target.value }))} 
+                            placeholder="z.B. S7-1200, CP1E"
+                          />
+                        </div>
+                      </div>
                       <div>
-                        <Label htmlFor={`travel-start-${dayIndex}`}>Anreise Start</Label>
+                        <Label htmlFor="edit-serial">Seriennummer</Label>
                         <Input 
-                          id={`travel-start-${dayIndex}`}
-                          type="time"
-                          value={day.travelStart || ''} 
-                          onChange={(e) => updateDayField(dayIndex, 'travelStart', e.target.value)} 
+                          id="edit-serial"
+                          value={editData.serialNumber} 
+                          onChange={(e) => setEditData(prev => ({ ...prev, serialNumber: e.target.value }))} 
+                          placeholder="Seriennummer der Maschine/Anlage"
                         />
                       </div>
                       <div>
-                        <Label htmlFor={`travel-end-${dayIndex}`}>Anreise Ende</Label>
-                        <Input 
-                          id={`travel-end-${dayIndex}`}
-                          type="time"
-                          value={day.travelEnd || ''} 
-                          onChange={(e) => updateDayField(dayIndex, 'travelEnd', e.target.value)} 
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor={`work-start-${dayIndex}`}>Arbeit Start</Label>
-                        <Input 
-                          id={`work-start-${dayIndex}`}
-                          type="time"
-                          value={day.workStart || ''} 
-                          onChange={(e) => updateDayField(dayIndex, 'workStart', e.target.value)} 
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor={`work-end-${dayIndex}`}>Arbeit Ende</Label>
-                        <Input 
-                          id={`work-end-${dayIndex}`}
-                          type="time"
-                          value={day.workEnd || ''} 
-                          onChange={(e) => updateDayField(dayIndex, 'workEnd', e.target.value)} 
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor={`departure-start-${dayIndex}`}>Abreise Start</Label>
-                        <Input 
-                          id={`departure-start-${dayIndex}`}
-                          type="time"
-                          value={day.departureStart || ''} 
-                          onChange={(e) => updateDayField(dayIndex, 'departureStart', e.target.value)} 
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor={`departure-end-${dayIndex}`}>Abreise Ende</Label>
-                        <Input 
-                          id={`departure-end-${dayIndex}`}
-                          type="time"
-                          value={day.departureEnd || ''} 
-                          onChange={(e) => updateDayField(dayIndex, 'departureEnd', e.target.value)} 
+                        <Label htmlFor="edit-work-performed">Durchgeführte Arbeiten</Label>
+                        <textarea 
+                          id="edit-work-performed"
+                          className="w-full min-h-[120px] p-3 border rounded-md resize-y"
+                          value={editData.workPerformed} 
+                          onChange={(e) => setEditData(prev => ({ ...prev, workPerformed: e.target.value }))} 
+                          placeholder="Detaillierte Beschreibung der durchgeführten Arbeiten..."
                         />
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  </TabsContent>
+                  
+                  <TabsContent value="times" className="space-y-4 mt-0">
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-3 gap-3">
+                        <div>
+                          <Label htmlFor="edit-estimated-days">Geplante Tage</Label>
+                          <Input 
+                            id="edit-estimated-days" 
+                            type="number"
+                            min="1"
+                            value={editData.estimatedDays} 
+                            onChange={(e) => updateEstimatedDays(parseInt(e.target.value) || 1)} 
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="edit-current-day">Aktueller Tag</Label>
+                          <Input 
+                            id="edit-current-day" 
+                            type="number"
+                            min="0"
+                            max={editData.estimatedDays}
+                            value={editData.currentDay} 
+                            onChange={(e) => setEditData(prev => ({ ...prev, currentDay: parseInt(e.target.value) || 0 }))} 
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="edit-total-hours">Gesamtzeit</Label>
+                          <Input 
+                            id="edit-total-hours" 
+                            type="text"
+                            value={editData.totalHours} 
+                            readOnly
+                            className="bg-muted font-mono"
+                            placeholder="0h 0m"
+                          />
+                        </div>
+                      </div>
+                      
+                      <p className="text-xs text-muted-foreground">
+                        Gesamtzeit wird automatisch berechnet: Anreise + Arbeitszeit + Abreise aller Tage
+                      </p>
+
+                      {/* Daily Time Entries */}
+                      <div className="space-y-4">
+                        <h4 className="font-medium text-sm">Tägliche Zeiten</h4>
+                        {editData.days.map((day, dayIndex) => (
+                          <div key={dayIndex} className="border rounded-lg p-4 space-y-3">
+                            <div className="flex items-center gap-3">
+                              <h5 className="font-medium text-sm text-primary">Tag {day.day}</h5>
+                              <Input 
+                                type="date"
+                                value={day.date || ''} 
+                                onChange={(e) => updateDayField(dayIndex, 'date', e.target.value)}
+                                className="w-auto text-xs"
+                              />
+                            </div>
+                            
+                            <div className="grid grid-cols-2 gap-2 text-xs">
+                              <div>
+                                <Label htmlFor={`travel-start-${dayIndex}`}>Anreise Start</Label>
+                                <Input 
+                                  id={`travel-start-${dayIndex}`}
+                                  type="time"
+                                  value={day.travelStart || ''} 
+                                  onChange={(e) => updateDayField(dayIndex, 'travelStart', e.target.value)} 
+                                />
+                              </div>
+                              <div>
+                                <Label htmlFor={`travel-end-${dayIndex}`}>Anreise Ende</Label>
+                                <Input 
+                                  id={`travel-end-${dayIndex}`}
+                                  type="time"
+                                  value={day.travelEnd || ''} 
+                                  onChange={(e) => updateDayField(dayIndex, 'travelEnd', e.target.value)} 
+                                />
+                              </div>
+                              <div>
+                                <Label htmlFor={`work-start-${dayIndex}`}>Arbeit Start</Label>
+                                <Input 
+                                  id={`work-start-${dayIndex}`}
+                                  type="time"
+                                  value={day.workStart || ''} 
+                                  onChange={(e) => updateDayField(dayIndex, 'workStart', e.target.value)} 
+                                />
+                              </div>
+                              <div>
+                                <Label htmlFor={`work-end-${dayIndex}`}>Arbeit Ende</Label>
+                                <Input 
+                                  id={`work-end-${dayIndex}`}
+                                  type="time"
+                                  value={day.workEnd || ''} 
+                                  onChange={(e) => updateDayField(dayIndex, 'workEnd', e.target.value)} 
+                                />
+                              </div>
+                              <div>
+                                <Label htmlFor={`departure-start-${dayIndex}`}>Abreise Start</Label>
+                                <Input 
+                                  id={`departure-start-${dayIndex}`}
+                                  type="time"
+                                  value={day.departureStart || ''} 
+                                  onChange={(e) => updateDayField(dayIndex, 'departureStart', e.target.value)} 
+                                />
+                              </div>
+                              <div>
+                                <Label htmlFor={`departure-end-${dayIndex}`}>Abreise Ende</Label>
+                                <Input 
+                                  id={`departure-end-${dayIndex}`}
+                                  type="time"
+                                  value={day.departureEnd || ''} 
+                                  onChange={(e) => updateDayField(dayIndex, 'departureEnd', e.target.value)} 
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </TabsContent>
+                </div>
+              </Tabs>
             </div>
+            
             <DialogFooter className="flex-shrink-0 mt-4">
               <Button variant="outline" onClick={() => setEditOpen(false)}>Abbrechen</Button>
               <Button onClick={saveEdit}>Speichern</Button>

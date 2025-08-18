@@ -216,13 +216,13 @@ export const useOvertimeCalculation = () => {
     // Build overtime breakdown
     const overtimeBreakdown = [];
     
-    // Hour-based overtime
+    // Hour-based overtime - Grundlohn + Zuschlag
     if (totalOvertime1Hours > 0) {
       overtimeBreakdown.push({
         type: `Überstunden ${overtimeSettings.overtimeThreshold1}-${overtimeSettings.overtimeThreshold2}h`,
         hours: totalOvertime1Hours,
         rate: overtimeSettings.overtimeRate1,
-        amount: totalOvertime1Hours * (overtimeSettings.overtimeRate1 / 100)
+        amount: totalOvertime1Hours * (1 + overtimeSettings.overtimeRate1 / 100)
       });
     }
     
@@ -231,18 +231,18 @@ export const useOvertimeCalculation = () => {
         type: `Überstunden über ${overtimeSettings.overtimeThreshold2}h`,
         hours: totalOvertime2Hours,
         rate: overtimeSettings.overtimeRate2,
-        amount: totalOvertime2Hours * (overtimeSettings.overtimeRate2 / 100)
+        amount: totalOvertime2Hours * (1 + overtimeSettings.overtimeRate2 / 100)
       });
     }
     
-    // Weekend overtime (if enabled)
+    // Weekend overtime (if enabled) - Grundlohn + Zuschlag
     if (overtimeSettings.weekendEnabled) {
       if (totalSaturdayHours > 0) {
         overtimeBreakdown.push({
           type: 'Samstag',
           hours: totalSaturdayHours,
           rate: overtimeSettings.saturdayRate,
-          amount: totalSaturdayHours * (overtimeSettings.saturdayRate / 100)
+          amount: totalSaturdayHours * (1 + overtimeSettings.saturdayRate / 100)
         });
       }
       
@@ -251,7 +251,7 @@ export const useOvertimeCalculation = () => {
           type: 'Sonntag/Feiertag',
           hours: totalSundayHours,
           rate: overtimeSettings.sundayRate,
-          amount: totalSundayHours * (overtimeSettings.sundayRate / 100)
+          amount: totalSundayHours * (1 + overtimeSettings.sundayRate / 100)
         });
       }
     }

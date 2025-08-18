@@ -76,7 +76,7 @@ export const useJobs = () => {
         workStartTime: job.work_start_time,
         workEndTime: job.work_end_time,
         totalHours: '0h 0m', // Calculated later
-        days: [],
+        days: Array.isArray(job.days_data) ? job.days_data : [],
         customerAddress: job.customer_address,
         evaticNo: job.evatic_no,
         // Add all time fields from database

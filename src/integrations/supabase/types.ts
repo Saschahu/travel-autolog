@@ -20,6 +20,7 @@ export type Database = {
           current_day: number | null
           customer_address: string | null
           customer_name: string
+          days_data: Json
           departure_end_date: string | null
           departure_end_time: string | null
           departure_start_date: string | null
@@ -54,6 +55,7 @@ export type Database = {
           current_day?: number | null
           customer_address?: string | null
           customer_name: string
+          days_data?: Json
           departure_end_date?: string | null
           departure_end_time?: string | null
           departure_start_date?: string | null
@@ -88,6 +90,7 @@ export type Database = {
           current_day?: number | null
           customer_address?: string | null
           customer_name?: string
+          days_data?: Json
           departure_end_date?: string | null
           departure_end_time?: string | null
           departure_start_date?: string | null

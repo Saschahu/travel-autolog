@@ -259,9 +259,22 @@ export const useOvertimeCalculation = () => {
     const totalOvertimeHours = totalOvertime1Hours + totalOvertime2Hours;
     const totalOvertimeAmount = overtimeBreakdown.reduce((sum, item) => sum + item.amount, 0);
     
-    // For multi-day jobs, calculate guaranteed hours per day
-    const numberOfDays = job.days && Array.isArray(job.days) ? job.days.length : 1;
-    const guaranteedHours = overtimeSettings.guaranteedHours * numberOfDays;
+    // For multi-day jobs, calculate guaranteed hours per actual days with time entries
+    let numberOfPaidDays = 0;
+    if (job.days && Array.isArray(job.days) && job.days.length > 0) {
+      numberOfPaidDays = job.days.filter((day: any) => {
+        const hasTravel = !!(day.travelStart && day.travelEnd);
+        const hasWork = !!(day.workStart && day.workEnd);
+        const hasDeparture = !!(day.departureStart && day.departureEnd);
+        return hasTravel || hasWork || hasDeparture;
+      }).length;
+    } else {
+      const hasTravel = !!(job.travelStart && job.travelEnd);
+      const hasWork = !!(job.workStart && job.workEnd);
+      const hasDeparture = !!(job.departureStart && job.departureEnd);
+      numberOfPaidDays = hasTravel || hasWork || hasDeparture ? 1 : 0;
+    }
+    const guaranteedHours = overtimeSettings.guaranteedHours * numberOfPaidDays;
     const totalPayableHours = guaranteedHours + totalOvertimeAmount;
 
     return {

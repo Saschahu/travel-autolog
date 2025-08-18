@@ -257,32 +257,76 @@ export const useLocation = () => {
     }
   }, []);
 
-// Get current position via IP address
+// Get current position via IP address (robust with multiple providers)
   const getLocationFromIP = useCallback(async (): Promise<LocationData | null> => {
+    setError('Position über IP wird abgerufen...');
+
+    const withTimeout = async (url: string, ms = 5000) => {
+      const controller = new AbortController();
+      const id = setTimeout(() => controller.abort(), ms);
+      try {
+        const res = await fetch(url, { signal: controller.signal, credentials: 'omit', cache: 'no-store' });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return await res.json();
+      } finally {
+        clearTimeout(id);
+      }
+    };
+
+    // Try providers with permissive CORS first
     try {
-      setError('Position über IP wird abgerufen...');
-      
-      const response = await fetch('https://ipapi.co/json/');
-      const data = await response.json();
-      
-      if (data.latitude && data.longitude) {
+      // 1) ipwho.is
+      const data1 = await withTimeout('https://ipwho.is/');
+      if (data1 && data1.success && typeof data1.latitude === 'number' && typeof data1.longitude === 'number') {
         const locationData: LocationData = {
-          latitude: data.latitude,
-          longitude: data.longitude,
+          latitude: data1.latitude,
+          longitude: data1.longitude,
           timestamp: Date.now()
         };
-        
         setCurrentLocation(locationData);
         setError('Position über IP erfolgreich abgerufen!');
         return locationData;
-      } else {
-        throw new Error('Keine Standortdaten verfügbar');
       }
-    } catch (error) {
-      console.error('Error getting IP location:', error);
-      setError('Fehler beim Abrufen der IP-Position: ' + error.message);
-      return null;
+    } catch (e) {
+      console.error('IP provider ipwho.is failed:', e);
     }
+
+    try {
+      // 2) ipapi.co
+      const data2 = await withTimeout('https://ipapi.co/json/');
+      if (data2 && typeof data2.latitude === 'number' && typeof data2.longitude === 'number') {
+        const locationData: LocationData = {
+          latitude: data2.latitude,
+          longitude: data2.longitude,
+          timestamp: Date.now()
+        };
+        setCurrentLocation(locationData);
+        setError('Position über IP erfolgreich abgerufen!');
+        return locationData;
+      }
+    } catch (e) {
+      console.error('IP provider ipapi.co failed:', e);
+    }
+
+    try {
+      // 3) geolocation-db.com
+      const data3 = await withTimeout('https://geolocation-db.com/json/');
+      if (data3 && typeof data3.latitude === 'number' && typeof data3.longitude === 'number') {
+        const locationData: LocationData = {
+          latitude: data3.latitude,
+          longitude: data3.longitude,
+          timestamp: Date.now()
+        };
+        setCurrentLocation(locationData);
+        setError('Position über IP erfolgreich abgerufen!');
+        return locationData;
+      }
+    } catch (e) {
+      console.error('IP provider geolocation-db.com failed:', e);
+    }
+
+    setError('Fehler beim Abrufen der IP-Position.');
+    return null;
   }, []);
 
   // Get current position (GPS with IP fallback)

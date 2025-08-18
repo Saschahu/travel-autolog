@@ -57,6 +57,10 @@ const Index = () => {
     estimatedDays: 1,
     currentDay: 0,
     days: [] as DayData[],
+    manufacturer: '',
+    model: '',
+    serialNumber: '',
+    workPerformed: '',
   });
 
 
@@ -83,6 +87,10 @@ const Index = () => {
       estimatedDays: estimatedDays,
       currentDay: job.currentDay || 0,
       days: days,
+      manufacturer: job.manufacturer || '',
+      model: job.model || '',
+      serialNumber: job.serialNumber || '',
+      workPerformed: job.workPerformed || '',
     });
     setEditOpen(true);
   };
@@ -101,6 +109,10 @@ const Index = () => {
           days_data: editData.days, // Store the days array as JSON
           work_start_time: editData.days[0]?.workStart,
           work_end_time: editData.days[editData.currentDay - 1]?.workEnd,
+          manufacturer: editData.manufacturer,
+          model: editData.model,
+          serial_number: editData.serialNumber,
+          work_performed: editData.workPerformed,
         })
         .eq('id', selectedJob.id);
 
@@ -116,6 +128,10 @@ const Index = () => {
               estimatedDays: editData.estimatedDays,
               currentDay: editData.currentDay,
               days: editData.days,
+              manufacturer: editData.manufacturer,
+              model: editData.model,
+              serialNumber: editData.serialNumber,
+              workPerformed: editData.workPerformed,
               // Update legacy fields for display
               workStartTime: editData.days[0]?.workStart,
               workEndTime: editData.days[editData.currentDay - 1]?.workEnd,
@@ -469,6 +485,49 @@ const Index = () => {
                     value={editData.currentDay} 
                     onChange={(e) => setEditData(prev => ({ ...prev, currentDay: parseInt(e.target.value) || 0 }))} 
                   />
+                </div>
+              </div>
+
+              {/* Machine Details Section */}
+              <div className="space-y-3">
+                <h4 className="font-medium text-sm">Maschinendetails</h4>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <Label htmlFor="edit-manufacturer">Hersteller</Label>
+                    <Input 
+                      id="edit-manufacturer"
+                      value={editData.manufacturer} 
+                      onChange={(e) => setEditData(prev => ({ ...prev, manufacturer: e.target.value }))} 
+                      placeholder="z.B. Siemens"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="edit-model">Modell</Label>
+                    <Input 
+                      id="edit-model"
+                      value={editData.model} 
+                      onChange={(e) => setEditData(prev => ({ ...prev, model: e.target.value }))} 
+                      placeholder="z.B. S7-1200"
+                    />
+                  </div>
+                  <div className="col-span-2">
+                    <Label htmlFor="edit-serial">Seriennummer</Label>
+                    <Input 
+                      id="edit-serial"
+                      value={editData.serialNumber} 
+                      onChange={(e) => setEditData(prev => ({ ...prev, serialNumber: e.target.value }))} 
+                      placeholder="Seriennummer"
+                    />
+                  </div>
+                  <div className="col-span-2">
+                    <Label htmlFor="edit-work-performed">Durchgeführte Arbeiten</Label>
+                    <Input 
+                      id="edit-work-performed"
+                      value={editData.workPerformed} 
+                      onChange={(e) => setEditData(prev => ({ ...prev, workPerformed: e.target.value }))} 
+                      placeholder="Beschreibung der durchgeführten Arbeiten"
+                    />
+                  </div>
                 </div>
               </div>
 

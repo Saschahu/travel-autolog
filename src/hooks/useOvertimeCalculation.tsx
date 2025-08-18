@@ -39,25 +39,46 @@ export const useOvertimeCalculation = () => {
     let workTime = 0; 
     let departureTime = 0;
 
-    // Calculate travel time
+    // First check if we have individual time fields
     if (job.travelStart && job.travelEnd) {
       const startMinutes = parseTime(job.travelStart);
       const endMinutes = parseTime(job.travelEnd);
       travelTime = endMinutes > startMinutes ? endMinutes - startMinutes : (24 * 60) - startMinutes + endMinutes;
     }
 
-    // Calculate work time
     if (job.workStart && job.workEnd) {
       const startMinutes = parseTime(job.workStart);
       const endMinutes = parseTime(job.workEnd);
       workTime = endMinutes > startMinutes ? endMinutes - startMinutes : (24 * 60) - startMinutes + endMinutes;
     }
 
-    // Calculate departure time
     if (job.departureStart && job.departureEnd) {
       const startMinutes = parseTime(job.departureStart);
       const endMinutes = parseTime(job.departureEnd);
       departureTime = endMinutes > startMinutes ? endMinutes - startMinutes : (24 * 60) - startMinutes + endMinutes;
+    }
+
+    // If no individual times but we have days_data, calculate from there
+    if (travelTime === 0 && workTime === 0 && departureTime === 0 && job.days && Array.isArray(job.days)) {
+      job.days.forEach((day: any) => {
+        if (day.travelStart && day.travelEnd) {
+          const startMinutes = parseTime(day.travelStart);
+          const endMinutes = parseTime(day.travelEnd);
+          travelTime += endMinutes > startMinutes ? endMinutes - startMinutes : (24 * 60) - startMinutes + endMinutes;
+        }
+        
+        if (day.workStart && day.workEnd) {
+          const startMinutes = parseTime(day.workStart);
+          const endMinutes = parseTime(day.workEnd);
+          workTime += endMinutes > startMinutes ? endMinutes - startMinutes : (24 * 60) - startMinutes + endMinutes;
+        }
+        
+        if (day.departureStart && day.departureEnd) {
+          const startMinutes = parseTime(day.departureStart);
+          const endMinutes = parseTime(day.departureEnd);
+          departureTime += endMinutes > startMinutes ? endMinutes - startMinutes : (24 * 60) - startMinutes + endMinutes;
+        }
+      });
     }
 
     return { travelTime, workTime, departureTime };
@@ -98,9 +119,10 @@ export const useOvertimeCalculation = () => {
     const timeBreakdown = calculateTimeBreakdown(job);
     const totalMinutes = timeBreakdown.travelTime + timeBreakdown.workTime + timeBreakdown.departureTime;
     
-    // Create time slots from job times with dates
+    // Create time slots from job times with dates - check both individual fields and days_data
     const timeSlots: TimeSlot[] = [];
     
+    // Individual time fields
     if (job.travelStart && job.travelEnd) {
       timeSlots.push({
         start: job.travelStart,
@@ -128,6 +150,53 @@ export const useOvertimeCalculation = () => {
         startDate: job.departureStartDate,
         endDate: job.departureEndDate,
         duration: timeBreakdown.departureTime
+      });
+    }
+
+    // If no individual slots but we have days_data, use that
+    if (timeSlots.length === 0 && job.days && Array.isArray(job.days)) {
+      job.days.forEach((day: any) => {
+        if (day.travelStart && day.travelEnd) {
+          timeSlots.push({
+            start: day.travelStart,
+            end: day.travelEnd,
+            startDate: day.date,
+            endDate: day.date,
+            duration: (() => {
+              const startMinutes = parseTime(day.travelStart);
+              const endMinutes = parseTime(day.travelEnd);
+              return endMinutes > startMinutes ? endMinutes - startMinutes : (24 * 60) - startMinutes + endMinutes;
+            })()
+          });
+        }
+        
+        if (day.workStart && day.workEnd) {
+          timeSlots.push({
+            start: day.workStart,
+            end: day.workEnd,
+            startDate: day.date,
+            endDate: day.date,
+            duration: (() => {
+              const startMinutes = parseTime(day.workStart);
+              const endMinutes = parseTime(day.workEnd);
+              return endMinutes > startMinutes ? endMinutes - startMinutes : (24 * 60) - startMinutes + endMinutes;
+            })()
+          });
+        }
+        
+        if (day.departureStart && day.departureEnd) {
+          timeSlots.push({
+            start: day.departureStart,
+            end: day.departureEnd,
+            startDate: day.date,
+            endDate: day.date,
+            duration: (() => {
+              const startMinutes = parseTime(day.departureStart);
+              const endMinutes = parseTime(day.departureEnd);
+              return endMinutes > startMinutes ? endMinutes - startMinutes : (24 * 60) - startMinutes + endMinutes;
+            })()
+          });
+        }
       });
     }
 

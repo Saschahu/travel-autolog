@@ -748,7 +748,15 @@ const Index = () => {
                   </TabsContent>
                   
                   <TabsContent value="overtime" className="space-y-4 mt-0">
-                    {selectedJob && <OvertimeTab job={selectedJob} />}
+                    {selectedJob && (
+                      <OvertimeTab 
+                        job={{
+                          ...selectedJob,
+                          ...editData,
+                          days: editData.days
+                        } as Job} 
+                      />
+                    )}
                   </TabsContent>
                 </div>
               </Tabs>

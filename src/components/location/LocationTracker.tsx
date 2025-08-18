@@ -135,6 +135,23 @@ export const LocationTracker: React.FC = () => {
           timestamp: new Date(currentLocation.timestamp)
         } : undefined}
         homeLocation={homeLocation}
+        jobLocations={[
+          // Beispiel-Job-Standorte - diese sollten aus der Datenbank kommen
+          {
+            id: '1',
+            latitude: 52.5200,
+            longitude: 13.4050,
+            customerName: 'Berliner Kunde',
+            startDate: new Date()
+          },
+          {
+            id: '2', 
+            latitude: 48.1351,
+            longitude: 11.5820,
+            customerName: 'Münchener Kunde',
+            startDate: new Date()
+          }
+        ]}
         className="h-[500px] w-full"
       />
     </div>

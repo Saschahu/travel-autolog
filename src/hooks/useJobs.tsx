@@ -54,7 +54,31 @@ export const useJobs = () => {
         totalHours: '0h 0m', // Calculated later
         days: [],
         customerAddress: job.customer_address,
-        evaticNo: job.evatic_no
+        evaticNo: job.evatic_no,
+        // Add all time fields from database
+        travelStart: job.travel_start_time,
+        travelStartDate: job.travel_start_date,
+        travelEnd: job.travel_end_time,
+        travelEndDate: job.travel_end_date,
+        workStart: job.work_start_time,
+        workStartDate: job.work_start_date,
+        workEnd: job.work_end_time,
+        workEndDate: job.work_end_date,
+        departureStart: job.departure_start_time,
+        departureStartDate: job.departure_start_date,
+        departureEnd: job.departure_end_time,
+        departureEndDate: job.departure_end_date,
+        // Add other fields that might be missing
+        manufacturer: job.manufacturer,
+        model: job.model,
+        serialNumber: job.serial_number,
+        workPerformed: job.work_performed,
+        hotelName: job.hotel_name,
+        hotelAddress: job.hotel_address,
+        hotelNights: job.hotel_nights,
+        kilometersOutbound: job.kilometers_outbound,
+        kilometersReturn: job.kilometers_return,
+        tollAmount: job.toll_amount
       }));
 
       setJobs(transformedJobs);

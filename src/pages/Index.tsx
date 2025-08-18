@@ -11,7 +11,7 @@ import { SettingsDialog } from '@/components/settings/SettingsDialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Plus, FileText, Clock, TrendingUp, Settings, Navigation, BarChart3 } from 'lucide-react';
+import { Plus, FileText, Clock, TrendingUp, Settings, Navigation, BarChart3, MapPin } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -297,6 +297,10 @@ const Index = () => {
           <Button variant="outline" className="w-full justify-start gap-2">
             <Clock className="h-4 w-4" />
             Arbeitszeit jetzt starten
+          </Button>
+          <Button variant="outline" className="w-full justify-start gap-2">
+            <MapPin className="h-4 w-4" />
+            Reisezeit jetzt starten
           </Button>
           <Button variant="outline" className="w-full justify-start gap-2">
             <FileText className="h-4 w-4" />

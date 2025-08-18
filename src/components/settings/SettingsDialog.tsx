@@ -1,16 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
-import { User, MapPin, Globe, Navigation } from 'lucide-react';
 import { useUserProfile } from '@/contexts/UserProfileContext';
 import { useToast } from '@/hooks/use-toast';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
+import { User, MapPin, Settings, Home, Clock, Globe } from 'lucide-react';
+import { OvertimeSettings } from '@/components/settings/OvertimeSettings';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface SettingsDialogProps {
   open: boolean;
@@ -96,185 +97,182 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <User className="h-5 w-5 text-primary" />
-            Nutzerdaten
+            <Settings className="h-5 w-5 text-primary" />
+            Einstellungen
           </DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={(e) => { e.preventDefault(); console.log('Settings form submitted'); handleSave(); }}>
-          <div className="space-y-6">
-          {/* User Profile */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-base">
-                <User className="h-4 w-4 text-primary" />
-                {t('userProfile')}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="name">{t('name')}</Label>
-                <Input
-                  id="name"
-                  value={formData.name}
-                  onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                  placeholder="Max Mustermann"
-                />
-              </div>
+        <Tabs defaultValue="profile" className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="profile">Profil</TabsTrigger>
+            <TabsTrigger value="gps">GPS</TabsTrigger>
+            <TabsTrigger value="overtime">Overtime</TabsTrigger>
+          </TabsList>
 
-              <div className="space-y-2">
-                <Label htmlFor="homeAddress">{t('homeAddress')}</Label>
-                <Input
-                  id="homeAddress"
-                  value={formData.homeAddress}
-                  onChange={(e) => setFormData(prev => ({ ...prev, homeAddress: e.target.value }))}
-                  placeholder="Musterstraße 123, 12345 Berlin"
-                />
-              </div>
+          <TabsContent value="profile" className="space-y-6">
+            <form onSubmit={(e) => { e.preventDefault(); console.log('Settings form submitted'); handleSave(); }}>
+              <div className="space-y-6">
+                {/* User Profile */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-base">
+                      <User className="h-4 w-4 text-primary" />
+                      {t('userProfile')}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="name">{t('name')}</Label>
+                      <Input
+                        id="name"
+                        value={formData.name}
+                        onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                        placeholder="Max Mustermann"
+                      />
+                    </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="email">{t('email')}</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                  placeholder="max@example.com"
-                />
-              </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="homeAddress">{t('homeAddress')}</Label>
+                      <Input
+                        id="homeAddress"
+                        value={formData.homeAddress}
+                        onChange={(e) => setFormData(prev => ({ ...prev, homeAddress: e.target.value }))}
+                        placeholder="Musterstraße 123, 12345 Berlin"
+                      />
+                    </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="emailApp">{t('preferredEmailApp')}</Label>
-                <Select
-                  value={formData.preferredEmailApp}
-                  onValueChange={(value) => 
-                    setFormData(prev => ({ ...prev, preferredEmailApp: value }))
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="default">Standard Email App</SelectItem>
-                    <SelectItem value="gmail">Gmail</SelectItem>
-                    <SelectItem value="outlook">Outlook</SelectItem>
-                    <SelectItem value="yahoo">Yahoo Mail</SelectItem>
-                    <SelectItem value="protonmail">ProtonMail</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="email">{t('email')}</Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        value={formData.email}
+                        onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                        placeholder="max@example.com"
+                      />
+                    </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="language">{t('preferredLanguage')}</Label>
-                <Select
-                  value={formData.preferredLanguage}
-                  onValueChange={(value: 'en' | 'de' | 'no') => 
-                    setFormData(prev => ({ ...prev, preferredLanguage: value }))
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {languageOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>
-                        <div className="flex items-center gap-2">
-                          <Globe className="h-4 w-4" />
-                          {option.label}
-                        </div>
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </CardContent>
-          </Card>
+                    <div className="space-y-2">
+                      <Label htmlFor="emailApp">{t('preferredEmailApp')}</Label>
+                      <Select
+                        value={formData.preferredEmailApp}
+                        onValueChange={(value) => 
+                          setFormData(prev => ({ ...prev, preferredEmailApp: value }))
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="default">Standard Email App</SelectItem>
+                          <SelectItem value="gmail">Gmail</SelectItem>
+                          <SelectItem value="outlook">Outlook</SelectItem>
+                          <SelectItem value="yahoo">Yahoo Mail</SelectItem>
+                          <SelectItem value="protonmail">ProtonMail</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
 
-          <Separator />
+                    <div className="space-y-2">
+                      <Label htmlFor="language">{t('preferredLanguage')}</Label>
+                      <Select
+                        value={formData.preferredLanguage}
+                        onValueChange={(value: 'en' | 'de' | 'no') => 
+                          setFormData(prev => ({ ...prev, preferredLanguage: value }))
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {languageOptions.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                              <div className="flex items-center gap-2">
+                                <Globe className="h-4 w-4" />
+                                {option.label}
+                              </div>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </CardContent>
+                </Card>
 
-          {/* GPS Settings */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-base">
-                <Navigation className="h-4 w-4 text-primary" />
-                {t('gpsSettings')}
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="space-y-0.5">
-                  <Label htmlFor="gps-enabled">{t('enableGps')}</Label>
-                  <p className="text-xs text-muted-foreground">
-                    Enable location tracking and notifications
-                  </p>
+                <div className="flex gap-2 pt-4 sticky bottom-0 bg-background border-t p-4 -m-4 mt-0">
+                  <Button 
+                    type="button"
+                    variant="outline"
+                    onClick={() => { console.log('Dashboard button clicked'); onOpenChange(false); onGoDashboard?.(); }}
+                    className="flex-1 h-12 text-base font-medium touch-manipulation"
+                  >
+                    Dashboard
+                  </Button>
+                  <Button
+                    type="submit"
+                    disabled={saving}
+                    className="flex-1 h-12 text-base font-medium touch-manipulation"
+                  >
+                    {saving ? 'Speichern…' : 'Speichern'}
+                  </Button>
                 </div>
-                <Switch
-                  id="gps-enabled"
-                  checked={formData.gpsEnabled}
-                  onCheckedChange={(checked) => 
-                    setFormData(prev => ({ ...prev, gpsEnabled: checked }))
-                  }
-                />
               </div>
+            </form>
+          </TabsContent>
 
-              {formData.homeAddress && (
-                <div className="space-y-2">
-                  <Label className="flex items-center gap-2">
-                    <MapPin className="h-4 w-4" />
-                    {t('homeLocation')}
-                  </Label>
-                  <div className="p-3 bg-muted rounded-md">
-                    <p className="text-sm text-muted-foreground">
-                      {formData.homeAddress}
+          <TabsContent value="gps" className="space-y-6">
+            {/* GPS Settings */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-base">
+                  <MapPin className="h-4 w-4 text-primary" />
+                  {t('gpsSettings')}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-0.5">
+                    <Label htmlFor="gps-enabled">{t('enableGps')}</Label>
+                    <p className="text-xs text-muted-foreground">
+                      Enable location tracking and notifications
                     </p>
                   </div>
-                  <p className="text-xs text-muted-foreground">
-                    This address will be used for GPS home detection
-                  </p>
+                  <Switch
+                    id="gps-enabled"
+                    checked={formData.gpsEnabled}
+                    onCheckedChange={(checked) => 
+                      setFormData(prev => ({ ...prev, gpsEnabled: checked }))
+                    }
+                  />
                 </div>
-              )}
-            </CardContent>
-          </Card>
 
-          <div className="flex gap-2 pt-4 sticky bottom-0 bg-background border-t p-4 -m-4 mt-0">
-            <Button 
-              type="button"
-              variant="outline"
-              onClick={() => { console.log('Dashboard button clicked'); onOpenChange(false); onGoDashboard?.(); }}
-              className="flex-1 h-12 text-base font-medium touch-manipulation"
-            >
-              Dashboard
-            </Button>
-            <div 
-              style={{ 
-                flex: 1, 
-                height: '48px', 
-                background: 'hsl(var(--primary))', 
-                color: 'hsl(var(--primary-foreground))',
-                borderRadius: '6px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '16px',
-                fontWeight: '500',
-                cursor: 'pointer',
-                userSelect: 'none',
-                touchAction: 'manipulation'
-              }}
-              onClick={() => { 
-                console.log('DIV clicked!');
-                if (saving) return; 
-                handleSave(); 
-              }}
-            >
-              {saving ? 'Speichern…' : 'Speichern'}
-            </div>
-          </div>
-        </div>
-        </form>
+                {formData.homeAddress && (
+                  <div className="space-y-2">
+                    <Label className="flex items-center gap-2">
+                      <MapPin className="h-4 w-4" />
+                      {t('homeLocation')}
+                    </Label>
+                    <div className="p-3 bg-muted rounded-md">
+                      <p className="text-sm text-muted-foreground">
+                        {formData.homeAddress}
+                      </p>
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      This address will be used for GPS home detection
+                    </p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="overtime" className="space-y-6">
+            <OvertimeSettings />
+          </TabsContent>
+        </Tabs>
       </DialogContent>
     </Dialog>
   );

@@ -4,38 +4,35 @@ import { Button } from '@/components/ui/button';
 import { Clock, MapPin, CheckCircle, AlertCircle, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
+import { useOvertimeCalculation } from '@/hooks/useOvertimeCalculation';
+import { Job } from '@/hooks/useJobs';
 
-interface JobStatusCardProps {
-  id: string;
-  customerName: string;
-  status: 'open' | 'active' | 'completed' | 'completed-sent' | 'pending';
-  startDate: Date;
-  estimatedDays?: number;
-  currentDay?: number;
-  workStartTime?: string;
-  workEndTime?: string;
-  totalHours?: number | string;
+interface JobStatusCardProps extends Job {
   onDetails?: () => void;
   onEdit?: () => void;
   onComplete?: () => void;
   onDelete?: (id: string) => void;
 }
 
-export const JobStatusCard = ({ 
-  id,
-  customerName, 
-  status, 
-  startDate, 
-  estimatedDays = 1,
-  currentDay = 1,
-  workStartTime,
-  workEndTime,
-  totalHours,
-  onDetails,
-  onEdit,
-  onComplete,
-  onDelete,
-}: JobStatusCardProps) => {
+export const JobStatusCard = (props: JobStatusCardProps) => {
+  const { 
+    id,
+    customerName, 
+    status, 
+    startDate, 
+    estimatedDays = 1,
+    currentDay = 1,
+    workStartTime,
+    workEndTime,
+    totalHours,
+    onDetails,
+    onEdit,
+    onComplete,
+    onDelete,
+    ...job
+  } = props;
+  
+  const { calculateTimeBreakdown, formatMinutesToHours } = useOvertimeCalculation();
   const getStatusIcon = () => {
     switch (status) {
       case 'open':
@@ -115,11 +112,43 @@ export const JobStatusCard = ({
                 </div>
               )}
             </div>
-            {totalHours && (
-              <div className="text-sm font-medium text-primary">
-                Gesamt: {totalHours}
-              </div>
-            )}
+            {/* Time breakdown display */}
+            <div className="grid grid-cols-3 gap-2 text-xs border-t pt-2">
+              {(() => {
+                const timeBreakdown = calculateTimeBreakdown(job as Job);
+                const formatTime = (minutes: number) => {
+                  const hours = Math.floor(minutes / 60);
+                  const mins = minutes % 60;
+                  return `${hours}h ${mins}m`;
+                };
+                
+                return (
+                  <>
+                    <div>
+                      <span className="text-muted-foreground">Anreise:</span>
+                      <div className="font-mono">{formatTime(timeBreakdown.travelTime)}</div>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Arbeit:</span>
+                      <div className="font-mono">{formatTime(timeBreakdown.workTime)}</div>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Abreise:</span>
+                      <div className="font-mono">{formatTime(timeBreakdown.departureTime)}</div>
+                    </div>
+                  </>
+                );
+              })()}
+            </div>
+            <div className="text-sm font-medium text-primary border-t pt-2">
+              Gesamt: {(() => {
+                const timeBreakdown = calculateTimeBreakdown(job as Job);
+                const totalMinutes = timeBreakdown.travelTime + timeBreakdown.workTime + timeBreakdown.departureTime;
+                const hours = Math.floor(totalMinutes / 60);
+                const mins = totalMinutes % 60;
+                return `${hours}h ${mins}m`;
+              })()}
+            </div>
           </div>
         )}
         

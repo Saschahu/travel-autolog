@@ -473,10 +473,11 @@ const Index = () => {
             
             <div className="flex-1 overflow-hidden">
               <Tabs defaultValue="customer" className="h-full flex flex-col">
-                <TabsList className="grid w-full grid-cols-3 flex-shrink-0">
+                <TabsList className="grid w-full grid-cols-4 flex-shrink-0">
                   <TabsTrigger value="customer">Kundendaten</TabsTrigger>
                   <TabsTrigger value="machine">Maschine</TabsTrigger>
                   <TabsTrigger value="times">Zeiten</TabsTrigger>
+                  <TabsTrigger value="overtime">Overtime</TabsTrigger>
                 </TabsList>
                 
                 <div className="flex-1 overflow-y-auto mt-4">
@@ -743,6 +744,10 @@ const Index = () => {
                         ))}
                       </div>
                     </div>
+                  </TabsContent>
+                  
+                  <TabsContent value="overtime" className="space-y-4 mt-0">
+                    {selectedJob && <OvertimeTab job={selectedJob} />}
                   </TabsContent>
                 </div>
               </Tabs>

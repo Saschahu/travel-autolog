@@ -87,24 +87,56 @@ const Index = () => {
     setEditOpen(true);
   };
 
-  const saveEdit = () => {
+  const saveEdit = async () => {
     if (!selectedJob) return;
-    setJobs(prev => prev.map(j => 
-      j.id === selectedJob.id 
-        ? { 
-            ...j, 
-            customerName: editData.customerName,
-            totalHours: editData.totalHours,
-            estimatedDays: editData.estimatedDays,
-            currentDay: editData.currentDay,
-            days: editData.days,
-            // Update legacy fields for display
-            workStartTime: editData.days[0]?.workStart,
-            workEndTime: editData.days[editData.currentDay - 1]?.workEnd,
-          } 
-        : j
-    ));
-    setEditOpen(false);
+    
+    try {
+      // Save to database
+      const { error } = await supabase
+        .from('jobs')
+        .update({
+          customer_name: editData.customerName,
+          estimated_days: editData.estimatedDays,
+          current_day: editData.currentDay,
+          days_data: editData.days, // Store the days array as JSON
+          work_start_time: editData.days[0]?.workStart,
+          work_end_time: editData.days[editData.currentDay - 1]?.workEnd,
+        })
+        .eq('id', selectedJob.id);
+
+      if (error) throw error;
+
+      // Update local state
+      setJobs(prev => prev.map(j => 
+        j.id === selectedJob.id 
+          ? { 
+              ...j, 
+              customerName: editData.customerName,
+              totalHours: editData.totalHours,
+              estimatedDays: editData.estimatedDays,
+              currentDay: editData.currentDay,
+              days: editData.days,
+              // Update legacy fields for display
+              workStartTime: editData.days[0]?.workStart,
+              workEndTime: editData.days[editData.currentDay - 1]?.workEnd,
+            } 
+          : j
+      ));
+      
+      toast({
+        title: 'Gespeichert',
+        description: 'Zeiteinträge wurden erfolgreich gespeichert'
+      });
+      
+      setEditOpen(false);
+    } catch (error) {
+      console.error('Error saving job data:', error);
+      toast({
+        title: 'Fehler',
+        description: 'Fehler beim Speichern der Zeiteinträge',
+        variant: 'destructive'
+      });
+    }
   };
 
   const updateDayField = (dayIndex: number, field: keyof DayData, value: string) => {

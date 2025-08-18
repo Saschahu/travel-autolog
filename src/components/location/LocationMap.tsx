@@ -77,6 +77,39 @@ export const LocationMap: React.FC<LocationMapProps> = ({
     }
   }, [activeToken]);
 
+  // Auto-fit map to show all available pins
+  useEffect(() => {
+    const map = (mapRef.current as any);
+    if (!map) return;
+
+    const points: [number, number][] = [];
+    if (currentLocation) points.push([currentLocation.longitude, currentLocation.latitude]);
+    if (homeLocation) points.push([homeLocation.longitude, homeLocation.latitude]);
+    if (jobLocations && jobLocations.length > 0) {
+      jobLocations.forEach((j) => points.push([j.longitude, j.latitude]));
+    }
+
+    if (points.length === 0) return;
+
+    if (points.length === 1) {
+      map.flyTo({ center: points[0], zoom: 13, duration: 600 });
+    } else {
+      const lngs = points.map((p) => p[0]);
+      const lats = points.map((p) => p[1]);
+      const minLng = Math.min(...lngs);
+      const maxLng = Math.max(...lngs);
+      const minLat = Math.min(...lats);
+      const maxLat = Math.max(...lats);
+      map.fitBounds(
+        [
+          [minLng, minLat],
+          [maxLng, maxLat],
+        ],
+        { padding: 60, maxZoom: 13, duration: 600 }
+      );
+    }
+  }, [currentLocation, homeLocation, jobLocations]);
+
   if (!activeToken || showTokenInput) {
     return (
       <Card className={className}>
@@ -137,7 +170,7 @@ export const LocationMap: React.FC<LocationMapProps> = ({
             initialViewState={{
               longitude: centerLng,
               latitude: centerLat,
-              zoom: 12
+              zoom: 6
             }}
             style={{ width: '100%', height: '100%' }}
             mapStyle="mapbox://styles/mapbox/streets-v11"

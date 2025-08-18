@@ -15,6 +15,30 @@ export type Job = {
   days?: any[];
   customerAddress?: string;
   evaticNo?: string;
+  // Zeit-Felder mit Datum
+  travelStart?: string;
+  travelStartDate?: string;
+  travelEnd?: string;
+  travelEndDate?: string;
+  workStart?: string;
+  workStartDate?: string;
+  workEnd?: string;
+  workEndDate?: string;
+  departureStart?: string;
+  departureStartDate?: string;
+  departureEnd?: string;
+  departureEndDate?: string;
+  // Weitere Felder
+  manufacturer?: string;
+  model?: string;
+  serialNumber?: string;
+  workPerformed?: string;
+  hotelName?: string;
+  hotelAddress?: string;
+  hotelNights?: number;
+  kilometersOutbound?: number;
+  kilometersReturn?: number;
+  tollAmount?: number;
 };
 
 export const useJobs = () => {

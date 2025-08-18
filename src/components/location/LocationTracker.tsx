@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { MapPin, Play, Square, Home, Navigation } from 'lucide-react';
+import { MapPin, Play, Square, Home, Navigation, Globe } from 'lucide-react';
 import { useLocation } from '@/hooks/useLocation';
 import { LocationMap } from './LocationMap';
 
@@ -100,9 +100,14 @@ export const LocationTracker: React.FC = () => {
               </Button>
             )}
             
-            <Button onClick={getCurrentPosition} variant="outline">
+            <Button onClick={() => getCurrentPosition()} variant="outline">
               <MapPin className="h-4 w-4 mr-2" />
-              Position abrufen
+              GPS Position
+            </Button>
+
+            <Button onClick={() => getCurrentPosition(true)} variant="outline">
+              <Globe className="h-4 w-4 mr-2" />
+              IP Position
             </Button>
 
             {currentLocation && !homeLocation && (

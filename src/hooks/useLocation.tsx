@@ -257,8 +257,40 @@ export const useLocation = () => {
     }
   }, []);
 
-  // Get current position
-  const getCurrentPosition = useCallback(async () => {
+// Get current position via IP address
+  const getLocationFromIP = useCallback(async (): Promise<LocationData | null> => {
+    try {
+      setError('Position über IP wird abgerufen...');
+      
+      const response = await fetch('https://ipapi.co/json/');
+      const data = await response.json();
+      
+      if (data.latitude && data.longitude) {
+        const locationData: LocationData = {
+          latitude: data.latitude,
+          longitude: data.longitude,
+          timestamp: Date.now()
+        };
+        
+        setCurrentLocation(locationData);
+        setError('Position über IP erfolgreich abgerufen!');
+        return locationData;
+      } else {
+        throw new Error('Keine Standortdaten verfügbar');
+      }
+    } catch (error) {
+      console.error('Error getting IP location:', error);
+      setError('Fehler beim Abrufen der IP-Position: ' + error.message);
+      return null;
+    }
+  }, []);
+
+  // Get current position (GPS with IP fallback)
+  const getCurrentPosition = useCallback(async (useIPFallback: boolean = false) => {
+    if (useIPFallback) {
+      return await getLocationFromIP();
+    }
+
     try {
       setError(null);
       console.log('Getting current position...');
@@ -273,8 +305,8 @@ export const useLocation = () => {
         console.log('No permissions, requesting...');
         const granted = await requestPermissions();
         if (!granted) {
-          setError('GPS-Berechtigung wurde verweigert.');
-          return null;
+          setError('GPS-Berechtigung wurde verweigert. Versuche IP-Standort...');
+          return await getLocationFromIP();
         }
       }
       
@@ -302,19 +334,19 @@ export const useLocation = () => {
       let errorMessage = 'Fehler beim Abrufen der Position: ';
       
       if (error.code === 1) {
-        errorMessage += 'GPS-Berechtigung verweigert. Bitte erlaube den Standortzugriff.';
+        errorMessage += 'GPS-Berechtigung verweigert.';
       } else if (error.code === 2) {
-        errorMessage += 'Position nicht verfügbar. Überprüfe deine Internetverbindung.';
+        errorMessage += 'Position nicht verfügbar.';
       } else if (error.code === 3) {
-        errorMessage += 'Zeitüberschreitung. Versuche es erneut.';
+        errorMessage += 'Zeitüberschreitung.';
       } else {
         errorMessage += error.message || 'Unbekannter Fehler';
       }
       
-      setError(errorMessage);
-      return null;
+      setError(errorMessage + ' Versuche IP-Standort...');
+      return await getLocationFromIP();
     }
-  }, []);
+  }, [getLocationFromIP, requestPermissions]);
 
   // Check if user is at home
   const checkIfAtHome = useCallback((location: LocationData, home: HomeLocation): boolean => {
@@ -447,6 +479,7 @@ export const useLocation = () => {
     setCurrentAsHome,
     saveHomeLocation,
     getCurrentPosition,
+    getLocationFromIP,
     startTracking,
     stopTracking,
     requestPermissions

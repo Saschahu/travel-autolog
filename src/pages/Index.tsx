@@ -29,11 +29,17 @@ import React from 'react';
 type DayData = {
   day: number;
   travelStart?: string;
+  travelStartDate?: string;
   travelEnd?: string;
+  travelEndDate?: string;
   workStart?: string;
+  workStartDate?: string;
   workEnd?: string;
+  workEndDate?: string;
   departureStart?: string;
+  departureStartDate?: string;
   departureEnd?: string;
+  departureEndDate?: string;
 };
 
 const Index = () => {
@@ -448,12 +454,30 @@ const Index = () => {
                     
                     <div className="grid grid-cols-2 gap-2 text-xs">
                       <div>
+                        <Label htmlFor={`travel-start-date-${dayIndex}`}>Anreise Datum</Label>
+                        <Input 
+                          id={`travel-start-date-${dayIndex}`}
+                          type="date"
+                          value={day.travelStartDate || ''} 
+                          onChange={(e) => updateDayField(dayIndex, 'travelStartDate', e.target.value)} 
+                        />
+                      </div>
+                      <div>
                         <Label htmlFor={`travel-start-${dayIndex}`}>Anreise Start</Label>
                         <Input 
                           id={`travel-start-${dayIndex}`}
                           type="time"
                           value={day.travelStart || ''} 
                           onChange={(e) => updateDayField(dayIndex, 'travelStart', e.target.value)} 
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor={`travel-end-date-${dayIndex}`}>Anreise Ende Datum</Label>
+                        <Input 
+                          id={`travel-end-date-${dayIndex}`}
+                          type="date"
+                          value={day.travelEndDate || ''} 
+                          onChange={(e) => updateDayField(dayIndex, 'travelEndDate', e.target.value)} 
                         />
                       </div>
                       <div>
@@ -466,12 +490,30 @@ const Index = () => {
                         />
                       </div>
                       <div>
+                        <Label htmlFor={`work-start-date-${dayIndex}`}>Arbeit Start Datum</Label>
+                        <Input 
+                          id={`work-start-date-${dayIndex}`}
+                          type="date"
+                          value={day.workStartDate || ''} 
+                          onChange={(e) => updateDayField(dayIndex, 'workStartDate', e.target.value)} 
+                        />
+                      </div>
+                      <div>
                         <Label htmlFor={`work-start-${dayIndex}`}>Arbeit Start</Label>
                         <Input 
                           id={`work-start-${dayIndex}`}
                           type="time"
                           value={day.workStart || ''} 
                           onChange={(e) => updateDayField(dayIndex, 'workStart', e.target.value)} 
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor={`work-end-date-${dayIndex}`}>Arbeit Ende Datum</Label>
+                        <Input 
+                          id={`work-end-date-${dayIndex}`}
+                          type="date"
+                          value={day.workEndDate || ''} 
+                          onChange={(e) => updateDayField(dayIndex, 'workEndDate', e.target.value)} 
                         />
                       </div>
                       <div>
@@ -484,6 +526,15 @@ const Index = () => {
                         />
                       </div>
                       <div>
+                        <Label htmlFor={`departure-start-date-${dayIndex}`}>Abreise Start Datum</Label>
+                        <Input 
+                          id={`departure-start-date-${dayIndex}`}
+                          type="date"
+                          value={day.departureStartDate || ''} 
+                          onChange={(e) => updateDayField(dayIndex, 'departureStartDate', e.target.value)} 
+                        />
+                      </div>
+                      <div>
                         <Label htmlFor={`departure-start-${dayIndex}`}>Abreise Start</Label>
                         <Input 
                           id={`departure-start-${dayIndex}`}
@@ -493,11 +544,20 @@ const Index = () => {
                         />
                       </div>
                       <div>
+                        <Label htmlFor={`departure-end-date-${dayIndex}`}>Abreise Ende Datum</Label>
+                        <Input 
+                          id={`departure-end-date-${dayIndex}`}
+                          type="date"
+                          value={day.departureEndDate || ''} 
+                          onChange={(e) => updateDayField(dayIndex, 'departureEndDate', e.target.value)} 
+                        />
+                      </div>
+                      <div>
                         <Label htmlFor={`departure-end-${dayIndex}`}>Abreise Ende</Label>
                         <Input 
                           id={`departure-end-${dayIndex}`}
                           type="time"
-                          value={day.departureEnd || ''} 
+                          value={day.departureEnd || ''}
                           onChange={(e) => updateDayField(dayIndex, 'departureEnd', e.target.value)} 
                         />
                       </div>

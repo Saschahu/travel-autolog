@@ -24,6 +24,7 @@ import { useUserProfile } from '@/contexts/UserProfileContext';
 import { useToast } from '@/hooks/use-toast';
 import { useJobs, type Job } from '@/hooks/useJobs';
 import { supabase } from '@/integrations/supabase/client';
+import { OvertimeTab } from '@/components/overtime/OvertimeTab';
 import React from 'react';
 
 type DayData = {

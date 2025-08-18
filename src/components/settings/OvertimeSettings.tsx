@@ -161,6 +161,64 @@ export const OvertimeSettings = () => {
             )}
           </div>
           
+          
+          {/* Core Work Hours Settings */}
+          <div className="p-4 border rounded-lg space-y-4">
+            <div className="space-y-1">
+              <Label>Kernarbeitszeit</Label>
+              <p className="text-sm text-muted-foreground">
+                Reguläre Arbeitszeiten - alles außerhalb ist Überstunden
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-3 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="core-start">Start</Label>
+                <Input
+                  id="core-start"
+                  type="time"
+                  value={localSettings.coreWorkStart}
+                  onChange={(e) => 
+                    setLocalSettings(prev => ({ 
+                      ...prev, 
+                      coreWorkStart: e.target.value 
+                    }))
+                  }
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="core-end">Ende</Label>
+                <Input
+                  id="core-end"
+                  type="time"
+                  value={localSettings.coreWorkEnd}
+                  onChange={(e) => 
+                    setLocalSettings(prev => ({ 
+                      ...prev, 
+                      coreWorkEnd: e.target.value 
+                    }))
+                  }
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="guaranteed-hours">Garantierte Stunden</Label>
+                <Input
+                  id="guaranteed-hours"
+                  type="number"
+                  min="1"
+                  max="24"
+                  value={localSettings.guaranteedHours}
+                  onChange={(e) => 
+                    setLocalSettings(prev => ({ 
+                      ...prev, 
+                      guaranteedHours: parseInt(e.target.value) || 8 
+                    }))
+                  }
+                />
+              </div>
+            </div>
+          </div>
+          
           <div className="flex gap-2">
             <Button
               variant="outline"
@@ -186,11 +244,12 @@ export const OvertimeSettings = () => {
           <CardTitle className="text-base">Hinweise</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2 text-sm text-muted-foreground">
-          <p>• Zeitspannen können sich überschneiden</p>
-          <p>• Zuschläge werden automatisch für alle erfassten Zeiten berechnet</p>
-          <p>• Über-Nacht-Zeiten werden korrekt behandelt (z.B. 18:00-06:00)</p>
-          <p>• Standard-Einstellungen: 16-18h (50%), 18-0h (100%), 0-6h (100%), 6-8h (50%)</p>
-          <p>• Wochenend-Zuschläge: Freitag Abend bis Montag Morgen (100%)</p>
+          <p>• <strong>Kernarbeitszeit:</strong> Reguläre Arbeitszeit (Standard: 8-16 Uhr)</p>
+          <p>• <strong>Garantierte Stunden:</strong> Mindestbezahlung pro Tag (Standard: 8h)</p>
+          <p>• <strong>Überstunden:</strong> Alle Zeiten außerhalb der Kernarbeitszeit</p>
+          <p>• <strong>Zuschläge:</strong> Prozentuale Aufschläge für verschiedene Uhrzeiten</p>
+          <p>• <strong>Wochenend-Zuschläge:</strong> Freitag Abend bis Montag Morgen (100%)</p>
+          <p>• <strong>Bezahlung:</strong> Mindestens garantierte Stunden + Überstundenzuschläge</p>
         </CardContent>
       </Card>
     </div>

@@ -8,6 +8,9 @@ export interface OvertimeSettings {
   }[];
   weekendRate: number; // Weekend rate (100 for 100%)
   weekendEnabled: boolean; // Whether weekend rates are enabled
+  coreWorkStart: string; // Core work hours start (e.g., "08:00")
+  coreWorkEnd: string;   // Core work hours end (e.g., "16:00")
+  guaranteedHours: number; // Guaranteed minimum hours per day (e.g., 8)
 }
 
 export interface TimeSlot {
@@ -19,7 +22,10 @@ export interface TimeSlot {
 }
 
 export interface OvertimeCalculation {
-  regularHours: number;
+  guaranteedHours: number; // Always 8 hours minimum
+  actualWorkedHours: number; // Actually worked time
+  coreHours: number; // Hours within 8-16
+  overtimeHours: number; // Hours outside 8-16
   overtimeSlots: {
     slotId: string;
     name: string;
@@ -27,10 +33,12 @@ export interface OvertimeCalculation {
     rate: number;
     amount: number;
     isWeekend?: boolean;
+    isOutsideCore?: boolean;
   }[];
   weekendHours: number;
   totalOvertime: number;
   totalAmount: number;
+  totalPayableHours: number; // guaranteed + overtime amounts
 }
 
 export const DEFAULT_OVERTIME_SETTINGS: OvertimeSettings = {
@@ -65,5 +73,8 @@ export const DEFAULT_OVERTIME_SETTINGS: OvertimeSettings = {
     }
   ],
   weekendRate: 100,
-  weekendEnabled: true
+  weekendEnabled: true,
+  coreWorkStart: '08:00',
+  coreWorkEnd: '16:00',
+  guaranteedHours: 8
 };

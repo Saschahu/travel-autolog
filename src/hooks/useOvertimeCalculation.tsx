@@ -115,9 +115,62 @@ export const useOvertimeCalculation = () => {
     return false;
   };
 
+  const calculateCoreAndOvertimeHours = (timeSlots: TimeSlot[]): { coreHours: number, overtimeHours: number } => {
+    let coreMinutes = 0;
+    let overtimeMinutes = 0;
+    
+    const coreStart = parseTime(overtimeSettings.coreWorkStart);
+    const coreEnd = parseTime(overtimeSettings.coreWorkEnd);
+    
+    timeSlots.forEach(slot => {
+      const slotStart = parseTime(slot.start);
+      const slotEnd = parseTime(slot.end);
+      
+      if (slotEnd < slotStart) {
+        // Overnight slot - need to handle this carefully
+        const beforeMidnight = (24 * 60) - slotStart;
+        const afterMidnight = slotEnd;
+        
+        // Before midnight part
+        if (slotStart < coreEnd) {
+          coreMinutes += Math.min(beforeMidnight, coreEnd - slotStart);
+        }
+        if (slotStart >= coreEnd || (24 * 60) > coreEnd) {
+          overtimeMinutes += beforeMidnight - Math.max(0, Math.min(beforeMidnight, coreEnd - slotStart));
+        }
+        
+        // After midnight part
+        if (slotEnd > coreStart) {
+          coreMinutes += Math.max(0, Math.min(slotEnd, coreEnd) - Math.max(slotEnd, coreStart));
+          overtimeMinutes += slotEnd - Math.min(slotEnd, Math.max(slotEnd, coreStart));
+        } else {
+          overtimeMinutes += afterMidnight;
+        }
+      } else {
+        // Normal slot within same day
+        const overlapStart = Math.max(slotStart, coreStart);
+        const overlapEnd = Math.min(slotEnd, coreEnd);
+        
+        if (overlapEnd > overlapStart) {
+          coreMinutes += overlapEnd - overlapStart;
+        }
+        
+        const totalSlotMinutes = slotEnd - slotStart;
+        const coreSlotMinutes = Math.max(0, overlapEnd - overlapStart);
+        overtimeMinutes += totalSlotMinutes - coreSlotMinutes;
+      }
+    });
+    
+    return {
+      coreHours: formatMinutesToHours(coreMinutes),
+      overtimeHours: formatMinutesToHours(overtimeMinutes)
+    };
+  };
+
   const calculateOvertime = (job: Job): OvertimeCalculation => {
     const timeBreakdown = calculateTimeBreakdown(job);
     const totalMinutes = timeBreakdown.travelTime + timeBreakdown.workTime + timeBreakdown.departureTime;
+    const actualWorkedHours = formatMinutesToHours(totalMinutes);
     
     // Create time slots from job times with dates - check both individual fields and days_data
     const timeSlots: TimeSlot[] = [];
@@ -200,6 +253,9 @@ export const useOvertimeCalculation = () => {
       });
     }
 
+    // Calculate core vs overtime hours
+    const { coreHours, overtimeHours } = calculateCoreAndOvertimeHours(timeSlots);
+
     // Calculate weekend hours first
     let weekendMinutes = 0;
     timeSlots.forEach(slot => {
@@ -272,7 +328,8 @@ export const useOvertimeCalculation = () => {
         hours,
         rate: setting.rate,
         amount: hours * (setting.rate / 100),
-        isWeekend: false
+        isWeekend: false,
+        isOutsideCore: true
       };
     });
 
@@ -285,20 +342,28 @@ export const useOvertimeCalculation = () => {
         hours: weekendHours,
         rate: overtimeSettings.weekendRate,
         amount: weekendHours * (overtimeSettings.weekendRate / 100),
-        isWeekend: true
+        isWeekend: true,
+        isOutsideCore: true
       });
     }
 
     const totalOvertime = overtimeSlots.reduce((sum, slot) => sum + slot.hours, 0);
     const totalAmount = overtimeSlots.reduce((sum, slot) => sum + slot.amount, 0);
-    const regularHours = Math.max(0, formatMinutesToHours(totalMinutes) - totalOvertime);
+    
+    // Guaranteed hours vs actual worked hours
+    const guaranteedHours = overtimeSettings.guaranteedHours;
+    const totalPayableHours = guaranteedHours + totalAmount;
 
     return {
-      regularHours,
+      guaranteedHours,
+      actualWorkedHours,
+      coreHours,
+      overtimeHours,
       overtimeSlots,
       weekendHours,
       totalOvertime,
-      totalAmount
+      totalAmount,
+      totalPayableHours
     };
   };
 

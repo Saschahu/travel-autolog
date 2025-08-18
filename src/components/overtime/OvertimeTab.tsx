@@ -33,22 +33,20 @@ export const OvertimeTab = ({ job }: OvertimeTabProps) => {
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <div className="text-sm text-muted-foreground">Anreisezeit</div>
-              <div className="font-mono text-lg">{formatTime(timeBreakdown.travelTime)}</div>
+              <div className="text-sm text-muted-foreground">Garantierte Stunden</div>
+              <div className="font-mono text-lg font-semibold text-primary">{overtimeCalculation.guaranteedHours}h</div>
             </div>
             <div className="space-y-2">
-              <div className="text-sm text-muted-foreground">Arbeitszeit</div>
-              <div className="font-mono text-lg">{formatTime(timeBreakdown.workTime)}</div>
+              <div className="text-sm text-muted-foreground">Tatsächlich gearbeitet</div>
+              <div className="font-mono text-lg">{overtimeCalculation.actualWorkedHours.toFixed(2)}h</div>
             </div>
             <div className="space-y-2">
-              <div className="text-sm text-muted-foreground">Abreisezeit</div>
-              <div className="font-mono text-lg">{formatTime(timeBreakdown.departureTime)}</div>
+              <div className="text-sm text-muted-foreground">Kernarbeitszeit (8-16h)</div>
+              <div className="font-mono text-lg">{overtimeCalculation.coreHours.toFixed(2)}h</div>
             </div>
             <div className="space-y-2">
-              <div className="text-sm text-muted-foreground">Gesamtzeit</div>
-              <div className="font-mono text-lg font-semibold text-primary">
-                {formatTime(timeBreakdown.travelTime + timeBreakdown.workTime + timeBreakdown.departureTime)}
-              </div>
+              <div className="text-sm text-muted-foreground">Überstunden</div>
+              <div className="font-mono text-lg text-orange-600">{overtimeCalculation.overtimeHours.toFixed(2)}h</div>
             </div>
           </div>
         </CardContent>
@@ -63,10 +61,15 @@ export const OvertimeTab = ({ job }: OvertimeTabProps) => {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {/* Regular Hours */}
+          {/* Regular vs Overtime Hours */}
           <div className="flex justify-between items-center p-3 bg-secondary/30 rounded-md">
-            <div className="text-sm">Normalstunden</div>
-            <div className="font-mono">{overtimeCalculation.regularHours.toFixed(2)}h</div>
+            <div className="text-sm">Kernarbeitszeit (8-16 Uhr)</div>
+            <div className="font-mono">{overtimeCalculation.coreHours.toFixed(2)}h</div>
+          </div>
+          
+          <div className="flex justify-between items-center p-3 bg-orange-50 border border-orange-200 rounded-md">
+            <div className="text-sm text-orange-800">Überstunden (außerhalb 8-16 Uhr)</div>
+            <div className="font-mono text-orange-800">{overtimeCalculation.overtimeHours.toFixed(2)}h</div>
           </div>
 
           {/* Overtime Slots */}
@@ -90,20 +93,25 @@ export const OvertimeTab = ({ job }: OvertimeTabProps) => {
           </div>
 
           {/* Total */}
-          <div className="border-t pt-4">
-            <div className="flex justify-between items-center p-3 bg-primary/10 rounded-md">
+          <div className="border-t pt-4 space-y-3">
+            <div className="flex justify-between items-center p-3 bg-blue-50 border border-blue-200 rounded-md">
               <div className="flex items-center gap-2">
-                <TrendingUp className="h-4 w-4 text-primary" />
-                <span className="font-semibold">Gesamt mit Zuschlägen</span>
+                <TrendingUp className="h-4 w-4 text-blue-600" />
+                <span className="font-semibold text-blue-800">Bezahlbare Stunden</span>
               </div>
               <div className="text-right">
-                <div className="font-mono text-lg font-semibold text-primary">
-                  {(overtimeCalculation.regularHours + overtimeCalculation.totalAmount).toFixed(2)}h
+                <div className="font-mono text-lg font-semibold text-blue-800">
+                  {overtimeCalculation.totalPayableHours.toFixed(2)}h
                 </div>
-                <div className="font-mono text-sm text-muted-foreground">
-                  (+{overtimeCalculation.totalAmount.toFixed(2)}h Zuschlag)
+                <div className="font-mono text-sm text-blue-600">
+                  ({overtimeCalculation.guaranteedHours}h + {overtimeCalculation.totalAmount.toFixed(2)}h Zuschlag)
                 </div>
               </div>
+            </div>
+            
+            <div className="text-xs text-muted-foreground bg-muted/50 p-3 rounded-md">
+              <strong>Erklärung:</strong> Sie erhalten mindestens {overtimeCalculation.guaranteedHours} Stunden bezahlt, 
+              auch wenn Sie weniger arbeiten. Alle Stunden außerhalb 8-16 Uhr sind Überstunden mit Zuschlag.
             </div>
           </div>
         </CardContent>

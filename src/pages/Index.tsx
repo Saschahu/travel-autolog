@@ -25,6 +25,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useJobs, type Job } from '@/hooks/useJobs';
 import { supabase } from '@/integrations/supabase/client';
 import { OvertimeTab } from '@/components/overtime/OvertimeTab';
+import { FinishJobTab } from '@/components/finish/FinishJobTab';
 import React from 'react';
 
 type DayData = {
@@ -70,6 +71,7 @@ const Index = () => {
     kilometersOutbound: 0,
     kilometersReturn: 0,
     tollAmount: 0,
+    workReport: '',
   });
 
 
@@ -108,6 +110,7 @@ const Index = () => {
       kilometersOutbound: job.kilometersOutbound || 0,
       kilometersReturn: job.kilometersReturn || 0,
       tollAmount: job.tollAmount || 0,
+      workReport: job.workReport || '',
     });
     setEditOpen(true);
   };
@@ -138,6 +141,7 @@ const Index = () => {
           kilometers_outbound: editData.kilometersOutbound,
           kilometers_return: editData.kilometersReturn,
           toll_amount: editData.tollAmount,
+          work_report: editData.workReport,
         })
         .eq('id', selectedJob.id);
 
@@ -165,6 +169,7 @@ const Index = () => {
               kilometersOutbound: editData.kilometersOutbound,
               kilometersReturn: editData.kilometersReturn,
               tollAmount: editData.tollAmount,
+              workReport: editData.workReport,
               // Update legacy fields for display
               workStartTime: editData.days[0]?.workStart,
               workEndTime: editData.days[editData.currentDay - 1]?.workEnd,
@@ -474,11 +479,12 @@ const Index = () => {
             
             <div className="flex-1 overflow-hidden">
               <Tabs defaultValue="customer" className="h-full flex flex-col">
-                <TabsList className="grid w-full grid-cols-4 flex-shrink-0">
+                <TabsList className="grid w-full grid-cols-5 flex-shrink-0">
                   <TabsTrigger value="customer">Kundendaten</TabsTrigger>
                   <TabsTrigger value="machine">Maschine</TabsTrigger>
                   <TabsTrigger value="times">Zeiten</TabsTrigger>
                   <TabsTrigger value="overtime">Overtime</TabsTrigger>
+                  <TabsTrigger value="finish">Abschluss</TabsTrigger>
                 </TabsList>
                 
                 <div className="flex-1 overflow-y-auto mt-4">
@@ -755,6 +761,21 @@ const Index = () => {
                           ...editData,
                           days: editData.days
                         } as Job} 
+                      />
+                    )}
+                  </TabsContent>
+                  
+                  <TabsContent value="finish" className="space-y-4 mt-0">
+                    {selectedJob && (
+                      <FinishJobTab 
+                        job={{
+                          ...selectedJob,
+                          ...editData,
+                          days: editData.days
+                        } as Job}
+                        onJobUpdate={(updatedJob) => {
+                          setEditData(prev => ({ ...prev, workReport: updatedJob.workReport }));
+                        }}
                       />
                     )}
                   </TabsContent>

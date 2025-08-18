@@ -47,6 +47,7 @@ export type Database = {
           work_end_date: string | null
           work_end_time: string | null
           work_performed: string | null
+          work_report: string | null
           work_start_date: string | null
           work_start_time: string | null
         }
@@ -82,6 +83,7 @@ export type Database = {
           work_end_date?: string | null
           work_end_time?: string | null
           work_performed?: string | null
+          work_report?: string | null
           work_start_date?: string | null
           work_start_time?: string | null
         }
@@ -117,6 +119,7 @@ export type Database = {
           work_end_date?: string | null
           work_end_time?: string | null
           work_performed?: string | null
+          work_report?: string | null
           work_start_date?: string | null
           work_start_time?: string | null
         }

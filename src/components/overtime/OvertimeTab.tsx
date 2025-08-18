@@ -75,7 +75,9 @@ export const OvertimeTab = ({ job }: OvertimeTabProps) => {
               <div key={slot.slotId} className="flex justify-between items-center p-3 border rounded-md">
                 <div className="space-y-1">
                   <div className="text-sm font-medium">{slot.name}</div>
-                  <Badge variant="secondary">{slot.rate}% Zuschlag</Badge>
+                  <Badge variant={slot.isWeekend ? "default" : "secondary"}>
+                    {slot.rate}% Zuschlag {slot.isWeekend && "• Wochenende"}
+                  </Badge>
                 </div>
                 <div className="text-right space-y-1">
                   <div className="font-mono text-sm">{slot.hours.toFixed(2)}h</div>

@@ -6,11 +6,15 @@ export interface OvertimeSettings {
     rate: number;  // Percentage (50 for 50%, 100 for 100%)
     name: string;  // Display name
   }[];
+  weekendRate: number; // Weekend rate (100 for 100%)
+  weekendEnabled: boolean; // Whether weekend rates are enabled
 }
 
 export interface TimeSlot {
   start: string;
   end: string;
+  startDate?: string; // YYYY-MM-DD format
+  endDate?: string;   // YYYY-MM-DD format
   duration: number; // in minutes
 }
 
@@ -22,7 +26,9 @@ export interface OvertimeCalculation {
     hours: number;
     rate: number;
     amount: number;
+    isWeekend?: boolean;
   }[];
+  weekendHours: number;
   totalOvertime: number;
   totalAmount: number;
 }
@@ -57,5 +63,7 @@ export const DEFAULT_OVERTIME_SETTINGS: OvertimeSettings = {
       rate: 50,
       name: 'Früh 6-8 Uhr'
     }
-  ]
+  ],
+  weekendRate: 100,
+  weekendEnabled: true
 };

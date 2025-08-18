@@ -63,17 +63,50 @@ export const useOvertimeCalculation = () => {
     return { travelTime, workTime, departureTime };
   };
 
+  const isWeekend = (dateString?: string): boolean => {
+    if (!dateString) return false;
+    const date = new Date(dateString);
+    const dayOfWeek = date.getDay(); // 0 = Sunday, 6 = Saturday
+    return dayOfWeek === 0 || dayOfWeek === 6; // Sunday or Saturday
+  };
+
+  const isWeekendTime = (startDate?: string, endDate?: string, startTime?: string, endTime?: string): boolean => {
+    if (!overtimeSettings.weekendEnabled) return false;
+    
+    // Check if any part of the time period falls on weekend
+    if (startDate && isWeekend(startDate)) return true;
+    if (endDate && isWeekend(endDate)) return true;
+    
+    // Special case: Friday evening to Monday morning
+    if (startDate && endDate) {
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      const startDay = start.getDay();
+      const endDay = end.getDay();
+      
+      // Friday (5) to Sunday/Monday (0/1) or Saturday (6) to Monday (1)
+      if ((startDay === 5 && (endDay === 0 || endDay === 1)) || 
+          (startDay === 6 && endDay === 1)) {
+        return true;
+      }
+    }
+    
+    return false;
+  };
+
   const calculateOvertime = (job: Job): OvertimeCalculation => {
     const timeBreakdown = calculateTimeBreakdown(job);
     const totalMinutes = timeBreakdown.travelTime + timeBreakdown.workTime + timeBreakdown.departureTime;
     
-    // Create time slots from job times
+    // Create time slots from job times with dates
     const timeSlots: TimeSlot[] = [];
     
     if (job.travelStart && job.travelEnd) {
       timeSlots.push({
         start: job.travelStart,
         end: job.travelEnd,
+        startDate: job.travelStartDate,
+        endDate: job.travelEndDate,
         duration: timeBreakdown.travelTime
       });
     }
@@ -82,6 +115,8 @@ export const useOvertimeCalculation = () => {
       timeSlots.push({
         start: job.workStart,
         end: job.workEnd,
+        startDate: job.workStartDate,
+        endDate: job.workEndDate,
         duration: timeBreakdown.workTime
       });
     }
@@ -90,14 +125,27 @@ export const useOvertimeCalculation = () => {
       timeSlots.push({
         start: job.departureStart,
         end: job.departureEnd,
+        startDate: job.departureStartDate,
+        endDate: job.departureEndDate,
         duration: timeBreakdown.departureTime
       });
     }
+
+    // Calculate weekend hours first
+    let weekendMinutes = 0;
+    timeSlots.forEach(slot => {
+      if (isWeekendTime(slot.startDate, slot.endDate, slot.start, slot.end)) {
+        weekendMinutes += slot.duration;
+      }
+    });
 
     const overtimeSlots = overtimeSettings.timeSlots.map(setting => {
       let overlappingMinutes = 0;
       
       timeSlots.forEach(slot => {
+        // Skip weekend calculation for time-based slots if weekend rate applies
+        const slotIsWeekend = isWeekendTime(slot.startDate, slot.endDate, slot.start, slot.end);
+        
         const slotStart = parseTime(slot.start);
         const slotEnd = parseTime(slot.end);
         const settingStart = parseTime(setting.start);
@@ -111,17 +159,27 @@ export const useOvertimeCalculation = () => {
             const overlapStart = Math.max(slotStart, settingStart);
             const overlapEnd = Math.min(slotEnd + 24 * 60, settingEnd + 24 * 60);
             if (overlapEnd > overlapStart) {
-              overlappingMinutes += overlapEnd - overlapStart;
+              const overlap = overlapEnd - overlapStart;
+              // Don't double-count weekend time
+              if (!slotIsWeekend || !overtimeSettings.weekendEnabled) {
+                overlappingMinutes += overlap;
+              }
             }
           } else {
             // Slot doesn't span midnight
             // Check first part (start to midnight)
             if (slotStart >= settingStart) {
-              overlappingMinutes += Math.min(slotEnd, 24 * 60) - slotStart;
+              const overlap = Math.min(slotEnd, 24 * 60) - slotStart;
+              if (!slotIsWeekend || !overtimeSettings.weekendEnabled) {
+                overlappingMinutes += overlap;
+              }
             }
             // Check second part (midnight to end)
             if (slotEnd <= settingEnd) {
-              overlappingMinutes += slotEnd - Math.max(slotStart, 0);
+              const overlap = slotEnd - Math.max(slotStart, 0);
+              if (!slotIsWeekend || !overtimeSettings.weekendEnabled) {
+                overlappingMinutes += overlap;
+              }
             }
           }
         } else {
@@ -129,7 +187,11 @@ export const useOvertimeCalculation = () => {
           const overlapStart = Math.max(slotStart, settingStart);
           const overlapEnd = Math.min(slotEnd, settingEnd);
           if (overlapEnd > overlapStart) {
-            overlappingMinutes += overlapEnd - overlapStart;
+            const overlap = overlapEnd - overlapStart;
+            // Don't double-count weekend time
+            if (!slotIsWeekend || !overtimeSettings.weekendEnabled) {
+              overlappingMinutes += overlap;
+            }
           }
         }
       });
@@ -140,17 +202,32 @@ export const useOvertimeCalculation = () => {
         name: setting.name,
         hours,
         rate: setting.rate,
-        amount: hours * (setting.rate / 100)
+        amount: hours * (setting.rate / 100),
+        isWeekend: false
       };
     });
 
+    // Add weekend overtime slot if enabled and there are weekend hours
+    const weekendHours = formatMinutesToHours(weekendMinutes);
+    if (overtimeSettings.weekendEnabled && weekendHours > 0) {
+      overtimeSlots.push({
+        slotId: 'weekend',
+        name: 'Wochenende (Fr-So/Mo)',
+        hours: weekendHours,
+        rate: overtimeSettings.weekendRate,
+        amount: weekendHours * (overtimeSettings.weekendRate / 100),
+        isWeekend: true
+      });
+    }
+
     const totalOvertime = overtimeSlots.reduce((sum, slot) => sum + slot.hours, 0);
     const totalAmount = overtimeSlots.reduce((sum, slot) => sum + slot.amount, 0);
-    const regularHours = formatMinutesToHours(totalMinutes) - totalOvertime;
+    const regularHours = Math.max(0, formatMinutesToHours(totalMinutes) - totalOvertime);
 
     return {
-      regularHours: Math.max(0, regularHours),
+      regularHours,
       overtimeSlots,
+      weekendHours,
       totalOvertime,
       totalAmount
     };

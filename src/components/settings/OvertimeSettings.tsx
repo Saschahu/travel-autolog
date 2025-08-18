@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
+import { Switch } from '@/components/ui/switch';
 import { Clock, Plus, Trash2, Save } from 'lucide-react';
 import { useOvertimeCalculation } from '@/hooks/useOvertimeCalculation';
 import { OvertimeSettings as OvertimeSettingsType } from '@/types/overtime';
@@ -121,6 +122,45 @@ export const OvertimeSettings = () => {
             </div>
           ))}
           
+          {/* Weekend Settings */}
+          <div className="p-4 border rounded-lg space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <Label htmlFor="weekend-enabled">Wochenend-Zuschläge</Label>
+                <p className="text-sm text-muted-foreground">
+                  Automatische Zuschläge von Freitag Abend bis Montag Morgen
+                </p>
+              </div>
+              <Switch
+                id="weekend-enabled"
+                checked={localSettings.weekendEnabled}
+                onCheckedChange={(checked) => 
+                  setLocalSettings(prev => ({ ...prev, weekendEnabled: checked }))
+                }
+              />
+            </div>
+            
+            {localSettings.weekendEnabled && (
+              <div className="space-y-2">
+                <Label htmlFor="weekend-rate">Wochenend-Zuschlag (%)</Label>
+                <Input
+                  id="weekend-rate"
+                  type="number"
+                  min="0"
+                  max="200"
+                  value={localSettings.weekendRate}
+                  onChange={(e) => 
+                    setLocalSettings(prev => ({ 
+                      ...prev, 
+                      weekendRate: parseInt(e.target.value) || 0 
+                    }))
+                  }
+                  placeholder="100"
+                />
+              </div>
+            )}
+          </div>
+          
           <div className="flex gap-2">
             <Button
               variant="outline"
@@ -150,6 +190,7 @@ export const OvertimeSettings = () => {
           <p>• Zuschläge werden automatisch für alle erfassten Zeiten berechnet</p>
           <p>• Über-Nacht-Zeiten werden korrekt behandelt (z.B. 18:00-06:00)</p>
           <p>• Standard-Einstellungen: 16-18h (50%), 18-0h (100%), 0-6h (100%), 6-8h (50%)</p>
+          <p>• Wochenend-Zuschläge: Freitag Abend bis Montag Morgen (100%)</p>
         </CardContent>
       </Card>
     </div>

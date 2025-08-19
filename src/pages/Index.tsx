@@ -467,28 +467,28 @@ const Index = () => {
         <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Auftragsdetails</DialogTitle>
-              <DialogDescription>Informationen zum ausgewählten Auftrag</DialogDescription>
+              <DialogTitle>{t('jobDetails')}</DialogTitle>
+              <DialogDescription>{t('jobDetailsDescription')}</DialogDescription>
             </DialogHeader>
             <div className="space-y-2 text-sm">
-              <div><span className="font-medium">Kunde:</span> {selectedJob?.customerName}</div>
-              <div><span className="font-medium">Status:</span> {selectedJob?.status}</div>
-              <div><span className="font-medium">Startdatum:</span> {selectedJob ? selectedJob.startDate.toLocaleDateString() : ''}</div>
+              <div><span className="font-medium">{t('customer')}:</span> {selectedJob?.customerName}</div>
+              <div><span className="font-medium">{t('status')}:</span> {selectedJob?.status}</div>
+              <div><span className="font-medium">{t('startDate')}:</span> {selectedJob ? selectedJob.startDate.toLocaleDateString() : ''}</div>
               {selectedJob?.estimatedDays !== undefined && (
-                <div><span className="font-medium">Tage:</span> {selectedJob?.currentDay}/{selectedJob?.estimatedDays}</div>
+                <div><span className="font-medium">{t('days')}:</span> {selectedJob?.currentDay}/{selectedJob?.estimatedDays}</div>
               )}
               {selectedJob?.workStartTime && (
-                <div><span className="font-medium">Arbeitsbeginn:</span> {selectedJob.workStartTime}</div>
+                <div><span className="font-medium">{t('workStart')}:</span> {selectedJob.workStartTime}</div>
               )}
               {selectedJob?.workEndTime && (
-                <div><span className="font-medium">Arbeitsende:</span> {selectedJob.workEndTime}</div>
+                <div><span className="font-medium">{t('workEnd')}:</span> {selectedJob.workEndTime}</div>
               )}
               {selectedJob?.totalHours && (
-                <div><span className="font-medium">Gesamtstunden:</span> {selectedJob.totalHours}h</div>
+                <div><span className="font-medium">{t('totalHours')}:</span> {selectedJob.totalHours}h</div>
               )}
             </div>
             <DialogFooter>
-              <Button variant="outline" onClick={() => setDetailsOpen(false)}>Schließen</Button>
+              <Button variant="outline" onClick={() => setDetailsOpen(false)}>{t('close')}</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -496,8 +496,8 @@ const Index = () => {
         <Dialog open={editOpen} onOpenChange={setEditOpen}>
           <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
             <DialogHeader className="flex-shrink-0">
-              <DialogTitle>Auftrag bearbeiten</DialogTitle>
-              <DialogDescription>Alle Job-Daten bearbeiten</DialogDescription>
+              <DialogTitle>{t('editJob')}</DialogTitle>
+              <DialogDescription>{t('editAllJobData')}</DialogDescription>
             </DialogHeader>
             
             <div className="flex-1 overflow-hidden">
@@ -514,56 +514,56 @@ const Index = () => {
                   <TabsContent value="customer" className="space-y-4 mt-0">
                     <div className="space-y-4">
                       <div>
-                        <Label htmlFor="edit-customer">Kundenname *</Label>
+                        <Label htmlFor="edit-customer">{t('customerName')} *</Label>
                         <Input 
                           id="edit-customer" 
                           value={editData.customerName} 
                           onChange={(e) => setEditData(prev => ({ ...prev, customerName: e.target.value }))} 
-                          placeholder="Name des Kunden"
+                          placeholder={t('customerNamePlaceholder')}
                         />
                       </div>
                       <div>
-                        <Label htmlFor="edit-customer-address">Kundenadresse</Label>
+                        <Label htmlFor="edit-customer-address">{t('customerAddress')}</Label>
                         <Input 
                           id="edit-customer-address" 
                           value={editData.customerAddress} 
                           onChange={(e) => setEditData(prev => ({ ...prev, customerAddress: e.target.value }))} 
-                          placeholder="Vollständige Adresse des Kunden"
+                          placeholder={t('customerAddressPlaceholder')}
                         />
                       </div>
                       <div>
-                        <Label htmlFor="edit-evatic">EVATIC-Nummer</Label>
+                        <Label htmlFor="edit-evatic">{t('evaticNumber')}</Label>
                         <Input 
                           id="edit-evatic" 
                           value={editData.evaticNo} 
                           onChange={(e) => setEditData(prev => ({ ...prev, evaticNo: e.target.value }))} 
-                          placeholder="EVATIC-Nummer (falls vorhanden)"
+                          placeholder={t('evaticPlaceholder')}
                         />
                       </div>
                       
                       <div className="border-t pt-4">
-                        <h4 className="font-medium text-sm mb-3">Hotel & Übernachtung</h4>
+                        <h4 className="font-medium text-sm mb-3">{t('hotelOvernight')}</h4>
                         <div className="space-y-3">
                           <div>
-                            <Label htmlFor="edit-hotel-name">Hotel Name</Label>
+                            <Label htmlFor="edit-hotel-name">{t('hotelName')}</Label>
                             <Input 
                               id="edit-hotel-name" 
                               value={editData.hotelName} 
                               onChange={(e) => setEditData(prev => ({ ...prev, hotelName: e.target.value }))} 
-                              placeholder="Name des Hotels"
+                              placeholder={t('hotelNamePlaceholder')}
                             />
                           </div>
                           <div>
-                            <Label htmlFor="edit-hotel-address">Hotel Adresse</Label>
+                            <Label htmlFor="edit-hotel-address">{t('hotelAddress')}</Label>
                             <Input 
                               id="edit-hotel-address" 
                               value={editData.hotelAddress} 
                               onChange={(e) => setEditData(prev => ({ ...prev, hotelAddress: e.target.value }))} 
-                              placeholder="Adresse des Hotels"
+                              placeholder={t('hotelAddressPlaceholder')}
                             />
                           </div>
                           <div>
-                            <Label htmlFor="edit-hotel-nights">Anzahl Nächte</Label>
+                            <Label htmlFor="edit-hotel-nights">{t('hotelNights')}</Label>
                             <Input 
                               id="edit-hotel-nights" 
                               type="number"
@@ -576,10 +576,10 @@ const Index = () => {
                       </div>
                       
                       <div className="border-t pt-4">
-                        <h4 className="font-medium text-sm mb-3">Reisekosten</h4>
+                        <h4 className="font-medium text-sm mb-3">{t('travelCosts')}</h4>
                         <div className="grid grid-cols-3 gap-3">
                           <div>
-                            <Label htmlFor="edit-km-outbound">Kilometer Hinfahrt</Label>
+                            <Label htmlFor="edit-km-outbound">{t('kmOutbound')}</Label>
                             <Input 
                               id="edit-km-outbound" 
                               type="number"
@@ -589,7 +589,7 @@ const Index = () => {
                             />
                           </div>
                           <div>
-                            <Label htmlFor="edit-km-return">Kilometer Rückfahrt</Label>
+                            <Label htmlFor="edit-km-return">{t('kmInbound')}</Label>
                             <Input 
                               id="edit-km-return" 
                               type="number"
@@ -599,7 +599,7 @@ const Index = () => {
                             />
                           </div>
                           <div>
-                            <Label htmlFor="edit-toll">Mautgebühren (€)</Label>
+                            <Label htmlFor="edit-toll">{t('tollFees')}</Label>
                             <Input 
                               id="edit-toll" 
                               type="number"
@@ -618,41 +618,41 @@ const Index = () => {
                     <div className="space-y-4">
                       <div className="grid grid-cols-2 gap-3">
                         <div>
-                          <Label htmlFor="edit-manufacturer">Hersteller</Label>
+                          <Label htmlFor="edit-manufacturer">{t('manufacturer')}</Label>
                           <Input 
                             id="edit-manufacturer"
                             value={editData.manufacturer} 
                             onChange={(e) => setEditData(prev => ({ ...prev, manufacturer: e.target.value }))} 
-                            placeholder="z.B. Siemens, ABB, Schneider"
+                            placeholder={t('manufacturerPlaceholder')}
                           />
                         </div>
                         <div>
-                          <Label htmlFor="edit-model">Modell/Typ</Label>
+                          <Label htmlFor="edit-model">{t('modelType')}</Label>
                           <Input 
                             id="edit-model"
                             value={editData.model} 
                             onChange={(e) => setEditData(prev => ({ ...prev, model: e.target.value }))} 
-                            placeholder="z.B. S7-1200, CP1E"
+                            placeholder={t('modelPlaceholder')}
                           />
                         </div>
                       </div>
                       <div>
-                        <Label htmlFor="edit-serial">Seriennummer</Label>
+                        <Label htmlFor="edit-serial">{t('serialNumber')}</Label>
                         <Input 
                           id="edit-serial"
                           value={editData.serialNumber} 
                           onChange={(e) => setEditData(prev => ({ ...prev, serialNumber: e.target.value }))} 
-                          placeholder="Seriennummer der Maschine/Anlage"
+                          placeholder={t('serialPlaceholder')}
                         />
                       </div>
                       <div>
-                        <Label htmlFor="edit-work-performed">Durchgeführte Arbeiten</Label>
+                        <Label htmlFor="edit-work-performed">{t('workPerformed')}</Label>
                         <textarea 
                           id="edit-work-performed"
                           className="w-full min-h-[120px] p-3 border rounded-md resize-y"
                           value={editData.workPerformed} 
                           onChange={(e) => setEditData(prev => ({ ...prev, workPerformed: e.target.value }))} 
-                          placeholder="Detaillierte Beschreibung der durchgeführten Arbeiten..."
+                          placeholder={t('workPerformedPlaceholder')}
                         />
                       </div>
                     </div>
@@ -662,7 +662,7 @@ const Index = () => {
                     <div className="space-y-4">
                       <div className="grid grid-cols-3 gap-3">
                         <div>
-                          <Label htmlFor="edit-estimated-days">Geplante Tage</Label>
+                          <Label htmlFor="edit-estimated-days">{t('estimatedDays')}</Label>
                           <Input 
                             id="edit-estimated-days" 
                             type="number"
@@ -672,7 +672,7 @@ const Index = () => {
                           />
                         </div>
                         <div>
-                          <Label htmlFor="edit-current-day">Aktueller Tag</Label>
+                          <Label htmlFor="edit-current-day">{t('currentDay')}</Label>
                           <Input 
                             id="edit-current-day" 
                             type="number"
@@ -683,7 +683,7 @@ const Index = () => {
                           />
                         </div>
                         <div>
-                          <Label htmlFor="edit-total-hours">Gesamtzeit</Label>
+                          <Label htmlFor="edit-total-hours">{t('totalHours')}</Label>
                           <Input 
                             id="edit-total-hours" 
                             type="text"
@@ -696,16 +696,16 @@ const Index = () => {
                       </div>
                       
                       <p className="text-xs text-muted-foreground">
-                        Gesamtzeit wird automatisch berechnet: Anreise + Arbeitszeit + Abreise aller Tage
+                        {t('totalTimeCalculated')}
                       </p>
 
                       {/* Daily Time Entries */}
                       <div className="space-y-4">
-                        <h4 className="font-medium text-sm">Tägliche Zeiten</h4>
+                        <h4 className="font-medium text-sm">{t('dailyTimes')}</h4>
                         {editData.days.map((day, dayIndex) => (
                           <div key={dayIndex} className="border rounded-lg p-4 space-y-3">
                             <div className="flex items-center gap-3">
-                              <h5 className="font-medium text-sm text-primary">Tag {day.day}</h5>
+                              <h5 className="font-medium text-sm text-primary">{t('day')} {day.day}</h5>
                               <Input 
                                 type="date"
                                 value={day.date || ''} 
@@ -714,62 +714,62 @@ const Index = () => {
                               />
                             </div>
                             
-                            <div className="grid grid-cols-2 gap-2 text-xs">
-                              <div>
-                                <Label htmlFor={`travel-start-${dayIndex}`}>Anreise Start</Label>
-                                <Input 
-                                  id={`travel-start-${dayIndex}`}
-                                  type="time"
-                                  value={day.travelStart || ''} 
-                                  onChange={(e) => updateDayField(dayIndex, 'travelStart', e.target.value)} 
-                                />
-                              </div>
-                              <div>
-                                <Label htmlFor={`travel-end-${dayIndex}`}>Anreise Ende</Label>
-                                <Input 
-                                  id={`travel-end-${dayIndex}`}
-                                  type="time"
-                                  value={day.travelEnd || ''} 
-                                  onChange={(e) => updateDayField(dayIndex, 'travelEnd', e.target.value)} 
-                                />
-                              </div>
-                              <div>
-                                <Label htmlFor={`work-start-${dayIndex}`}>Arbeit Start</Label>
-                                <Input 
-                                  id={`work-start-${dayIndex}`}
-                                  type="time"
-                                  value={day.workStart || ''} 
-                                  onChange={(e) => updateDayField(dayIndex, 'workStart', e.target.value)} 
-                                />
-                              </div>
-                              <div>
-                                <Label htmlFor={`work-end-${dayIndex}`}>Arbeit Ende</Label>
-                                <Input 
-                                  id={`work-end-${dayIndex}`}
-                                  type="time"
-                                  value={day.workEnd || ''} 
-                                  onChange={(e) => updateDayField(dayIndex, 'workEnd', e.target.value)} 
-                                />
-                              </div>
-                              <div>
-                                <Label htmlFor={`departure-start-${dayIndex}`}>Abreise Start</Label>
-                                <Input 
-                                  id={`departure-start-${dayIndex}`}
-                                  type="time"
-                                  value={day.departureStart || ''} 
-                                  onChange={(e) => updateDayField(dayIndex, 'departureStart', e.target.value)} 
-                                />
-                              </div>
-                              <div>
-                                <Label htmlFor={`departure-end-${dayIndex}`}>Abreise Ende</Label>
-                                <Input 
-                                  id={`departure-end-${dayIndex}`}
-                                  type="time"
-                                  value={day.departureEnd || ''} 
-                                  onChange={(e) => updateDayField(dayIndex, 'departureEnd', e.target.value)} 
-                                />
-                              </div>
-                            </div>
+                             <div className="grid grid-cols-2 gap-2 text-xs">
+                               <div>
+                                 <Label htmlFor={`travel-start-${dayIndex}`}>{t('travelStart')}</Label>
+                                 <Input 
+                                   id={`travel-start-${dayIndex}`}
+                                   type="time"
+                                   value={day.travelStart || ''} 
+                                   onChange={(e) => updateDayField(dayIndex, 'travelStart', e.target.value)} 
+                                 />
+                               </div>
+                               <div>
+                                 <Label htmlFor={`travel-end-${dayIndex}`}>{t('travelEnd')}</Label>
+                                 <Input 
+                                   id={`travel-end-${dayIndex}`}
+                                   type="time"
+                                   value={day.travelEnd || ''} 
+                                   onChange={(e) => updateDayField(dayIndex, 'travelEnd', e.target.value)} 
+                                 />
+                               </div>
+                               <div>
+                                 <Label htmlFor={`work-start-${dayIndex}`}>{t('workStart')}</Label>
+                                 <Input 
+                                   id={`work-start-${dayIndex}`}
+                                   type="time"
+                                   value={day.workStart || ''} 
+                                   onChange={(e) => updateDayField(dayIndex, 'workStart', e.target.value)} 
+                                 />
+                               </div>
+                               <div>
+                                 <Label htmlFor={`work-end-${dayIndex}`}>{t('workEnd')}</Label>
+                                 <Input 
+                                   id={`work-end-${dayIndex}`}
+                                   type="time"
+                                   value={day.workEnd || ''} 
+                                   onChange={(e) => updateDayField(dayIndex, 'workEnd', e.target.value)} 
+                                 />
+                               </div>
+                               <div>
+                                 <Label htmlFor={`departure-start-${dayIndex}`}>{t('departureStart')}</Label>
+                                 <Input 
+                                   id={`departure-start-${dayIndex}`}
+                                   type="time"
+                                   value={day.departureStart || ''} 
+                                   onChange={(e) => updateDayField(dayIndex, 'departureStart', e.target.value)} 
+                                 />
+                               </div>
+                               <div>
+                                 <Label htmlFor={`departure-end-${dayIndex}`}>{t('departureEnd')}</Label>
+                                 <Input 
+                                   id={`departure-end-${dayIndex}`}
+                                   type="time"
+                                   value={day.departureEnd || ''} 
+                                   onChange={(e) => updateDayField(dayIndex, 'departureEnd', e.target.value)} 
+                                 />
+                               </div>
+                             </div>
                           </div>
                         ))}
                       </div>
@@ -807,8 +807,8 @@ const Index = () => {
             </div>
             
             <DialogFooter className="flex-shrink-0 mt-4">
-              <Button variant="outline" onClick={() => setEditOpen(false)}>Abbrechen</Button>
-              <Button onClick={saveEdit}>Speichern</Button>
+              <Button variant="outline" onClick={() => setEditOpen(false)}>{t('cancel')}</Button>
+              <Button onClick={saveEdit}>{t('save')}</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>

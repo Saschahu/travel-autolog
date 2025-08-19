@@ -20,6 +20,13 @@ export const OvertimeTab = ({ job }: OvertimeTabProps) => {
     return `${hours}h ${mins}m`;
   };
 
+  const formatHoursToStdMin = (decimalHours: number) => {
+    const totalMinutes = Math.round(decimalHours * 60);
+    const hours = Math.floor(totalMinutes / 60);
+    const mins = totalMinutes % 60;
+    return `${hours} Std ${mins} Min`;
+  };
+
   return (
     <div className="space-y-6">
       {/* Time Breakdown */}
@@ -38,7 +45,7 @@ export const OvertimeTab = ({ job }: OvertimeTabProps) => {
             </div>
             <div className="space-y-2">
               <div className="text-sm text-muted-foreground">Tatsächlich gearbeitet</div>
-              <div className="font-mono text-lg">{overtimeCalculation.actualWorkedHours.toFixed(2)}h</div>
+              <div className="font-mono text-lg">{formatHoursToStdMin(overtimeCalculation.actualWorkedHours)}</div>
             </div>
             <div className="space-y-2">
               <div className="text-sm text-muted-foreground">Reguläre Stunden</div>

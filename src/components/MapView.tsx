@@ -11,37 +11,42 @@ export default function MapView() {
 
   useEffect(() => {
     if (!el.current || mapRef.current) return;
-    if (!mapboxgl.accessToken) {
+    if (!mapboxgl.accessToken || mapboxgl.accessToken.includes('XXXXXXXXXXXXXXXXXXXX')) {
       // Zeige Hinweis im UI, keine Karte initialisieren
       return;
     }
-    mapRef.current = new mapboxgl.Map({
-      container: el.current,
-      style: 'mapbox://styles/mapbox/streets-v12',
-      center: [10.75, 59.91], // Oslo (neutraler Default)
-      zoom: 12,
-    });
+    
+    try {
+      mapRef.current = new mapboxgl.Map({
+        container: el.current,
+        style: 'mapbox://styles/mapbox/streets-v12',
+        center: [10.75, 59.91], // Oslo (neutraler Default)
+        zoom: 12,
+      });
 
-    // Add GeolocateControl for user location
-    const geo = new mapboxgl.GeolocateControl({
-      positionOptions: { enableHighAccuracy: true },
-      trackUserLocation: true,
-      showUserHeading: true,
-      fitBoundsOptions: { maxZoom: 15 }
-    });
-    geoControlRef.current = geo;
-    mapRef.current.addControl(geo, 'top-right');
+      // Add GeolocateControl for user location
+      const geo = new mapboxgl.GeolocateControl({
+        positionOptions: { enableHighAccuracy: true },
+        trackUserLocation: true,
+        showUserHeading: true,
+        fitBoundsOptions: { maxZoom: 15 }
+      });
+      geoControlRef.current = geo;
+      mapRef.current.addControl(geo, 'top-right');
 
-    // Center map on first geolocate event
-    geo.once('geolocate', (e: GeolocationPosition) => {
-      const { longitude: lng, latitude: lat } = e.coords;
-      mapRef.current?.easeTo({ center: [lng, lat], zoom: 14 });
-    });
+      // Center map on first geolocate event
+      geo.once('geolocate', (e: GeolocationPosition) => {
+        const { longitude: lng, latitude: lat } = e.coords;
+        mapRef.current?.easeTo({ center: [lng, lat], zoom: 14 });
+      });
 
-    // Trigger geolocation automatically after map loads
-    mapRef.current.on('load', () => {
-      setTimeout(() => geo.trigger(), 300);
-    });
+      // Trigger geolocation automatically after map loads
+      mapRef.current.on('load', () => {
+        setTimeout(() => geo.trigger(), 300);
+      });
+    } catch (error) {
+      console.error('Mapbox initialization failed:', error);
+    }
 
     return () => mapRef.current?.remove();
   }, []);
@@ -50,12 +55,14 @@ export default function MapView() {
     geoControlRef.current?.trigger();
   };
 
-  if (!mapboxgl.accessToken) {
+  if (!mapboxgl.accessToken || mapboxgl.accessToken.includes('XXXXXXXXXXXXXXXXXXXX')) {
     return (
       <div className="p-3 rounded bg-yellow-50 text-yellow-900 text-sm">
-        Mapbox-Token fehlt. Lege im Projektroot eine <code>.env</code> an mit
-        <pre className="mt-2">VITE_MAPBOX_TOKEN=pk_...</pre>
-        und setze im Build ein gleichnamiges Secret. Danach App neu starten.
+        <strong>Mapbox-Token fehlt oder ist ungültig.</strong>
+        <br />
+        Hole dir einen echten Token von <a href="https://mapbox.com" target="_blank" rel="noopener noreferrer" className="underline">mapbox.com</a> und füge ihn in die <code>.env</code> ein:
+        <pre className="mt-2">VITE_MAPBOX_TOKEN=dein_echter_token_hier</pre>
+        Danach App neu starten.
       </div>
     );
   }

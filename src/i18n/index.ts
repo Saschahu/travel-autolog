@@ -5,317 +5,296 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 const resources = {
   en: {
     translation: {
-      // Navigation
+      // Navigation and Tabs
       dashboard: 'Dashboard',
-      newEntry: 'New Entry',
       newJob: 'New Job',
       location: 'Location',
       export: 'Export',
-      gps: 'GPS',
-      settings: 'Settings',
       
-      // Tabs
+      // Job Entry Form Tabs
       customer: 'Customer',
       machine: 'Machine',
       times: 'Times',
       overtime: 'Overtime',
       finish: 'Finish',
-      profile: 'Profile',
       
-      // Dashboard
-      activeJobs: 'Active Jobs',
-      completedJobs: 'Completed Jobs',
-      totalHours: 'Total Hours',
-      jobStatus: 'Job Status',
-      customerName: 'Customer Name',
-      startDate: 'Start Date',
-      currentDay: 'Current Day',
-      status: 'Status',
-      active: 'Active',
-      completed: 'Completed',
-      pending: 'Pending',
-      open: 'Open',
-      start: 'Start',
-      pause: 'Pause',
-      
-      // Job Entry Form
-      addNewJob: 'Add New Job',
-      estimatedDays: 'Estimated Days',
-      workStart: 'Work Start',
-      workEnd: 'Work End',
-      travelStart: 'Travel Start',
-      travelEnd: 'Travel End',
-      departureStart: 'Departure Start',
-      departureEnd: 'Departure End',
-      totalTime: 'Total Time (Travel + Work)',
-      addJob: 'Add Job',
-      cancel: 'Cancel',
-      day: 'Day',
-      details: 'Details',
-      edit: 'Edit',
-      delete: 'Delete',
-      
-      // Quick Actions
+      // Dashboard and Quick Actions
       quickActions: 'Quick Actions',
       
       // Job Filter
-      filterJobs: 'Filter Jobs...',
-      openJobs: 'Open (to be processed)',
-      activeJobsFilter: 'Active (currently in progress)',
+      openJobs: 'Open Jobs',
+      activeJobsFilter: 'Active Jobs',
       completedJobsFilter: 'Completed',
-      completedSentJobs: 'Completed and Sent',
+      completedSentJobs: 'Completed & Sent',
       allJobs: 'All Jobs',
+      filterJobs: 'Filter jobs...',
       
-      // GPS
-      locationStatus: 'Location Status',
-      gpsTracking: 'GPS Tracking',
-      activeStatus: 'Active',
-      inactive: 'Inactive',
-      atHome: 'At Home',
-      away: 'Away',
-      currentLocation: 'Current Location',
-      getGpsPosition: 'Get GPS Position',
-      setAsHome: 'Set as Home',
-      homeSettings: 'Home Settings',
-      savedHome: 'Saved Home',
-      radius: 'Radius (Meters)',
-      manualSet: 'Manual Set',
-      latitude: 'Latitude',
-      longitude: 'Longitude',
-      instructions: 'Instructions',
+      // Job Status
+      open: 'Open',
+      active: 'Active',
+      completed: 'Completed',
+      pending: 'Pending',
+      
+      // Actions
+      start: 'Start',
+      pause: 'Pause',
+      details: 'Details',
+      edit: 'Edit',
       
       // Settings
-      userProfile: 'User Profile',
-      name: 'Name',
-      homeAddress: 'Home Address',
-      preferredLanguage: 'Preferred Language',
-      gpsSettings: 'GPS Settings',
-      enableGps: 'Enable GPS',
-      homeLocation: 'Home Location',
-      save: 'Save',
+      profile: 'Profile',
+      gps: 'GPS',
       
-      // Notifications
-      locationLeft: 'Location Left',
-      leftHomeMessage: 'You have left your home. Work or private?',
-      work: 'Work',
-      private: 'Private',
-      locationUpdated: 'Location Updated',
-      homeSet: 'Home Set',
-      currentLocationSetAsHome: 'Current location has been set as home',
-      trackingStarted: 'Tracking Started',
-      trackingStopped: 'Tracking Stopped',
-      error: 'Error',
-      success: 'Success'
+      // Form Labels
+      workPerformed: 'Work Performed',
+      workPerformedPlaceholder: 'Description of work performed...',
+      hotelNights: 'Number of Nights',
+      kmReturn: 'KM Return',
+      jobsToExport: 'Jobs to Export:',
+      singleJobTemplate: 'Single Job (Template, optional):',
+      exportOverview: 'Export Overview',
+      mobileCompatibility: 'Mobile Compatibility',
+      mobileOptimized: 'Optimized for iOS and Android devices',
+      
+      // Overtime Tab
+      timeBreakdown: 'Time Breakdown',
+      guaranteedHours: 'Guaranteed Hours',
+      actualWorked: 'Actually Worked',
+      regularHours: 'Regular Hours',
+      overtimeHours: 'Overtime Hours',
+      overtimeCalculation: 'Overtime Calculation',
+      regularHoursUpTo8: 'Regular Hours (up to 8h)',
+      totalOvertime: 'Total Overtime',
+      payableHours: 'Payable Hours',
+      overtimeExplanation: 'Explanation: You receive payment for at least',
+      hoursMinimum: 'hours minimum, even if you work less. All hours outside 8-16 are overtime with surcharge.',
+      
+      // Overtime Settings
+      hourBasedOvertime: 'Hour-based Overtime',
+      overtimeDescription: 'Overtime based on total working time per day',
+      firstOvertimeFrom: 'First overtime from (hours)',
+      secondOvertimeFrom: 'Second overtime from (hours)',
+      surchargeOver12h: 'Surcharge over 12h (%)',
+      weekendSurcharges: 'Weekend Surcharges',
+      weekendDescription: 'Automatic surcharges from Friday evening to Monday morning',
+      
+      // Location
+      longitude: 'Longitude',
+      jobs: 'Jobs',
+      activateGpsTracking: '3. Activate GPS tracking for automatic detection',
+      
+      // Export
+      supportedFormats: 'Supported formats: .xlsx, .xls',
+      maxFileSize: 'Maximum file size: 10 MB',
+      
+      // General
+      addMoreData: 'You can add more data',
+      save: 'Save',
+      cancel: 'Cancel',
+      delete: 'Delete',
+      
+      // Overtime Rules
+      overtimeRules: 'Overtime Rules:',
+      rule8to12: '• 8-12 hours: 50% surcharge on overtime',
+      ruleOver12: '• Over 12 hours: 100% surcharge on overtime',
+      weekendRules: 'Weekend Rules:',
+      payment: '• Payment: At least guaranteed hours + overtime surcharges'
     }
   },
   de: {
     translation: {
-      // Navigation
+      // Navigation and Tabs
       dashboard: 'Dashboard',
-      newEntry: 'Neuer Eintrag',
       newJob: 'Neuer Job',
       location: 'Standort',
       export: 'Export',
-      gps: 'GPS',
-      settings: 'Einstellungen',
       
-      // Tabs
+      // Job Entry Form Tabs
       customer: 'Kunde',
       machine: 'Maschine',
       times: 'Zeiten',
       overtime: 'Überstunden',
       finish: 'Abschluss',
-      profile: 'Profil',
       
-      // Dashboard
-      activeJobs: 'Aktive Aufträge',
-      completedJobs: 'Abgeschlossene Aufträge',
-      totalHours: 'Gesamtstunden',
-      jobStatus: 'Auftragsstatus',
-      customerName: 'Kundenname',
-      startDate: 'Startdatum',
-      currentDay: 'Aktueller Tag',
-      status: 'Status',
-      active: 'Aktiv',
-      completed: 'Abgeschlossen',
-      pending: 'Ausstehend',
-      open: 'Offen',
-      start: 'Starten',
-      pause: 'Pausieren',
-      
-      // Job Entry Form
-      addNewJob: 'Neuen Auftrag hinzufügen',
-      estimatedDays: 'Geschätzte Tage',
-      workStart: 'Arbeitsbeginn',
-      workEnd: 'Arbeitsende',
-      travelStart: 'Anreise Beginn',
-      travelEnd: 'Anreise Ende',
-      departureStart: 'Abreise Beginn',
-      departureEnd: 'Abreise Ende',
-      totalTime: 'Gesamtzeit (Reise + Arbeit)',
-      addJob: 'Auftrag hinzufügen',
-      cancel: 'Abbrechen',
-      day: 'Tag',
-      details: 'Details',
-      edit: 'Bearbeiten',
-      delete: 'Löschen',
-      
-      // Quick Actions
+      // Dashboard and Quick Actions
       quickActions: 'Schnellaktionen',
       
       // Job Filter
-      filterJobs: 'Aufträge filtern...',
-      openJobs: 'Offene (noch abzuarbeiten)',
-      activeJobsFilter: 'Aktive (gerade in Bearbeitung)',
-      completedJobsFilter: 'Abgeschlossene',
-      completedSentJobs: 'Abgeschlossene und gesendet',
-      allJobs: 'Alle Aufträge',
+      openJobs: 'Offene Jobs',
+      activeJobsFilter: 'Aktive Jobs',
+      completedJobsFilter: 'Abgeschlossen',
+      completedSentJobs: 'Abgeschlossen & Versendet',
+      allJobs: 'Alle Jobs',
+      filterJobs: 'Jobs filtern...',
       
-      // GPS
-      locationStatus: 'Standort Status',
-      gpsTracking: 'GPS Verfolgung',
-      activeStatus: 'Aktiv',
-      inactive: 'Inaktiv',
-      atHome: 'Zuhause',
-      away: 'Unterwegs',
-      currentLocation: 'Aktueller Standort',
-      getGpsPosition: 'GPS Position abrufen',
-      setAsHome: 'Als Zuhause setzen',
-      homeSettings: 'Zuhause Einstellungen',
-      savedHome: 'Gespeichertes Zuhause',
-      radius: 'Radius (Meter)',
-      manualSet: 'Manuell setzen',
-      latitude: 'Breitengrad',
-      longitude: 'Längengrad',
-      instructions: 'Anleitung',
+      // Job Status
+      open: 'Offen',
+      active: 'Aktiv',
+      completed: 'Abgeschlossen',
+      pending: 'Ausstehend',
+      
+      // Actions
+      start: 'Starten',
+      pause: 'Pausieren',
+      details: 'Details',
+      edit: 'Bearbeiten',
       
       // Settings
-      userProfile: 'Nutzerprofil',
-      name: 'Name',
-      homeAddress: 'Hausadresse',
-      preferredLanguage: 'Bevorzugte Sprache',
-      gpsSettings: 'GPS Einstellungen',
-      enableGps: 'GPS aktivieren',
-      homeLocation: 'Heimatstandort',
-      save: 'Speichern',
+      profile: 'Profil',
+      gps: 'GPS',
       
-      // Notifications
-      locationLeft: 'Standort verlassen',
-      leftHomeMessage: 'Du hast dein Zuhause verlassen. Arbeit oder privat?',
-      work: 'Arbeit',
-      private: 'Privat',
-      locationUpdated: 'Standort aktualisiert',
-      homeSet: 'Zuhause gesetzt',
-      currentLocationSetAsHome: 'Aktueller Standort wurde als Zuhause gespeichert',
-      trackingStarted: 'Tracking gestartet',
-      trackingStopped: 'Tracking gestoppt',
-      error: 'Fehler',
-      success: 'Erfolg'
+      // Form Labels
+      workPerformed: 'Durchgeführte Arbeiten',
+      workPerformedPlaceholder: 'Beschreibung der durchgeführten Arbeiten...',
+      hotelNights: 'Anzahl Nächte',
+      kmReturn: 'KM Rückfahrt',
+      jobsToExport: 'Zu exportierende Aufträge:',
+      singleJobTemplate: 'Einzelauftrag (Template, optional):',
+      exportOverview: 'Export-Übersicht',
+      mobileCompatibility: 'Mobile Kompatibilität',
+      mobileOptimized: 'Optimiert für iOS und Android Geräte',
+      
+      // Overtime Tab
+      timeBreakdown: 'Zeitaufschlüsselung',
+      guaranteedHours: 'Garantierte Stunden',
+      actualWorked: 'Tatsächlich gearbeitet',
+      regularHours: 'Reguläre Stunden',
+      overtimeHours: 'Überstunden',
+      overtimeCalculation: 'Überstundenzuschläge',
+      regularHoursUpTo8: 'Reguläre Stunden (bis 8h)',
+      totalOvertime: 'Überstunden gesamt',
+      payableHours: 'Bezahlbare Stunden',
+      overtimeExplanation: 'Erklärung: Sie erhalten mindestens',
+      hoursMinimum: 'Stunden bezahlt, auch wenn Sie weniger arbeiten. Alle Stunden außerhalb 8-16 Uhr sind Überstunden mit Zuschlag.',
+      
+      // Overtime Settings
+      hourBasedOvertime: 'Stundenbasierte Überstunden',
+      overtimeDescription: 'Überstunden basierend auf Gesamtarbeitszeit pro Tag',
+      firstOvertimeFrom: 'Erste Überstunden ab (Stunden)',
+      secondOvertimeFrom: 'Zweite Überstunden ab (Stunden)',
+      surchargeOver12h: 'Zuschlag über 12h (%)',
+      weekendSurcharges: 'Wochenend-Zuschläge',
+      weekendDescription: 'Automatische Zuschläge von Freitag Abend bis Montag Morgen',
+      
+      // Location
+      longitude: 'Längengrad',
+      jobs: 'Aufträge',
+      activateGpsTracking: '3. GPS Tracking aktivieren für automatische Erkennung',
+      
+      // Export
+      supportedFormats: 'Unterstützte Formate: .xlsx, .xls',
+      maxFileSize: 'Maximale Dateigröße: 10 MB',
+      
+      // General
+      addMoreData: 'Du kannst weitere Daten hinzufügen',
+      save: 'Speichern',
+      cancel: 'Abbrechen',
+      delete: 'Löschen',
+      
+      // Overtime Rules
+      overtimeRules: 'Überstundenregeln:',
+      rule8to12: '• 8-12 Stunden: 50% Zuschlag auf Überstunden',
+      ruleOver12: '• Über 12 Stunden: 100% Zuschlag auf Überstunden',
+      weekendRules: 'Wochenendregeln:',
+      payment: '• Bezahlung: Mindestens garantierte Stunden + Überstundenzuschläge'
     }
   },
   no: {
     translation: {
-      // Navigation
-      dashboard: 'Dashbord',
-      newEntry: 'Ny Oppføring',
-      newJob: 'Ny Jobb',
-      location: 'Posisjon',
+      // Navigation and Tabs
+      dashboard: 'Dashboard',
+      newJob: 'Ny jobb',
+      location: 'Plassering',
       export: 'Eksport',
-      gps: 'GPS',
-      settings: 'Innstillinger',
       
-      // Tabs
+      // Job Entry Form Tabs
       customer: 'Kunde',
       machine: 'Maskin',
       times: 'Tider',
       overtime: 'Overtid',
       finish: 'Ferdig',
-      profile: 'Profil',
       
-      // Dashboard
-      activeJobs: 'Aktive Oppdrag',
-      completedJobs: 'Fullførte Oppdrag',
-      totalHours: 'Totale Timer',
-      jobStatus: 'Oppdragsstatus',
-      customerName: 'Kundenavn',
-      startDate: 'Startdato',
-      currentDay: 'Gjeldende Dag',
-      status: 'Status',
-      active: 'Aktiv',
-      completed: 'Fullført',
-      pending: 'Ventende',
-      open: 'Åpen',
-      start: 'Start',
-      pause: 'Pause',
-      
-      // Job Entry Form
-      addNewJob: 'Legg til Nytt Oppdrag',
-      estimatedDays: 'Estimerte Dager',
-      workStart: 'Arbeidsstart',
-      workEnd: 'Arbeidsslutt',
-      travelStart: 'Reise Start',
-      travelEnd: 'Reise Slutt',
-      departureStart: 'Avreise Start',
-      departureEnd: 'Avreise Slutt',
-      totalTime: 'Total Tid (Reise + Arbeid)',
-      addJob: 'Legg til Oppdrag',
-      cancel: 'Avbryt',
-      day: 'Dag',
-      details: 'Detaljer',
-      edit: 'Rediger',
-      delete: 'Slett',
-      
-      // Quick Actions
+      // Dashboard and Quick Actions
       quickActions: 'Hurtighandlinger',
       
       // Job Filter
-      filterJobs: 'Filtrer Oppdrag...',
-      openJobs: 'Åpne (til å behandles)',
-      activeJobsFilter: 'Aktive (pågår nå)',
-      completedJobsFilter: 'Fullførte',
-      completedSentJobs: 'Fullførte og Sendt',
-      allJobs: 'Alle Oppdrag',
+      openJobs: 'Åpne jobber',
+      activeJobsFilter: 'Aktive jobber',
+      completedJobsFilter: 'Fullført',
+      completedSentJobs: 'Fullført og sendt',
+      allJobs: 'Alle jobber',
+      filterJobs: 'Filtrer jobber...',
       
-      // GPS
-      locationStatus: 'Posisjonsstatus',
-      gpsTracking: 'GPS Sporing',
-      activeStatus: 'Aktiv',
-      inactive: 'Inaktiv',
-      atHome: 'Hjemme',
-      away: 'Borte',
-      currentLocation: 'Nåværende Posisjon',
-      getGpsPosition: 'Få GPS Posisjon',
-      setAsHome: 'Sett som Hjem',
-      homeSettings: 'Hjemmeinnstillinger',
-      savedHome: 'Lagret Hjem',
-      radius: 'Radius (Meter)',
-      manualSet: 'Manuell Innstilling',
-      latitude: 'Breddegrad',
-      longitude: 'Lengdegrad',
-      instructions: 'Instruksjoner',
+      // Job Status
+      open: 'Åpen',
+      active: 'Aktiv',
+      completed: 'Fullført',
+      pending: 'Venter',
+      
+      // Actions
+      start: 'Start',
+      pause: 'Pause',
+      details: 'Detaljer',
+      edit: 'Rediger',
       
       // Settings
-      userProfile: 'Brukerprofil',
-      name: 'Navn',
-      homeAddress: 'Hjemmeadresse',
-      preferredLanguage: 'Foretrukket Språk',
-      gpsSettings: 'GPS Innstillinger',
-      enableGps: 'Aktiver GPS',
-      homeLocation: 'Hjemmeposisjon',
-      save: 'Lagre',
+      profile: 'Profil',
+      gps: 'GPS',
       
-      // Notifications
-      locationLeft: 'Posisjon Forlatt',
-      leftHomeMessage: 'Du har forlatt hjemmet ditt. Arbeid eller privat?',
-      work: 'Arbeid',
-      private: 'Privat',
-      locationUpdated: 'Posisjon Oppdatert',
-      homeSet: 'Hjem Satt',
-      currentLocationSetAsHome: 'Nåværende posisjon er satt som hjem',
-      trackingStarted: 'Sporing Startet',
-      trackingStopped: 'Sporing Stoppet',
-      error: 'Feil',
-      success: 'Suksess'
+      // Form Labels
+      workPerformed: 'Utført arbeid',
+      workPerformedPlaceholder: 'Beskrivelse av utført arbeid...',
+      hotelNights: 'Antall netter',
+      kmReturn: 'KM retur',
+      jobsToExport: 'Jobber å eksportere:',
+      singleJobTemplate: 'Enkelt jobb (mal, valgfritt):',
+      exportOverview: 'Eksport-oversikt',
+      mobileCompatibility: 'Mobil kompatibilitet',
+      mobileOptimized: 'Optimalisert for iOS og Android enheter',
+      
+      // Overtime Tab
+      timeBreakdown: 'Tidsoppbrudd',
+      guaranteedHours: 'Garanterte timer',
+      actualWorked: 'Faktisk arbeidet',
+      regularHours: 'Vanlige timer',
+      overtimeHours: 'Overtidstimer',
+      overtimeCalculation: 'Overtidsberegning',
+      regularHoursUpTo8: 'Vanlige timer (opptil 8t)',
+      totalOvertime: 'Total overtid',
+      payableHours: 'Betalbare timer',
+      overtimeExplanation: 'Forklaring: Du får betalt for minst',
+      hoursMinimum: 'timer minimum, selv om du arbeider mindre. Alle timer utenfor 8-16 er overtid med tillegg.',
+      
+      // Overtime Settings
+      hourBasedOvertime: 'Timebasert overtid',
+      overtimeDescription: 'Overtid basert på total arbeidstid per dag',
+      firstOvertimeFrom: 'Første overtid fra (timer)',
+      secondOvertimeFrom: 'Andre overtid fra (timer)',
+      surchargeOver12h: 'Tillegg over 12t (%)',
+      weekendSurcharges: 'Helgetillegg',
+      weekendDescription: 'Automatiske tillegg fra fredag kveld til mandag morgen',
+      
+      // Location
+      longitude: 'Lengdegrad',
+      jobs: 'Jobber',
+      activateGpsTracking: '3. Aktiver GPS-sporing for automatisk gjenkjennelse',
+      
+      // Export
+      supportedFormats: 'Støttede formater: .xlsx, .xls',
+      maxFileSize: 'Maksimal filstørrelse: 10 MB',
+      
+      // General
+      addMoreData: 'Du kan legge til mer data',
+      save: 'Lagre',
+      cancel: 'Avbryt',
+      delete: 'Slett',
+      
+      // Overtime Rules
+      overtimeRules: 'Overtidsregler:',
+      rule8to12: '• 8-12 timer: 50% tillegg på overtid',
+      ruleOver12: '• Over 12 timer: 100% tillegg på overtid',
+      weekendRules: 'Helgeregler:',
+      payment: '• Betaling: Minst garanterte timer + overtidstillegg'
     }
   }
 };
@@ -325,16 +304,10 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    fallbackLng: 'en',
-    debug: false,
+    fallbackLng: 'de',
     
     interpolation: {
       escapeValue: false
-    },
-    
-    detection: {
-      order: ['localStorage', 'navigator', 'htmlTag'],
-      caches: ['localStorage']
     }
   });
 

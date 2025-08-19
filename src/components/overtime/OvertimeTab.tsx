@@ -3,12 +3,14 @@ import { Badge } from '@/components/ui/badge';
 import { Clock, Calculator, TrendingUp } from 'lucide-react';
 import { Job } from '@/hooks/useJobs';
 import { useOvertimeCalculation } from '@/hooks/useOvertimeCalculation';
+import { useTranslation } from 'react-i18next';
 
 interface OvertimeTabProps {
   job: Job;
 }
 
 export const OvertimeTab = ({ job }: OvertimeTabProps) => {
+  const { t } = useTranslation();
   const { calculateOvertime, calculateTimeBreakdown, formatMinutesToHours } = useOvertimeCalculation();
   
   const timeBreakdown = calculateTimeBreakdown(job);
@@ -34,25 +36,25 @@ export const OvertimeTab = ({ job }: OvertimeTabProps) => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Clock className="h-4 w-4" />
-            Zeitaufschlüsselung
+            {t('timeBreakdown')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <div className="text-sm text-muted-foreground">Garantierte Stunden</div>
+              <div className="text-sm text-muted-foreground">{t('guaranteedHours')}</div>
               <div className="font-mono text-lg font-semibold text-primary">{overtimeCalculation.guaranteedHours}h</div>
             </div>
             <div className="space-y-2">
-              <div className="text-sm text-muted-foreground">Tatsächlich gearbeitet</div>
+              <div className="text-sm text-muted-foreground">{t('actualWorked')}</div>
               <div className="font-mono text-lg">{formatHoursToStdMin(overtimeCalculation.actualWorkedHours)}</div>
             </div>
             <div className="space-y-2">
-              <div className="text-sm text-muted-foreground">Reguläre Stunden</div>
+              <div className="text-sm text-muted-foreground">{t('regularHours')}</div>
               <div className="font-mono text-lg">{overtimeCalculation.regularHours.toFixed(2)}h</div>
             </div>
             <div className="space-y-2">
-              <div className="text-sm text-muted-foreground">Überstunden</div>
+              <div className="text-sm text-muted-foreground">{t('overtimeHours')}</div>
               <div className="font-mono text-lg text-orange-600">{overtimeCalculation.totalOvertimeHours.toFixed(2)}h</div>
             </div>
           </div>
@@ -64,18 +66,18 @@ export const OvertimeTab = ({ job }: OvertimeTabProps) => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Calculator className="h-4 w-4" />
-            Überstundenzuschläge
+            {t('overtimeCalculation')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Regular vs Overtime Hours */}
           <div className="flex justify-between items-center p-3 bg-secondary/30 rounded-md">
-            <div className="text-sm">Reguläre Stunden (bis 8h)</div>
+            <div className="text-sm">{t('regularHoursUpTo8')}</div>
             <div className="font-mono">{overtimeCalculation.regularHours.toFixed(2)}h</div>
           </div>
           
           <div className="flex justify-between items-center p-3 bg-orange-50 border border-orange-200 rounded-md">
-            <div className="text-sm text-orange-800">Überstunden gesamt</div>
+            <div className="text-sm text-orange-800">{t('totalOvertime')}</div>
             <div className="font-mono text-orange-800">{overtimeCalculation.totalOvertimeHours.toFixed(2)}h</div>
           </div>
 
@@ -104,7 +106,7 @@ export const OvertimeTab = ({ job }: OvertimeTabProps) => {
             <div className="flex justify-between items-center p-3 bg-blue-50 border border-blue-200 rounded-md">
               <div className="flex items-center gap-2">
                 <TrendingUp className="h-4 w-4 text-blue-600" />
-                <span className="font-semibold text-blue-800">Bezahlbare Stunden</span>
+                <span className="font-semibold text-blue-800">{t('payableHours')}</span>
               </div>
               <div className="text-right">
                 <div className="font-mono text-lg font-semibold text-blue-800">
@@ -117,8 +119,7 @@ export const OvertimeTab = ({ job }: OvertimeTabProps) => {
             </div>
             
             <div className="text-xs text-muted-foreground bg-muted/50 p-3 rounded-md">
-              <strong>Erklärung:</strong> Sie erhalten mindestens {overtimeCalculation.guaranteedHours} Stunden bezahlt, 
-              auch wenn Sie weniger arbeiten. Alle Stunden außerhalb 8-16 Uhr sind Überstunden mit Zuschlag.
+              <strong>{t('overtimeExplanation')}</strong> {overtimeCalculation.guaranteedHours} {t('hoursMinimum')}
             </div>
           </div>
         </CardContent>

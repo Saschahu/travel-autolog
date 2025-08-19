@@ -66,12 +66,12 @@ export const ExportPage = ({ jobs }: ExportPageProps) => {
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <label className="text-sm font-medium mb-2 block">Zu exportierende Aufträge:</label>
+            <label className="text-sm font-medium mb-2 block">{t('jobsToExport')}</label>
             <JobFilterDropdown value={exportFilter} onValueChange={setExportFilter} />
           </div>
 
           <div>
-            <label className="text-sm font-medium mb-2 block">Einzelauftrag (Template, optional):</label>
+            <label className="text-sm font-medium mb-2 block">{t('singleJobTemplate')}</label>
             <Select value={selectedJobId} onValueChange={(v) => setSelectedJobId(v as any)}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Alle" />
@@ -87,7 +87,7 @@ export const ExportPage = ({ jobs }: ExportPageProps) => {
           
           {/* Export Statistics */}
           <div className="bg-secondary/30 p-4 rounded-lg">
-            <h4 className="text-sm font-medium mb-3">Export-Übersicht</h4>
+            <h4 className="text-sm font-medium mb-3">{t('exportOverview')}</h4>
             <div className="grid grid-cols-2 gap-2 text-sm">
               <div className="flex justify-between">
                 <span>Gesamt:</span>
@@ -167,8 +167,8 @@ export const ExportPage = ({ jobs }: ExportPageProps) => {
           <div className="flex items-start gap-2">
             <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
             <div>
-              <p className="font-medium text-foreground">Mobile Kompatibilität</p>
-              <p>Optimiert für iOS und Android Geräte</p>
+              <p className="font-medium text-foreground">{t('mobileCompatibility')}</p>
+              <p>{t('mobileOptimized')}</p>
             </div>
           </div>
         </CardContent>

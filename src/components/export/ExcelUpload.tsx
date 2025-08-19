@@ -1,10 +1,12 @@
 import React, { useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Upload, FileSpreadsheet, Loader2 } from 'lucide-react';
 import { useExcelUpload } from '@/hooks/useExcelUpload';
 
 export const ExcelUpload = () => {
+  const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { uploadExcelFile, isUploading } = useExcelUpload();
 
@@ -70,8 +72,8 @@ export const ExcelUpload = () => {
         </Button>
 
         <div className="text-sm text-muted-foreground">
-          <p>Unterstützte Formate: .xlsx, .xls</p>
-          <p>Maximale Dateigröße: 10 MB</p>
+          <p>{t('supportedFormats')}</p>
+          <p>{t('maxFileSize')}</p>
         </div>
       </CardContent>
     </Card>

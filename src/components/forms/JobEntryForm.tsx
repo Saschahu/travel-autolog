@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -43,6 +44,7 @@ interface JobEntryFormProps {
 }
 
 export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
+  const { t } = useTranslation();
   const [jobData, setJobData] = useState<Partial<JobData>>({});
   const [currentStep, setCurrentStep] = useState<'customer' | 'machine' | 'times' | 'travel'>('customer');
   const [isLoading, setIsLoading] = useState(false);
@@ -485,10 +487,10 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
           </div>
         </div>
         <div>
-          <Label htmlFor="work-performed" className="text-sm font-medium">Durchgeführte Arbeiten</Label>
+          <Label htmlFor="work-performed" className="text-sm font-medium">{t('workPerformed')}</Label>
           <Textarea
             id="work-performed"
-            placeholder="Beschreibung der durchgeführten Arbeiten..."
+            placeholder={t('workPerformedPlaceholder')}
             value={jobData.workPerformed || ''}
             onChange={(e) => updateField('workPerformed', e.target.value)}
             className="mt-1 min-h-20"
@@ -555,7 +557,7 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
             />
           </div>
           <div>
-            <Label htmlFor="hotel-nights" className="text-sm font-medium">Anzahl Nächte</Label>
+            <Label htmlFor="hotel-nights" className="text-sm font-medium">{t('hotelNights')}</Label>
             <Input
               id="hotel-nights"
               type="number"
@@ -584,7 +586,7 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
             />
           </div>
           <div>
-            <Label htmlFor="km-return" className="text-sm font-medium">KM Rückfahrt</Label>
+            <Label htmlFor="km-return" className="text-sm font-medium">{t('kmReturn')}</Label>
             <Input
               id="km-return"
               type="number"
@@ -670,7 +672,7 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-center">
           <p className="text-sm text-blue-700">
             📝 Job wird bearbeitet • ID: {currentJobId?.slice(0, 8)}... 
-            {currentStep !== 'customer' && <span className="ml-2">Du kannst weitere Daten hinzufügen</span>}
+            {currentStep !== 'customer' && <span className="ml-2">{t('addMoreData')}</span>}
           </p>
         </div>
       )}

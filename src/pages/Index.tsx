@@ -365,6 +365,20 @@ const Index = () => {
     }
   }, [activeTab, fetchJobs]);
 
+  // Set default filter based on available jobs
+  useEffect(() => {
+    if (jobs.length > 0) {
+      const hasActiveJobs = jobs.some(job => job.status === 'active');
+      const hasOpenJobs = jobs.some(job => job.status === 'open');
+      
+      if (hasActiveJobs) {
+        setJobFilter('active');
+      } else if (hasOpenJobs) {
+        setJobFilter('open');
+      }
+    }
+  }, [jobs]);
+
   // Monitor leaving home status
   React.useEffect(() => {
     if (hasLeftHome && !leavingHomeOpen) {

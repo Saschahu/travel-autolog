@@ -404,26 +404,6 @@ const Index = () => {
         ))}
       </div>
 
-      {/* Quick Actions */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">{t('quickActions')}</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          <Button variant="outline" className="w-full justify-start gap-2">
-            <Clock className="h-4 w-4" />
-            Arbeitszeit jetzt starten
-          </Button>
-          <Button variant="outline" className="w-full justify-start gap-2">
-            <MapPin className="h-4 w-4" />
-            Reisezeit jetzt starten
-          </Button>
-          <Button variant="outline" className="w-full justify-start gap-2">
-            <FileText className="h-4 w-4" />
-            Letzten Export anzeigen
-          </Button>
-        </CardContent>
-      </Card>
     </div>
   );
 

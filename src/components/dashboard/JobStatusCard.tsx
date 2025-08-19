@@ -96,22 +96,22 @@ export const JobStatusCard = (props: JobStatusCardProps) => {
       <CardContent className="space-y-3">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <MapPin className="h-4 w-4" />
-          <span>Startdatum: {format(startDate, 'dd.MM.yyyy', { locale: de })}</span>
+          <span>{t('startDateLabel')}: {format(startDate, 'dd.MM.yyyy', { locale: de })}</span>
         </div>
 
         {(workStartTime || workEndTime || totalHours) && (
           <div className="bg-secondary/30 p-3 rounded-md space-y-2">
-            <h4 className="text-sm font-medium">Arbeitszeiten</h4>
+            <h4 className="text-sm font-medium">{t('workTimes')}</h4>
             <div className="grid grid-cols-2 gap-2 text-xs">
               {workStartTime && (
                 <div>
-                  <span className="text-muted-foreground">Start:</span>
+                  <span className="text-muted-foreground">{t('workStartLabel')}:</span>
                   <div className="font-mono">{workStartTime}</div>
                 </div>
               )}
               {workEndTime && (
                 <div>
-                  <span className="text-muted-foreground">Ende:</span>
+                  <span className="text-muted-foreground">{t('workEndLabel')}:</span>
                   <div className="font-mono">{workEndTime}</div>
                 </div>
               )}
@@ -129,15 +129,15 @@ export const JobStatusCard = (props: JobStatusCardProps) => {
                 return (
                   <>
                     <div>
-                      <span className="text-muted-foreground">Anreise:</span>
+                      <span className="text-muted-foreground">{t('travelTime')}:</span>
                       <div className="font-mono">{formatTime(timeBreakdown.travelTime)}</div>
                     </div>
                     <div>
-                      <span className="text-muted-foreground">Arbeit:</span>
+                      <span className="text-muted-foreground">{t('workTime')}:</span>
                       <div className="font-mono">{formatTime(timeBreakdown.workTime)}</div>
                     </div>
                     <div>
-                      <span className="text-muted-foreground">Abreise:</span>
+                      <span className="text-muted-foreground">{t('departureTime')}:</span>
                       <div className="font-mono">{formatTime(timeBreakdown.departureTime)}</div>
                     </div>
                   </>
@@ -145,7 +145,7 @@ export const JobStatusCard = (props: JobStatusCardProps) => {
               })()}
             </div>
             <div className="text-sm font-medium text-primary border-t pt-2">
-              Gesamt: {(() => {
+              {t('total')}: {(() => {
                 const timeBreakdown = calculateTimeBreakdown(job as Job);
                 const totalMinutes = timeBreakdown.travelTime + timeBreakdown.workTime + timeBreakdown.departureTime;
                 const hours = Math.floor(totalMinutes / 60);
@@ -159,8 +159,8 @@ export const JobStatusCard = (props: JobStatusCardProps) => {
         {status === 'active' && (
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
-              <span>Fortschritt</span>
-              <span>{currentDay}/{estimatedDays} Tage</span>
+              <span>{t('progress')}</span>
+              <span>{currentDay}/{estimatedDays} {t('daysLabel')}</span>
             </div>
             <div className="w-full bg-secondary rounded-full h-2">
               <div 
@@ -174,7 +174,7 @@ export const JobStatusCard = (props: JobStatusCardProps) => {
         {currentDay >= 7 && status === 'active' && (
           <div className="p-2 bg-warning/10 border border-warning/20 rounded-md">
             <p className="text-sm text-warning-foreground font-medium">
-              ⚠️ Max. 7 Tage erreicht - Neue Datei wird erstellt
+              {t('maxDaysReached')}
             </p>
           </div>
         )}
@@ -210,7 +210,7 @@ export const JobStatusCard = (props: JobStatusCardProps) => {
           </Button>
           {status === 'completed' && onComplete && (
             <Button size="sm" variant="secondary" onClick={onComplete}>
-              Report senden
+              {t('sendReport')}
             </Button>
           )}
           {onDelete && (

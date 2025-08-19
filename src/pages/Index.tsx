@@ -178,16 +178,16 @@ const Index = () => {
       ));
       
       toast({
-        title: 'Gespeichert',
-        description: 'Zeiteinträge wurden erfolgreich gespeichert'
+        title: t('saved'),
+        description: t('timeEntriesSaved')
       });
       
       setEditOpen(false);
     } catch (error) {
       console.error('Error saving job data:', error);
       toast({
-        title: 'Fehler',
-        description: 'Fehler beim Speichern der Zeiteinträge',
+        title: t('error'),
+        description: t('errorSavingEntries'),
         variant: 'destructive'
       });
     }
@@ -286,23 +286,23 @@ const Index = () => {
         j.id === jobId ? { ...j, status: newStatus } : j
       ));
       
-      const statusText = newStatus === 'active' ? 'gestartet' : 'pausiert';
+      const statusText = newStatus === 'active' ? t('jobStarted') : t('jobPaused');
       toast({
-        title: 'Status geändert',
+        title: t('statusChanged'),
         description: `Job wurde ${statusText}`
       });
     } catch (error) {
       console.error('Error updating job status:', error);
       toast({
-        title: 'Fehler',
-        description: 'Fehler beim Ändern des Job-Status',
+        title: t('error'),
+        description: t('errorChangingStatus'),
         variant: 'destructive'
       });
     }
   };
 
   const handleDelete = async (jobId: string) => {
-    const confirmDelete = window.confirm('Möchtest du diesen Job wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.');
+    const confirmDelete = window.confirm(t('deleteConfirm'));
     
     if (!confirmDelete) return;
     
@@ -318,14 +318,14 @@ const Index = () => {
       setJobs(prev => prev.filter(j => j.id !== jobId));
       
       toast({
-        title: 'Job gelöscht',
-        description: 'Der Job wurde erfolgreich gelöscht'
+        title: t('jobDeleted'),
+        description: t('jobDeletedSuccess')
       });
     } catch (error) {
       console.error('Error deleting job:', error);
       toast({
-        title: 'Fehler',
-        description: 'Fehler beim Löschen des Jobs',
+        title: t('error'),
+        description: t('errorDeletingJob'),
         variant: 'destructive'
       });
     }
@@ -340,13 +340,13 @@ const Index = () => {
     if (type === 'work') {
       setActiveTab('new-job');
       toast({
-        title: 'Arbeitsreise gestartet',
-        description: 'Du kannst jetzt einen neuen Job erfassen',
+        title: t('workTripStarted'),
+        description: t('newJobDescription'),
       });
     } else {
       toast({
-        title: 'Private Reise',
-        description: 'Viel Spaß bei deinen privaten Aktivitäten!',
+        title: t('privateTrip'),
+        description: t('privateTripDescription'),
       });
     }
   };
@@ -401,7 +401,7 @@ const Index = () => {
             onClick={() => setActiveTab('new-job')}
           >
             <Plus className="h-4 w-4" />
-            Neuer Job
+            {t('newJob')}
           </Button>
         </div>
         

@@ -43,7 +43,7 @@ export const LocationTracker: React.FC = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Navigation className="h-5 w-5" />
-            Standortverfolgung
+            {t('gps')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">

@@ -39,40 +39,43 @@ export const useOvertimeCalculation = () => {
     let workTime = 0; 
     let departureTime = 0;
 
-    // First check if we have individual time fields
+    // Travel time: prefer top-level, otherwise sum from days
     if (job.travelStart && job.travelEnd) {
       const startMinutes = parseTime(job.travelStart);
       const endMinutes = parseTime(job.travelEnd);
       travelTime = endMinutes > startMinutes ? endMinutes - startMinutes : (24 * 60) - startMinutes + endMinutes;
-    }
-
-    if (job.workStart && job.workEnd) {
-      const startMinutes = parseTime(job.workStart);
-      const endMinutes = parseTime(job.workEnd);
-      workTime = endMinutes > startMinutes ? endMinutes - startMinutes : (24 * 60) - startMinutes + endMinutes;
-    }
-
-    if (job.departureStart && job.departureEnd) {
-      const startMinutes = parseTime(job.departureStart);
-      const endMinutes = parseTime(job.departureEnd);
-      departureTime = endMinutes > startMinutes ? endMinutes - startMinutes : (24 * 60) - startMinutes + endMinutes;
-    }
-
-    // If no individual times but we have days_data, calculate from there
-    if (travelTime === 0 && workTime === 0 && departureTime === 0 && job.days && Array.isArray(job.days)) {
+    } else if (job.days && Array.isArray(job.days)) {
       job.days.forEach((day: any) => {
         if (day.travelStart && day.travelEnd) {
           const startMinutes = parseTime(day.travelStart);
           const endMinutes = parseTime(day.travelEnd);
           travelTime += endMinutes > startMinutes ? endMinutes - startMinutes : (24 * 60) - startMinutes + endMinutes;
         }
-        
+      });
+    }
+
+    // Work time: prefer top-level, otherwise sum from days
+    if (job.workStart && job.workEnd) {
+      const startMinutes = parseTime(job.workStart);
+      const endMinutes = parseTime(job.workEnd);
+      workTime = endMinutes > startMinutes ? endMinutes - startMinutes : (24 * 60) - startMinutes + endMinutes;
+    } else if (job.days && Array.isArray(job.days)) {
+      job.days.forEach((day: any) => {
         if (day.workStart && day.workEnd) {
           const startMinutes = parseTime(day.workStart);
           const endMinutes = parseTime(day.workEnd);
           workTime += endMinutes > startMinutes ? endMinutes - startMinutes : (24 * 60) - startMinutes + endMinutes;
         }
-        
+      });
+    }
+
+    // Departure time: prefer top-level, otherwise sum from days
+    if (job.departureStart && job.departureEnd) {
+      const startMinutes = parseTime(job.departureStart);
+      const endMinutes = parseTime(job.departureEnd);
+      departureTime = endMinutes > startMinutes ? endMinutes - startMinutes : (24 * 60) - startMinutes + endMinutes;
+    } else if (job.days && Array.isArray(job.days)) {
+      job.days.forEach((day: any) => {
         if (day.departureStart && day.departureEnd) {
           const startMinutes = parseTime(day.departureStart);
           const endMinutes = parseTime(day.departureEnd);

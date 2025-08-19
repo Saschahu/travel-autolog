@@ -443,10 +443,13 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
             <div className="flex items-start gap-2">
               <AlertTriangle className="h-4 w-4 text-warning mt-0.5" />
               <div className="text-xs">
-                <p className="font-medium">Mapbox Token erforderlich</p>
+                <p className="font-medium">Mapbox Token Konfiguration</p>
                 <p className="text-muted-foreground mt-1">
-                  Setzen Sie VITE_MAPBOX_TOKEN in der Umgebung oder geben Sie den Token direkt in der Karte ein.
-                  Ihr kostenloses Token finden Sie auf <span className="text-primary">mapbox.com</span>
+                  Das Mapbox-Token muss in der .env-Datei oder in GitHub Secrets hinterlegt werden.<br/>
+                  <strong>Lokal:</strong> <code>VITE_MAPBOX_TOKEN=ihr_token</code> in .env-Datei<br/>
+                  <strong>Deployment:</strong> VITE_MAPBOX_TOKEN als GitHub Secret/Environment Variable<br/>
+                  Hier können Sie nur Style-ID, Zoom-Level und andere Karteneinstellungen ändern.<br/>
+                  Token von <span className="text-primary">mapbox.com</span> erhalten.
                 </p>
               </div>
             </div>

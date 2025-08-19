@@ -33,7 +33,7 @@ interface LocationMapProps {
   className?: string;
 }
 
-const MAPBOX_TOKEN = null; // Force token input
+const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN as string;
 
 export const LocationMap: React.FC<LocationMapProps> = ({
   currentLocation,
@@ -46,15 +46,21 @@ export const LocationMap: React.FC<LocationMapProps> = ({
   const [localToken, setLocalToken] = React.useState<string>('');
   const [showTokenInput, setShowTokenInput] = React.useState(false);
   
-  // Check for locally stored token
+  // Check for token from environment or localStorage
   React.useEffect(() => {
-    const stored = localStorage.getItem('mapbox_token');
-    console.log('Gespeichertes Token gefunden:', stored ? stored.substring(0, 10) + '...' : 'keins');
-    if (stored) {
-      setLocalToken(stored);
+    if (MAPBOX_TOKEN && MAPBOX_TOKEN !== 'pk.XXXXXXXXXXXXXXXXXXXX') {
+      setLocalToken(MAPBOX_TOKEN);
       setShowTokenInput(false);
     } else {
-      setShowTokenInput(true);
+      const stored = localStorage.getItem('mapbox_token');
+      console.log('Gespeichertes Token gefunden:', stored ? stored.substring(0, 10) + '...' : 'keins');
+      if (stored) {
+        setLocalToken(stored);
+        setShowTokenInput(false);
+      } else {
+        console.warn('Mapbox Token fehlt. Bitte .env-Datei konfigurieren.');
+        setShowTokenInput(true);
+      }
     }
   }, []);
   
@@ -140,7 +146,8 @@ export const LocationMap: React.FC<LocationMapProps> = ({
               Token speichern
             </Button>
             <p className="text-xs text-muted-foreground">
-              Ihr Token wird dauerhaft im Browser gespeichert. Holen Sie sich Ihr Token von{' '}
+              <strong>Empfohlen:</strong> Token in .env-Datei setzen: <code>VITE_MAPBOX_TOKEN=ihr_token</code><br/>
+              Alternativ wird Ihr Token dauerhaft im Browser gespeichert. Holen Sie sich Ihr Token von{' '}
               <a 
                 href="https://account.mapbox.com/access-tokens/" 
                 target="_blank" 

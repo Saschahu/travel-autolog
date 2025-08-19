@@ -27,16 +27,16 @@ export const GPSMap: React.FC<GPSMapProps> = ({ currentLocation, homeLocation, t
 
   // Check for Mapbox token
   useEffect(() => {
-    const envToken = import.meta.env.VITE_MAPBOX_TOKEN;
-    const storedToken = localStorage.getItem('mapbox_token');
+    const envToken = import.meta.env.VITE_MAPBOX_TOKEN as string;
     
-    if (envToken) {
+    if (envToken && envToken !== 'pk.XXXXXXXXXXXXXXXXXXXX') {
       setMapboxToken(envToken);
-    } else if (storedToken) {
-      setMapboxToken(storedToken);
+      setShowTokenInput(false);
+      setError('');
     } else {
+      console.warn('Mapbox Token fehlt. Bitte .env-Datei konfigurieren.');
       setShowTokenInput(true);
-      setError('VITE_MAPBOX_TOKEN ist nicht gesetzt. Bitte geben Sie Ihren Mapbox Public Token ein.');
+      setError('VITE_MAPBOX_TOKEN ist nicht gesetzt. Bitte .env-Datei mit Ihrem Mapbox Public Token konfigurieren.');
     }
   }, []);
 
@@ -123,6 +123,7 @@ export const GPSMap: React.FC<GPSMapProps> = ({ currentLocation, homeLocation, t
                 onChange={(e) => setMapboxToken(e.target.value)}
               />
               <div className="text-xs text-muted-foreground">
+                <strong>Empfohlen:</strong> Token in .env-Datei setzen: <code>VITE_MAPBOX_TOKEN=ihr_token</code><br/>
                 Holen Sie sich Ihren kostenlosen Token von{' '}
                 <a 
                   href="https://mapbox.com/" 

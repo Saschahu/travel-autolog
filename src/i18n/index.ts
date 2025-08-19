@@ -8,8 +8,19 @@ const resources = {
       // Navigation
       dashboard: 'Dashboard',
       newEntry: 'New Entry',
+      newJob: 'New Job',
+      location: 'Location',
+      export: 'Export',
       gps: 'GPS',
       settings: 'Settings',
+      
+      // Tabs
+      customer: 'Customer',
+      machine: 'Machine',
+      times: 'Times',
+      overtime: 'Overtime',
+      finish: 'Finish',
+      profile: 'Profile',
       
       // Dashboard
       activeJobs: 'Active Jobs',
@@ -23,10 +34,12 @@ const resources = {
       active: 'Active',
       completed: 'Completed',
       pending: 'Pending',
+      open: 'Open',
+      start: 'Start',
+      pause: 'Pause',
       
       // Job Entry Form
       addNewJob: 'Add New Job',
-      customer: 'Customer',
       estimatedDays: 'Estimated Days',
       workStart: 'Work Start',
       workEnd: 'Work End',
@@ -38,6 +51,20 @@ const resources = {
       addJob: 'Add Job',
       cancel: 'Cancel',
       day: 'Day',
+      details: 'Details',
+      edit: 'Edit',
+      delete: 'Delete',
+      
+      // Quick Actions
+      quickActions: 'Quick Actions',
+      
+      // Job Filter
+      filterJobs: 'Filter Jobs...',
+      openJobs: 'Open (to be processed)',
+      activeJobsFilter: 'Active (currently in progress)',
+      completedJobsFilter: 'Completed',
+      completedSentJobs: 'Completed and Sent',
+      allJobs: 'All Jobs',
       
       // GPS
       locationStatus: 'Location Status',
@@ -86,8 +113,19 @@ const resources = {
       // Navigation
       dashboard: 'Dashboard',
       newEntry: 'Neuer Eintrag',
+      newJob: 'Neuer Job',
+      location: 'Standort',
+      export: 'Export',
       gps: 'GPS',
       settings: 'Einstellungen',
+      
+      // Tabs
+      customer: 'Kunde',
+      machine: 'Maschine',
+      times: 'Zeiten',
+      overtime: 'Überstunden',
+      finish: 'Abschluss',
+      profile: 'Profil',
       
       // Dashboard
       activeJobs: 'Aktive Aufträge',
@@ -101,10 +139,12 @@ const resources = {
       active: 'Aktiv',
       completed: 'Abgeschlossen',
       pending: 'Ausstehend',
+      open: 'Offen',
+      start: 'Starten',
+      pause: 'Pausieren',
       
       // Job Entry Form
       addNewJob: 'Neuen Auftrag hinzufügen',
-      customer: 'Kunde',
       estimatedDays: 'Geschätzte Tage',
       workStart: 'Arbeitsbeginn',
       workEnd: 'Arbeitsende',
@@ -116,6 +156,20 @@ const resources = {
       addJob: 'Auftrag hinzufügen',
       cancel: 'Abbrechen',
       day: 'Tag',
+      details: 'Details',
+      edit: 'Bearbeiten',
+      delete: 'Löschen',
+      
+      // Quick Actions
+      quickActions: 'Schnellaktionen',
+      
+      // Job Filter
+      filterJobs: 'Aufträge filtern...',
+      openJobs: 'Offene (noch abzuarbeiten)',
+      activeJobsFilter: 'Aktive (gerade in Bearbeitung)',
+      completedJobsFilter: 'Abgeschlossene',
+      completedSentJobs: 'Abgeschlossene und gesendet',
+      allJobs: 'Alle Aufträge',
       
       // GPS
       locationStatus: 'Standort Status',
@@ -164,8 +218,19 @@ const resources = {
       // Navigation
       dashboard: 'Dashbord',
       newEntry: 'Ny Oppføring',
+      newJob: 'Ny Jobb',
+      location: 'Posisjon',
+      export: 'Eksport',
       gps: 'GPS',
       settings: 'Innstillinger',
+      
+      // Tabs
+      customer: 'Kunde',
+      machine: 'Maskin',
+      times: 'Tider',
+      overtime: 'Overtid',
+      finish: 'Ferdig',
+      profile: 'Profil',
       
       // Dashboard
       activeJobs: 'Aktive Oppdrag',
@@ -179,10 +244,12 @@ const resources = {
       active: 'Aktiv',
       completed: 'Fullført',
       pending: 'Ventende',
+      open: 'Åpen',
+      start: 'Start',
+      pause: 'Pause',
       
       // Job Entry Form
       addNewJob: 'Legg til Nytt Oppdrag',
-      customer: 'Kunde',
       estimatedDays: 'Estimerte Dager',
       workStart: 'Arbeidsstart',
       workEnd: 'Arbeidsslutt',
@@ -194,6 +261,20 @@ const resources = {
       addJob: 'Legg til Oppdrag',
       cancel: 'Avbryt',
       day: 'Dag',
+      details: 'Detaljer',
+      edit: 'Rediger',
+      delete: 'Slett',
+      
+      // Quick Actions
+      quickActions: 'Hurtighandlinger',
+      
+      // Job Filter
+      filterJobs: 'Filtrer Oppdrag...',
+      openJobs: 'Åpne (til å behandles)',
+      activeJobsFilter: 'Aktive (pågår nå)',
+      completedJobsFilter: 'Fullførte',
+      completedSentJobs: 'Fullførte og Sendt',
+      allJobs: 'Alle Oppdrag',
       
       // GPS
       locationStatus: 'Posisjonsstatus',

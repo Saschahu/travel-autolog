@@ -12,17 +12,17 @@ export const JobFilterDropdown = ({ value, onValueChange }: JobFilterDropdownPro
   const { t } = useTranslation();
   
   const filterOptions = [
-    { value: 'open' as const, label: 'Offene (noch abzuarbeiten)' },
-    { value: 'active' as const, label: 'Aktive (gerade in Bearbeitung)' },
-    { value: 'completed' as const, label: 'Abgeschlossene' },
-    { value: 'completed-sent' as const, label: 'Abgeschlossene und gesendet' },
-    { value: 'all' as const, label: 'Alle Aufträge' }
+    { value: 'open' as const, label: t('openJobs') },
+    { value: 'active' as const, label: t('activeJobsFilter') },
+    { value: 'completed' as const, label: t('completedJobsFilter') },
+    { value: 'completed-sent' as const, label: t('completedSentJobs') },
+    { value: 'all' as const, label: t('allJobs') }
   ];
 
   return (
     <Select value={value} onValueChange={onValueChange}>
       <SelectTrigger className="w-full">
-        <SelectValue placeholder="Aufträge filtern..." />
+        <SelectValue placeholder={t('filterJobs')} />
       </SelectTrigger>
       <SelectContent>
         {filterOptions.map((option) => (

@@ -6,6 +6,7 @@ import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { useOvertimeCalculation } from '@/hooks/useOvertimeCalculation';
 import { Job } from '@/hooks/useJobs';
+import { useTranslation } from 'react-i18next';
 
 interface JobStatusCardProps extends Job {
   onDetails?: () => void;
@@ -34,6 +35,7 @@ export const JobStatusCard = (props: JobStatusCardProps) => {
     ...job
   } = props;
   
+  const { t } = useTranslation();
   const { calculateTimeBreakdown, formatMinutesToHours } = useOvertimeCalculation();
   const getStatusIcon = () => {
     switch (status) {
@@ -68,15 +70,15 @@ export const JobStatusCard = (props: JobStatusCardProps) => {
   const getStatusText = () => {
     switch (status) {
       case 'open':
-        return 'Offen';
+        return t('open');
       case 'active':
-        return 'Aktiv';
+        return t('active');
       case 'completed':
-        return 'Abgeschlossen';
+        return t('completed');
       case 'completed-sent':
-        return 'Abgeschlossen & Gesendet';
+        return t('completed') + ' & ' + t('export');
       case 'pending':
-        return 'Ausstehend';
+        return t('pending');
     }
   };
 
@@ -189,22 +191,22 @@ export const JobStatusCard = (props: JobStatusCardProps) => {
               {status === 'open' ? (
                 <>
                   <Play className="h-4 w-4 mr-1" />
-                  Starten
+                  {t('start')}
                 </>
               ) : (
                 <>
                   <Square className="h-4 w-4 mr-1" />
-                  Pausieren
+                  {t('pause')}
                 </>
               )}
             </Button>
           )}
           
           <Button variant="outline" size="sm" className="flex-1" onClick={onDetails}>
-            Details
+            {t('details')}
           </Button>
           <Button size="sm" className="flex-1" onClick={onEdit}>
-            Bearbeiten
+            {t('edit')}
           </Button>
           {status === 'completed' && onComplete && (
             <Button size="sm" variant="secondary" onClick={onComplete}>

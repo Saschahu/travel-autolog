@@ -109,10 +109,10 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
 
         <Tabs defaultValue="profile" className="w-full">
           <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="profile">Profil</TabsTrigger>
-            <TabsTrigger value="export">Export</TabsTrigger>
-            <TabsTrigger value="gps">GPS</TabsTrigger>
-            <TabsTrigger value="overtime">Overtime</TabsTrigger>
+            <TabsTrigger value="profile">{t('profile')}</TabsTrigger>
+            <TabsTrigger value="export">{t('export')}</TabsTrigger>
+            <TabsTrigger value="gps">{t('gps')}</TabsTrigger>
+            <TabsTrigger value="overtime">{t('overtime')}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="profile" className="space-y-6">

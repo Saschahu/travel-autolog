@@ -407,7 +407,7 @@ const Index = () => {
       {/* Quick Actions */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Schnellaktionen</CardTitle>
+          <CardTitle className="text-lg">{t('quickActions')}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           <Button variant="outline" className="w-full justify-start gap-2">
@@ -440,15 +440,15 @@ const Index = () => {
             </TabsTrigger>
             <TabsTrigger value="new-job" className="flex items-center gap-2">
               <Plus className="h-4 w-4" />
-              {t('newEntry')}
+              {t('newJob')}
             </TabsTrigger>
             <TabsTrigger value="location" className="flex items-center gap-2">
               <Navigation className="h-4 w-4" />
-              {t('gps')}
+              {t('location')}
             </TabsTrigger>
             <TabsTrigger value="export" className="flex items-center gap-2">
               <FileText className="h-4 w-4" />
-              Export
+              {t('export')}
             </TabsTrigger>
           </TabsList>
           
@@ -509,11 +509,11 @@ const Index = () => {
             <div className="flex-1 overflow-hidden">
               <Tabs defaultValue="customer" className="h-full flex flex-col">
                 <TabsList className="grid w-full grid-cols-5 flex-shrink-0">
-                  <TabsTrigger value="customer">Kundendaten</TabsTrigger>
-                  <TabsTrigger value="machine">Maschine</TabsTrigger>
-                  <TabsTrigger value="times">Zeiten</TabsTrigger>
-                  <TabsTrigger value="overtime">Overtime</TabsTrigger>
-                  <TabsTrigger value="finish">Abschluss</TabsTrigger>
+                  <TabsTrigger value="customer">{t('customer')}</TabsTrigger>
+                  <TabsTrigger value="machine">{t('machine')}</TabsTrigger>
+                  <TabsTrigger value="times">{t('times')}</TabsTrigger>
+                  <TabsTrigger value="overtime">{t('overtime')}</TabsTrigger>
+                  <TabsTrigger value="finish">{t('finish')}</TabsTrigger>
                 </TabsList>
                 
                 <div className="flex-1 overflow-y-auto mt-4">

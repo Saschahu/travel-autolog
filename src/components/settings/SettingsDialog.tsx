@@ -11,6 +11,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { User, MapPin, Settings, Home, Clock, Globe, FolderOpen } from 'lucide-react';
 import { OvertimeSettings } from '@/components/settings/OvertimeSettings';
+import { GPSSettingsComponent } from '@/components/gps/GPSSettingsComponent';
+import { GPSSettings, defaultGPSSettings } from '@/types/gps';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface SettingsDialogProps {
@@ -34,7 +36,23 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
     gpsEnabled: false,
     localStoragePath: ''
   });
+  
+  // GPS settings state (separate from profile data)
+  const [gpsSettings, setGpsSettings] = useState<GPSSettings>(defaultGPSSettings);
+  
   const [saving, setSaving] = useState(false);
+
+  // Load GPS settings from localStorage on mount
+  useEffect(() => {
+    const stored = localStorage.getItem('gps_settings');
+    if (stored) {
+      try {
+        setGpsSettings(JSON.parse(stored));
+      } catch (error) {
+        console.error('Failed to parse GPS settings:', error);
+      }
+    }
+  }, []);
 
   // Update form when profile changes
   useEffect(() => {
@@ -59,6 +77,9 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
       toast({ title: 'Speichern', description: 'Wird gespeichert…' });
       
       await updateProfile(formData);
+      
+      // Save GPS settings to localStorage
+      localStorage.setItem('gps_settings', JSON.stringify(gpsSettings));
       console.log('updateProfile completed successfully');
       
       // Change app language if language was updated
@@ -258,49 +279,10 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
           </TabsContent>
 
           <TabsContent value="gps" className="space-y-6">
-            {/* GPS Settings */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-base">
-                  <MapPin className="h-4 w-4 text-primary" />
-                  {t('gpsSettings')}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="space-y-0.5">
-                    <Label htmlFor="gps-enabled">{t('enableGps')}</Label>
-                    <p className="text-xs text-muted-foreground">
-                      Enable location tracking and notifications
-                    </p>
-                  </div>
-                  <Switch
-                    id="gps-enabled"
-                    checked={formData.gpsEnabled}
-                    onCheckedChange={(checked) => 
-                      setFormData(prev => ({ ...prev, gpsEnabled: checked }))
-                    }
-                  />
-                </div>
-
-                {formData.homeAddress && (
-                  <div className="space-y-2">
-                    <Label className="flex items-center gap-2">
-                      <MapPin className="h-4 w-4" />
-                      {t('homeLocation')}
-                    </Label>
-                    <div className="p-3 bg-muted rounded-md">
-                      <p className="text-sm text-muted-foreground">
-                        {formData.homeAddress}
-                      </p>
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      This address will be used for GPS home detection
-                    </p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+            <GPSSettingsComponent 
+              settings={gpsSettings}
+              onSettingsChange={setGpsSettings}
+            />
           </TabsContent>
 
           <TabsContent value="overtime" className="space-y-6">

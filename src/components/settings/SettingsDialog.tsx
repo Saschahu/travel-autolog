@@ -12,7 +12,6 @@ import { Switch } from '@/components/ui/switch';
 import { User, MapPin, Settings, Home, Clock, Globe, FolderOpen } from 'lucide-react';
 import { OvertimeSettings } from '@/components/settings/OvertimeSettings';
 import { GPSSettingsComponent } from '@/components/gps/GPSSettingsComponent';
-import { GPSSettings, defaultGPSSettings } from '@/types/gps';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface SettingsDialogProps {
@@ -51,14 +50,19 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
 
   // Load GPS settings from localStorage on mount
   useEffect(() => {
-    const stored = localStorage.getItem('gps_settings');
-    if (stored) {
+    const loadGpsSettings = () => {
       try {
-        setGpsSettings(JSON.parse(stored));
+        const saved = localStorage.getItem('gps-settings');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          setGpsSettings(prev => ({ ...prev, ...parsed }));
+        }
       } catch (error) {
-        console.error('Failed to parse GPS settings:', error);
+        console.error('Error loading GPS settings:', error);
       }
-    }
+    };
+
+    loadGpsSettings();
   }, []);
 
   // Update form when profile changes
@@ -86,7 +90,7 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
       await updateProfile(formData);
       
       // Save GPS settings to localStorage
-      localStorage.setItem('gps_settings', JSON.stringify(gpsSettings));
+      localStorage.setItem('gps-settings', JSON.stringify(gpsSettings));
       console.log('updateProfile completed successfully');
       
       // Change app language if language was updated

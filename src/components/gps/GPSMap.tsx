@@ -6,8 +6,19 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertTriangle } from 'lucide-react';
+import { LocationData, GPSEvent } from '@/types/gps-events';
 
-export const GPSMap: React.FC = () => {
+interface GPSMapProps {
+  currentLocation: LocationData | null;
+  homeLocation: {
+    latitude: number;
+    longitude: number;
+    radius: number;
+  };
+  todaysEvents: GPSEvent[];
+}
+
+export const GPSMap: React.FC<GPSMapProps> = ({ currentLocation, homeLocation, todaysEvents }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const [mapboxToken, setMapboxToken] = useState<string>('');

@@ -210,14 +210,6 @@ export const GPSStatus: React.FC<GPSStatusProps> = ({ gpsTracking }) => {
             </Button>
           )}
 
-          <Button 
-            variant="outline" 
-            size="sm"
-            onClick={handleManualConfirm}
-          >
-            <Timer className="h-4 w-4 mr-2" />
-            Manuell bestätigen
-          </Button>
         </div>
       </div>
 

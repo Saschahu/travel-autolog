@@ -2,6 +2,13 @@ import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Edit, MapPin, Clock, Home, Briefcase } from 'lucide-react';
+import { GPSEvent, GPSEventType } from '@/types/gps-events';
+
+interface GPSEventLogProps {
+  events: GPSEvent[];
+  onAddManualEvent: (type: GPSEventType, note?: string) => void;
+  onClearEvents: () => void;
+}
 
 // Mock events for Phase 1
 const mockEvents = [
@@ -62,7 +69,7 @@ const eventTypeColors = {
   HOME_ARRIVAL_CONFIRMED: 'default'
 } as const;
 
-export const GPSEventLog: React.FC = () => {
+export const GPSEventLog: React.FC<GPSEventLogProps> = ({ events, onAddManualEvent, onClearEvents }) => {
   const handleEditEvent = (eventId: string) => {
     console.log('Edit event:', eventId, '- will be implemented in Phase 5');
   };

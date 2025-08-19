@@ -5,7 +5,7 @@ import { GPSStateMachine } from '@/services/gpsStateMachine';
 import { GeolocationService } from '@/services/geolocationService';
 import { useToast } from '@/hooks/use-toast';
 
-interface UseGPSTrackingResult {
+export interface UseGPSTrackingResult {
   // State
   currentLocation: LocationData | null;
   currentState: GPSState;

@@ -2,12 +2,14 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { MapPin, Activity, List } from 'lucide-react';
+import { useGPSTracking } from '@/hooks/useGPSTracking';
 import { GPSMap } from './GPSMap';
 import { GPSStatus } from './GPSStatus';
 import { GPSEventLog } from './GPSEventLog';
 
 export const GPSPage: React.FC = () => {
   const { t } = useTranslation();
+  const gpsTracking = useGPSTracking();
 
   return (
     <div className="space-y-6 p-4">
@@ -20,7 +22,11 @@ export const GPSPage: React.FC = () => {
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
-          <GPSMap />
+          <GPSMap 
+            currentLocation={gpsTracking.currentLocation}
+            homeLocation={gpsTracking.settings.homeLocation}
+            todaysEvents={gpsTracking.todaysEvents}
+          />
         </CardContent>
       </Card>
 
@@ -33,7 +39,7 @@ export const GPSPage: React.FC = () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <GPSStatus />
+          <GPSStatus gpsTracking={gpsTracking} />
         </CardContent>
       </Card>
 
@@ -46,7 +52,11 @@ export const GPSPage: React.FC = () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <GPSEventLog />
+          <GPSEventLog 
+            events={gpsTracking.todaysEvents}
+            onAddManualEvent={gpsTracking.addManualEvent}
+            onClearEvents={gpsTracking.clearTodaysEvents}
+          />
         </CardContent>
       </Card>
     </div>

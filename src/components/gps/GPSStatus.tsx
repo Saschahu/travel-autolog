@@ -3,18 +3,11 @@ import { useTranslation } from 'react-i18next';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Play, Square, MapPin, Timer, Home } from 'lucide-react';
+import { UseGPSTrackingResult } from '@/hooks/useGPSTracking';
 
-// Mock data for Phase 1
-const mockStatus = {
-  state: 'idle_at_home' as const,
-  isTracking: false,
-  timers: {
-    travel: 0,
-    work: 0,
-    return: 0
-  },
-  hasPermission: false
-};
+interface GPSStatusProps {
+  gpsTracking: UseGPSTrackingResult;
+}
 
 const stateLabels = {
   idle_at_home: 'Zuhause (Bereit)',
@@ -34,23 +27,49 @@ const formatTime = (minutes: number): string => {
   return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
 };
 
-export const GPSStatus: React.FC = () => {
+export const GPSStatus: React.FC<GPSStatusProps> = ({ gpsTracking }) => {
   const { t } = useTranslation();
+  
+  const {
+    currentState,
+    isTracking,
+    hasPermissions,
+    currentLocation,
+    error,
+    startTracking,
+    stopTracking,
+    requestPermissions,
+    getCurrentPosition,
+    selectWork,
+    selectPrivate,
+    confirmAtCustomer,
+    denyAtCustomer,
+    confirmWorkDone,
+    denyWorkDone,
+    confirmHomeArrival
+  } = gpsTracking;
 
-  const handleStartTracking = () => {
-    console.log('Start tracking - will be implemented in Phase 3');
+  const handleStartTracking = async () => {
+    await startTracking();
   };
 
   const handleStopTracking = () => {
-    console.log('Stop tracking - will be implemented in Phase 3');
+    stopTracking();
   };
 
-  const handleRequestPermission = () => {
-    console.log('Request permission - will be implemented in Phase 3');
+  const handleRequestPermission = async () => {
+    await requestPermissions();
   };
 
-  const handleManualConfirm = () => {
-    console.log('Manual confirm - will be implemented in Phase 4');
+  const handleGetCurrentPosition = async () => {
+    await getCurrentPosition();
+  };
+
+  // Mock timer data - TODO: Calculate from current session
+  const mockTimers = {
+    travel: 0,
+    work: 0,
+    return: 0
   };
 
   return (
@@ -60,18 +79,18 @@ export const GPSStatus: React.FC = () => {
         <h4 className="font-medium">Aktueller Zustand</h4>
         <div className="flex flex-wrap gap-2">
           <Badge 
-            variant={mockStatus.state === 'idle_at_home' ? 'default' : 'secondary'}
+            variant={currentState === 'idle_at_home' ? 'default' : 'secondary'}
             className="text-sm"
           >
-            {stateLabels[mockStatus.state]}
+            {stateLabels[currentState]}
           </Badge>
           
-          <Badge variant={mockStatus.isTracking ? 'default' : 'destructive'}>
-            {mockStatus.isTracking ? 'Tracking aktiv' : 'Tracking gestoppt'}
+          <Badge variant={isTracking ? 'default' : 'destructive'}>
+            {isTracking ? 'Tracking aktiv' : 'Tracking gestoppt'}
           </Badge>
           
-          <Badge variant={mockStatus.hasPermission ? 'default' : 'destructive'}>
-            {mockStatus.hasPermission ? 'GPS berechtigt' : 'GPS Berechtigung fehlt'}
+          <Badge variant={hasPermissions ? 'default' : 'destructive'}>
+            {hasPermissions ? 'GPS berechtigt' : 'GPS Berechtigung fehlt'}
           </Badge>
         </div>
       </div>
@@ -82,21 +101,21 @@ export const GPSStatus: React.FC = () => {
         <div className="grid grid-cols-3 gap-4">
           <div className="text-center space-y-1">
             <div className="text-2xl font-mono font-bold text-primary">
-              {formatTime(mockStatus.timers.travel)}
+              {formatTime(mockTimers.travel)}
             </div>
             <div className="text-xs text-muted-foreground">Anreise</div>
           </div>
           
           <div className="text-center space-y-1">
             <div className="text-2xl font-mono font-bold text-secondary">
-              {formatTime(mockStatus.timers.work)}
+              {formatTime(mockTimers.work)}
             </div>
             <div className="text-xs text-muted-foreground">Arbeitszeit</div>
           </div>
           
           <div className="text-center space-y-1">
             <div className="text-2xl font-mono font-bold text-accent">
-              {formatTime(mockStatus.timers.return)}
+              {formatTime(mockTimers.return)}
             </div>
             <div className="text-xs text-muted-foreground">Heimreise</div>
           </div>
@@ -107,7 +126,7 @@ export const GPSStatus: React.FC = () => {
       <div className="space-y-3">
         <h4 className="font-medium">Kontrolle</h4>
         <div className="flex flex-wrap gap-2">
-          {!mockStatus.hasPermission && (
+          {!hasPermissions && (
             <Button 
               variant="outline" 
               size="sm"
@@ -118,7 +137,16 @@ export const GPSStatus: React.FC = () => {
             </Button>
           )}
 
-          {!mockStatus.isTracking ? (
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={handleGetCurrentPosition}
+          >
+            <MapPin className="h-4 w-4 mr-2" />
+            Position abrufen
+          </Button>
+
+          {!isTracking ? (
             <Button 
               size="sm"
               onClick={handleStartTracking}
@@ -137,6 +165,51 @@ export const GPSStatus: React.FC = () => {
             </Button>
           )}
 
+          {/* Manual confirmation buttons based on current state */}
+          {currentState === 'departing' && (
+            <>
+              <Button size="sm" onClick={selectWork}>
+                <Timer className="h-4 w-4 mr-2" />
+                Arbeit
+              </Button>
+              <Button variant="outline" size="sm" onClick={selectPrivate}>
+                <Home className="h-4 w-4 mr-2" />
+                Privat
+              </Button>
+            </>
+          )}
+          
+          {currentState === 'stationary_check' && (
+            <>
+              <Button size="sm" onClick={confirmAtCustomer}>
+                <Timer className="h-4 w-4 mr-2" />
+                Beim Kunden
+              </Button>
+              <Button variant="outline" size="sm" onClick={denyAtCustomer}>
+                Nicht beim Kunden
+              </Button>
+            </>
+          )}
+          
+          {currentState === 'leaving_customer' && (
+            <>
+              <Button size="sm" onClick={confirmWorkDone}>
+                <Timer className="h-4 w-4 mr-2" />
+                Arbeit fertig
+              </Button>
+              <Button variant="outline" size="sm" onClick={denyWorkDone}>
+                Weiter arbeiten
+              </Button>
+            </>
+          )}
+          
+          {currentState === 'stationary_home_check' && (
+            <Button size="sm" onClick={confirmHomeArrival}>
+              <Home className="h-4 w-4 mr-2" />
+              Heimreise beendet
+            </Button>
+          )}
+
           <Button 
             variant="outline" 
             size="sm"
@@ -151,27 +224,47 @@ export const GPSStatus: React.FC = () => {
       {/* Current Location Info */}
       <div className="space-y-3">
         <h4 className="font-medium">Standort-Info</h4>
+        {error && (
+          <div className="text-sm text-destructive bg-destructive/10 p-3 rounded">
+            {error}
+          </div>
+        )}
         <div className="bg-muted/50 rounded-lg p-3 space-y-2">
           <div className="text-sm">
             <span className="text-muted-foreground">Letzte Position:</span>
             <div className="font-mono text-xs mt-1">
-              Wird in Phase 3 implementiert
+              {currentLocation 
+                ? `${currentLocation.latitude.toFixed(6)}, ${currentLocation.longitude.toFixed(6)}` 
+                : 'Keine Position verfügbar'
+              }
             </div>
           </div>
           
           <div className="text-sm">
             <span className="text-muted-foreground">Geschwindigkeit:</span>
             <div className="font-mono text-xs mt-1">
-              - m/s
+              {currentLocation?.speed !== null && currentLocation?.speed !== undefined
+                ? `${currentLocation.speed.toFixed(1)} m/s`
+                : '- m/s'
+              }
             </div>
           </div>
           
           <div className="text-sm">
             <span className="text-muted-foreground">Genauigkeit:</span>
             <div className="font-mono text-xs mt-1">
-              - m
+              {currentLocation?.accuracy ? `${currentLocation.accuracy.toFixed(0)} m` : '- m'}
             </div>
           </div>
+          
+          {currentLocation && (
+            <div className="text-sm">
+              <span className="text-muted-foreground">Zeitstempel:</span>
+              <div className="font-mono text-xs mt-1">
+                {currentLocation.timestamp.toLocaleString('de-DE')}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

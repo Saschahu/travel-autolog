@@ -2,12 +2,12 @@ import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { MapPin, Play, Square } from 'lucide-react';
 import MapView from '@/components/MapView';
-import { requestPermission, getCurrent, startWatch, isSecureWebContext, Fix, WatchHandle } from '@/services/geolocation';
+import { requestPermission, getCurrent, startWatch, type Fix, type WatchHandle } from '@/services/geolocation';
 import { Capacitor } from '@capacitor/core';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
 export const GPSPage: React.FC = () => {
-  const [center, setCenter] = useState<[number, number] | undefined>();
+  const [center, setCenter] = useState<[number, number]>();
   const [msg, setMsg] = useState<string>();
   const [isTracking, setIsTracking] = useState(false);
   const [isGettingLocation, setIsGettingLocation] = useState(false);
@@ -15,17 +15,13 @@ export const GPSPage: React.FC = () => {
 
   useEffect(() => {
     (async () => {
-      const perm = await requestPermission();
-      if (perm === 'denied') {
-        setMsg('Standortberechtigung abgelehnt. Bitte in den Systemeinstellungen erlauben.');
-      }
-      if (!Capacitor.isNativePlatform() && !isSecureWebContext()) {
-        setMsg('Hinweis: Im Browser benötigt Geolocation HTTPS. Nutze eine https://-URL oder die installierte App.');
-      }
+      const p = await requestPermission();
+      if (p === 'denied') setMsg('Standortberechtigung abgelehnt. Bitte in den Systemeinstellungen erlauben.');
     })();
-    
-    return () => { 
-      watchRef.current?.stop(); 
+    return () => {
+      if (watchRef.current) {
+        watchRef.current.stop();
+      }
     };
   }, []);
 
@@ -34,10 +30,10 @@ export const GPSPage: React.FC = () => {
     setMsg(undefined);
     try {
       const fix = await getCurrent();
-      setCenter([fix.lng, fix.lat]); // Mapbox expects [lng, lat] format
-      setMsg(`Position: ${fix.lat.toFixed(6)}, ${fix.lng.toFixed(6)} (±${fix.accuracy?.toFixed(0)}m)`);
+      setCenter([fix.lng, fix.lat]); // Mapbox: [lng, lat]
+      setMsg(undefined);
     } catch (error: any) {
-      setMsg('Standort konnte nicht ermittelt werden: ' + (error?.message ?? ''));
+      setMsg('Standort konnte nicht ermittelt werden. ' + (error?.message ?? ''));
     } finally {
       setIsGettingLocation(false);
     }
@@ -47,17 +43,13 @@ export const GPSPage: React.FC = () => {
     setMsg(undefined);
     try {
       watchRef.current?.stop();
-      watchRef.current = await startWatch(
-        (fix: Fix) => {
-          setCenter([fix.lng, fix.lat]);
-          setMsg(`Tracking: ${fix.lat.toFixed(6)}, ${fix.lng.toFixed(6)} (±${fix.accuracy?.toFixed(0)}m)`);
-          // TODO: hier deine FSM mit fix füttern
-        }, 
-        (err) => {
-          setMsg('GPS-Fehler: ' + (err?.message ?? String(err)));
-          setIsTracking(false);
-        }
-      );
+      watchRef.current = await startWatch((fix: Fix) => {
+        setCenter([fix.lng, fix.lat]);
+        // TODO: FSM hier füttern (depart/arrive usw.)
+      }, (err) => {
+        setMsg('GPS-Fehler: ' + (err?.message ?? String(err)));
+        setIsTracking(false);
+      });
       setIsTracking(true);
     } catch (error: any) {
       setMsg('Tracking konnte nicht gestartet werden: ' + (error?.message ?? ''));
@@ -67,7 +59,6 @@ export const GPSPage: React.FC = () => {
   const stopTracking = () => {
     watchRef.current?.stop();
     setIsTracking(false);
-    setMsg('Tracking gestoppt');
   };
 
   return (
@@ -119,10 +110,8 @@ export const GPSPage: React.FC = () => {
       
       <MapView center={center} />
       
-      <div className="text-sm text-muted-foreground">
-        <p><strong>Plattform:</strong> {Capacitor.isNativePlatform() ? 'Native App' : 'Web Browser'}</p>
-        <p><strong>Secure Context:</strong> {isSecureWebContext() ? 'Ja' : 'Nein'}</p>
-        <p><strong>Status:</strong> {isTracking ? 'Tracking aktiv' : 'Tracking inaktiv'}</p>
+      <div className="text-xs text-muted-foreground">
+        Plattform: {Capacitor.getPlatform()} · Secure Context: {typeof window !== 'undefined' && window.isSecureContext ? 'Ja' : 'Nein'} · Status: {isTracking ? 'Tracking aktiv' : 'Tracking inaktiv'}
       </div>
     </div>
   );

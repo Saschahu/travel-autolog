@@ -2,34 +2,32 @@ import { Capacitor } from '@capacitor/core';
 import { Geolocation, Position } from '@capacitor/geolocation';
 
 export type Fix = {
-  lat: number; lng: number; accuracy?: number | null;
-  speed?: number | null; ts: number;
+  lat: number; lng: number; accuracy?: number | null; speed?: number | null; ts: number;
 };
 
-const GEO_OPTS = { enableHighAccuracy: true, timeout: 10000, maximumAge: 2000 } as const;
+const OPTS = { enableHighAccuracy: true, timeout: 10000, maximumAge: 2000 } as const;
 
 export async function requestPermission(): Promise<'granted'|'denied'|'prompt'> {
   if (Capacitor.isNativePlatform()) {
-    const status = await Geolocation.checkPermissions();
-    if (status.location === 'granted' || status.coarseLocation === 'granted') return 'granted';
-    const req = await Geolocation.requestPermissions();
-    return (req.location === 'granted' || req.coarseLocation === 'granted') ? 'granted' : 'denied';
+    const s = await Geolocation.checkPermissions();
+    if (s.location === 'granted' || s.coarseLocation === 'granted') return 'granted';
+    const r = await Geolocation.requestPermissions();
+    return (r.location === 'granted' || r.coarseLocation === 'granted') ? 'granted' : 'denied';
   }
-  // Web: Geolocation Permission wird beim ersten Call abgefragt
-  return 'prompt';
+  return 'prompt'; // Web fragt bei erstem Aufruf
 }
 
 export async function getCurrent(): Promise<Fix> {
   if (Capacitor.isNativePlatform()) {
-    const pos = await Geolocation.getCurrentPosition(GEO_OPTS);
-    return toFix(pos);
+    const p = await Geolocation.getCurrentPosition(OPTS);
+    return toFix(p);
   }
-  return new Promise<Fix>((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     if (!('geolocation' in navigator)) return reject(new Error('Geolocation nicht verfügbar'));
     navigator.geolocation.getCurrentPosition(
-      p => resolve(toFixWeb(p)),
-      e => reject(e),
-      GEO_OPTS
+      (p) => resolve(toFixWeb(p)),
+      (e) => reject(e),
+      OPTS
     );
   });
 }
@@ -41,16 +39,16 @@ export async function startWatch(
   onError?: (err: any) => void
 ): Promise<WatchHandle> {
   if (Capacitor.isNativePlatform()) {
-    const id = await Geolocation.watchPosition(GEO_OPTS, (pos, err) => {
+    const id = await Geolocation.watchPosition(OPTS, (pos, err) => {
       if (err) return onError?.(err);
       if (pos) onFix(toFix(pos));
     });
     return { stop: () => Geolocation.clearWatch({ id }) };
   }
   const id = navigator.geolocation.watchPosition(
-    p => onFix(toFixWeb(p)),
-    e => onError?.(e),
-    GEO_OPTS
+    (p) => onFix(toFixWeb(p)),
+    (e) => onError?.(e),
+    OPTS
   );
   return { stop: () => navigator.geolocation.clearWatch(id) };
 }

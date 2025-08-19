@@ -4,6 +4,7 @@ import { GPSSettings, defaultGPSSettings } from '@/types/gps';
 import { GPSStateMachine } from '@/services/gpsStateMachine';
 import { GeolocationService } from '@/services/geolocationService';
 import { GPSSessionCalculator, SessionTimers } from '@/services/gpsSessionCalculator';
+import { useSupabaseGPS } from '@/hooks/useSupabaseGPS';
 import { useToast } from '@/hooks/use-toast';
 
 export interface UseGPSTrackingResult {
@@ -18,6 +19,7 @@ export interface UseGPSTrackingResult {
   currentSession: GPSSession | null;
   todaysEvents: GPSEvent[];
   sessionTimers: SessionTimers;
+  currentJobId: string | null;
   
   // Settings
   settings: GPSSettings;
@@ -41,10 +43,15 @@ export interface UseGPSTrackingResult {
   // Event management
   addManualEvent: (type: GPSEvent['type'], note?: string) => void;
   clearTodaysEvents: () => void;
+  
+  // Job linking
+  linkToJob: (jobId: string) => Promise<boolean>;
+  unlinkFromJob: () => Promise<boolean>;
 }
 
 export const useGPSTracking = (): UseGPSTrackingResult => {
   const { toast } = useToast();
+  const { saveSession, loadSession } = useSupabaseGPS();
   
   // State
   const [currentLocation, setCurrentLocation] = useState<LocationData | null>(null);
@@ -55,6 +62,7 @@ export const useGPSTracking = (): UseGPSTrackingResult => {
   const [settings, setSettings] = useState<GPSSettings>(defaultGPSSettings);
   const [currentSession, setCurrentSession] = useState<GPSSession | null>(null);
   const [todaysEvents, setTodaysEvents] = useState<GPSEvent[]>([]);
+  const [currentJobId, setCurrentJobId] = useState<string | null>(null);
   const [sessionTimers, setSessionTimers] = useState<SessionTimers>({
     travelTime: 0,
     workTime: 0,
@@ -154,8 +162,22 @@ export const useGPSTracking = (): UseGPSTrackingResult => {
     }
   }, []);
   
-  const loadTodaysSession = useCallback(() => {
+  const loadTodaysSession = useCallback(async () => {
     const today = new Date().toISOString().split('T')[0];
+    
+    // Try to load from Supabase first
+    const supabaseSession = await loadSession(today);
+    if (supabaseSession) {
+      setCurrentSession(supabaseSession);
+      setTodaysEvents(supabaseSession.events);
+      
+      // Calculate and update timers
+      const timers = GPSSessionCalculator.getLiveTimers(supabaseSession.events);
+      setSessionTimers(timers);
+      return;
+    }
+    
+    // Fallback to localStorage
     const sessionKey = `gps_session_${today}`;
     const stored = localStorage.getItem(sessionKey);
     
@@ -229,6 +251,11 @@ export const useGPSTracking = (): UseGPSTrackingResult => {
       const today = new Date().toISOString().split('T')[0];
       const sessionKey = `gps_session_${today}`;
       localStorage.setItem(sessionKey, JSON.stringify(updatedSession));
+      
+      // Save to Supabase in background
+      saveSession(updatedSession, currentJobId || undefined).catch(error => {
+        console.error('Failed to sync session to Supabase:', error);
+      });
       
       return updated;
     });
@@ -373,8 +400,13 @@ export const useGPSTracking = (): UseGPSTrackingResult => {
       const today = new Date().toISOString().split('T')[0];
       const sessionKey = `gps_session_${today}`;
       localStorage.setItem(sessionKey, JSON.stringify(clearedSession));
+      
+      // Save to Supabase in background
+      saveSession(clearedSession, currentJobId || undefined).catch(error => {
+        console.error('Failed to sync cleared session to Supabase:', error);
+      });
     }
-  }, [currentSession]);
+  }, [currentSession, currentJobId, saveSession]);
 
   // Timer update effect - updates current timer every minute
   useEffect(() => {
@@ -387,6 +419,38 @@ export const useGPSTracking = (): UseGPSTrackingResult => {
       return () => clearInterval(interval);
     }
   }, [sessionTimers.currentTimer.type, todaysEvents]);
+
+  const linkToJob = useCallback(async (jobId: string): Promise<boolean> => {
+    if (!currentSession) return false;
+    
+    const { linkSessionToJob } = useSupabaseGPS();
+    const success = await linkSessionToJob(currentSession.id, jobId);
+    
+    if (success) {
+      setCurrentJobId(jobId);
+      
+      // Re-save current session with job link
+      await saveSession(currentSession, jobId);
+    }
+    
+    return success;
+  }, [currentSession, saveSession]);
+
+  const unlinkFromJob = useCallback(async (): Promise<boolean> => {
+    if (!currentSession || !currentJobId) return false;
+    
+    const { linkSessionToJob } = useSupabaseGPS();
+    const success = await linkSessionToJob(currentSession.id, '');
+    
+    if (success) {
+      setCurrentJobId(null);
+      
+      // Re-save current session without job link
+      await saveSession(currentSession);
+    }
+    
+    return success;
+  }, [currentSession, currentJobId, saveSession]);
   
   return {
     // State
@@ -400,6 +464,7 @@ export const useGPSTracking = (): UseGPSTrackingResult => {
     currentSession,
     todaysEvents,
     sessionTimers,
+    currentJobId,
     
     // Settings
     settings,
@@ -422,6 +487,10 @@ export const useGPSTracking = (): UseGPSTrackingResult => {
     
     // Event management
     addManualEvent,
-    clearTodaysEvents
+    clearTodaysEvents,
+    
+    // Job linking
+    linkToJob,
+    unlinkFromJob
   };
 };

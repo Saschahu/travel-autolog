@@ -14,6 +14,53 @@ export type Database = {
   }
   public: {
     Tables: {
+      gps_sessions: {
+        Row: {
+          created_at: string
+          date: string
+          end_timestamp: string | null
+          events: Json
+          id: string
+          job_id: string | null
+          start_timestamp: string | null
+          totals: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          end_timestamp?: string | null
+          events?: Json
+          id?: string
+          job_id?: string | null
+          start_timestamp?: string | null
+          totals?: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          end_timestamp?: string | null
+          events?: Json
+          id?: string
+          job_id?: string | null
+          start_timestamp?: string | null
+          totals?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gps_sessions_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       jobs: {
         Row: {
           created_at: string

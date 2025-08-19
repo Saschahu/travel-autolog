@@ -38,7 +38,14 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
   });
   
   // GPS settings state (separate from profile data)
-  const [gpsSettings, setGpsSettings] = useState<GPSSettings>(defaultGPSSettings);
+  const [gpsSettings, setGpsSettings] = useState({
+    styleId: 'mapbox://styles/mapbox/streets-v12',
+    homeGeofence: {
+      latitude: null as number | null,
+      longitude: null as number | null,
+      radius: 100
+    }
+  });
   
   const [saving, setSaving] = useState(false);
 

@@ -17,8 +17,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { LeavingHomeDialog } from '@/components/location/LeavingHomeDialog';
-import { LocationSettings } from '@/components/location/LocationSettings';
-import { LocationTracker } from '@/components/location/LocationTracker';
+import { GPSPage } from '@/components/gps/GPSPage';
 import { useLocation } from '@/hooks/useLocation';
 import { useUserProfile } from '@/contexts/UserProfileContext';
 import { useToast } from '@/hooks/use-toast';
@@ -454,8 +453,8 @@ const Index = () => {
             <JobEntryForm onJobSaved={() => fetchJobs()} />
           </TabsContent>
           
-          <TabsContent value="location" className="p-4 mt-6">
-            <LocationTracker />
+          <TabsContent value="location" className="mt-6">
+            <GPSPage />
           </TabsContent>
           
           <TabsContent value="export" className="mt-6">

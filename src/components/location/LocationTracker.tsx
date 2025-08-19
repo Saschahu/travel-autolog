@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -13,6 +14,7 @@ interface LocationData {
 }
 
 export const LocationTracker: React.FC = () => {
+  const { t } = useTranslation();
   const {
     currentLocation,
     homeLocation,
@@ -73,7 +75,7 @@ export const LocationTracker: React.FC = () => {
               <h4 className="font-medium">Aktuelle Position:</h4>
               <div className="text-sm text-muted-foreground space-y-1">
                 <div>Breitengrad: {currentLocation.latitude.toFixed(6)}</div>
-                <div>Längengrad: {currentLocation.longitude.toFixed(6)}</div>
+                <div>{t('longitude')}: {currentLocation.longitude.toFixed(6)}</div>
                 <div>Zeitstempel: {currentLocation.timestamp.toLocaleString('de-DE')}</div>
               </div>
             </div>
@@ -85,7 +87,7 @@ export const LocationTracker: React.FC = () => {
               <h4 className="font-medium">Home-Standort:</h4>
               <div className="text-sm text-muted-foreground space-y-1">
                 <div>Breitengrad: {homeLocation.latitude.toFixed(6)}</div>
-                <div>Längengrad: {homeLocation.longitude.toFixed(6)}</div>
+                <div>{t('longitude')}: {homeLocation.longitude.toFixed(6)}</div>
                 <div>Radius: {homeLocation.radius}m</div>
               </div>
             </div>

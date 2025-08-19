@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -10,6 +11,7 @@ import { useLocation } from '@/hooks/useLocation';
 import { useToast } from '@/hooks/use-toast';
 
 export const LocationSettings = () => {
+  const { t } = useTranslation();
   const {
     currentLocation,
     homeLocation,
@@ -248,7 +250,7 @@ export const LocationSettings = () => {
         <CardContent className="space-y-2 text-sm text-muted-foreground">
           <p>1. GPS Position abrufen um deinen aktuellen Standort zu ermitteln</p>
           <p>2. "Als Zuhause setzen" um den aktuellen Standort zu speichern</p>
-          <p>3. GPS Tracking aktivieren für automatische Erkennung</p>
+          <p>{t('activateGpsTracking')}</p>
           <p>4. Die App benachrichtigt dich beim Verlassen des Zuhause-Bereichs</p>
         </CardContent>
       </Card>

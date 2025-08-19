@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,6 +12,7 @@ import { OvertimeSettings as OvertimeSettingsType } from '@/types/overtime';
 import { useToast } from '@/hooks/use-toast';
 
 export const OvertimeSettings = () => {
+  const { t } = useTranslation();
   const { overtimeSettings, saveSettings } = useOvertimeCalculation();
   const { toast } = useToast();
   const [localSettings, setLocalSettings] = useState<OvertimeSettingsType>(overtimeSettings);
@@ -37,15 +39,15 @@ export const OvertimeSettings = () => {
           {/* Hour-based Overtime Settings */}
           <div className="p-4 border rounded-lg space-y-4">
             <div className="space-y-1">
-              <Label>Stundenbasierte Überstunden</Label>
+              <Label>{t('hourBasedOvertime')}</Label>
               <p className="text-sm text-muted-foreground">
-                Überstunden basierend auf Gesamtarbeitszeit pro Tag
+                {t('overtimeDescription')}
               </p>
             </div>
             
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="overtime-threshold-1">Erste Überstunden ab (Stunden)</Label>
+                <Label htmlFor="overtime-threshold-1">{t('firstOvertimeFrom')}</Label>
                 <Input
                   id="overtime-threshold-1"
                   type="number"
@@ -77,7 +79,7 @@ export const OvertimeSettings = () => {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="overtime-threshold-2">Zweite Überstunden ab (Stunden)</Label>
+                <Label htmlFor="overtime-threshold-2">{t('secondOvertimeFrom')}</Label>
                 <Input
                   id="overtime-threshold-2"
                   type="number"
@@ -93,7 +95,7 @@ export const OvertimeSettings = () => {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="overtime-rate-2">Zuschlag über 12h (%)</Label>
+                <Label htmlFor="overtime-rate-2">{t('surchargeOver12h')}</Label>
                 <Input
                   id="overtime-rate-2"
                   type="number"
@@ -115,9 +117,9 @@ export const OvertimeSettings = () => {
           <div className="p-4 border rounded-lg space-y-4">
             <div className="flex items-center justify-between">
               <div className="space-y-1">
-                <Label htmlFor="weekend-enabled">Wochenend-Zuschläge</Label>
+                <Label htmlFor="weekend-enabled">{t('weekendSurcharges')}</Label>
                 <p className="text-sm text-muted-foreground">
-                  Automatische Zuschläge von Freitag Abend bis Montag Morgen
+                  {t('weekendDescription')}
                 </p>
               </div>
               <Switch
@@ -214,12 +216,11 @@ export const OvertimeSettings = () => {
           <CardTitle className="text-base">Hinweise</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2 text-sm text-muted-foreground">
-          <p>• <strong>Garantierte Stunden:</strong> Mindestbezahlung pro Tag (Standard: 8h)</p>
-          <p>• <strong>8-12 Stunden:</strong> 50% Zuschlag auf Überstunden</p>
-          <p>• <strong>Über 12 Stunden:</strong> 100% Zuschlag auf Überstunden</p>
-          <p>• <strong>Samstag:</strong> 50% Zuschlag auf alle Stunden</p>
-          <p>• <strong>Sonntag/Feiertag:</strong> 100% Zuschlag auf alle Stunden</p>
-          <p>• <strong>Bezahlung:</strong> Mindestens garantierte Stunden + Überstundenzuschläge</p>
+          <p>{t('overtimeRules')}</p>
+          <p>{t('rule8to12')}</p>
+          <p>{t('ruleOver12')}</p>
+          <p>{t('weekendRules')}</p>
+          <p>{t('payment')}</p>
         </CardContent>
       </Card>
     </div>

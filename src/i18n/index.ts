@@ -204,7 +204,7 @@ const resources = {
       // Navigation and Tabs
       dashboard: 'Dashboard',
       newJob: 'Ny jobb',
-      location: 'Plassering',
+      location: 'GPS',
       export: 'Eksport',
       
       // Job Entry Form Tabs

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 // @ts-ignore - mapbox types might not be available yet
 import Map, { Marker, NavigationControl, GeolocateControl } from 'react-map-gl';
 import { MapPin, Home, Clock } from 'lucide-react';
@@ -40,6 +41,7 @@ export const LocationMap: React.FC<LocationMapProps> = ({
   jobLocations = [],
   className = "h-[400px] w-full"
 }) => {
+  const { t } = useTranslation();
   const mapRef = useRef();
   const [localToken, setLocalToken] = React.useState<string>('');
   const [showTokenInput, setShowTokenInput] = React.useState(false);
@@ -238,7 +240,7 @@ export const LocationMap: React.FC<LocationMapProps> = ({
             {jobLocations.length > 0 && (
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                <span>Aufträge ({jobLocations.length})</span>
+                <span>{t('jobs')} ({jobLocations.length})</span>
               </div>
             )}
           </div>

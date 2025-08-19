@@ -65,12 +65,8 @@ export const GPSStatus: React.FC<GPSStatusProps> = ({ gpsTracking }) => {
     await getCurrentPosition();
   };
 
-  // Mock timer data - TODO: Calculate from current session
-  const mockTimers = {
-    travel: 0,
-    work: 0,
-    return: 0
-  };
+  // Get live timer data
+  const timers = gpsTracking.sessionTimers;
 
   return (
     <div className="space-y-6">
@@ -100,22 +96,28 @@ export const GPSStatus: React.FC<GPSStatusProps> = ({ gpsTracking }) => {
         <h4 className="font-medium">Timer</h4>
         <div className="grid grid-cols-3 gap-4">
           <div className="text-center space-y-1">
-            <div className="text-2xl font-mono font-bold text-primary">
-              {formatTime(mockTimers.travel)}
+            <div className={`text-2xl font-mono font-bold ${
+              timers.currentTimer.type === 'travel' ? 'text-primary animate-pulse' : 'text-primary'
+            }`}>
+              {formatTime(timers.travelTime + (timers.currentTimer.type === 'travel' ? timers.currentTimer.elapsed : 0))}
             </div>
             <div className="text-xs text-muted-foreground">Anreise</div>
           </div>
           
           <div className="text-center space-y-1">
-            <div className="text-2xl font-mono font-bold text-secondary">
-              {formatTime(mockTimers.work)}
+            <div className={`text-2xl font-mono font-bold ${
+              timers.currentTimer.type === 'work' ? 'text-secondary animate-pulse' : 'text-secondary'
+            }`}>
+              {formatTime(timers.workTime + (timers.currentTimer.type === 'work' ? timers.currentTimer.elapsed : 0))}
             </div>
             <div className="text-xs text-muted-foreground">Arbeitszeit</div>
           </div>
           
           <div className="text-center space-y-1">
-            <div className="text-2xl font-mono font-bold text-accent">
-              {formatTime(mockTimers.return)}
+            <div className={`text-2xl font-mono font-bold ${
+              timers.currentTimer.type === 'return' ? 'text-accent animate-pulse' : 'text-accent'
+            }`}>
+              {formatTime(timers.returnTime + (timers.currentTimer.type === 'return' ? timers.currentTimer.elapsed : 0))}
             </div>
             <div className="text-xs text-muted-foreground">Heimreise</div>
           </div>

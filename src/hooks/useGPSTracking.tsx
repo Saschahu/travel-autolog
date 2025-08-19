@@ -3,6 +3,7 @@ import { LocationData, GPSState, GPSEvent, GPSSession } from '@/types/gps-events
 import { GPSSettings, defaultGPSSettings } from '@/types/gps';
 import { GPSStateMachine } from '@/services/gpsStateMachine';
 import { GeolocationService } from '@/services/geolocationService';
+import { GPSSessionCalculator, SessionTimers } from '@/services/gpsSessionCalculator';
 import { useToast } from '@/hooks/use-toast';
 
 export interface UseGPSTrackingResult {
@@ -13,9 +14,10 @@ export interface UseGPSTrackingResult {
   hasPermissions: boolean;
   error: string | null;
   
-  // Current session
+  // Current session and timers
   currentSession: GPSSession | null;
   todaysEvents: GPSEvent[];
+  sessionTimers: SessionTimers;
   
   // Settings
   settings: GPSSettings;
@@ -53,6 +55,16 @@ export const useGPSTracking = (): UseGPSTrackingResult => {
   const [settings, setSettings] = useState<GPSSettings>(defaultGPSSettings);
   const [currentSession, setCurrentSession] = useState<GPSSession | null>(null);
   const [todaysEvents, setTodaysEvents] = useState<GPSEvent[]>([]);
+  const [sessionTimers, setSessionTimers] = useState<SessionTimers>({
+    travelTime: 0,
+    workTime: 0,
+    returnTime: 0,
+    currentTimer: {
+      type: null,
+      startTime: null,
+      elapsed: 0
+    }
+  });
   
   // Services
   const stateMachine = useRef<GPSStateMachine | null>(null);
@@ -162,6 +174,10 @@ export const useGPSTracking = (): UseGPSTrackingResult => {
         
         setCurrentSession(session);
         setTodaysEvents(session.events);
+        
+        // Calculate and update timers
+        const timers = GPSSessionCalculator.getLiveTimers(session.events);
+        setSessionTimers(timers);
       } catch (error) {
         console.error('Failed to load todays session:', error);
       }
@@ -178,6 +194,18 @@ export const useGPSTracking = (): UseGPSTrackingResult => {
         }
       };
       setCurrentSession(newSession);
+      
+      // Initialize empty timers
+      setSessionTimers({
+        travelTime: 0,
+        workTime: 0,
+        returnTime: 0,
+        currentTimer: {
+          type: null,
+          startTime: null,
+          elapsed: 0
+        }
+      });
     }
   }, []);
   
@@ -185,14 +213,17 @@ export const useGPSTracking = (): UseGPSTrackingResult => {
     setTodaysEvents(prev => {
       const updated = [...prev, event];
       
-      // Update session
-      const updatedSession: GPSSession = {
+      // Update session with calculated totals
+      const updatedSession = GPSSessionCalculator.updateSessionTotals({
         ...currentSession!,
-        events: updated,
-        // TODO: Calculate totals based on events
-      };
+        events: updated
+      });
       
       setCurrentSession(updatedSession);
+      
+      // Update live timers
+      const timers = GPSSessionCalculator.getLiveTimers(updated);
+      setSessionTimers(timers);
       
       // Save to localStorage
       const today = new Date().toISOString().split('T')[0];
@@ -327,11 +358,35 @@ export const useGPSTracking = (): UseGPSTrackingResult => {
       };
       setCurrentSession(clearedSession);
       
+      // Reset timers
+      setSessionTimers({
+        travelTime: 0,
+        workTime: 0,
+        returnTime: 0,
+        currentTimer: {
+          type: null,
+          startTime: null,
+          elapsed: 0
+        }
+      });
+      
       const today = new Date().toISOString().split('T')[0];
       const sessionKey = `gps_session_${today}`;
       localStorage.setItem(sessionKey, JSON.stringify(clearedSession));
     }
   }, [currentSession]);
+
+  // Timer update effect - updates current timer every minute
+  useEffect(() => {
+    if (sessionTimers.currentTimer.type) {
+      const interval = setInterval(() => {
+        const timers = GPSSessionCalculator.getLiveTimers(todaysEvents);
+        setSessionTimers(timers);
+      }, 60000); // Update every minute
+
+      return () => clearInterval(interval);
+    }
+  }, [sessionTimers.currentTimer.type, todaysEvents]);
   
   return {
     // State
@@ -344,6 +399,7 @@ export const useGPSTracking = (): UseGPSTrackingResult => {
     // Session
     currentSession,
     todaysEvents,
+    sessionTimers,
     
     // Settings
     settings,

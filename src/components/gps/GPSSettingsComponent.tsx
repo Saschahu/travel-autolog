@@ -26,6 +26,9 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
 }) => {
   const { toast } = useToast();
   const [isGettingLocation, setIsGettingLocation] = useState(false);
+  const [mapboxToken, setMapboxToken] = useState(() => {
+    return localStorage.getItem('mapbox_token') || '';
+  });
 
   const updateSettings = (updates: Partial<GPSSettingsData>) => {
     onSettingsChange({ ...settings, ...updates });
@@ -80,6 +83,14 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
     }
   };
 
+  const handleTokenSave = () => {
+    localStorage.setItem('mapbox_token', mapboxToken);
+    toast({
+      title: 'Mapbox Token gespeichert',
+      description: 'Token wurde erfolgreich gespeichert'
+    });
+  };
+
   return (
     <div className="space-y-6">
       {/* Mapbox Settings */}
@@ -91,6 +102,26 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="mapbox-token">Mapbox Token</Label>
+            <div className="flex gap-2">
+              <Input
+                id="mapbox-token"
+                type="password"
+                placeholder="pk.eyJ1..."
+                value={mapboxToken}
+                onChange={(e) => setMapboxToken(e.target.value)}
+                className="flex-1"
+              />
+              <Button onClick={handleTokenSave} variant="outline">
+                Speichern
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Hol dir einen kostenlosen Token von <a href="https://mapbox.com" target="_blank" rel="noopener noreferrer" className="underline">mapbox.com</a>
+            </p>
+          </div>
+
           <div className="space-y-2">
             <Label htmlFor="mapbox-style">Map Style ID</Label>
             <Input

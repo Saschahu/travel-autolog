@@ -1,84 +1,118 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
-mapboxgl.accessToken = (import.meta as any).env.VITE_MAPBOX_TOKEN as string;
+type MapViewProps = {
+  /** WICHTIG: [lng, lat] Reihenfolge */
+  center?: [number, number];
+  zoom?: number;
+};
 
-export default function MapView() {
-  const el = useRef<HTMLDivElement | null>(null);
+/** Token-Quelle: UI (LocalStorage) > .env (Vite) */
+function getToken(): string | undefined {
+  try {
+    const uiToken = typeof window !== 'undefined'
+      ? (localStorage.getItem('mapbox_token') || localStorage.getItem('MAPBOX_TOKEN') || '').trim()
+      : '';
+    if (uiToken) return uiToken;
+
+    const envToken = (import.meta as any).env?.VITE_MAPBOX_TOKEN as string | undefined;
+    return envToken?.trim();
+  } catch {
+    return undefined;
+  }
+}
+
+/** einfacher Plausibilitätscheck (ersetzt keine Server-Validierung) */
+function looksLikePublicToken(t?: string) {
+  return !!t && /^pk\.[A-Za-z0-9._\-]{10,}$/.test(t);
+}
+
+export default function MapView({ center, zoom = 14 }: MapViewProps) {
+  const hostRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
-  const geoControlRef = useRef<mapboxgl.GeolocateControl | null>(null);
+  const markerRef = useRef<mapboxgl.Marker | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
+  const token = getToken();
+
+  // Initialisierung
   useEffect(() => {
-    if (!el.current || mapRef.current) return;
-    if (!mapboxgl.accessToken || mapboxgl.accessToken.includes('XXXXXXXXXXXXXXXXXXXX')) {
-      // Zeige Hinweis im UI, keine Karte initialisieren
+    if (!hostRef.current || mapRef.current) return;
+
+    if (!token) {
+      setError('Kein Mapbox-Token gefunden. Trage ihn im GPS-Tab ein (LocalStorage) oder setze VITE_MAPBOX_TOKEN in .env/CI.');
       return;
     }
-    
-    try {
-      mapRef.current = new mapboxgl.Map({
-        container: el.current,
-        style: 'mapbox://styles/mapbox/streets-v12',
-        center: [10.75, 59.91], // Oslo (neutraler Default)
-        zoom: 12,
-      });
-
-      // Add GeolocateControl for user location
-      const geo = new mapboxgl.GeolocateControl({
-        positionOptions: { enableHighAccuracy: true },
-        trackUserLocation: true,
-        showUserHeading: true,
-        fitBoundsOptions: { maxZoom: 15 }
-      });
-      geoControlRef.current = geo;
-      mapRef.current.addControl(geo, 'top-right');
-
-      // Center map on first geolocate event
-      geo.once('geolocate', (e: GeolocationPosition) => {
-        const { longitude: lng, latitude: lat } = e.coords;
-        mapRef.current?.easeTo({ center: [lng, lat], zoom: 14 });
-      });
-
-      // Trigger geolocation automatically after map loads
-      mapRef.current.on('load', () => {
-        setTimeout(() => geo.trigger(), 300);
-      });
-    } catch (error) {
-      console.error('Mapbox initialization failed:', error);
+    if (!looksLikePublicToken(token)) {
+      setError('Mapbox-Token scheint ungültig (muss mit "pk." beginnen). Bitte echten Public Token eintragen.');
+      return;
     }
 
-    return () => mapRef.current?.remove();
-  }, []);
+    mapboxgl.accessToken = token;
 
-  const handleRecenter = () => {
-    geoControlRef.current?.trigger();
-  };
+    try {
+      const map = new mapboxgl.Map({
+        container: hostRef.current,
+        style: 'mapbox://styles/mapbox/streets-v12',
+        center: center ?? [10.75, 59.91], // Default: Oslo
+        zoom: center ? zoom : 12,
+      });
+      mapRef.current = map;
 
-  if (!mapboxgl.accessToken || mapboxgl.accessToken.includes('XXXXXXXXXXXXXXXXXXXX')) {
+      // Mapbox-Fehler (z. B. 401/403 bei ungültigem Token/fehlender URL-Restriction)
+      map.on('error', (evt) => {
+        const msg = (evt?.error as any)?.message ?? String(evt?.error ?? '');
+        const status = (evt?.error as any)?.status;
+        if (status === 401 || status === 403 || /Unauthorized|Invalid|forbidden/i.test(msg)) {
+          setError('Mapbox lehnt den Token ab (401/403). Prüfe Token und URL-Restrictions im Mapbox-Dashboard.');
+        }
+      });
+
+      return () => {
+        map.remove();
+        mapRef.current = null;
+      };
+    } catch (e: any) {
+      setError(`Fehler beim Initialisieren der Karte: ${e?.message ?? String(e)}`);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // nur einmal initialisieren
+
+  // Recenter + Marker, wenn center-Prop sich ändert
+  useEffect(() => {
+    if (!mapRef.current || !center) return;
+    const [lng, lat] = center;
+    if (!Number.isFinite(lng) || !Number.isFinite(lat)) return;
+
+    mapRef.current.easeTo({ center, zoom: Math.max(mapRef.current.getZoom(), zoom), duration: 400 });
+
+    if (!markerRef.current) {
+      markerRef.current = new mapboxgl.Marker({ color: '#1d4ed8' });
+    }
+    markerRef.current.setLngLat(center).addTo(mapRef.current);
+  }, [center, zoom]);
+
+  if (error) {
     return (
-      <div className="p-3 rounded bg-yellow-50 text-yellow-900 text-sm">
-        <strong>Mapbox-Token fehlt oder ist ungültig.</strong>
-        <br />
-        Hole dir einen echten Token von <a href="https://mapbox.com" target="_blank" rel="noopener noreferrer" className="underline">mapbox.com</a> und füge ihn in die <code>.env</code> ein:
-        <pre className="mt-2">VITE_MAPBOX_TOKEN=dein_echter_token_hier</pre>
-        Danach App neu starten.
+      <div className="p-3 rounded bg-red-50 text-red-700 text-sm">
+        {error}
+        <div className="mt-2 text-xs text-red-600/80">
+          Hinweis: In Mapbox unter <b>Token restrictions → URL</b> die Origins
+          <code className="ml-1">http://localhost:8080/*</code> und
+          <code className="ml-1">http://127.0.0.1:8080/*</code> freigeben.
+        </div>
       </div>
     );
   }
 
-  return (
-    <div className="space-y-2">
-      <div className="flex justify-between items-center">
-        <h2 className="text-lg font-medium">Karte</h2>
-        <button 
-          onClick={handleRecenter}
-          className="px-3 py-1 bg-primary text-primary-foreground rounded-md text-sm hover:bg-primary/90"
-        >
-          Position abrufen
-        </button>
+  if (!token) {
+    return (
+      <div className="p-3 rounded bg-yellow-50 text-yellow-900 text-sm">
+        Mapbox-Token fehlt. Trage ihn im GPS-Tab ein oder setze <code>VITE_MAPBOX_TOKEN</code> in <code>.env</code>.
       </div>
-      <div id="gps-map" ref={el} className="w-full h-[420px] rounded" />
-    </div>
-  );
+    );
+  }
+
+  return <div ref={hostRef} className="w-full h-[420px] rounded" />;
 }

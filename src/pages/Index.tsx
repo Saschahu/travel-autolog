@@ -273,6 +273,34 @@ const Index = () => {
     }
   };
 
+  const handleStatusChange = async (jobId: string, newStatus: 'open' | 'active') => {
+    try {
+      const { error } = await supabase
+        .from('jobs')
+        .update({ status: newStatus })
+        .eq('id', jobId);
+
+      if (error) throw error;
+
+      setJobs(prev => prev.map(j => 
+        j.id === jobId ? { ...j, status: newStatus } : j
+      ));
+      
+      const statusText = newStatus === 'active' ? 'gestartet' : 'pausiert';
+      toast({
+        title: 'Status geändert',
+        description: `Job wurde ${statusText}`
+      });
+    } catch (error) {
+      console.error('Error updating job status:', error);
+      toast({
+        title: 'Fehler',
+        description: 'Fehler beim Ändern des Job-Status',
+        variant: 'destructive'
+      });
+    }
+  };
+
   const handleDelete = async (jobId: string) => {
     const confirmDelete = window.confirm('Möchtest du diesen Job wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.');
     
@@ -371,6 +399,7 @@ const Index = () => {
             onEdit={() => handleEdit(job)}
             onComplete={() => handleComplete(job)}
             onDelete={handleDelete}
+            onStatusChange={handleStatusChange}
           />
         ))}
       </div>

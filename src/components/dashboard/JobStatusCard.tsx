@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Clock, MapPin, CheckCircle, AlertCircle, Trash2 } from 'lucide-react';
+import { Clock, MapPin, CheckCircle, AlertCircle, Trash2, Play, Square } from 'lucide-react';
 import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
 import { useOvertimeCalculation } from '@/hooks/useOvertimeCalculation';
@@ -12,6 +12,7 @@ interface JobStatusCardProps extends Job {
   onEdit?: () => void;
   onComplete?: () => void;
   onDelete?: (id: string) => void;
+  onStatusChange?: (id: string, newStatus: 'open' | 'active') => void;
 }
 
 export const JobStatusCard = (props: JobStatusCardProps) => {
@@ -29,6 +30,7 @@ export const JobStatusCard = (props: JobStatusCardProps) => {
     onEdit,
     onComplete,
     onDelete,
+    onStatusChange,
     ...job
   } = props;
   
@@ -176,6 +178,28 @@ export const JobStatusCard = (props: JobStatusCardProps) => {
         )}
 
         <div className="flex gap-2 pt-2">
+          {/* Status Change Buttons */}
+          {(status === 'open' || status === 'active') && onStatusChange && (
+            <Button 
+              size="sm" 
+              variant={status === 'open' ? 'default' : 'outline'}
+              onClick={() => onStatusChange(id, status === 'open' ? 'active' : 'open')}
+              className="px-3"
+            >
+              {status === 'open' ? (
+                <>
+                  <Play className="h-4 w-4 mr-1" />
+                  Starten
+                </>
+              ) : (
+                <>
+                  <Square className="h-4 w-4 mr-1" />
+                  Pausieren
+                </>
+              )}
+            </Button>
+          )}
+          
           <Button variant="outline" size="sm" className="flex-1" onClick={onDetails}>
             Details
           </Button>

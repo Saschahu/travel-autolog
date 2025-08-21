@@ -25,6 +25,7 @@ import { useJobs, type Job } from '@/hooks/useJobs';
 import { supabase } from '@/integrations/supabase/client';
 import { OvertimeTab } from '@/components/overtime/OvertimeTab';
 import { FinishJobTab } from '@/components/finish/FinishJobTab';
+import { BuildInfo } from '@/components/ui/build-info';
 import React from 'react';
 
 type DayData = {
@@ -840,6 +841,9 @@ const Index = () => {
           }}
         />
       </div>
+      
+      {/* BuildInfo Badge */}
+      <BuildInfo />
     </MobileLayout>
   );
 };

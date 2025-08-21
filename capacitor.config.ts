@@ -1,10 +1,10 @@
-import { CapacitorConfig } from '@capacitor/cli';
+import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.autolog.app',
+  appId: 'com.lovable.travelautolog',
   appName: 'Travel AutoLog',
   webDir: 'dist',
-  bundledWebRuntime: false
+  server: { androidScheme: 'https' }
 };
 
 export default config;

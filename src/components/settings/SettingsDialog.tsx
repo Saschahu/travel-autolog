@@ -9,10 +9,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { User, MapPin, Settings, Home, Clock, Globe, FolderOpen } from 'lucide-react';
+import { User, MapPin, Settings, Home, Clock, Globe, FolderOpen, AlertTriangle } from 'lucide-react';
 import { OvertimeSettings } from '@/components/settings/OvertimeSettings';
 import { GPSSettingsComponent } from '@/components/gps/GPSSettingsComponent';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { resetAppData } from '@/utils/resetAppData';
 
 interface SettingsDialogProps {
   open: boolean;
@@ -123,6 +124,28 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
     }
   };
 
+  const handleResetAppData = async () => {
+    try {
+      await resetAppData();
+      toast({
+        title: 'App-Daten gelöscht',
+        description: 'Die App wird neu geladen...',
+      });
+      
+      // Reload the app after a short delay
+      setTimeout(() => {
+        window.location.reload();
+      }, 2000);
+    } catch (error) {
+      console.error('Error resetting app data:', error);
+      toast({
+        title: 'Fehler',
+        description: 'App-Daten konnten nicht zurückgesetzt werden',
+        variant: 'destructive',
+      });
+    }
+  };
+
   const languageOptions = [
     { value: 'de', label: 'Deutsch' },
     { value: 'en', label: 'English' },
@@ -140,11 +163,12 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
         </DialogHeader>
 
         <Tabs defaultValue="profile" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="profile">{t('profile')}</TabsTrigger>
             <TabsTrigger value="export">{t('export')}</TabsTrigger>
             <TabsTrigger value="gps">{t('gps')}</TabsTrigger>
             <TabsTrigger value="overtime">{t('overtime')}</TabsTrigger>
+            <TabsTrigger value="advanced">Erweitert</TabsTrigger>
           </TabsList>
 
           <TabsContent value="profile" className="space-y-6">
@@ -298,6 +322,35 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
 
           <TabsContent value="overtime" className="space-y-6">
             <OvertimeSettings />
+          </TabsContent>
+          
+          <TabsContent value="advanced" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Settings className="h-5 w-5" />
+                  Erweiterte Einstellungen
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <Label className="font-medium">Appdaten zurücksetzen</Label>
+                  <p className="text-sm text-muted-foreground">
+                    Löscht alle lokal gespeicherten Daten, Einstellungen und den Cache. 
+                    Die App wird nach dem Reset neu geladen.
+                  </p>
+                  <Button 
+                    variant="destructive"
+                    size="sm"
+                    className="gap-2"
+                    onClick={handleResetAppData}
+                  >
+                    <AlertTriangle className="h-4 w-4" />
+                    App-Daten löschen
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
         </Tabs>
       </DialogContent>

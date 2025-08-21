@@ -14,7 +14,10 @@ const queryClient = new QueryClient();
 function AppContent() {
   const { user, loading } = useAuth();
 
+  console.log('AppContent render:', { user: !!user, loading });
+
   if (loading) {
+    console.log('App is loading...');
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/20 to-secondary/20">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>

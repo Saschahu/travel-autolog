@@ -46,6 +46,13 @@ const Index = () => {
   const [jobFilter, setJobFilter] = useState<JobFilter>('open');
   const { sendJobReport } = useEmailService();
   const { jobs, isLoading: isLoadingJobs, fetchJobs, setJobs } = useJobs();
+
+  console.log('Index component render:', { 
+    activeTab, 
+    jobsCount: jobs.length, 
+    isLoadingJobs,
+    hasProfile: !!profile 
+  });
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);

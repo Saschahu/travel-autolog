@@ -45,36 +45,59 @@ export const UserProfileProvider: React.FC<UserProfileProviderProps> = ({ childr
   const [profile, setProfile] = useState<UserProfile>(defaultProfile);
   const [isLoading, setIsLoading] = useState(true);
 
+  console.log('UserProfileProvider render:', { isLoading });
+
   // Load profile on mount
   useEffect(() => {
+    console.log('UserProfileProvider: useEffect triggered');
     loadProfile();
   }, []);
 
   const loadProfile = async () => {
+    console.log('UserProfile: Loading profile...');
     const storageKey = 'userProfile';
     try {
       let value: string | null = null;
       try {
         const res = await Preferences.get({ key: storageKey });
         value = res.value ?? null;
+        console.log('UserProfile: Got from Capacitor:', value);
       } catch (e) {
-        console.warn('Capacitor Preferences.get failed, falling back to localStorage', e);
+        console.warn('UserProfile: Capacitor Preferences.get failed, falling back to localStorage', e);
         value = localStorage.getItem(storageKey);
       }
       // Extra fallback in case value is still null
       if (!value) {
         value = localStorage.getItem(storageKey);
+        console.log('UserProfile: Got from localStorage fallback:', value);
       }
       if (value) {
         const savedProfile = JSON.parse(value);
+        console.log('UserProfile: Parsed saved profile:', savedProfile);
         setProfile({ ...defaultProfile, ...savedProfile });
+        console.log('UserProfile: Profile loaded successfully');
+      } else {
+        console.log('UserProfile: No saved profile, using defaults');
       }
     } catch (error) {
-      console.error('Error loading user profile:', error);
+      console.error('UserProfile: Error loading profile:', error);
     } finally {
+  console.log('UserProfile: Setting loading to false');
       setIsLoading(false);
     }
   };
+
+  // Safety timeout to prevent infinite loading
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (isLoading) {
+        console.warn('UserProfile: Loading timeout, forcing completion');
+        setIsLoading(false);
+      }
+    }, 3000);
+    
+    return () => clearTimeout(timeout);
+  }, [isLoading]);
 
   const updateProfile = async (updates: Partial<UserProfile>) => {
     const storageKey = 'userProfile';

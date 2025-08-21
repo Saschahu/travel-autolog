@@ -8,6 +8,18 @@ ServiceTracker für automatische Dokumentation von Reise- und Arbeitszeiten für
 
 ## Android Build Flow
 
+### Android in 1 Befehl
+
+```sh
+# Alles in einem: Web build → Capacitor sync → APK install → App start
+npm run android:run
+```
+
+**Voraussetzungen:**
+- Android SDK/ADB installiert und im PATH
+- Android-Gerät im USB-Debugging-Modus verbunden
+- Bei erstem Lauf: `npx cap add android` falls android/ Ordner fehlt
+
 ### Frisch installieren (Clean Setup)
 
 ```sh
@@ -18,7 +30,7 @@ git fetch origin && git reset --hard origin/main
 npm ci
 
 # 3. Android Debug Build erstellen und starten
-npm run build:android:debug
+npm run android:run
 ```
 
 ### Alte App entfernen (bei Problemen)
@@ -62,12 +74,13 @@ npm run build
 
 ## Verfügbare Scripts
 
-- `npm run build:native` - Native Build mit BUILD_TARGET=native
-- `npm run build:android:debug` - Kompletter Android Debug Flow
-- `npm run cap:sync` - Capacitor Assets synchronisieren
+- `npm run android:run` - **Hauptbefehl**: Build → Sync → Install → Start
+- `npm run android:prep` - Web build + Capacitor sync
 - `npm run android:install` - APK auf Gerät installieren
-- `npm run android:run` - App auf Gerät starten
-- `npm run clean:android` - Android Ordner löschen
+- `npm run android:start` - App auf Gerät starten
+- `npm run android:clean` - Android Ordner neu erstellen
+- `npm run verify:local` - Lokale Asset-Konsistenz prüfen
+- `npm run build:native` - Native Build mit BUILD_TARGET=native
 
 ## Technologien
 

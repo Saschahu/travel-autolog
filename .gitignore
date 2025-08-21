@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local Android platform (nicht versionieren)
+android/
+
+# Lokale Secrets
+.env

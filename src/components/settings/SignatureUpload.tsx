@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Capacitor } from '@capacitor/core';
 import { useUserProfile } from '@/contexts/UserProfileContext';
 import { useSignatureStorage } from '@/hooks/useSignatureStorage';
@@ -16,6 +16,7 @@ export const SignatureUpload: React.FC = () => {
   const [showPreview, setShowPreview] = useState(false);
   const [showEditor, setShowEditor] = useState(false);
   const [previewImageData, setPreviewImageData] = useState<string>('');
+  const [currentImageData, setCurrentImageData] = useState<string>('');
   
   const { 
     isLoading,
@@ -24,6 +25,23 @@ export const SignatureUpload: React.FC = () => {
     loadImageFromFilesystem,
     deleteSignatureFile 
   } = useSignatureStorage();
+
+  useEffect(() => {
+    const loadPreview = async () => {
+      try {
+        if (profile.reportSignature?.filePath) {
+          const data = await loadImageFromFilesystem(profile.reportSignature.filePath);
+          const dataUrl = data.startsWith('data:') ? data : `data:${profile.reportSignature?.mimeType || 'image/png'};base64,${data}`;
+          setCurrentImageData(dataUrl);
+        } else {
+          setCurrentImageData('');
+        }
+      } catch (e) {
+        setCurrentImageData('');
+      }
+    };
+    loadPreview();
+  }, [profile.reportSignature?.filePath, profile.reportSignature?.mimeType, loadImageFromFilesystem]);
 
   const handleCameraCapture = async () => {
     try {
@@ -134,13 +152,21 @@ export const SignatureUpload: React.FC = () => {
             <div className="p-4 border border-muted rounded-lg bg-muted/10">
               <p className="text-sm text-muted-foreground mb-2">Aktuelle Unterschrift:</p>
               <div className="w-full max-w-md mx-auto">
-                <div className="h-20 border border-border rounded bg-background flex items-center justify-center">
-                  <span className="text-sm text-muted-foreground">
-                    {profile.reportSignature 
-                      ? `Unterschrift gespeichert (${new Date(profile.reportSignature.updatedAt).toLocaleDateString('de-DE')})`
-                      : 'Unterschrift gespeichert (alt)'}
-                  </span>
-                </div>
+                {currentImageData ? (
+                  <img 
+                    src={currentImageData}
+                    alt="Gespeicherte Unterschrift"
+                    className="w-full h-20 object-contain border border-border rounded"
+                  />
+                ) : (
+                  <div className="h-20 border border-border rounded bg-background flex items-center justify-center">
+                    <span className="text-sm text-muted-foreground">
+                      {profile.reportSignature 
+                        ? `Unterschrift gespeichert (${new Date(profile.reportSignature.updatedAt).toLocaleDateString('de-DE')})`
+                        : 'Unterschrift gespeichert (alt)'}
+                    </span>
+                  </div>
+                )}
               </div>
               {profile.reportSignature && (
                 <div className="text-xs text-muted-foreground mt-2 text-center">
@@ -289,7 +315,7 @@ export const SignatureUpload: React.FC = () => {
         )}
 
         {/* Preview Modal */}
-        {showPreview && previewImageData && (
+        {showPreview && (currentImageData || profile.reportSignature) && (
           <div 
             className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
             onClick={() => setShowPreview(false)}
@@ -309,11 +335,15 @@ export const SignatureUpload: React.FC = () => {
                 </Button>
               </div>
               <div className="w-full text-center">
-                <img 
-                  src={previewImageData} 
-                  alt="Unterschrift Vorschau" 
-                  className="max-w-full max-h-96 object-contain border border-border rounded mx-auto"
-                />
+                {currentImageData ? (
+                  <img 
+                    src={currentImageData} 
+                    alt="Unterschrift Vorschau" 
+                    className="max-w-full max-h-96 object-contain border border-border rounded mx-auto"
+                  />
+                ) : (
+                  <p className="text-sm text-muted-foreground">Keine Vorschau verfügbar</p>
+                )}
               </div>
             </div>
           </div>

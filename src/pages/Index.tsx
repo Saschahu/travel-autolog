@@ -42,11 +42,15 @@ type DayData = {
 const Index = () => {
   const { t, i18n } = useTranslation();
   const { profile } = useUserProfile();
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const [activeTab, setActiveTab] = useState(() => localStorage.getItem('activeTab') || 'dashboard');
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [jobFilter, setJobFilter] = useState<JobFilter>('open');
   const { sendJobReport } = useEmailService();
   const { jobs, isLoading: isLoadingJobs, fetchJobs, setJobs } = useJobs();
+
+  useEffect(() => {
+    try { localStorage.setItem('activeTab', activeTab); } catch {}
+  }, [activeTab]);
 
   console.log('Index component render:', { 
     activeTab, 
@@ -831,14 +835,6 @@ const Index = () => {
         <SettingsDialog
           open={settingsOpen}
           onOpenChange={setSettingsOpen}
-          onSaved={() => {
-            setSettingsOpen(false);
-            setActiveTab('dashboard');
-          }}
-          onGoDashboard={() => {
-            setSettingsOpen(false);
-            setActiveTab('dashboard');
-          }}
         />
       </div>
       

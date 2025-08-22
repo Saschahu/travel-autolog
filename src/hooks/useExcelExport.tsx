@@ -6,12 +6,10 @@ import { useToast } from '@/hooks/use-toast';
 import { ExcelTemplate, JobTemplateData } from '@/templates/ExcelTemplate';
 import { ExcelFormatter } from '@/utils/excelFormatter';
 import { generateSingleJobTemplateBuffer } from '@/templates/ExcelTemplateExcelJS';
-import { useSignatureStorage } from '@/hooks/useSignatureStorage';
 
 export const useExcelExport = () => {
   const { profile } = useUserProfile();
   const { toast } = useToast();
-  const { loadImageFromFilesystem } = useSignatureStorage();
 
   const generateJobExcel = (jobs: any[], reportType: 'single' | 'all' = 'all') => {
     const workbook = XLSX.utils.book_new();
@@ -31,10 +29,7 @@ export const useExcelExport = () => {
         totalHours: job.totalHours || '0h 0m',
         status: job.status || 'open',
         estimatedDays: job.estimatedDays || 0,
-        currentDay: job.currentDay || 0,
-        signature: profile.signatureImage || profile.signature,
-        reportSignature: profile.reportSignature,
-        signatureImageData: undefined // Will be loaded if needed
+        currentDay: job.currentDay || 0
       };
       
       const worksheet = template.fillJobData(templateData);
@@ -96,17 +91,6 @@ export const useExcelExport = () => {
     if (jobs.length === 1) {
       const job = jobs[0];
       
-      // Load signature image data if available
-      let signatureImageData: string | undefined;
-      if (profile.reportSignature?.filePath) {
-        try {
-          const data = await loadImageFromFilesystem(profile.reportSignature.filePath);
-          signatureImageData = data.startsWith('data:') ? data.split(',')[1] : data;
-        } catch (error) {
-          console.warn('Could not load signature image for export:', error);
-        }
-      }
-      
       const templateData: JobTemplateData = {
         customerName: job.customerName || '',
         jobId: job.id || '',
@@ -117,10 +101,7 @@ export const useExcelExport = () => {
         totalHours: job.totalHours || '0h 0m',
         status: getStatusText(job.status || 'open'),
         estimatedDays: job.estimatedDays || 0,
-        currentDay: job.currentDay || 0,
-        signature: profile.signatureImage || profile.signature,
-        reportSignature: profile.reportSignature,
-        signatureImageData
+        currentDay: job.currentDay || 0
       };
 
       try {
@@ -205,17 +186,6 @@ export const useExcelExport = () => {
     const platform = Capacitor.getPlatform();
 
     try {
-      // Load signature image data if available
-      let signatureImageData: string | undefined;
-      if (profile.reportSignature?.filePath) {
-        try {
-          const data = await loadImageFromFilesystem(profile.reportSignature.filePath);
-          signatureImageData = data.startsWith('data:') ? data.split(',')[1] : data;
-        } catch (error) {
-          console.warn('Could not load signature image for email export:', error);
-        }
-      }
-      
       // ExcelJS-Template für Einzelauftrag generieren
       const templateData: JobTemplateData = {
         customerName: job.customerName || '',
@@ -227,10 +197,7 @@ export const useExcelExport = () => {
         totalHours: job.totalHours || '0h 0m',
         status: getStatusText(job.status || 'open'),
         estimatedDays: job.estimatedDays || 0,
-        currentDay: job.currentDay || 0,
-        signature: profile.signatureImage || profile.signature,
-        reportSignature: profile.reportSignature,
-        signatureImageData
+        currentDay: job.currentDay || 0
       };
 
       const buffer = await generateSingleJobTemplateBuffer(templateData);

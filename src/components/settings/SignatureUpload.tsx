@@ -1,23 +1,32 @@
 import React, { useState } from 'react';
-import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { Capacitor } from '@capacitor/core';
 import { useUserProfile } from '@/contexts/UserProfileContext';
+import { useSignatureStorage } from '@/hooks/useSignatureStorage';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { Camera as CameraIcon, Upload, Trash2, Eye } from 'lucide-react';
+import { SignatureEditor } from '@/components/signature/SignatureEditor';
+import { Camera as CameraIcon, Upload, Trash2, Eye, Edit } from 'lucide-react';
+import { ReportSignature } from '@/types/signature';
 
 export const SignatureUpload: React.FC = () => {
   const { profile, updateProfile } = useUserProfile();
   const { toast } = useToast();
-  const [isUploading, setIsUploading] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+  const [showEditor, setShowEditor] = useState(false);
+  const [previewImageData, setPreviewImageData] = useState<string>('');
+  
+  const { 
+    isLoading,
+    captureFromCamera, 
+    selectFromGallery, 
+    loadImageFromFilesystem,
+    deleteSignatureFile 
+  } = useSignatureStorage();
 
   const handleCameraCapture = async () => {
-    setIsUploading(true);
     try {
-      // Check if camera is available
       if (Capacitor.getPlatform() === 'web') {
         toast({
           title: 'Kamera nicht verfügbar',
@@ -27,101 +36,44 @@ export const SignatureUpload: React.FC = () => {
         return;
       }
 
-      const photo = await Camera.getPhoto({
-        quality: 80,
-        allowEditing: true,
-        resultType: CameraResultType.Base64,
-        source: CameraSource.Camera,
-        width: 600,
-        height: 400,
-      });
-
-      if (photo.base64String) {
-        const base64Image = `data:image/jpeg;base64,${photo.base64String}`;
-        await updateProfile({ signatureImage: base64Image });
-        
-        toast({
-          title: 'Unterschrift gespeichert',
-          description: 'Die Unterschrift wurde erfolgreich über die Kamera erfasst.',
-        });
-      }
+      const signature = await captureFromCamera();
+      await updateProfile({ reportSignature: signature });
+      
+      // Ask if user wants to position the signature
+      setTimeout(() => {
+        if (window.confirm('Möchten Sie die Unterschrift jetzt positionieren?')) {
+          setShowEditor(true);
+        }
+      }, 500);
     } catch (error) {
-      console.error('Camera capture error:', error);
-      toast({
-        title: 'Fehler beim Fotografieren',
-        description: 'Die Unterschrift konnte nicht über die Kamera erfasst werden.',
-        variant: 'destructive',
-      });
-    } finally {
-      setIsUploading(false);
+      // Error handling is done in the hook
     }
   };
 
   const handleFileUpload = async () => {
-    setIsUploading(true);
     try {
-      // Create a file input element
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.accept = 'image/*';
+      const signature = await selectFromGallery();
+      await updateProfile({ reportSignature: signature });
       
-      input.onchange = async (event) => {
-        const file = (event.target as HTMLInputElement).files?.[0];
-        if (file) {
-          // Check file size (max 2MB)
-          if (file.size > 2 * 1024 * 1024) {
-            toast({
-              title: 'Datei zu groß',
-              description: 'Die Bilddatei darf maximal 2MB groß sein.',
-              variant: 'destructive',
-            });
-            setIsUploading(false);
-            return;
-          }
-
-          // Convert to base64
-          const reader = new FileReader();
-          reader.onload = async (e) => {
-            const base64Image = e.target?.result as string;
-            await updateProfile({ signatureImage: base64Image });
-            
-            toast({
-              title: 'Unterschrift gespeichert',
-              description: 'Die Unterschrift wurde erfolgreich hochgeladen.',
-            });
-            setIsUploading(false);
-          };
-          
-          reader.onerror = () => {
-            toast({
-              title: 'Fehler beim Hochladen',
-              description: 'Die Bilddatei konnte nicht gelesen werden.',
-              variant: 'destructive',
-            });
-            setIsUploading(false);
-          };
-          
-          reader.readAsDataURL(file);
-        } else {
-          setIsUploading(false);
+      // Ask if user wants to position the signature
+      setTimeout(() => {
+        if (window.confirm('Möchten Sie die Unterschrift jetzt positionieren?')) {
+          setShowEditor(true);
         }
-      };
-      
-      input.click();
+      }, 500);
     } catch (error) {
-      console.error('File upload error:', error);
-      toast({
-        title: 'Fehler beim Hochladen',
-        description: 'Die Unterschrift konnte nicht hochgeladen werden.',
-        variant: 'destructive',
-      });
-      setIsUploading(false);
+      // Error handling is done in the hook
     }
   };
 
   const handleRemoveSignature = async () => {
     try {
-      await updateProfile({ signatureImage: undefined });
+      // Delete the file if it exists
+      if (profile.reportSignature?.filePath) {
+        await deleteSignatureFile(profile.reportSignature.filePath);
+      }
+      
+      await updateProfile({ reportSignature: null });
       toast({
         title: 'Unterschrift entfernt',
         description: 'Die gespeicherte Unterschrift wurde entfernt.',
@@ -136,6 +88,32 @@ export const SignatureUpload: React.FC = () => {
     }
   };
 
+  const handleEditSignature = () => {
+    setShowEditor(true);
+  };
+
+  const handleSaveSignature = async (updatedSignature: ReportSignature) => {
+    await updateProfile({ reportSignature: updatedSignature });
+    setShowEditor(false);
+  };
+
+  const handleShowPreview = async () => {
+    if (profile.reportSignature?.filePath) {
+      try {
+        const data = await loadImageFromFilesystem(profile.reportSignature.filePath);
+        const imageData = data.startsWith('data:') ? data : `data:${profile.reportSignature.mimeType};base64,${data}`;
+        setPreviewImageData(imageData);
+        setShowPreview(true);
+      } catch (error) {
+        toast({
+          title: 'Fehler',
+          description: 'Die Unterschrift konnte nicht geladen werden.',
+          variant: 'destructive',
+        });
+      }
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -145,16 +123,20 @@ export const SignatureUpload: React.FC = () => {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {profile.signatureImage ? (
+        {profile.reportSignature ? (
           <div className="space-y-4">
             <div className="p-4 border border-muted rounded-lg bg-muted/10">
               <p className="text-sm text-muted-foreground mb-2">Aktuelle Unterschrift:</p>
               <div className="w-full max-w-md mx-auto">
-                <img 
-                  src={profile.signatureImage} 
-                  alt="Gespeicherte Unterschrift" 
-                  className="w-full h-20 object-contain border border-border rounded"
-                />
+                <div className="h-20 border border-border rounded bg-background flex items-center justify-center">
+                  <span className="text-sm text-muted-foreground">
+                    Unterschrift gespeichert ({new Date(profile.reportSignature.updatedAt).toLocaleDateString('de-DE')})
+                  </span>
+                </div>
+              </div>
+              <div className="text-xs text-muted-foreground mt-2 text-center">
+                Position: {Math.round(profile.reportSignature.posX * 100)}%, {Math.round(profile.reportSignature.posY * 100)}% | 
+                Skalierung: {Math.round(profile.reportSignature.scale * 100)}%
               </div>
             </div>
             
@@ -162,10 +144,19 @@ export const SignatureUpload: React.FC = () => {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setShowPreview(true)}
+                onClick={handleShowPreview}
               >
                 <Eye className="w-4 h-4 mr-2" />
                 Vorschau
+              </Button>
+              
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleEditSignature}
+              >
+                <Edit className="w-4 h-4 mr-2" />
+                Positionieren
               </Button>
               
               <AlertDialog>
@@ -205,34 +196,44 @@ export const SignatureUpload: React.FC = () => {
         <div className="flex gap-2 flex-wrap">
           <Button
             onClick={handleFileUpload}
-            disabled={isUploading}
+            disabled={isLoading}
             variant="default"
           >
             <Upload className="w-4 h-4 mr-2" />
-            {isUploading ? 'Hochladen...' : 'Datei hochladen'}
+            {isLoading ? 'Hochladen...' : 'Aus Galerie wählen'}
           </Button>
           
           {Capacitor.getPlatform() !== 'web' && (
             <Button
               onClick={handleCameraCapture}
-              disabled={isUploading}
+              disabled={isLoading}
               variant="outline"
             >
               <CameraIcon className="w-4 h-4 mr-2" />
-              {isUploading ? 'Aufnehmen...' : 'Kamera öffnen'}
+              {isLoading ? 'Aufnehmen...' : 'Mit Kamera aufnehmen'}
             </Button>
           )}
         </div>
 
         <div className="text-xs text-muted-foreground space-y-1">
-          <p>• Unterstützte Formate: JPG, PNG, WebP</p>
-          <p>• Maximale Dateigröße: 2MB</p>
-          <p>• Empfohlene Abmessungen: 600x400 Pixel</p>
+          <p>• Unterstützte Formate: JPG, PNG</p>
+          <p>• Maximale Dateigröße: 5MB (wird automatisch komprimiert)</p>
+          <p>• Empfohlene Abmessungen: 800x400 Pixel</p>
           <p>• Die Unterschrift wird automatisch in alle exportierten Reports eingefügt</p>
+          <p>• Nach dem Upload können Sie die Position und Größe anpassen</p>
         </div>
 
+        {/* Editor Modal */}
+        {showEditor && profile.reportSignature && (
+          <SignatureEditor
+            signature={profile.reportSignature}
+            onSave={handleSaveSignature}
+            onCancel={() => setShowEditor(false)}
+          />
+        )}
+
         {/* Preview Modal */}
-        {showPreview && profile.signatureImage && (
+        {showPreview && previewImageData && (
           <div 
             className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
             onClick={() => setShowPreview(false)}
@@ -253,7 +254,7 @@ export const SignatureUpload: React.FC = () => {
               </div>
               <div className="w-full text-center">
                 <img 
-                  src={profile.signatureImage} 
+                  src={previewImageData} 
                   alt="Unterschrift Vorschau" 
                   className="max-w-full max-h-96 object-contain border border-border rounded mx-auto"
                 />

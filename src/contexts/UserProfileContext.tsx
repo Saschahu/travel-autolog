@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Preferences } from '@capacitor/preferences';
+import { ReportSignature } from '@/types/signature';
 
 export interface UserProfile {
   name: string;
@@ -9,8 +10,9 @@ export interface UserProfile {
   preferredLanguage: 'en' | 'de' | 'no';
   gpsEnabled: boolean;
   localStoragePath: string;
-  signature?: string; // Base64 encoded image
-  signatureImage?: string; // Base64 encoded signature image
+  signature?: string; // Base64 encoded image (deprecated)
+  signatureImage?: string; // Base64 encoded signature image (deprecated)
+  reportSignature?: ReportSignature | null; // New signature system
 }
 
 interface UserProfileContextType {
@@ -28,7 +30,8 @@ const defaultProfile: UserProfile = {
   gpsEnabled: false,
   localStoragePath: '',
   signature: undefined,
-  signatureImage: undefined
+  signatureImage: undefined,
+  reportSignature: null
 };
 
 const UserProfileContext = createContext<UserProfileContextType | undefined>(undefined);

@@ -1,5 +1,7 @@
 import * as XLSX from 'xlsx';
 
+import { ReportSignature } from '@/types/signature';
+
 export interface JobTemplateData {
   customerName: string;
   jobId: string;
@@ -22,7 +24,9 @@ export interface JobTemplateData {
   status: string;
   estimatedDays: number;
   currentDay: number;
-  signature?: string; // Base64 encoded signature image
+  signature?: string; // Base64 encoded signature image (deprecated)
+  reportSignature?: ReportSignature; // New signature system
+  signatureImageData?: string; // Base64 image data for export
 }
 
 export class ExcelTemplate {
@@ -154,7 +158,9 @@ export class ExcelTemplate {
     this.setCellValue('L9', data.totalHours, 'totalData');
     
     // Add signature if provided
-    if (data.signature) {
+    if (data.reportSignature && data.signatureImageData) {
+      this.setCellValue('C25', '[Unterschrift vorhanden]', 'signatureData');
+    } else if (data.signature) {
       this.setCellValue('C25', '[Unterschrift vorhanden]', 'signatureData');
     } else {
       this.setCellValue('C25', 'Keine Unterschrift hinterlegt', 'signatureEmpty');

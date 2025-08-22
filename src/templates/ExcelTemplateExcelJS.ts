@@ -1,5 +1,6 @@
 import ExcelJS from 'exceljs';
 import { JobTemplateData } from './ExcelTemplate';
+import { ReportSignature } from '@/types/signature';
 
 export async function generateSingleJobTemplateBuffer(data: JobTemplateData): Promise<ArrayBuffer> {
   const workbook = new ExcelJS.Workbook();
@@ -134,18 +135,46 @@ export async function generateSingleJobTemplateBuffer(data: JobTemplateData): Pr
   signatureCell.border = allThin;
   signatureCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF8F8F8' } };
   
-  if (data.signature) {
-    // If signature is provided, add image (this is simplified - ExcelJS would need image handling)
-    signatureCell.value = '[Unterschrift]';
-    signatureCell.alignment = { horizontal: 'center', vertical: 'middle' };
+  // Set row height for signature (more compact)
+  ws.getRow(25).height = 60;
+  
+  if (data.reportSignature && data.signatureImageData) {
+    try {
+      // Add signature image to workbook
+      const imageId = workbook.addImage({
+        base64: data.signatureImageData,
+        extension: data.reportSignature.mimeType === 'image/png' ? 'png' : 'jpeg',
+      });
+
+      // Calculate position and size based on signature settings
+      const fieldWidth = 11; // Excel columns C to M
+      const fieldHeight = 60; // Row height
+      
+      // Calculate image position within the merged cell
+      const imageWidth = Math.min(fieldWidth * data.reportSignature.scale, fieldWidth);
+      const imageHeight = Math.min(fieldHeight * data.reportSignature.scale, fieldHeight);
+      
+      // Position within the cell (C25 to M25)
+      const startCol = 2 + (data.reportSignature.posX * fieldWidth) - (imageWidth / 2); // C = column 2
+      const startRow = 24 + (data.reportSignature.posY) - 0.5; // Row 25 = index 24
+      
+      ws.addImage(imageId, {
+        tl: { col: Math.max(2, startCol), row: Math.max(24, startRow) },
+        ext: { width: imageWidth * 64, height: imageHeight * 0.75 }, // Excel units
+      });
+      
+      signatureCell.value = '';
+    } catch (error) {
+      console.error('Error adding signature image to Excel:', error);
+      signatureCell.value = 'Unterschrift (Fehler beim Laden)';
+      signatureCell.alignment = { horizontal: 'center', vertical: 'middle' };
+      signatureCell.font = { italic: true, color: { argb: 'FFFF0000' } };
+    }
   } else {
     signatureCell.value = 'Keine Unterschrift hinterlegt';
     signatureCell.alignment = { horizontal: 'center', vertical: 'middle' };
     signatureCell.font = { italic: true, color: { argb: 'FF808080' } };
   }
-  
-  // Set row height for signature (smaller, more professional)
-  ws.getRow(25).height = 40;
 
   return workbook.xlsx.writeBuffer();
 }

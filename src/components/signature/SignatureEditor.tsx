@@ -146,12 +146,35 @@ export const SignatureEditor: React.FC<SignatureEditorProps> = ({
   }, [isDragging, dragStart, position]);
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <Card className="w-full max-w-2xl">
+    <div 
+      className="fixed inset-0 bg-black/50 flex items-center justify-center p-4" 
+      style={{ zIndex: 9999 }}
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        onCancel();
+      }}
+    >
+      <Card 
+        className="w-full max-w-2xl" 
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+        }}
+      >
         <CardContent className="p-6">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-lg font-semibold">Unterschrift positionieren</h3>
-            <Button variant="outline" size="sm" onClick={onCancel}>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onCancel();
+              }}
+              type="button"
+            >
               <X className="w-4 h-4" />
             </Button>
           </div>
@@ -222,10 +245,25 @@ export const SignatureEditor: React.FC<SignatureEditorProps> = ({
 
           {/* Action Buttons */}
           <div className="flex gap-2 justify-end">
-            <Button variant="outline" onClick={onCancel}>
+            <Button 
+              variant="outline" 
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onCancel();
+              }}
+              type="button"
+            >
               Abbrechen
             </Button>
-            <Button onClick={handleSave}>
+            <Button 
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                handleSave();
+              }}
+              type="button"
+            >
               <Save className="w-4 h-4 mr-2" />
               Speichern
             </Button>

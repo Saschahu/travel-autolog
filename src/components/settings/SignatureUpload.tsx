@@ -106,12 +106,21 @@ export const SignatureUpload: React.FC = () => {
     }
   };
 
-  const handleEditSignature = () => {
+  const handleEditSignature = (e?: React.MouseEvent) => {
+    e?.preventDefault();
+    e?.stopPropagation();
+    console.log('handleEditSignature called');
     setShowEditor(true);
   };
 
   const handleSaveSignature = async (updatedSignature: ReportSignature) => {
+    console.log('handleSaveSignature called');
     await updateProfile({ reportSignature: updatedSignature });
+    setShowEditor(false);
+  };
+
+  const handleCancelEditor = () => {
+    console.log('handleCancelEditor called');
     setShowEditor(false);
   };
 
@@ -192,6 +201,7 @@ export const SignatureUpload: React.FC = () => {
                 size="sm"
                 onClick={handleEditSignature}
                 disabled={!profile.reportSignature}
+                type="button"
               >
                 <Edit className="w-4 h-4 mr-2" />
                 Positionieren
@@ -310,7 +320,7 @@ export const SignatureUpload: React.FC = () => {
           <SignatureEditor
             signature={profile.reportSignature}
             onSave={handleSaveSignature}
-            onCancel={() => setShowEditor(false)}
+            onCancel={handleCancelEditor}
           />
         )}
 

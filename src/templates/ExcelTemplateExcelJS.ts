@@ -127,19 +127,7 @@ export async function generateSingleJobTemplateBuffer(data: JobTemplateData): Pr
   ws.mergeCells('A23:M24');
   const rem = ws.getCell('A23'); rem.border = allThin; rem.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF8F8F8' } };
 
-  // Signature
-  label('A25','UNTERSCHRIFT:');
-  ws.mergeCells('C25:M25');
-  const signatureCell = ws.getCell('C25');
-  signatureCell.border = allThin;
-  signatureCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF8F8F8' } };
-  
-  // Set row height for signature (more compact)
-  ws.getRow(25).height = 60;
-  
-  signatureCell.value = 'Keine Unterschrift hinterlegt';
-  signatureCell.alignment = { horizontal: 'center', vertical: 'middle' };
-  signatureCell.font = { italic: true, color: { argb: 'FF808080' } };
+  // Signature section removed
 
   return workbook.xlsx.writeBuffer();
 }

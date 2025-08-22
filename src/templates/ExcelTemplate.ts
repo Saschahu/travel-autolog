@@ -85,9 +85,7 @@ export class ExcelTemplate {
     this.setCellValue('I12', 'Status:', 'label');
     this.setCellValue('L12', '', 'summaryValue');
     
-    // Unterschrift-Bereich (Zeilen 25-28)
-    this.setCellValue('A25', 'UNTERSCHRIFT:', 'signatureLabel');
-    this.addMergedCell('C25:M25', '', 'signature');
+    // Nur Bemerkungen-Bereich
     
     // Zusätzliche Infos unten
     this.setCellValue('A22', 'Bemerkungen:', 'label');
@@ -152,7 +150,7 @@ export class ExcelTemplate {
     this.setCellValue('L8', departureHours, 'summaryData');
     this.setCellValue('L9', data.totalHours, 'totalData');
     
-    this.setCellValue('C25', 'Keine Unterschrift hinterlegt', 'signatureEmpty');
+    // Keine Unterschrift mehr benötigt
     
     this.applyFormatting();
     return this.worksheet;
@@ -246,29 +244,7 @@ export class ExcelTemplate {
         border: this.getAllBorders(),
         fill: { fgColor: { rgb: 'FFFFFF' } }
       },
-      signature: {
-        border: { bottom: { style: 'thin', color: { rgb: '000000' } } }
-      },
-      signatureData: {
-        font: { size: 10 },
-        alignment: { horizontal: 'center', vertical: 'center' },
-        border: this.getAllBorders(),
-        fill: { fgColor: { rgb: 'F8F8F8' } }
-      },
-      signatureEmpty: {
-        font: { size: 10, italic: true, color: { rgb: '808080' } },
-        alignment: { horizontal: 'center', vertical: 'center' },
-        border: this.getAllBorders(),
-        fill: { fgColor: { rgb: 'F8F8F8' } }
-      },
-      signatureLabel: {
-        font: { bold: true, size: 10 },
-        alignment: { horizontal: 'left', vertical: 'center' }
-      },
-      signatureSmall: {
-        font: { size: 8 },
-        alignment: { horizontal: 'center', vertical: 'center' }
-      },
+      // Signature styles removed
       remarksBox: {
         border: this.getAllBorders(),
         fill: { fgColor: { rgb: 'F8F8F8' } }

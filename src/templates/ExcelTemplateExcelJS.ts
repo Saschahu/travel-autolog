@@ -37,13 +37,11 @@ export async function generateSingleJobTemplateBuffer(data: JobTemplateData): Pr
   h.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF366092' } };
   ws.getRow(1).height = 24;
 
-  // Auftraggeber / Auftrag
-  ws.getCell('A2').value = 'Auftragnehmer:'; ws.getCell('A2').font = { bold: true };
-  ws.mergeCells('B2:E2');
-  ws.getCell('G2').value = 'Auftraggeber:'; ws.getCell('G2').font = { bold: true };
-  ws.mergeCells('H2:L2'); ws.getCell('H2').value = data.customerName;
-  ws.getCell('G3').value = 'Auftrag-Nr.:'; ws.getCell('G3').font = { bold: true };
-  ws.mergeCells('H3:L3'); ws.getCell('H3').value = data.jobId;
+  // Auftraggeber / Auftrag (links positioniert)
+  ws.getCell('A2').value = 'Auftraggeber:'; ws.getCell('A2').font = { bold: true };
+  ws.mergeCells('B2:E2'); ws.getCell('B2').value = data.customerName;
+  ws.getCell('A3').value = 'Evatic-Nr.:'; ws.getCell('A3').font = { bold: true };
+  ws.mergeCells('B3:E3'); ws.getCell('B3').value = data.evaticNo || data.jobId;
 
   // Section helper
   const sectionHeader = (cell: string, title: string) => {
@@ -146,8 +144,8 @@ export async function generateSingleJobTemplateBuffer(data: JobTemplateData): Pr
     signatureCell.font = { italic: true, color: { argb: 'FF808080' } };
   }
   
-  // Set row height for signature
-  ws.getRow(25).height = 60;
+  // Set row height for signature (smaller, more professional)
+  ws.getRow(25).height = 40;
 
   return workbook.xlsx.writeBuffer();
 }

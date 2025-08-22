@@ -22,6 +22,7 @@ export const useExcelExport = () => {
       const templateData: JobTemplateData = {
         customerName: job.customerName || '',
         jobId: job.id || '',
+        evaticNo: job.evaticNo,
         startDate: new Date(job.startDate || new Date()),
         endDate: job.endDate ? new Date(job.endDate) : undefined,
         dailyEntries: generateDailyEntries(job),
@@ -29,7 +30,7 @@ export const useExcelExport = () => {
         status: job.status || 'open',
         estimatedDays: job.estimatedDays || 0,
         currentDay: job.currentDay || 0,
-        signature: profile.signature
+        signature: profile.signatureImage || profile.signature
       };
       
       const worksheet = template.fillJobData(templateData);
@@ -93,6 +94,7 @@ export const useExcelExport = () => {
       const templateData: JobTemplateData = {
         customerName: job.customerName || '',
         jobId: job.id || '',
+        evaticNo: job.evaticNo,
         startDate: new Date(job.startDate || new Date()),
         endDate: job.endDate ? new Date(job.endDate) : undefined,
         dailyEntries: generateDailyEntries(job),
@@ -100,7 +102,7 @@ export const useExcelExport = () => {
         status: getStatusText(job.status || 'open'),
         estimatedDays: job.estimatedDays || 0,
         currentDay: job.currentDay || 0,
-        signature: profile.signature
+        signature: profile.signatureImage || profile.signature
       };
 
       try {
@@ -189,6 +191,7 @@ export const useExcelExport = () => {
       const templateData: JobTemplateData = {
         customerName: job.customerName || '',
         jobId: job.id || '',
+        evaticNo: job.evaticNo,
         startDate: new Date(job.startDate || new Date()),
         endDate: job.endDate ? new Date(job.endDate) : undefined,
         dailyEntries: generateDailyEntries(job),
@@ -196,7 +199,7 @@ export const useExcelExport = () => {
         status: getStatusText(job.status || 'open'),
         estimatedDays: job.estimatedDays || 0,
         currentDay: job.currentDay || 0,
-        signature: profile.signature
+        signature: profile.signatureImage || profile.signature
       };
 
       const buffer = await generateSingleJobTemplateBuffer(templateData);

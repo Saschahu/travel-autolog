@@ -10,6 +10,7 @@ export interface UserProfile {
   gpsEnabled: boolean;
   localStoragePath: string;
   signature?: string; // Base64 encoded image
+  signatureImage?: string; // Base64 encoded signature image
 }
 
 interface UserProfileContextType {
@@ -26,7 +27,8 @@ const defaultProfile: UserProfile = {
   preferredLanguage: 'de',
   gpsEnabled: false,
   localStoragePath: '',
-  signature: undefined
+  signature: undefined,
+  signatureImage: undefined
 };
 
 const UserProfileContext = createContext<UserProfileContextType | undefined>(undefined);

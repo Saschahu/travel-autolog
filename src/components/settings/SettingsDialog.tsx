@@ -14,6 +14,7 @@ import { OvertimeSettings } from '@/components/settings/OvertimeSettings';
 import { GPSSettingsComponent } from '@/components/gps/GPSSettingsComponent';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { resetAppData } from '@/utils/resetAppData';
+import { SignatureUpload } from './SignatureUpload';
 
 interface SettingsDialogProps {
   open: boolean;
@@ -260,6 +261,9 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
                     {saving ? 'Speichern…' : 'Speichern'}
                   </Button>
                 </div>
+                
+                {/* Signature Upload Section */}
+                <SignatureUpload />
               </div>
             </form>
           </TabsContent>

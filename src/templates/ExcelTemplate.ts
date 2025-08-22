@@ -3,6 +3,7 @@ import * as XLSX from 'xlsx';
 export interface JobTemplateData {
   customerName: string;
   jobId: string;
+  evaticNo?: string;
   startDate: Date;
   endDate?: Date;
   dailyEntries: Array<{
@@ -36,14 +37,12 @@ export class ExcelTemplate {
   private initializeTemplate() {
     // Header-Bereich (Zeilen 1-3)
     this.addMergedCell('A1:M1', 'ARBEITSZEIT-NACHWEIS', 'header');
-    this.setCellValue('A2', 'Auftragnehmer:', 'label');
-    this.addMergedCell('B2:E2', '', 'input');
     
-    // Auftraggeber-Bereich (rechts oben)
-    this.setCellValue('G2', 'Auftraggeber:', 'label');
-    this.addMergedCell('H2:L2', '', 'input');
-    this.setCellValue('G3', 'Auftrag-Nr.:', 'label');
-    this.addMergedCell('H3:L3', '', 'input');
+    // Auftraggeber links positioniert
+    this.setCellValue('A2', 'Auftraggeber:', 'label');
+    this.addMergedCell('B2:E2', '', 'input');
+    this.setCellValue('A3', 'Evatic-Nr.:', 'label');
+    this.addMergedCell('B3:E3', '', 'input');
     
     // Erste Tabelle - Anreise (Zeilen 5-8)
     this.setCellValue('A5', 'ANREISE', 'sectionHeader');
@@ -98,8 +97,8 @@ export class ExcelTemplate {
 
   public fillJobData(data: JobTemplateData): XLSX.WorkSheet {
     // Auftraggeber ausfüllen
-    this.setCellValue('H2', data.customerName, 'data');
-    this.setCellValue('H3', data.jobId, 'data');
+    this.setCellValue('B2', data.customerName, 'data');
+    this.setCellValue('B3', data.evaticNo || data.jobId, 'data');
     
     // Zeitraum und Status
     this.setCellValue('L11', `${this.formatDate(data.startDate)} - ${data.endDate ? this.formatDate(data.endDate) : 'laufend'}`, 'data');

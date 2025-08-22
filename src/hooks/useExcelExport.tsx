@@ -28,7 +28,8 @@ export const useExcelExport = () => {
         totalHours: job.totalHours || '0h 0m',
         status: job.status || 'open',
         estimatedDays: job.estimatedDays || 0,
-        currentDay: job.currentDay || 0
+        currentDay: job.currentDay || 0,
+        signature: profile.signature
       };
       
       const worksheet = template.fillJobData(templateData);
@@ -99,6 +100,7 @@ export const useExcelExport = () => {
         status: getStatusText(job.status || 'open'),
         estimatedDays: job.estimatedDays || 0,
         currentDay: job.currentDay || 0,
+        signature: profile.signature
       };
 
       try {
@@ -194,6 +196,7 @@ export const useExcelExport = () => {
         status: getStatusText(job.status || 'open'),
         estimatedDays: job.estimatedDays || 0,
         currentDay: job.currentDay || 0,
+        signature: profile.signature
       };
 
       const buffer = await generateSingleJobTemplateBuffer(templateData);

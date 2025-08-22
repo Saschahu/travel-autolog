@@ -34,7 +34,8 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
     preferredEmailApp: 'default',
     preferredLanguage: 'de' as 'en' | 'de' | 'no',
     gpsEnabled: false,
-    localStoragePath: ''
+    localStoragePath: '',
+    signature: undefined as string | undefined
   });
   
   // GPS settings state (separate from profile data)
@@ -75,7 +76,8 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
       preferredEmailApp: profile.preferredEmailApp,
       preferredLanguage: profile.preferredLanguage,
       gpsEnabled: profile.gpsEnabled,
-      localStoragePath: profile.localStoragePath
+      localStoragePath: profile.localStoragePath,
+      signature: profile.signature
     });
   }, [profile]);
 
@@ -307,6 +309,60 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
                   </Select>
                   <p className="text-xs text-muted-foreground">
                     Diese E-Mail-App wird beim "Per E-Mail versenden" geöffnet
+                  </p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="signature">Unterschrift für Reports</Label>
+                  <Input
+                    id="signature"
+                    type="file"
+                    accept="image/png,image/jpeg,image/jpg"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                          toast({
+                            title: 'Fehler',
+                            description: 'Datei ist zu groß. Maximum 5MB.',
+                            variant: 'destructive',
+                          });
+                          return;
+                        }
+                        
+                        const reader = new FileReader();
+                        reader.onload = (event) => {
+                          const base64 = event.target?.result as string;
+                          setFormData(prev => ({ ...prev, signature: base64 }));
+                          toast({
+                            title: 'Erfolg',
+                            description: 'Unterschrift hochgeladen',
+                          });
+                        };
+                        reader.readAsDataURL(file);
+                      }
+                    }}
+                  />
+                  {formData.signature && (
+                    <div className="mt-2">
+                      <img 
+                        src={formData.signature} 
+                        alt="Unterschrift"
+                        className="max-w-[200px] max-h-[100px] border rounded p-2"
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="mt-2"
+                        onClick={() => setFormData(prev => ({ ...prev, signature: undefined }))}
+                      >
+                        Unterschrift entfernen
+                      </Button>
+                    </div>
+                  )}
+                  <p className="text-xs text-muted-foreground">
+                    PNG oder JPEG-Datei, max. 5MB. Wird in Excel-Reports eingefügt.
                   </p>
                 </div>
               </CardContent>

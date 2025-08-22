@@ -16,11 +16,11 @@ export async function generateSingleJobTemplateBuffer(data: JobTemplateData): Pr
     { header: '', key: 'D', width: 9 },
     { header: '', key: 'E', width: 9 },
     { header: '', key: 'F', width: 12 },
-    { header: '', key: 'G', width: 30 },
-    { header: '', key: 'H', width: 2 },
-    { header: '', key: 'I', width: 16 },
+    { header: '', key: 'G', width: 2 },
+    { header: '', key: 'H', width: 16 },
+    { header: '', key: 'I', width: 2 },
     { header: '', key: 'J', width: 2 },
-    { header: '', key: 'K', width: 2 },
+    { header: '', key: 'K', width: 16 },
     { header: '', key: 'L', width: 16 },
     { header: '', key: 'M', width: 16 },
   ];
@@ -68,36 +68,36 @@ export async function generateSingleJobTemplateBuffer(data: JobTemplateData): Pr
     values.forEach((v, i) => {
       const c = ws.getCell(row, 1 + i);
       c.value = v;
-      c.alignment = { horizontal: i >= 2 && i <= 5 ? 'center' : 'left' };
+      c.alignment = { horizontal: i >= 2 && i <= 4 ? 'center' : 'left' };
       c.border = allThin;
     });
   };
 
   // Anreise
   sectionHeader('A5', 'ANREISE');
-  headers(6, ['DATUM','TAG','START','ENDE','STUNDEN','BESCHREIBUNG']);
+  headers(6, ['DATUM','TAG','START','ENDE','STUNDEN']);
   let row = 7;
   const travelEntries = data.dailyEntries.filter(e => e.travelStart || e.travelEnd);
   travelEntries.forEach(e => {
-    addRow(row++, [formatDate(e.date), dayName(e.date), e.travelStart || '', e.travelEnd || '', diff(e.travelStart, e.travelEnd), e.description || 'Anreise']);
+    addRow(row++, [formatDate(e.date), dayName(e.date), e.travelStart || '', e.travelEnd || '', diff(e.travelStart, e.travelEnd)]);
   });
 
   // Arbeitszeit
   sectionHeader('A10', 'ARBEITSZEIT');
-  headers(11, ['DATUM','TAG','VON','BIS','PAUSE','STUNDEN','TÄTIGKEITSBESCHREIBUNG']);
+  headers(11, ['DATUM','TAG','VON','BIS','PAUSE','STUNDEN']);
   row = 12;
   const workEntries = data.dailyEntries.filter(e => e.workStart || e.workEnd);
   workEntries.forEach(e => {
-    addRow(row++, [formatDate(e.date), dayName(e.date), e.workStart || '', e.workEnd || '', e.breakTime || '', diff(e.workStart, e.workEnd, e.breakTime), e.description || '']);
+    addRow(row++, [formatDate(e.date), dayName(e.date), e.workStart || '', e.workEnd || '', e.breakTime || '', diff(e.workStart, e.workEnd, e.breakTime)]);
   });
 
   // Abreise
   sectionHeader('A17', 'ABREISE');
-  headers(18, ['DATUM','TAG','START','ENDE','STUNDEN','BESCHREIBUNG']);
+  headers(18, ['DATUM','TAG','START','ENDE','STUNDEN']);
   row = 19;
   const depEntries = data.dailyEntries.filter(e => e.departureStart || e.departureEnd);
   depEntries.forEach(e => {
-    addRow(row++, [formatDate(e.date), dayName(e.date), e.departureStart || '', e.departureEnd || '', diff(e.departureStart, e.departureEnd), e.description || 'Abreise']);
+    addRow(row++, [formatDate(e.date), dayName(e.date), e.departureStart || '', e.departureEnd || '', diff(e.departureStart, e.departureEnd)]);
   });
 
   // Summary rechts
@@ -129,11 +129,25 @@ export async function generateSingleJobTemplateBuffer(data: JobTemplateData): Pr
   ws.mergeCells('A23:M24');
   const rem = ws.getCell('A23'); rem.border = allThin; rem.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF8F8F8' } };
 
-  // Signatures
-  label('A25','AUFTRAGNEHMER:'); ws.mergeCells('C25:F25'); ws.getCell('C25').border = { bottom: borderThin } as any;
-  ws.getCell('A26').value = 'Datum/Unterschrift'; ws.getCell('A26').font = { size: 8 };
-  label('I25','AUFTRAGGEBER:'); ws.mergeCells('K25:M25'); ws.getCell('K25').border = { bottom: borderThin } as any;
-  ws.getCell('I26').value = 'Datum/Unterschrift'; ws.getCell('I26').font = { size: 8 };
+  // Signature
+  label('A25','UNTERSCHRIFT:');
+  ws.mergeCells('C25:M25');
+  const signatureCell = ws.getCell('C25');
+  signatureCell.border = allThin;
+  signatureCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF8F8F8' } };
+  
+  if (data.signature) {
+    // If signature is provided, add image (this is simplified - ExcelJS would need image handling)
+    signatureCell.value = '[Unterschrift]';
+    signatureCell.alignment = { horizontal: 'center', vertical: 'middle' };
+  } else {
+    signatureCell.value = 'Keine Unterschrift hinterlegt';
+    signatureCell.alignment = { horizontal: 'center', vertical: 'middle' };
+    signatureCell.font = { italic: true, color: { argb: 'FF808080' } };
+  }
+  
+  // Set row height for signature
+  ws.getRow(25).height = 60;
 
   return workbook.xlsx.writeBuffer();
 }

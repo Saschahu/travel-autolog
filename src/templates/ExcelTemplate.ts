@@ -21,6 +21,7 @@ export interface JobTemplateData {
   status: string;
   estimatedDays: number;
   currentDay: number;
+  signature?: string; // Base64 encoded signature image
 }
 
 export class ExcelTemplate {
@@ -51,7 +52,6 @@ export class ExcelTemplate {
     this.setCellValue('C6', 'START', 'tableHeader');
     this.setCellValue('D6', 'ENDE', 'tableHeader');
     this.setCellValue('E6', 'STUNDEN', 'tableHeader');
-    this.setCellValue('F6', 'BESCHREIBUNG', 'tableHeader');
     
     // Zweite Tabelle - Arbeitszeit (Zeilen 10-15)
     this.setCellValue('A10', 'ARBEITSZEIT', 'sectionHeader');
@@ -61,7 +61,6 @@ export class ExcelTemplate {
     this.setCellValue('D11', 'BIS', 'tableHeader');
     this.setCellValue('E11', 'PAUSE', 'tableHeader');
     this.setCellValue('F11', 'STUNDEN', 'tableHeader');
-    this.setCellValue('G11', 'TÄTIGKEITSBESCHREIBUNG', 'tableHeader');
     
     // Dritte Tabelle - Abreise (Zeilen 17-20)
     this.setCellValue('A17', 'ABREISE', 'sectionHeader');
@@ -70,7 +69,6 @@ export class ExcelTemplate {
     this.setCellValue('C18', 'START', 'tableHeader');
     this.setCellValue('D18', 'ENDE', 'tableHeader');
     this.setCellValue('E18', 'STUNDEN', 'tableHeader');
-    this.setCellValue('F18', 'BESCHREIBUNG', 'tableHeader');
     
     // Zusammenfassung rechts (Zeilen 5-20)
     this.setCellValue('I5', 'ZUSAMMENFASSUNG', 'sectionHeader');
@@ -90,13 +88,8 @@ export class ExcelTemplate {
     this.setCellValue('L12', '', 'summaryValue');
     
     // Unterschrift-Bereich (Zeilen 25-28)
-    this.setCellValue('A25', 'AUFTRAGNEHMER:', 'signatureLabel');
-    this.addMergedCell('C25:F25', '', 'signature');
-    this.setCellValue('A26', 'Datum/Unterschrift', 'signatureSmall');
-    
-    this.setCellValue('I25', 'AUFTRAGGEBER:', 'signatureLabel');
-    this.addMergedCell('K25:M25', '', 'signature');
-    this.setCellValue('I26', 'Datum/Unterschrift', 'signatureSmall');
+    this.setCellValue('A25', 'UNTERSCHRIFT:', 'signatureLabel');
+    this.addMergedCell('C25:M25', '', 'signature');
     
     // Zusätzliche Infos unten
     this.setCellValue('A22', 'Bemerkungen:', 'label');
@@ -125,7 +118,6 @@ export class ExcelTemplate {
       this.setCellValue(`C${row}`, entry.travelStart || '', 'tableData');
       this.setCellValue(`D${row}`, entry.travelEnd || '', 'tableData');
       this.setCellValue(`E${row}`, this.calculateHours(entry.travelStart, entry.travelEnd), 'tableData');
-      this.setCellValue(`F${row}`, entry.description || 'Anreise', 'tableData');
       row++;
     });
     
@@ -138,7 +130,6 @@ export class ExcelTemplate {
       this.setCellValue(`D${row}`, entry.workEnd || '', 'tableData');
       this.setCellValue(`E${row}`, entry.breakTime || '', 'tableData');
       this.setCellValue(`F${row}`, this.calculateHours(entry.workStart, entry.workEnd, entry.breakTime), 'tableData');
-      this.setCellValue(`G${row}`, entry.description || '', 'tableData');
       row++;
     });
     
@@ -150,7 +141,6 @@ export class ExcelTemplate {
       this.setCellValue(`C${row}`, entry.departureStart || '', 'tableData');
       this.setCellValue(`D${row}`, entry.departureEnd || '', 'tableData');
       this.setCellValue(`E${row}`, this.calculateHours(entry.departureStart, entry.departureEnd), 'tableData');
-      this.setCellValue(`F${row}`, entry.description || 'Abreise', 'tableData');
       row++;
     });
     
@@ -163,6 +153,13 @@ export class ExcelTemplate {
     this.setCellValue('L7', workHours, 'summaryData');
     this.setCellValue('L8', departureHours, 'summaryData');
     this.setCellValue('L9', data.totalHours, 'totalData');
+    
+    // Add signature if provided
+    if (data.signature) {
+      this.setCellValue('C25', '[Unterschrift vorhanden]', 'signatureData');
+    } else {
+      this.setCellValue('C25', 'Keine Unterschrift hinterlegt', 'signatureEmpty');
+    }
     
     this.applyFormatting();
     return this.worksheet;
@@ -258,6 +255,18 @@ export class ExcelTemplate {
       },
       signature: {
         border: { bottom: { style: 'thin', color: { rgb: '000000' } } }
+      },
+      signatureData: {
+        font: { size: 10 },
+        alignment: { horizontal: 'center', vertical: 'center' },
+        border: this.getAllBorders(),
+        fill: { fgColor: { rgb: 'F8F8F8' } }
+      },
+      signatureEmpty: {
+        font: { size: 10, italic: true, color: { rgb: '808080' } },
+        alignment: { horizontal: 'center', vertical: 'center' },
+        border: this.getAllBorders(),
+        fill: { fgColor: { rgb: 'F8F8F8' } }
       },
       signatureLabel: {
         font: { bold: true, size: 10 },

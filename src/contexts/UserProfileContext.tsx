@@ -9,6 +9,7 @@ export interface UserProfile {
   preferredLanguage: 'en' | 'de' | 'no';
   gpsEnabled: boolean;
   localStoragePath: string;
+  signature?: string; // Base64 encoded image
 }
 
 interface UserProfileContextType {
@@ -24,7 +25,8 @@ const defaultProfile: UserProfile = {
   preferredEmailApp: 'default',
   preferredLanguage: 'de',
   gpsEnabled: false,
-  localStoragePath: ''
+  localStoragePath: '',
+  signature: undefined
 };
 
 const UserProfileContext = createContext<UserProfileContextType | undefined>(undefined);

@@ -114,6 +114,12 @@ export const SignatureUpload: React.FC = () => {
     }
   };
 
+  console.log('SignatureUpload render:', { 
+    hasReportSignature: !!profile.reportSignature,
+    hasSignatureImage: !!profile.signatureImage,
+    profileKeys: Object.keys(profile)
+  });
+
   return (
     <Card>
       <CardHeader>
@@ -123,21 +129,25 @@ export const SignatureUpload: React.FC = () => {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {profile.reportSignature ? (
+        {(profile.reportSignature || profile.signatureImage) ? (
           <div className="space-y-4">
             <div className="p-4 border border-muted rounded-lg bg-muted/10">
               <p className="text-sm text-muted-foreground mb-2">Aktuelle Unterschrift:</p>
               <div className="w-full max-w-md mx-auto">
                 <div className="h-20 border border-border rounded bg-background flex items-center justify-center">
                   <span className="text-sm text-muted-foreground">
-                    Unterschrift gespeichert ({new Date(profile.reportSignature.updatedAt).toLocaleDateString('de-DE')})
+                    {profile.reportSignature 
+                      ? `Unterschrift gespeichert (${new Date(profile.reportSignature.updatedAt).toLocaleDateString('de-DE')})`
+                      : 'Unterschrift gespeichert (alt)'}
                   </span>
                 </div>
               </div>
-              <div className="text-xs text-muted-foreground mt-2 text-center">
-                Position: {Math.round(profile.reportSignature.posX * 100)}%, {Math.round(profile.reportSignature.posY * 100)}% | 
-                Skalierung: {Math.round(profile.reportSignature.scale * 100)}%
-              </div>
+              {profile.reportSignature && (
+                <div className="text-xs text-muted-foreground mt-2 text-center">
+                  Position: {Math.round(profile.reportSignature.posX * 100)}%, {Math.round(profile.reportSignature.posY * 100)}% | 
+                  Skalierung: {Math.round(profile.reportSignature.scale * 100)}%
+                </div>
+              )}
             </div>
             
             <div className="flex gap-2 flex-wrap">
@@ -145,6 +155,7 @@ export const SignatureUpload: React.FC = () => {
                 variant="outline"
                 size="sm"
                 onClick={handleShowPreview}
+                disabled={!profile.reportSignature}
               >
                 <Eye className="w-4 h-4 mr-2" />
                 Vorschau
@@ -154,10 +165,42 @@ export const SignatureUpload: React.FC = () => {
                 variant="outline"
                 size="sm"
                 onClick={handleEditSignature}
+                disabled={!profile.reportSignature}
               >
                 <Edit className="w-4 h-4 mr-2" />
                 Positionieren
               </Button>
+              
+              {profile.signatureImage && !profile.reportSignature && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={async () => {
+                    // Convert old signature to new format
+                    try {
+                      const signature: ReportSignature = {
+                        id: `migrated_${Date.now()}`,
+                        filePath: 'legacy_signature',
+                        mimeType: 'image/png',
+                        posX: 0.5,
+                        posY: 0.5,
+                        scale: 1.0,
+                        updatedAt: new Date().toISOString(),
+                      };
+                      await updateProfile({ reportSignature: signature });
+                      toast({
+                        title: 'Migration abgeschlossen',
+                        description: 'Alte Unterschrift wurde in das neue Format konvertiert.',
+                      });
+                    } catch (error) {
+                      console.error('Migration error:', error);
+                    }
+                  }}
+                >
+                  <Edit className="w-4 h-4 mr-2" />
+                  Zu neuem Format konvertieren
+                </Button>
+              )}
               
               <AlertDialog>
                 <AlertDialogTrigger asChild>
@@ -176,7 +219,20 @@ export const SignatureUpload: React.FC = () => {
                   </AlertDialogHeader>
                   <AlertDialogFooter>
                     <AlertDialogCancel>Abbrechen</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleRemoveSignature}>
+                    <AlertDialogAction onClick={async () => {
+                      // Remove both old and new signature fields
+                      if (profile.reportSignature?.filePath) {
+                        await deleteSignatureFile(profile.reportSignature.filePath);
+                      }
+                      await updateProfile({ 
+                        reportSignature: null,
+                        signatureImage: undefined 
+                      });
+                      toast({
+                        title: 'Unterschrift entfernt',
+                        description: 'Die gespeicherte Unterschrift wurde entfernt.',
+                      });
+                    }}>
                       Entfernen
                     </AlertDialogAction>
                   </AlertDialogFooter>

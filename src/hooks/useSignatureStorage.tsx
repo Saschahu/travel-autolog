@@ -9,7 +9,9 @@ export const useSignatureStorage = () => {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
 
-  const generateSignatureId = () => `signature_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  const generateSignatureId = useCallback(() => {
+    return `signature_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  }, []);
 
   const saveImageToFilesystem = useCallback(async (
     base64Data: string, 
@@ -18,7 +20,6 @@ export const useSignatureStorage = () => {
   ): Promise<string> => {
     try {
       if (Capacitor.isNativePlatform()) {
-        // Native platform - use Filesystem API
         const filePath = `signatures/${fileName}`;
         await Filesystem.writeFile({
           path: filePath,
@@ -28,11 +29,9 @@ export const useSignatureStorage = () => {
         });
         return filePath;
       } else {
-        // Web platform - use localStorage with size limit
         const key = `signature_${fileName}`;
-        // Check size (base64 is ~4/3 of actual size)
         const sizeInBytes = (base64Data.length * 3) / 4;
-        if (sizeInBytes > 2 * 1024 * 1024) { // 2MB limit
+        if (sizeInBytes > 2 * 1024 * 1024) {
           throw new Error('Image too large for web storage');
         }
         localStorage.setItem(key, base64Data);
@@ -76,7 +75,6 @@ export const useSignatureStorage = () => {
       }
     } catch (error) {
       console.error('Error deleting signature file:', error);
-      // Don't throw - file might already be deleted
     }
   }, []);
 
@@ -89,14 +87,12 @@ export const useSignatureStorage = () => {
     const ctx = canvas.getContext('2d');
     if (!ctx) throw new Error('Could not get canvas context');
 
-    // Calculate new dimensions
     let { width, height } = canvas;
     if (width > maxWidth || height > maxHeight) {
       const ratio = Math.min(maxWidth / width, maxHeight / height);
       width *= ratio;
       height *= ratio;
 
-      // Create new canvas with compressed size
       const compressedCanvas = document.createElement('canvas');
       compressedCanvas.width = width;
       compressedCanvas.height = height;
@@ -172,7 +168,7 @@ export const useSignatureStorage = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [saveImageToFilesystem, getImageDimensions, toast]);
+  }, [saveImageToFilesystem, getImageDimensions, generateSignatureId, toast]);
 
   const selectFromGallery = useCallback(async (): Promise<ReportSignature> => {
     setIsLoading(true);
@@ -190,7 +186,6 @@ export const useSignatureStorage = () => {
               return;
             }
 
-            // Check file size (max 5MB before compression)
             if (file.size > 5 * 1024 * 1024) {
               toast({
                 title: 'Datei zu groß',
@@ -201,7 +196,6 @@ export const useSignatureStorage = () => {
               return;
             }
 
-            // Convert and compress image
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
             if (!ctx) throw new Error('Could not get canvas context');
@@ -269,7 +263,7 @@ export const useSignatureStorage = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [saveImageToFilesystem, compressImage, toast]);
+  }, [saveImageToFilesystem, compressImage, generateSignatureId, toast]);
 
   return {
     isLoading,

@@ -26,8 +26,7 @@ import { useUserProfile } from '@/contexts/UserProfileContext';
 import { useTranslation } from 'react-i18next';
 import { isFileSystemAccessSupported, writeFile, getDirectoryName } from '@/lib/fsAccess';
 import { loadExportHandle } from '@/lib/fsStore';
-import { sanitizeFileName } from '@/lib/strings';
-import { getOrderRefs, formatOrderRefsForFilename } from '@/lib/orderRefs';
+import { getReportFileName } from '@/lib/reportFileName';
 
 interface FinishJobTabProps {
   job: Job;
@@ -206,11 +205,7 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
       });
 
       // Generate filename
-      const orderRefs = getOrderRefs({ id: job.id, evaticNo: job.evaticNo });
-      const evatic = orderRefs.find(r => r.label.startsWith('EVATIC'))?.value;
-      const fileName = sanitizeFileName(
-        `ServiceTracker_Report_${evatic ? `EVATIC-${evatic}_` : ''}Job-${job.id}.pdf`
-      );
+      const fileName = getReportFileName(job);
 
       // Try to save to selected export folder
       if (isFileSystemAccessSupported()) {

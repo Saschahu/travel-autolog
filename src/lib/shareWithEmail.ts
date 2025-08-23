@@ -1,4 +1,5 @@
-import { getOrBuildReportPdf, generateReportFilename } from './reportPdf';
+import { getOrBuildReportPdf } from './reportPdf';
+import { getReportFileName } from './reportFileName';
 import { Job } from '@/hooks/useJobs';
 import { TimeEntry } from '@/lib/timeCalc';
 import { OvertimeCalculation } from '@/types/overtime';
@@ -26,7 +27,7 @@ export function canShareFiles(): boolean {
 export async function shareReportWithAttachment(data: ReportData, profile?: UserProfile) {
   try {
     const blob = await getOrBuildReportPdf(data);
-    const fileName = generateReportFilename(data.job);
+    const fileName = getReportFileName(data.job);
 
     const file = new File([blob], fileName, { type: 'application/pdf' });
 

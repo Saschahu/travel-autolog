@@ -526,15 +526,6 @@ const Index = () => {
                   <TabsTrigger value="finish">{t('finish')}</TabsTrigger>
                 </TabsList>
                 
-                {/* Context Bar - Customer Info */}
-                {selectedJob?.id && editData.customerName && (
-                  <div data-testid="job-context-bar" className="text-sm text-muted-foreground mt-3">
-                    <span className="inline-flex items-center gap-2 rounded-full bg-muted px-3 py-1">
-                      <span className="font-medium">Kunde:</span> {editData.customerName}
-                    </span>
-                  </div>
-                )}
-                
                 <div className="flex-1 overflow-y-auto mt-4">
                   <TabsContent value="customer" className="space-y-4 mt-0">
                     <div className="space-y-4">

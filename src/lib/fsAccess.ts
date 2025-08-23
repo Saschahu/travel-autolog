@@ -61,24 +61,27 @@ export const pickDirectory = async (): Promise<any | null> => {
   }
 };
 
-export async function pickDirectoryWithBridge(): Promise<DirHandle | null> {
-  // Try direct picker first (if not in cross-origin iframe)
-  if (isFileSystemAccessSupported() && !isInCrossOriginFrame()) {
-    try {
-      const handle = await (window as any).showDirectoryPicker({ mode: 'readwrite' });
-      const ok = await requestReadWrite(handle);
-      if (!ok) return null;
-      await saveExportHandle(handle);
-      return handle;
-    } catch (e: any) {
-      // If cross-origin error, fall through to bridge flow
-      if (!String(e?.message || e?.name).includes('Cross origin')) {
-        throw e; // Re-throw other errors
-      }
-    }
+export async function pickDirectoryDirect(): Promise<DirHandle | null> {
+  // Check user activation (helps with debugging)
+  if (navigator.userActivation && !navigator.userActivation.isActive) {
+    throw new Error('No user activation');
   }
 
-  // Bridge flow - open new top-level tab
+  const handle = await (window as any).showDirectoryPicker({ mode: 'readwrite' });
+  const permission = await handle.requestPermission?.({ mode: 'readwrite' });
+  if (permission !== 'granted') return null;
+  
+  await saveExportHandle(handle);
+  return handle;
+}
+
+export function openDirectoryPickerBridge(): boolean {
+  const bridgeUrl = `${window.location.origin}/bridge/directory-picker`;
+  const newTab = window.open(bridgeUrl, '_blank', 'noopener,noreferrer');
+  return !!newTab;
+}
+
+export async function waitForBridgeSelection(): Promise<DirHandle | null> {
   return new Promise<DirHandle | null>((resolve) => {
     let resolved = false;
     
@@ -120,18 +123,8 @@ export async function pickDirectoryWithBridge(): Promise<DirHandle | null> {
     };
     window.addEventListener('focus', onFocus);
 
-    // Open bridge in new tab
-    const bridgeUrl = `${window.location.origin}/bridge/directory-picker`;
-    const newTab = window.open(bridgeUrl, '_blank', 'noopener,noreferrer');
-    
-    if (!newTab) {
-      resolveOnce(null);
-      return;
-    }
-
     // Timeout after 60 seconds
     const timeoutId = setTimeout(() => {
-      try { newTab.close(); } catch {}
       resolveOnce(null);
     }, 60000);
   });

@@ -11,7 +11,6 @@ import { useToast } from '@/hooks/use-toast';
 import {
   isFileSystemAccessSupported,
   isInCrossOriginFrame,
-  pickDirectoryWithBridge,
   persistHandle,
   loadHandle,
   ensurePermission,
@@ -82,10 +81,81 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
     if (!isSupported) return;
     
     setIsPickingDirectory(true);
+    
+    // Try direct picker first (if not in cross-origin iframe)
+    if (isFileSystemAccessSupported() && !isInCrossOriginFrame()) {
+      try {
+        const { pickDirectoryDirect } = await import('@/lib/fsAccess');
+        const handle = await pickDirectoryDirect();
+        
+        if (handle) {
+          await persistHandle(handle);
+          const name = await getDirectoryName(handle);
+          
+          onSettingsChange({
+            ...settings,
+            directoryHandle: handle,
+            directoryName: name
+          });
+          
+          setPermissionStatus('granted');
+          
+          toast({
+            title: 'Ordner ausgewählt',
+            description: `Exportpfad gesetzt: ${name}`
+          });
+          
+          setIsPickingDirectory(false);
+          return;
+        }
+      } catch (error) {
+        console.error('Directory picker error:', error);
+        const message = error instanceof Error ? error.message : 'Ordnerauswahl fehlgeschlagen';
+        
+        // Handle specific error cases
+        let friendlyMessage = message;
+        if (message.includes('No user activation')) {
+          friendlyMessage = 'Bitte klicken Sie den Button direkt an (keine automatischen Aktionen).';
+        } else if (message.includes('not supported')) {
+          friendlyMessage = 'Ihr Browser unterstützt die Ordnerauswahl nicht.';
+        } else if (message.includes('denied')) {
+          friendlyMessage = 'Berechtigung verweigert. Bitte versuchen Sie es erneut.';
+        }
+        
+        toast({
+          variant: "destructive",
+          title: "Ordnerauswahl nicht möglich",
+          description: friendlyMessage,
+        });
+        
+        setIsPickingDirectory(false);
+        return;
+      }
+    }
+    
+    // Bridge flow: open new tab and wait for selection
     try {
-      const handle = await pickDirectoryWithBridge();
+      const { openDirectoryPickerBridge, waitForBridgeSelection } = await import('@/lib/fsAccess');
+      const opened = openDirectoryPickerBridge();
+      
+      if (!opened) {
+        toast({
+          variant: "destructive",
+          title: "Pop-up blockiert",
+          description: "Bitte erlauben Sie Pop-ups für diese Seite und versuchen Sie es erneut.",
+        });
+        setIsPickingDirectory(false);
+        return;
+      }
+      
+      toast({
+        title: "Neuer Tab geöffnet",
+        description: "Bitte klicken Sie dort auf 'Ordnerauswahl starten'.",
+      });
+      
+      const handle = await waitForBridgeSelection();
+      
       if (handle) {
-        await persistHandle(handle);
         const name = await getDirectoryName(handle);
         
         onSettingsChange({
@@ -102,21 +172,11 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
         });
       }
     } catch (error) {
-      console.error('Directory picker error:', error);
-      const message = error instanceof Error ? error.message : 'Ordnerauswahl fehlgeschlagen';
-      
-      // Show user-friendly error messages
-      let friendlyMessage = message;
-      if (message.includes('not supported')) {
-        friendlyMessage = 'Ihr Browser unterstützt die Ordnerauswahl nicht. Standard-Downloads werden verwendet.';
-      } else if (message.includes('denied')) {
-        friendlyMessage = 'Berechtigung verweigert. Bitte versuchen Sie es erneut.';
-      }
-      
+      console.error('Bridge selection error:', error);
       toast({
         variant: "destructive",
-        title: "Ordnerauswahl nicht möglich",
-        description: friendlyMessage,
+        title: "Ordnerauswahl fehlgeschlagen",
+        description: "Bitte versuchen Sie es erneut.",
       });
     } finally {
       setIsPickingDirectory(false);
@@ -274,7 +334,8 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
                   <Info className="h-4 w-4" />
                   <AlertDescription>
                     Ordnerauswahl im eingebetteten Fenster nicht möglich. 
-                    Klicken Sie "In neuem Tab wählen", um den Ordner sicher auszuwählen.
+                    Klicken Sie "Ordner wählen", es öffnet sich ein neuer Tab. 
+                    Dort auf "Ordnerauswahl starten" klicken.
                   </AlertDescription>
                 </Alert>
               )}

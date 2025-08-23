@@ -45,6 +45,12 @@ export const applyRounding = (totalMinutes: number, roundingMinutes: number): nu
   return Math.round(totalMinutes / roundingMinutes) * roundingMinutes;
 };
 
+// Apply rounding to total sum (not per entry)
+export const applyRoundingTotal = (totalMinutes: number, roundingMinutes: number): number => {
+  if (roundingMinutes <= 1) return totalMinutes;
+  return Math.round(totalMinutes / roundingMinutes) * roundingMinutes;
+};
+
 export const extractTimeEntriesFromJob = (job: any): TimeEntry[] => {
   const entries: TimeEntry[] = [];
   

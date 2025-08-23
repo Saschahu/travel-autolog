@@ -40,7 +40,7 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
   const [isPickingDirectory, setIsPickingDirectory] = useState(false);
   const [isCreatingFolder, setIsCreatingFolder] = useState(false);
   const [isTesting, setIsTesting] = useState(false);
-  const [folderName, setFolderName] = useState('ServiTracker');
+  const [folderName, setFolderName] = useState('ServiceTracker');
   const [permissionStatus, setPermissionStatus] = useState<'granted' | 'denied' | 'checking'>('checking');
   
   const isSupported = isFileSystemAccessSupported();
@@ -233,7 +233,7 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
                       id="folder-name"
                       value={folderName}
                       onChange={(e) => setFolderName(e.target.value)}
-                      placeholder="Ordnername (z.B. ServiTracker)"
+                      placeholder="Ordnername (z.B. ServiceTracker)"
                       className="flex-1"
                     />
                     <Button

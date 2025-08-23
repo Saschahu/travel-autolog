@@ -108,7 +108,7 @@ export const useExcelExport = () => {
         const buffer = await generateSingleJobTemplateBuffer(templateData);
         const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
         const url = URL.createObjectURL(blob);
-        const defaultFilename = filename || `Arbeitszeit-Nachweis_${(job.customerName||'Kunde').replace(/\s+/g,'_')}_${new Date().toISOString().split('T')[0]}.xlsx`;
+        const defaultFilename = filename || `ServiceTracker_Arbeitszeit-Nachweis_${(job.customerName||'Kunde').replace(/\s+/g,'_')}_${new Date().toISOString().split('T')[0]}.xlsx`;
 
         const triggerDownload = () => {
           const a = document.createElement('a');
@@ -204,7 +204,7 @@ export const useExcelExport = () => {
       const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       const url = URL.createObjectURL(blob);
 
-      const filename = `Arbeitszeit-Nachweis_${job.customerName?.replace(/\s+/g, '_') || 'Kunde'}_${new Date().toISOString().split('T')[0]}.xlsx`;
+      const filename = `ServiceTracker_Arbeitszeit-Nachweis_${job.customerName?.replace(/\s+/g, '_') || 'Kunde'}_${new Date().toISOString().split('T')[0]}.xlsx`;
 
       const emailSubject = `Arbeitszeit-Nachweis - ${job.customerName}`;
       const emailBody = `Arbeitszeit-Nachweis - ${job.customerName}

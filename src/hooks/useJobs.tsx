@@ -14,6 +14,8 @@ export type Job = {
   totalHours?: number | string;
   days?: any[];
   customerAddress?: string;
+  contactName?: string;
+  contactPhone?: string;
   evaticNo?: string;
   // Zeit-Felder mit Datum
   travelStart?: string;
@@ -79,6 +81,8 @@ export const useJobs = () => {
         totalHours: '0h 0m', // Calculated later
         days: Array.isArray(job.days_data) ? job.days_data : [],
         customerAddress: job.customer_address,
+        contactName: undefined, // Will be added when database is updated
+        contactPhone: undefined, // Will be added when database is updated
         evaticNo: job.evatic_no,
         // Add all time fields from database
         travelStart: job.travel_start_time,

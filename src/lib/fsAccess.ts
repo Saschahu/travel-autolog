@@ -118,7 +118,7 @@ export const getDirectoryName = async (handle: any): Promise<string> => {
 // IndexedDB helper
 const openIDB = (): Promise<IDBDatabase> => {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open('ServiTracker', 1);
+    const request = indexedDB.open('ServiceTracker', 1);
     
     request.onerror = () => reject(request.error);
     request.onsuccess = () => resolve(request.result);

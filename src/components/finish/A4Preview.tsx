@@ -72,7 +72,7 @@ export const A4Preview = ({
             <div className="header mb-6">
               <div className="flex justify-between items-start mb-4">
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-900">ServiTracker</h1>
+                  <h1 className="text-2xl font-bold text-gray-900">ServiceTracker</h1>
                   <p className="text-gray-600">Arbeitsbericht</p>
                 </div>
                 <div className="text-right text-sm text-gray-600">
@@ -86,6 +86,9 @@ export const A4Preview = ({
                   <div>
                     <p><span className="font-semibold">Kunde:</span> {job.customerName}</p>
                     <p><span className="font-semibold">Adresse:</span> {job.customerAddress || 'Nicht angegeben'}</p>
+                    {(job.contactName || job.contactPhone) && (
+                      <p><span className="font-semibold">Kontakt:</span> {[job.contactName, job.contactPhone].filter(Boolean).join(' - ')}</p>
+                    )}
                     <p><span className="font-semibold">EVATIC Nr.:</span> {job.evaticNo || 'Nicht angegeben'}</p>
                   </div>
                   <div>
@@ -177,8 +180,11 @@ export const A4Preview = ({
               )}
               
               <div className="border border-gray-300 p-3 bg-gray-50 font-bold text-center">
-                Abrechnungsstunden gesamt: {formatDecimalHours(overtimeCalculation.totalPayableHours)}
+                Gesamtstunden: {formatHours(totalMinutes)}
               </div>
+              
+              {/* Optional: Separate billing hours display if rounding is enabled */}
+              {/* Note: This would show rounded billing hours if settings enable rounding */}
             </div>
 
             {/* Work Report */}

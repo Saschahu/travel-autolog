@@ -26,6 +26,8 @@ interface JobData {
   departureEndDate: string;
   customerName: string;
   customerAddress: string;
+  contactName: string;
+  contactPhone: string;
   evaticNo: string;
   manufacturer: string;
   model: string;
@@ -80,6 +82,8 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
         user_id: user.id,
         customer_name: jobData.customerName || '',
         customer_address: jobData.customerAddress || null,
+        contact_name: jobData.contactName || null,
+        contact_phone: jobData.contactPhone || null,
         evatic_no: jobData.evaticNo || null,
         manufacturer: jobData.manufacturer || null,
         model: jobData.model || null,
@@ -431,6 +435,30 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
             </Button>
           </div>
         </div>
+        
+        <div>
+          <Label htmlFor="contact-name" className="text-sm font-medium">Kontaktperson</Label>
+          <Input
+            id="contact-name"
+            placeholder="z. B. Max Mustermann"
+            value={jobData.contactName || ''}
+            onChange={(e) => updateField('contactName', e.target.value)}
+            className="mt-1"
+          />
+        </div>
+        
+        <div>
+          <Label htmlFor="contact-phone" className="text-sm font-medium">Telefon (Kontaktperson)</Label>
+          <Input
+            id="contact-phone"
+            placeholder="z. B. +49 171 1234567"
+            value={jobData.contactPhone || ''}
+            onChange={(e) => updateField('contactPhone', e.target.value)}
+            className="mt-1"
+            pattern="^[+0-9 ()-]{5,}$"
+          />
+        </div>
+        
         <div>
           <Label htmlFor="evatic-no" className="text-sm font-medium">Evatic No</Label>
           <Input

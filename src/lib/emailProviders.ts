@@ -99,14 +99,14 @@ export const openCompose = (providerId: string, options: ComposeOptions): Promis
 };
 
 export const getTestMessage = (): ComposeOptions => ({
-  subject: 'ServiTracker Test',
-  body: `Dies ist eine Testnachricht aus ServiTracker.
+  subject: 'ServiceTracker Test',
+  body: `Dies ist eine Testnachricht aus ServiceTracker.
 
 Mit freundlichen Grüßen,
-Ihr ServiTracker Team
+Ihr ServiceTracker Team
 
 ---
-Gesendet von ServiTracker
+Gesendet von ServiceTracker
 ${window.location.origin}`
 });
 

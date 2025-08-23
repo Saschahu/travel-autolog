@@ -38,7 +38,7 @@ export const ExportPage = ({ jobs }: ExportPageProps) => {
       
       const dateStr = new Date().toISOString().split('T')[0];
       const filename = filteredJobs.length === 1
-        ? `Arbeitszeit-Nachweis_${(filteredJobs[0].customerName || 'Kunde').replace(/\s+/g,'_')}_${dateStr}.xlsx`
+        ? `ServiceTracker_Arbeitszeit-Nachweis_${(filteredJobs[0].customerName || 'Kunde').replace(/\s+/g,'_')}_${dateStr}.xlsx`
         : `Auftraege_${exportFilter}_${dateStr}.xlsx`;
       await exportToExcel(filteredJobs, filename);
     } finally {

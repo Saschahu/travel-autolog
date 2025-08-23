@@ -5,6 +5,26 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 const resources = {
   en: {
     translation: {
+      // Core Job namespace
+      job: {
+        dialogTitle: 'Edit Job',
+        tabs: {
+          customer: 'Customer',
+          machine: 'Machine', 
+          times: 'Times',
+          overtime: 'Overtime',
+          finish: 'Finish'
+        },
+        finish: {
+          title: 'Finish service case',
+          reportLabel: 'Work report',
+          reportPlaceholder: 'Describe the work performed, findings, materials used, etc...',
+          btnSaveReport: 'Save Work Report',
+          btnPreview: 'Report preview', 
+          btnEmail: 'Send by email',
+          btnDashboard: 'Dashboard'
+        }
+      },
       // Navigation and Tabs
       dashboard: 'Dashboard',
       newJob: 'New Job',
@@ -200,6 +220,26 @@ const resources = {
   },
   de: {
     translation: {
+      // Core Job namespace  
+      job: {
+        dialogTitle: 'Auftrag bearbeiten',
+        tabs: {
+          customer: 'Kunde',
+          machine: 'Maschine',
+          times: 'Zeiten', 
+          overtime: 'Überstunden',
+          finish: 'Abschluss'
+        },
+        finish: {
+          title: 'Auftrag abschließen',
+          reportLabel: 'Arbeitsbericht',
+          reportPlaceholder: 'Beschreiben Sie die durchgeführten Arbeiten, Befunde, verwendete Materialien, etc...',
+          btnSaveReport: 'Arbeitsbericht speichern',
+          btnPreview: 'Report Vorschau',
+          btnEmail: 'Per E-Mail versenden', 
+          btnDashboard: 'Dashboard'
+        }
+      },
       // Navigation and Tabs
       dashboard: 'Dashboard',
       newJob: 'Neuer Job',
@@ -395,6 +435,26 @@ const resources = {
   },
   no: {
     translation: {
+      // Core Job namespace
+      job: {
+        dialogTitle: 'Rediger jobb',
+        tabs: {
+          customer: 'Kunde',
+          machine: 'Maskin',
+          times: 'Tider',
+          overtime: 'Overtid', 
+          finish: 'Ferdig'
+        },
+        finish: {
+          title: 'Fullfør oppdrag',
+          reportLabel: 'Arbeidsrapport',
+          reportPlaceholder: 'Beskriv arbeidet som ble utført, funn, materialer brukt, etc...',
+          btnSaveReport: 'Lagre arbeidsrapport',
+          btnPreview: 'Forhåndsvisning',
+          btnEmail: 'Send på e-post',
+          btnDashboard: 'Dashboard' 
+        }
+      },
       // Navigation and Tabs
       dashboard: 'Dashboard',
       newJob: 'Ny jobb',

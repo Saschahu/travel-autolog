@@ -24,6 +24,7 @@ import { getOrBuildReportPdf, clearReportPdfCache, generateReportFilename } from
 import { ShareFallbackModal } from './ShareFallbackModal';
 import { useUserProfile } from '@/contexts/UserProfileContext';
 import { useTranslation } from 'react-i18next';
+import { tt } from '@/lib/i18nSafe';
 import { isFileSystemAccessSupported, writeFile, getDirectoryName } from '@/lib/fsAccess';
 import { loadExportHandle } from '@/lib/fsStore';
 import { getReportFileName } from '@/lib/reportFileName';
@@ -391,15 +392,15 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <FileCheck className="h-5 w-5" />
-              {t('finishTitle')}
+              {tt(t, 'job.finish.title', 'Auftrag abschließen')}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <Label htmlFor="work-report">{t('reportLabel')}</Label>
+              <Label htmlFor="work-report">{tt(t, 'job.finish.reportLabel', 'Arbeitsbericht')}</Label>
               <Textarea
                 id="work-report"
-                placeholder="Beschreiben Sie die durchgeführten Arbeiten, Befunde, verwendete Materialien, etc..."
+                placeholder={tt(t, 'job.finish.reportPlaceholder', 'Beschreiben Sie die durchgeführten Arbeiten, Befunde, verwendete Materialien, etc...')}
                 value={workReport}
                 onChange={(e) => setWorkReport(e.target.value)}
                 onBlur={async () => {
@@ -428,7 +429,7 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
               className="mt-3 flex items-center gap-2"
             >
               <Save className="h-4 w-4" />
-              {isSaving ? t('saving') : t('btnSavePdf')}
+              {isSaving ? tt(t, 'saving', 'PDF wird erstellt...') : tt(t, 'job.finish.btnSaveReport', 'Arbeitsbericht speichern')}
             </Button>
             
             {/* Action row with Preview and Email buttons */}
@@ -440,7 +441,7 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
                 className="flex items-center gap-2"
               >
                 <Eye className="h-4 w-4" />
-                {t('btnPreview')}
+                {tt(t, 'job.finish.btnPreview', 'Report Vorschau')}
               </Button>
               
               <Button 
@@ -452,7 +453,7 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
                 title={canShareFiles() ? "Öffnet E-Mail-App mit angehängtem PDF" : "Öffnet Fallback-Optionen"}
               >
                 <Mail className="h-4 w-4" />
-                {isSending ? 'Sende...' : t('btnEmail')}
+                {isSending ? 'Sende...' : tt(t, 'job.finish.btnEmail', 'Per E-Mail versenden')}
               </Button>
               
               {!isPdfReady && (
@@ -477,7 +478,7 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
                 className="flex items-center gap-2"
               >
                 <LayoutDashboard className="h-4 w-4" />
-                Dashboard
+                {tt(t, 'job.finish.btnDashboard', 'Dashboard')}
               </Button>
             </div>
           </CardContent>

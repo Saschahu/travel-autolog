@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { tt } from '@/lib/i18nSafe';
 import { MobileLayout } from '@/components/layout/MobileLayout';
 import { AppHeader } from '@/components/layout/AppHeader';
 import { JobEntryForm } from '@/components/forms/JobEntryForm';
@@ -508,22 +509,22 @@ const Index = () => {
           <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
             <DialogHeader className="flex-shrink-0">
               <DialogTitle>
-                {t('editJob')}
+                {tt(t, 'job.dialogTitle', 'Auftrag bearbeiten')}
                 {selectedJob?.id && editData.customerName && (
                   <span data-testid="job-title-customer" className="ml-2 text-muted-foreground">— {editData.customerName}</span>
                 )}
               </DialogTitle>
-              <DialogDescription>{t('editAllJobData')}</DialogDescription>
+              <DialogDescription>{tt(t, 'editAllJobData', 'Alle Job-Daten bearbeiten')}</DialogDescription>
             </DialogHeader>
             
             <div className="flex-1 overflow-hidden">
               <Tabs defaultValue="customer" className="h-full flex flex-col">
                 <TabsList className="grid w-full grid-cols-5 flex-shrink-0">
-                  <TabsTrigger value="customer">{t('customer')}</TabsTrigger>
-                  <TabsTrigger value="machine">{t('machine')}</TabsTrigger>
-                  <TabsTrigger value="times">{t('times')}</TabsTrigger>
-                  <TabsTrigger value="overtime">{t('overtime')}</TabsTrigger>
-                  <TabsTrigger value="finish">{t('finish')}</TabsTrigger>
+                  <TabsTrigger value="customer">{tt(t, 'job.tabs.customer', 'Kunde')}</TabsTrigger>
+                  <TabsTrigger value="machine">{tt(t, 'job.tabs.machine', 'Maschine')}</TabsTrigger>
+                  <TabsTrigger value="times">{tt(t, 'job.tabs.times', 'Zeiten')}</TabsTrigger>
+                  <TabsTrigger value="overtime">{tt(t, 'job.tabs.overtime', 'Überstunden')}</TabsTrigger>
+                  <TabsTrigger value="finish">{tt(t, 'job.tabs.finish', 'Abschluss')}</TabsTrigger>
                 </TabsList>
                 
                 <div className="flex-1 overflow-y-auto mt-4">

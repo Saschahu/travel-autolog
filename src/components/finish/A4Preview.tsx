@@ -5,6 +5,7 @@ import { Printer } from 'lucide-react';
 import { Job } from '@/hooks/useJobs';
 import { TimeEntry, formatHours } from '@/lib/timeCalc';
 import { OvertimeCalculation } from '@/types/overtime';
+import { getOrderRefs } from '@/lib/orderRefs';
 
 interface A4PreviewProps {
   open: boolean;
@@ -25,6 +26,8 @@ export const A4Preview = ({
   totalMinutes,
   overtimeCalculation 
 }: A4PreviewProps) => {
+  
+  const orderRefs = getOrderRefs({ id: job.id, evaticNo: job.evaticNo });
   
   const handlePrint = () => {
     window.print();
@@ -77,7 +80,13 @@ export const A4Preview = ({
                 </div>
                 <div className="text-right text-sm text-gray-600">
                   <p>Erstellt am: {new Date().toLocaleDateString('de-DE')}</p>
-                  <p>Job-ID: {job.id.slice(0, 8)}</p>
+                  <div data-testid="report-order-refs" className="space-y-1">
+                    {orderRefs.map(ref => (
+                      <p key={ref.label}>
+                        <span className="font-medium">{ref.label}:</span> {ref.value}
+                      </p>
+                    ))}
+                  </div>
                 </div>
               </div>
               
@@ -89,7 +98,9 @@ export const A4Preview = ({
                     {(job.contactName || job.contactPhone) && (
                       <p><span className="font-semibold">Kontakt:</span> {[job.contactName, job.contactPhone].filter(Boolean).join(' - ')}</p>
                     )}
-                    <p><span className="font-semibold">EVATIC Nr.:</span> {job.evaticNo || 'Nicht angegeben'}</p>
+                    {job.evaticNo && (
+                      <p><span className="font-semibold">EVATIC Nr.:</span> {job.evaticNo}</p>
+                    )}
                   </div>
                   <div>
                     <p><span className="font-semibold">Hersteller:</span> {job.manufacturer || 'Nicht angegeben'}</p>

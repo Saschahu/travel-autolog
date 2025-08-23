@@ -54,6 +54,10 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
   const [isEditingJob, setIsEditingJob] = useState(false);
   const { toast } = useToast();
 
+  // Computed values for UI display
+  const isPersisted = Boolean(currentJobId);
+  const customerName = jobData.customerName || null;
+
   const updateField = (field: keyof JobData, value: string | number) => {
     setJobData(prev => ({ ...prev, [field]: value }));
   };
@@ -135,6 +139,8 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
         if (!error && data) {
           setCurrentJobId(data.id);
           setIsEditingJob(true);
+          // Update local jobData with saved data to trigger UI refresh
+          setJobData(prev => ({ ...prev, ...jobPayload }));
         }
       }
 
@@ -653,6 +659,22 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
 
   return (
     <div className="p-4 space-y-6">
+      {/* Job Title with Customer Name */}
+      <div className="flex items-center justify-between">
+        <h2 className="text-xl font-semibold">
+          Auftrag bearbeiten
+          {isPersisted && customerName && (
+            <span data-testid="job-title-customer" className="ml-2 text-muted-foreground">— {customerName}</span>
+          )}
+        </h2>
+        {isEditingJob && (
+          <Badge variant="secondary" className="px-3 py-1">
+            <Clock className="h-3 w-3 mr-1" />
+            Bearbeitung läuft
+          </Badge>
+        )}
+      </div>
+
       {/* Step Navigation */}
       <div className="flex justify-between items-center">
         {steps.map((step, index) => {
@@ -686,6 +708,15 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
           );
         })}
       </div>
+
+      {/* Context Bar - Customer Info */}
+      {isPersisted && customerName && (
+        <div data-testid="job-context-bar" className="text-sm text-muted-foreground">
+          <span className="inline-flex items-center gap-2 rounded-full bg-muted px-3 py-1">
+            <span className="font-medium">Kunde:</span> {customerName}
+          </span>
+        </div>
+      )}
 
       <Separator />
 

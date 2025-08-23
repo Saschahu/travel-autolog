@@ -1,3 +1,5 @@
+import { buildComposeUrl } from '@/lib/emailProviders';
+import { splitEmails, validateEmails } from '@/lib/email';
 import * as XLSX from 'xlsx';
 import { useUserProfile } from '@/contexts/UserProfileContext';
 import { Share } from '@capacitor/share';
@@ -174,10 +176,29 @@ export const useExcelExport = () => {
   };
 
   const sendJobReportByEmail = async (job: any) => {
-    if (!profile.email) {
+    // Get email recipients from profile with fallback
+    const emailData = {
+      to: profile.reportTo || profile.email,
+      cc: profile.reportCc,
+      bcc: profile.reportBcc
+    };
+    
+    // Validate recipients
+    const toEmails = splitEmails(emailData.to);
+    if (toEmails.length === 0) {
       toast({
         title: 'Fehler',
-        description: 'Keine E-Mail-Adresse in den Einstellungen hinterlegt',
+        description: 'Kein gültiger Empfänger gefunden. Bitte unter Einstellungen → Profil hinterlegen.',
+        variant: 'destructive',
+      });
+      return false;
+    }
+    
+    const { invalid } = validateEmails(toEmails);
+    if (invalid.length > 0) {
+      toast({
+        title: 'Fehler',
+        description: `Ungültige E-Mail-Adresse(n): ${invalid.join(', ')}`,
         variant: 'destructive',
       });
       return false;
@@ -255,8 +276,17 @@ ${profile.name || 'ServiceTracker'}`;
         a.remove();
         
         // E-Mail-App öffnen mit vorbereitetem Text
-        const mailtoUrl = constructMailtoUrl(profile.email, emailSubject, emailBody, profile.preferredEmailApp);
-        window.open(mailtoUrl, '_blank');
+        const mailtoUrl = constructMailtoUrl(emailData, emailSubject, emailBody, profile.preferredEmailApp);
+        const opened = window.open(mailtoUrl, '_blank');
+        
+        if (!opened) {
+          toast({
+            title: 'Pop-Up blockiert',
+            description: 'Bitte Pop-Ups für diese Seite erlauben und erneut versuchen.',
+            variant: 'destructive',
+          });
+          return false;
+        }
         
         toast({
           title: 'E-Mail-App geöffnet',
@@ -281,26 +311,16 @@ ${profile.name || 'ServiceTracker'}`;
   };
 
   // Hilfsfunktion für E-Mail-URLs
-  const constructMailtoUrl = (email: string, subject: string, body: string, preferredApp: string) => {
-    const encodedSubject = encodeURIComponent(subject);
-    const encodedBody = encodeURIComponent(body + '\n\n[Bitte Excel-Datei anhängen: Sie finden die heruntergeladene Datei in Ihrem Download-Ordner]');
+  const constructMailtoUrl = (emailData: { to?: string | null; cc?: string | null; bcc?: string | null }, subject: string, body: string, preferredApp: string) => {
+    const options = {
+      to: emailData.to,
+      cc: emailData.cc,
+      bcc: emailData.bcc,
+      subject,
+      body: body + '\n\n[Bitte Excel-Datei anhängen: Sie finden die heruntergeladene Datei in Ihrem Download-Ordner]'
+    };
     
-    let baseUrl = `mailto:${email}?subject=${encodedSubject}&body=${encodedBody}`;
-    
-    // Spezielle URLs für verschiedene E-Mail-Apps (nur wenn verfügbar)
-    switch (preferredApp) {
-      case 'gmail':
-        // Gmail Web URL
-        return `https://mail.google.com/mail/?view=cm&to=${email}&su=${encodedSubject}&body=${encodedBody}`;
-      case 'outlook':
-        // Outlook Web URL
-        return `https://outlook.live.com/mail/0/deeplink/compose?to=${email}&subject=${encodedSubject}&body=${encodedBody}`;
-      case 'yahoo':
-        // Yahoo Mail URL
-        return `https://compose.mail.yahoo.com/?to=${email}&subject=${encodedSubject}&body=${encodedBody}`;
-      default:
-        return baseUrl;
-    }
+    return buildComposeUrl(preferredApp, options);
   };
 
   const generateDailyEntries = (job: any) => {

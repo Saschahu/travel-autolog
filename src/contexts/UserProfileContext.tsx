@@ -9,6 +9,10 @@ export interface UserProfile {
   preferredLanguage: 'en' | 'de' | 'no';
   gpsEnabled: boolean;
   localStoragePath: string;
+  // Email report recipients
+  reportTo?: string | null;
+  reportCc?: string | null;
+  reportBcc?: string | null;
 }
 
 interface UserProfileContextType {
@@ -25,6 +29,9 @@ const defaultProfile: UserProfile = {
   preferredLanguage: 'de',
   gpsEnabled: false,
   localStoragePath: '',
+  reportTo: null,
+  reportCc: null,
+  reportBcc: null,
 };
 
 const UserProfileContext = createContext<UserProfileContextType | undefined>(undefined);
@@ -74,7 +81,15 @@ export const UserProfileProvider: React.FC<UserProfileProviderProps> = ({ childr
       if (value) {
         const savedProfile = JSON.parse(value);
         console.log('UserProfile: Parsed saved profile:', savedProfile);
-        setProfile({ ...defaultProfile, ...savedProfile });
+        
+        // Migration: Set reportTo to email if not set
+        const migratedProfile = { 
+          ...defaultProfile, 
+          ...savedProfile,
+          reportTo: savedProfile.reportTo ?? (savedProfile.email || null)
+        };
+        
+        setProfile(migratedProfile);
         console.log('UserProfile: Profile loaded successfully');
       } else {
         console.log('UserProfile: No saved profile, using defaults');

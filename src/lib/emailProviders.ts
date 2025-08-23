@@ -41,33 +41,64 @@ export const EMAIL_PROVIDERS: EmailProvider[] = [
 ];
 
 export interface ComposeOptions {
-  to?: string;
+  to?: string | null;
+  cc?: string | null;
+  bcc?: string | null;
   subject: string;
   body: string;
 }
 
+import { splitEmails } from './email';
+
+function joinComma(list: string[]): string {
+  return encodeURIComponent(list.join(','));
+}
+
 export const buildComposeUrl = (providerId: string, options: ComposeOptions): string => {
-  const { to = '', subject, body } = options;
+  const toList = splitEmails(options.to);
+  const ccList = splitEmails(options.cc);
+  const bccList = splitEmails(options.bcc);
+  
+  const su = encodeURIComponent(options.subject);
+  const bo = encodeURIComponent(options.body);
   
   switch (providerId) {
-    case 'mailto':
-      return `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    
     case 'gmail':
-      return `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(to)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      return `https://mail.google.com/mail/?view=cm&fs=1`
+        + (toList.length ? `&to=${joinComma(toList)}` : '')
+        + (ccList.length ? `&cc=${joinComma(ccList)}` : '')
+        + (bccList.length ? `&bcc=${joinComma(bccList)}` : '')
+        + `&su=${su}&body=${bo}`;
     
     case 'outlook':
-      return `https://outlook.office.com/mail/deeplink/compose?to=${encodeURIComponent(to)}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      return `https://outlook.office.com/mail/deeplink/compose?`
+        + (toList.length ? `to=${joinComma(toList)}&` : '')
+        + (ccList.length ? `cc=${joinComma(ccList)}&` : '')
+        + (bccList.length ? `bcc=${joinComma(bccList)}&` : '')
+        + `subject=${su}&body=${bo}`;
     
     case 'yahoo':
-      return `https://compose.mail.yahoo.com/?to=${encodeURIComponent(to)}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      return `https://compose.mail.yahoo.com/?`
+        + (toList.length ? `to=${joinComma(toList)}&` : '')
+        + (ccList.length ? `cc=${joinComma(ccList)}&` : '')
+        + (bccList.length ? `bcc=${joinComma(bccList)}&` : '')
+        + `subject=${su}&body=${bo}`;
     
     case 'proton':
-      return `https://mail.proton.me/u/0/compose?to=${encodeURIComponent(to)}&title=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      return `https://mail.proton.me/u/0/compose?`
+        + (toList.length ? `to=${joinComma(toList)}&` : '')
+        + (ccList.length ? `cc=${joinComma(ccList)}&` : '')
+        + (bccList.length ? `bcc=${joinComma(bccList)}&` : '')
+        + `title=${su}&body=${bo}`;
     
-    default:
-      // Fallback to mailto
-      return `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    default: // 'mailto' System
+      const base = `mailto:${toList.join(',')}`;
+      const params = new URLSearchParams();
+      if (ccList.length) params.set('cc', ccList.join(','));
+      if (bccList.length) params.set('bcc', bccList.join(','));
+      params.set('subject', options.subject);
+      params.set('body', options.body);
+      return `${base}?${params.toString()}`;
   }
 };
 

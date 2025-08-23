@@ -1,3 +1,4 @@
+import { validateEmailInput } from '@/lib/email';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useUserProfile } from '@/contexts/UserProfileContext';
@@ -9,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { User, MapPin, Settings, Home, Clock, Globe, FolderOpen, AlertTriangle } from 'lucide-react';
+import { User, MapPin, Settings, Home, Clock, Globe, FolderOpen, AlertTriangle, Mail } from 'lucide-react';
 import { OvertimeSettings } from '@/components/settings/OvertimeSettings';
 import { HolidaySettings } from '@/components/settings/HolidaySettings';
 import { GPSSettingsComponent } from '@/components/gps/GPSSettingsComponent';
@@ -37,7 +38,10 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
     preferredEmailApp: 'default',
     preferredLanguage: 'de' as 'en' | 'de' | 'no',
     gpsEnabled: false,
-    localStoragePath: ''
+    localStoragePath: '',
+    reportTo: '',
+    reportCc: '',
+    reportBcc: ''
   });
 
   // Export settings state
@@ -62,6 +66,7 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
   });
   
   const [saving, setSaving] = useState(false);
+  const [emailErrors, setEmailErrors] = useState<{ [key: string]: string[] }>({});
 
   // Load GPS and export settings from storage on mount
   useEffect(() => {
@@ -111,12 +116,44 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
       preferredEmailApp: profile.preferredEmailApp,
       preferredLanguage: profile.preferredLanguage,
       gpsEnabled: profile.gpsEnabled,
-      localStoragePath: profile.localStoragePath
+      localStoragePath: profile.localStoragePath,
+      reportTo: profile.reportTo || '',
+      reportCc: profile.reportCc || '',
+      reportBcc: profile.reportBcc || ''
     });
   }, [profile]);
 
   const handleSave = async () => {
     if (saving) return;
+    
+    // Validate email fields before saving
+    const emailValidation = {
+      reportTo: validateEmailInput(formData.reportTo),
+      reportCc: validateEmailInput(formData.reportCc),
+      reportBcc: validateEmailInput(formData.reportBcc)
+    };
+    
+    const newEmailErrors: { [key: string]: string[] } = {};
+    let hasErrors = false;
+    
+    Object.entries(emailValidation).forEach(([field, validation]) => {
+      if (!validation.valid) {
+        newEmailErrors[field] = validation.errors;
+        hasErrors = true;
+      }
+    });
+    
+    setEmailErrors(newEmailErrors);
+    
+    if (hasErrors) {
+      toast({
+        title: 'Validierungsfehler',
+        description: 'Bitte korrigieren Sie die E-Mail-Adressen',
+        variant: 'destructive',
+      });
+      return;
+    }
+    
     setSaving(true);
     console.log('handleSave started, formData:', formData);
     
@@ -251,8 +288,107 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
                         placeholder="max@example.com"
                       />
                     </div>
+                  </CardContent>
+                </Card>
 
+                {/* Email Report Settings */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-base">
+                      <Mail className="h-4 w-4 text-primary" />
+                      E-Mail-Versand Einstellungen
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="reportTo">
+                        Standard-Empfänger (TO)
+                        <span className="text-xs text-muted-foreground block">
+                          Mehrere Adressen durch Komma oder Semikolon trennen
+                        </span>
+                      </Label>
+                      <Input
+                        id="reportTo"
+                        type="email"
+                        value={formData.reportTo}
+                        onChange={(e) => setFormData(prev => ({ ...prev, reportTo: e.target.value }))}
+                        placeholder="empfaenger@firma.com, chef@firma.com"
+                        className={emailErrors.reportTo ? 'border-destructive' : ''}
+                      />
+                      {emailErrors.reportTo && (
+                        <div className="text-sm text-destructive">
+                          {emailErrors.reportTo.map((error, i) => (
+                            <div key={i}>{error}</div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
 
+                    <div className="space-y-2">
+                      <Label htmlFor="reportCc">
+                        CC (optional)
+                        <span className="text-xs text-muted-foreground block">
+                          Mehrere Adressen durch Komma oder Semikolon trennen
+                        </span>
+                      </Label>
+                      <Input
+                        id="reportCc"
+                        type="email"
+                        value={formData.reportCc}
+                        onChange={(e) => setFormData(prev => ({ ...prev, reportCc: e.target.value }))}
+                        placeholder="cc@firma.com"
+                        className={emailErrors.reportCc ? 'border-destructive' : ''}
+                      />
+                      {emailErrors.reportCc && (
+                        <div className="text-sm text-destructive">
+                          {emailErrors.reportCc.map((error, i) => (
+                            <div key={i}>{error}</div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="reportBcc">
+                        BCC (optional)
+                        <span className="text-xs text-muted-foreground block">
+                          Mehrere Adressen durch Komma oder Semikolon trennen
+                        </span>
+                      </Label>
+                      <Input
+                        id="reportBcc"
+                        type="email"
+                        value={formData.reportBcc}
+                        onChange={(e) => setFormData(prev => ({ ...prev, reportBcc: e.target.value }))}
+                        placeholder="bcc@firma.com"
+                        className={emailErrors.reportBcc ? 'border-destructive' : ''}
+                      />
+                      {emailErrors.reportBcc && (
+                        <div className="text-sm text-destructive">
+                          {emailErrors.reportBcc.map((error, i) => (
+                            <div key={i}>{error}</div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="p-3 bg-muted rounded-lg">
+                      <p className="text-xs text-muted-foreground">
+                        <strong>Hinweis:</strong> Die E-Mail wird aus Ihrer Mail-App gesendet. 
+                        Das Absender-Konto steuern Sie in der Mail-App.
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-base">
+                      <Globe className="h-4 w-4 text-primary" />
+                      {t('preferredLanguage')}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
                     <div className="space-y-2">
                       <Label htmlFor="language">{t('preferredLanguage')}</Label>
                       <Select

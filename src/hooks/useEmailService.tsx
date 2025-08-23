@@ -8,10 +8,19 @@ export const useEmailService = () => {
   const { toast } = useToast();
 
   const sendJobReport = async (jobData: any) => {
-    if (!profile.email) {
+    // Get email recipients from profile with fallback
+    const emailData = {
+      to: profile.reportTo || profile.email,
+      cc: profile.reportCc,
+      bcc: profile.reportBcc
+    };
+    
+    // Check if we have at least a TO recipient
+    const toEmails = emailData.to ? emailData.to.split(/[;,]/).map(s => s.trim()).filter(Boolean) : [];
+    if (toEmails.length === 0) {
       toast({
         title: 'Fehler',
-        description: 'Keine E-Mail-Adresse in den Einstellungen hinterlegt',
+        description: 'Kein gültiger Empfänger gefunden. Bitte unter Einstellungen → Profil → Standard-Empfänger hinterlegen.',
         variant: 'destructive',
       });
       return false;

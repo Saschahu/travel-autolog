@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -19,6 +19,10 @@ import { TimeEntryOverrides } from '@/components/time/TimeEntryOverrides';
 import { useDayTypeDetection } from '@/hooks/useDayTypeDetection';
 import { DayOverrides } from '@/lib/holidays';
 import { extractTimeEntriesFromJob, calculateTotalHoursFromEntries } from '@/lib/timeCalc';
+import { shareReportWithAttachment, canShareFiles } from '@/lib/shareWithEmail';
+import { getOrBuildReportPdf, clearReportPdfCache } from '@/lib/reportPdf';
+import { ShareFallbackModal } from './ShareFallbackModal';
+import { useUserProfile } from '@/contexts/UserProfileContext';
 
 interface FinishJobTabProps {
   job: Job;
@@ -33,12 +37,16 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [dayOverrides, setDayOverrides] = useState<Record<string, DayOverrides>>({});
+  const [showFallbackModal, setShowFallbackModal] = useState(false);
+  const [fallbackFile, setFallbackFile] = useState<File | undefined>();
+  const [isPdfReady, setIsPdfReady] = useState(false);
   
   const { toast } = useToast();
   const { sendJobReport } = useEmailService();
   const { generateJobExcel } = useExcelExport();
   const navigate = useNavigate();
   const { detectDayType } = useDayTypeDetection();
+  const { profile } = useUserProfile();
 
   const { calculateOvertime } = useOvertimeCalculation();
 
@@ -54,15 +62,62 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
   // Check if there are unsaved changes
   const hasUnsavedChanges = workReport !== (job.workReport || '');
 
+  // Prepare PDF in the background when tab is opened
+  useEffect(() => {
+    const prepareReport = async () => {
+      try {
+        setIsPdfReady(false);
+        await getOrBuildReportPdf({
+          job,
+          workReport,
+          timeEntries,
+          totalMinutes,
+          overtimeCalculation
+        });
+        setIsPdfReady(true);
+      } catch (error) {
+        console.error('Failed to prepare PDF:', error);
+      }
+    };
+    
+    prepareReport();
+  }, [job.id, workReport, timeEntries.length, totalMinutes]);
+
+  // Clear cache when work report changes
+  useEffect(() => {
+    clearReportPdfCache();
+  }, [workReport]);
+
   const handleSaveWorkReport = async () => {
     try {
       const updatedJob = { ...job, workReport: workReport };
       onJobUpdate(updatedJob);
       setIsSaved(true);
+      
+      // Clear PDF cache and prepare new one
+      clearReportPdfCache();
+      setIsPdfReady(false);
+      
       toast({
         title: 'Gespeichert',
         description: 'Arbeitsbericht wurde gespeichert',
       });
+
+      // Prepare updated PDF
+      setTimeout(async () => {
+        try {
+          await getOrBuildReportPdf({
+            job: updatedJob,
+            workReport,
+            timeEntries,
+            totalMinutes,
+            overtimeCalculation
+          });
+          setIsPdfReady(true);
+        } catch (error) {
+          console.error('Failed to prepare updated PDF:', error);
+        }
+      }, 100);
     } catch (error) {
       toast({
         title: 'Fehler',
@@ -75,16 +130,47 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
   const handleSendReport = async () => {
     setIsSending(true);
     try {
-      const jobWithReport = { ...job, workReport: workReport };
-      const success = await sendJobReport(jobWithReport);
+      // First save if there are unsaved changes
+      let currentJob = job;
+      if (hasUnsavedChanges) {
+        currentJob = { ...job, workReport: workReport };
+        onJobUpdate(currentJob);
+        setIsSaved(true);
+        
+        // Clear cache and rebuild
+        clearReportPdfCache();
+        await getOrBuildReportPdf({
+          job: currentJob,
+          workReport,
+          timeEntries,
+          totalMinutes,
+          overtimeCalculation
+        });
+      }
+
+      // Try Web Share API first
+      const reportData = {
+        job: currentJob,
+        workReport,
+        timeEntries,
+        totalMinutes,
+        overtimeCalculation
+      };
+
+      const result = await shareReportWithAttachment(reportData);
       
-      if (success) {
+      if (result.ok) {
         toast({
           title: 'Bericht gesendet',
           description: 'Der Auftragsbericht wurde erfolgreich per E-Mail versendet.',
         });
+      } else {
+        // Show fallback modal
+        setFallbackFile(result.file);
+        setShowFallbackModal(true);
       }
     } catch (error) {
+      console.error('Error in handleSendReport:', error);
       toast({
         title: 'Fehler',
         description: 'Fehler beim Versenden des Berichts',
@@ -164,10 +250,23 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
                 disabled={isSending}
                 variant="default"
                 className="flex items-center gap-2"
+                title={canShareFiles() ? "Öffnet E-Mail-App mit angehängtem PDF" : "Öffnet Fallback-Optionen"}
               >
                 <Mail className="h-4 w-4" />
                 {isSending ? 'Sende...' : 'Per E-Mail versenden'}
               </Button>
+              
+              {!isPdfReady && (
+                <p className="text-xs text-muted-foreground">
+                  Report wird vorbereitet...
+                </p>
+              )}
+              
+              {isPdfReady && canShareFiles() && (
+                <p className="text-xs text-muted-foreground">
+                  ✓ Direktes Teilen mit Anhang unterstützt
+                </p>
+              )}
             </div>
             
             {/* Dashboard button at bottom */}
@@ -224,6 +323,16 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Share Fallback Modal */}
+      <ShareFallbackModal
+        open={showFallbackModal}
+        onOpenChange={setShowFallbackModal}
+        file={fallbackFile}
+        job={job}
+        workReport={workReport}
+        profile={profile}
+      />
     </>
   );
 };

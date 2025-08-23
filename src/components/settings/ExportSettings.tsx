@@ -6,11 +6,12 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { FolderOpen, Mail, Plus, TestTube, AlertCircle, Check, X } from 'lucide-react';
+import { FolderOpen, Mail, Plus, TestTube, AlertCircle, Check, X, Info, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import {
   isFileSystemAccessSupported,
-  pickDirectory,
+  isInCrossOriginFrame,
+  pickDirectoryWithBridge,
   persistHandle,
   loadHandle,
   ensurePermission,
@@ -82,7 +83,7 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
     
     setIsPickingDirectory(true);
     try {
-      const handle = await pickDirectory();
+      const handle = await pickDirectoryWithBridge();
       if (handle) {
         await persistHandle(handle);
         const name = await getDirectoryName(handle);
@@ -102,13 +103,36 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
       }
     } catch (error) {
       console.error('Directory picker error:', error);
+      const message = error instanceof Error ? error.message : 'Ordnerauswahl fehlgeschlagen';
+      
+      // Show user-friendly error messages
+      let friendlyMessage = message;
+      if (message.includes('not supported')) {
+        friendlyMessage = 'Ihr Browser unterstützt die Ordnerauswahl nicht. Standard-Downloads werden verwendet.';
+      } else if (message.includes('denied')) {
+        friendlyMessage = 'Berechtigung verweigert. Bitte versuchen Sie es erneut.';
+      }
+      
       toast({
-        title: 'Fehler beim Ordner auswählen',
-        description: error instanceof Error ? error.message : 'Unbekannter Fehler',
-        variant: 'destructive'
+        variant: "destructive",
+        title: "Ordnerauswahl nicht möglich",
+        description: friendlyMessage,
       });
     } finally {
       setIsPickingDirectory(false);
+    }
+  };
+
+  const handleDirectoryPickInNewTab = () => {
+    const bridgeUrl = `${window.location.origin}/bridge/directory-picker`;
+    const newTab = window.open(bridgeUrl, '_blank', 'noopener,noreferrer');
+    
+    if (!newTab) {
+      toast({
+        variant: "destructive",
+        title: "Pop-up blockiert",
+        description: "Bitte erlauben Sie Pop-ups für diese Seite und versuchen Sie es erneut.",
+      });
     }
   };
 
@@ -215,15 +239,45 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
                     )}
                   </div>
                 </div>
-                <Button
-                  onClick={handleDirectoryPick}
-                  disabled={isPickingDirectory}
-                  variant="outline"
-                >
-                  <FolderOpen className="h-4 w-4 mr-2" />
-                  {isPickingDirectory ? 'Auswählen...' : 'Ordner wählen'}
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Button
+                    onClick={handleDirectoryPick}
+                    disabled={isPickingDirectory}
+                    variant="outline"
+                  >
+                    {isPickingDirectory ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Wähle Ordner...
+                      </>
+                    ) : (
+                      <>
+                        <FolderOpen className="mr-2 h-4 w-4" />
+                        Ordner wählen
+                      </>
+                    )}
+                  </Button>
+                  {isInCrossOriginFrame() && (
+                    <Button
+                      onClick={handleDirectoryPickInNewTab}
+                      variant="secondary"
+                      size="sm"
+                    >
+                      In neuem Tab wählen
+                    </Button>
+                  )}
+                </div>
               </div>
+              
+              {isInCrossOriginFrame() && (
+                <Alert className="mb-4">
+                  <Info className="h-4 w-4" />
+                  <AlertDescription>
+                    Ordnerauswahl im eingebetteten Fenster nicht möglich. 
+                    Klicken Sie "In neuem Tab wählen", um den Ordner sicher auszuwählen.
+                  </AlertDescription>
+                </Alert>
+              )}
 
               {settings.directoryHandle && permissionStatus === 'granted' && (
                 <div className="space-y-3 pt-3 border-t">

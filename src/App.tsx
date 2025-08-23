@@ -8,6 +8,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import { Auth } from "./pages/Auth";
 import NotFound from "./pages/NotFound";
+import DirectoryPickerBridge from "./pages/DirectoryPickerBridge";
 
 const queryClient = new QueryClient();
 
@@ -35,6 +36,10 @@ function AppContent() {
         <Route 
           path="/auth" 
           element={!user ? <Auth /> : <Navigate to="/" replace />} 
+        />
+        <Route 
+          path="/bridge/directory-picker" 
+          element={<DirectoryPickerBridge />} 
         />
         <Route path="*" element={<NotFound />} />
       </Routes>

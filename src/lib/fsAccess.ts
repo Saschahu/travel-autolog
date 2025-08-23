@@ -1,11 +1,42 @@
 // File System Access API utilities for directory picker
 // Using 'any' types to avoid conflicts with browser built-in types
 
+import { saveExportHandle, loadExportHandle } from './fsStore';
+
 const IDB_KEY = 'export-directory-handle';
+
+export type DirHandle = any;
 
 export const isFileSystemAccessSupported = (): boolean => {
   return 'showDirectoryPicker' in window;
 };
+
+export function isInCrossOriginFrame(): boolean {
+  try {
+    // If we're the top window, not in a frame
+    if (window.top === window) return false;
+    
+    // Try to access parent origin - throws in cross-origin context
+    // eslint-disable-next-line no-unused-expressions
+    (window.top as Window).location.origin;
+    
+    // If no error thrown, check if origins differ
+    return window.top!.location.origin !== window.location.origin;
+  } catch {
+    // Access denied means cross-origin
+    return true;
+  }
+}
+
+export async function requestReadWrite(handle: DirHandle): Promise<boolean> {
+  try {
+    if (!handle.requestPermission) return true;
+    const perm = await handle.requestPermission({ mode: 'readwrite' });
+    return perm === 'granted';
+  } catch {
+    return false;
+  }
+}
 
 export const pickDirectory = async (): Promise<any | null> => {
   if (!isFileSystemAccessSupported()) {
@@ -29,6 +60,82 @@ export const pickDirectory = async (): Promise<any | null> => {
     throw error;
   }
 };
+
+export async function pickDirectoryWithBridge(): Promise<DirHandle | null> {
+  // Try direct picker first (if not in cross-origin iframe)
+  if (isFileSystemAccessSupported() && !isInCrossOriginFrame()) {
+    try {
+      const handle = await (window as any).showDirectoryPicker({ mode: 'readwrite' });
+      const ok = await requestReadWrite(handle);
+      if (!ok) return null;
+      await saveExportHandle(handle);
+      return handle;
+    } catch (e: any) {
+      // If cross-origin error, fall through to bridge flow
+      if (!String(e?.message || e?.name).includes('Cross origin')) {
+        throw e; // Re-throw other errors
+      }
+    }
+  }
+
+  // Bridge flow - open new top-level tab
+  return new Promise<DirHandle | null>((resolve) => {
+    let resolved = false;
+    
+    const cleanup = () => {
+      if (bc) bc.close();
+      window.removeEventListener('focus', onFocus);
+      clearTimeout(timeoutId);
+    };
+
+    const resolveOnce = (result: DirHandle | null) => {
+      if (resolved) return;
+      resolved = true;
+      cleanup();
+      resolve(result);
+    };
+
+    // BroadcastChannel listener
+    let bc: BroadcastChannel | null = null;
+    try {
+      bc = new BroadcastChannel('fs-bridge');
+      bc.addEventListener('message', async (ev: MessageEvent) => {
+        if (ev.data?.type === 'fs:selected' && ev.data.key === 'exportDir') {
+          const handle = await loadExportHandle();
+          resolveOnce(handle);
+        }
+      });
+    } catch (bcError) {
+      console.warn('BroadcastChannel not available, using localStorage fallback');
+    }
+
+    // localStorage fallback (for when BroadcastChannel is blocked)
+    const onFocus = async () => {
+      const ts = localStorage.getItem('fs.exportDir.selectedAt');
+      if (ts && Number(ts) > Date.now() - 30000) { // 30 second window
+        localStorage.removeItem('fs.exportDir.selectedAt');
+        const handle = await loadExportHandle();
+        resolveOnce(handle);
+      }
+    };
+    window.addEventListener('focus', onFocus);
+
+    // Open bridge in new tab
+    const bridgeUrl = `${window.location.origin}/bridge/directory-picker`;
+    const newTab = window.open(bridgeUrl, '_blank', 'noopener,noreferrer');
+    
+    if (!newTab) {
+      resolveOnce(null);
+      return;
+    }
+
+    // Timeout after 60 seconds
+    const timeoutId = setTimeout(() => {
+      try { newTab.close(); } catch {}
+      resolveOnce(null);
+    }, 60000);
+  });
+}
 
 export const persistHandle = async (handle: any): Promise<void> => {
   if (!('indexedDB' in window)) return;

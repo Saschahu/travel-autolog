@@ -27,8 +27,8 @@ export default function DirectoryPickerBridge() {
         }
       }
 
-      // Save the handle to IndexedDB
-      await saveExportHandle(handle);
+      // Save the handle to IndexedDB with metadata
+      await saveExportHandle(handle, { displayName: handle.name });
 
       // Notify parent via BroadcastChannel
       try {

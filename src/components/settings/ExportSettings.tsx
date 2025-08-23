@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,12 +11,15 @@ import { useToast } from '@/hooks/use-toast';
 import {
   isFileSystemAccessSupported,
   isInCrossOriginFrame,
-  persistHandle,
-  loadHandle,
-  ensurePermission,
+  pickDirectoryDirect,
+  openDirectoryPickerBridge,
+  waitForBridgeSelection,
   createSubdirectory,
-  getDirectoryName
+  queryPermission,
+  requestPermission,
+  computeDisplayName
 } from '@/lib/fsAccess';
+import { loadExportHandle, loadExportMeta, saveExportHandle, clearExportHandle } from '@/lib/fsStore';
 import {
   EMAIL_PROVIDERS,
   openCompose,
@@ -41,41 +44,80 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
   const [isCreatingFolder, setIsCreatingFolder] = useState(false);
   const [isTesting, setIsTesting] = useState(false);
   const [folderName, setFolderName] = useState('ServiceTracker');
-  const [permissionStatus, setPermissionStatus] = useState<'granted' | 'denied' | 'checking'>('checking');
+  const [displayName, setDisplayName] = useState<string | null>(null);
+  const [permissionStatus, setPermissionStatus] = useState<PermissionState | null>(null);
+  const [hasHandle, setHasHandle] = useState(false);
   
   const isSupported = isFileSystemAccessSupported();
 
-  // Load persisted directory handle on mount
+  // Reload folder state from storage
+  const reload = useCallback(async () => {
+    try {
+      const [handle, meta] = await Promise.all([loadExportHandle(), loadExportMeta()]);
+      if (handle) {
+        setHasHandle(true);
+        const permission = await queryPermission(handle);
+        setPermissionStatus(permission);
+        const name = computeDisplayName(handle, meta || undefined);
+        setDisplayName(name);
+        
+        onSettingsChange({
+          ...settings,
+          directoryHandle: handle,
+          directoryName: name
+        });
+      } else {
+        setHasHandle(false);
+        setPermissionStatus(null);
+        setDisplayName(null);
+        onSettingsChange({
+          ...settings,
+          directoryHandle: undefined,
+          directoryName: ''
+        });
+      }
+    } catch (error) {
+      console.error('Failed to reload folder state:', error);
+      setHasHandle(false);
+      setPermissionStatus(null);
+      setDisplayName(null);
+    }
+  }, [settings, onSettingsChange]);
+
+  // Load persisted directory handle on mount and setup listeners
   useEffect(() => {
-    const loadPersistedHandle = async () => {
-      try {
-        const handle = await loadHandle();
-        if (handle) {
-          const hasPermission = await ensurePermission(handle);
-          if (hasPermission) {
-            const name = await getDirectoryName(handle);
-            onSettingsChange({
-              ...settings,
-              directoryHandle: handle,
-              directoryName: name
-            });
-            setPermissionStatus('granted');
-          } else {
-            setPermissionStatus('denied');
-          }
-        } else {
-          setPermissionStatus('denied');
+    if (isSupported) {
+      reload();
+    }
+
+    // Listen for bridge selection via BroadcastChannel
+    let bc: BroadcastChannel | null = null;
+    try {
+      bc = new BroadcastChannel('fs-bridge');
+      bc.onmessage = (ev) => {
+        if (ev.data?.type === 'fs:selected' && ev.data.key === 'exportDir') {
+          reload();
         }
-      } catch (error) {
-        console.error('Failed to load persisted handle:', error);
-        setPermissionStatus('denied');
+      };
+    } catch (error) {
+      console.warn('BroadcastChannel not available:', error);
+    }
+
+    // Fallback: listen for focus events and check localStorage
+    const onFocus = () => {
+      const timestamp = localStorage.getItem('fs.exportDir.selectedAt');
+      if (timestamp && Number(timestamp) > Date.now() - 30000) {
+        localStorage.removeItem('fs.exportDir.selectedAt');
+        reload();
       }
     };
+    window.addEventListener('focus', onFocus);
 
-    if (isSupported) {
-      loadPersistedHandle();
-    }
-  }, [isSupported]);
+    return () => {
+      if (bc) bc.close();
+      window.removeEventListener('focus', onFocus);
+    };
+  }, [isSupported, reload]);
 
   const handleDirectoryPick = async () => {
     if (!isSupported) return;
@@ -85,24 +127,14 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
     // Try direct picker first (if not in cross-origin iframe)
     if (isFileSystemAccessSupported() && !isInCrossOriginFrame()) {
       try {
-        const { pickDirectoryDirect } = await import('@/lib/fsAccess');
         const handle = await pickDirectoryDirect();
         
         if (handle) {
-          await persistHandle(handle);
-          const name = await getDirectoryName(handle);
-          
-          onSettingsChange({
-            ...settings,
-            directoryHandle: handle,
-            directoryName: name
-          });
-          
-          setPermissionStatus('granted');
+          await reload(); // Reload state after successful selection
           
           toast({
             title: 'Ordner ausgewählt',
-            description: `Exportpfad gesetzt: ${name}`
+            description: `Exportpfad gesetzt: ${computeDisplayName(handle)}`
           });
           
           setIsPickingDirectory(false);
@@ -135,7 +167,6 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
     
     // Bridge flow: open new tab and wait for selection
     try {
-      const { openDirectoryPickerBridge, waitForBridgeSelection } = await import('@/lib/fsAccess');
       const opened = openDirectoryPickerBridge();
       
       if (!opened) {
@@ -153,24 +184,7 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
         description: "Bitte klicken Sie dort auf 'Ordnerauswahl starten'.",
       });
       
-      const handle = await waitForBridgeSelection();
-      
-      if (handle) {
-        const name = await getDirectoryName(handle);
-        
-        onSettingsChange({
-          ...settings,
-          directoryHandle: handle,
-          directoryName: name
-        });
-        
-        setPermissionStatus('granted');
-        
-        toast({
-          title: 'Ordner ausgewählt',
-          description: `Exportpfad gesetzt: ${name}`
-        });
-      }
+      // Don't wait here - let the BroadcastChannel/focus listeners handle it
     } catch (error) {
       console.error('Bridge selection error:', error);
       toast({
@@ -202,18 +216,19 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
     setIsCreatingFolder(true);
     try {
       const subHandle = await createSubdirectory(settings.directoryHandle, folderName.trim());
-      await persistHandle(subHandle);
-      const name = await getDirectoryName(subHandle);
+      const parentName = displayName || settings.directoryHandle.name || 'Ausgewählter Ordner';
+      const newDisplayName = `${parentName}/${folderName.trim()}`;
       
-      onSettingsChange({
-        ...settings,
-        directoryHandle: subHandle,
-        directoryName: name
+      await saveExportHandle(subHandle, { 
+        displayName: newDisplayName,
+        createdByApp: true 
       });
+      
+      await reload(); // Reload state after creating subfolder
       
       toast({
         title: 'Unterordner erstellt',
-        description: `Neuer Exportpfad: ${name}`
+        description: `Neuer Exportpfad: ${newDisplayName}`
       });
     } catch (error) {
       console.error('Failed to create subdirectory:', error);
@@ -225,6 +240,34 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
     } finally {
       setIsCreatingFolder(false);
     }
+  };
+
+  const handleRequestPermission = async () => {
+    if (!settings.directoryHandle) return;
+    
+    const granted = await requestPermission(settings.directoryHandle);
+    if (granted) {
+      await reload();
+      toast({
+        title: 'Berechtigung erteilt',
+        description: 'Zugriff auf den Ordner wurde wieder erlaubt.'
+      });
+    } else {
+      toast({
+        title: 'Berechtigung verweigert',
+        description: 'Zugriff auf den Ordner wurde nicht erlaubt.',
+        variant: 'destructive'
+      });
+    }
+  };
+
+  const handleClearSelection = async () => {
+    await clearExportHandle();
+    await reload();
+    toast({
+      title: 'Auswahl gelöscht',
+      description: 'Ordnerauswahl wurde entfernt.'
+    });
   };
 
   const handleEmailTest = async () => {
@@ -279,26 +322,51 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
             </Alert>
           ) : (
             <>
-              <div className="flex items-center gap-2 mb-4">
-                <div className="flex-1">
-                  <Label>Gewählter Ordner</Label>
-                  <div className="flex items-center gap-2 mt-1">
-                    {settings.directoryName ? (
-                      <Badge variant="secondary" className="flex items-center gap-1">
-                        {permissionStatus === 'granted' ? (
-                          <Check className="h-3 w-3 text-green-500" />
-                        ) : (
-                          <X className="h-3 w-3 text-red-500" />
+              <div className="mb-4">
+                <Label>Gewählter Ordner</Label>
+                <div className="mt-2 p-3 rounded-lg border bg-background">
+                  {hasHandle && displayName ? (
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium truncate">{displayName}</div>
+                        <div className="text-xs text-muted-foreground">
+                          Berechtigung: {
+                            permissionStatus === 'granted' 
+                              ? 'erteilt' 
+                              : permissionStatus === 'denied' 
+                                ? 'verweigert' 
+                                : 'ausstehend'
+                          }
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        {permissionStatus !== 'granted' && (
+                          <Button
+                            onClick={handleRequestPermission}
+                            variant="outline"
+                            size="sm"
+                          >
+                            Zugriff erlauben
+                          </Button>
                         )}
-                        {settings.directoryName}
-                      </Badge>
-                    ) : (
-                      <span className="text-sm text-muted-foreground">
-                        Kein Ordner ausgewählt
-                      </span>
-                    )}
-                  </div>
+                        <Button
+                          onClick={handleClearSelection}
+                          variant="outline"
+                          size="sm"
+                        >
+                          Auswahl löschen
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-sm text-muted-foreground">
+                      Kein Ordner ausgewählt
+                    </div>
+                  )}
                 </div>
+              </div>
+              
+              <div className="flex items-center gap-2 mb-4">
                 <div className="flex items-center gap-2">
                   <Button
                     onClick={handleDirectoryPick}
@@ -340,7 +408,7 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
                 </Alert>
               )}
 
-              {settings.directoryHandle && permissionStatus === 'granted' && (
+              {hasHandle && permissionStatus === 'granted' && (
                 <div className="space-y-3 pt-3 border-t">
                   <Label htmlFor="folder-name">Neuen Unterordner anlegen</Label>
                   <div className="flex gap-2">
@@ -364,7 +432,7 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
                 </div>
               )}
 
-              {permissionStatus === 'denied' && settings.directoryHandle && (
+              {permissionStatus === 'denied' && hasHandle && (
                 <Alert>
                   <AlertCircle className="h-4 w-4" />
                   <AlertDescription>

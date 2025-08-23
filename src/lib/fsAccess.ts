@@ -71,8 +71,30 @@ export async function pickDirectoryDirect(): Promise<DirHandle | null> {
   const permission = await handle.requestPermission?.({ mode: 'readwrite' });
   if (permission !== 'granted') return null;
   
-  await saveExportHandle(handle);
+  await saveExportHandle(handle, { displayName: handle.name });
   return handle;
+}
+
+export async function queryPermission(handle: any): Promise<PermissionState> {
+  try {
+    const permission = await handle.queryPermission?.({ mode: 'readwrite' });
+    return (permission ?? 'prompt') as PermissionState;
+  } catch {
+    return 'prompt';
+  }
+}
+
+export async function requestPermission(handle: any): Promise<boolean> {
+  try {
+    const permission = await handle.requestPermission?.({ mode: 'readwrite' });
+    return permission === 'granted';
+  } catch {
+    return false;
+  }
+}
+
+export function computeDisplayName(handle: any, meta?: { displayName?: string }): string {
+  return meta?.displayName || handle?.name || 'Unbekannter Ordner';
 }
 
 export function openDirectoryPickerBridge(): boolean {

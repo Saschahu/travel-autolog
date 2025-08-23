@@ -14,6 +14,10 @@ import { useNavigate } from 'react-router-dom';
 import { TimeEntriesTable } from './TimeEntriesTable';
 import { OvertimeBreakdown } from './OvertimeBreakdown';
 import { A4Preview } from './A4Preview';
+import { DayTypeBadge } from '@/components/ui/day-type-badge';
+import { TimeEntryOverrides } from '@/components/time/TimeEntryOverrides';
+import { useDayTypeDetection } from '@/hooks/useDayTypeDetection';
+import { DayOverrides } from '@/lib/holidays';
 import { extractTimeEntriesFromJob, calculateTotalHoursFromEntries } from '@/lib/timeCalc';
 
 interface FinishJobTabProps {
@@ -28,11 +32,13 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
   const [isSending, setIsSending] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [dayOverrides, setDayOverrides] = useState<Record<string, DayOverrides>>({});
   
   const { toast } = useToast();
   const { sendJobReport } = useEmailService();
   const { generateJobExcel } = useExcelExport();
   const navigate = useNavigate();
+  const { detectDayType } = useDayTypeDetection();
 
   const { calculateOvertime } = useOvertimeCalculation();
 

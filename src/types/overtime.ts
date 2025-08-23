@@ -25,6 +25,7 @@ export interface OvertimeCalculation {
   overtime2Hours: number; // Hours over 12 (100%)
   saturdayHours: number; // Saturday hours
   sundayHours: number; // Sunday/holiday hours
+  holidayHours?: number; // Separate holiday hours
   overtimeBreakdown: {
     type: string;
     hours: number;

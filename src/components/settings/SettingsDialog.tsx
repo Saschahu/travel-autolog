@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { User, MapPin, Settings, Home, Clock, Globe, FolderOpen, AlertTriangle } from 'lucide-react';
 import { OvertimeSettings } from '@/components/settings/OvertimeSettings';
+import { HolidaySettings } from '@/components/settings/HolidaySettings';
 import { GPSSettingsComponent } from '@/components/gps/GPSSettingsComponent';
 import { ExportSettings } from '@/components/settings/ExportSettings';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -199,11 +200,12 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
         </DialogHeader>
 
         <Tabs defaultValue="profile" className="w-full">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="profile">{t('profile')}</TabsTrigger>
             <TabsTrigger value="export">{t('export')}</TabsTrigger>
             <TabsTrigger value="gps">{t('gps')}</TabsTrigger>
             <TabsTrigger value="overtime">{t('overtime')}</TabsTrigger>
+            <TabsTrigger value="holidays">Feiertage</TabsTrigger>
             <TabsTrigger value="advanced">Erweitert</TabsTrigger>
           </TabsList>
 
@@ -315,6 +317,10 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
 
           <TabsContent value="overtime" className="space-y-6">
             <OvertimeSettings />
+          </TabsContent>
+          
+          <TabsContent value="holidays" className="space-y-6">
+            <HolidaySettings />
           </TabsContent>
           
           <TabsContent value="advanced" className="space-y-6">

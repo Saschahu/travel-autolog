@@ -64,8 +64,8 @@ const resources = {
       gps: 'GPS',
       
       // Form Labels
-      workPerformed: 'Work Performed',
-      workPerformedPlaceholder: 'Description of work performed...',
+      workPerformed: 'Work to perform',
+      workPerformedPlaceholder: 'Describe the work to perform...',
       hotelNights: 'Number of Nights',
       kmReturn: 'KM Return',
       jobsToExport: 'Jobs to Export:',
@@ -259,8 +259,8 @@ const resources = {
       gps: 'GPS',
       
       // Form Labels
-      workPerformed: 'Durchgeführte Arbeiten',
-      workPerformedPlaceholder: 'Beschreibung der durchgeführten Arbeiten...',
+      workPerformed: 'Zu leistende Arbeiten',
+      workPerformedPlaceholder: 'Beschreiben Sie die geplanten/zu leistenden Arbeiten...',
       hotelNights: 'Anzahl Nächte',
       kmReturn: 'KM Rückfahrt',
       jobsToExport: 'Zu exportierende Aufträge:',
@@ -454,8 +454,8 @@ const resources = {
       gps: 'GPS',
       
       // Form Labels
-      workPerformed: 'Utført arbeid',
-      workPerformedPlaceholder: 'Beskrivelse av utført arbeid...',
+      workPerformed: 'Arbeid som skal utføres',
+      workPerformedPlaceholder: 'Beskriv arbeidet som skal utføres...',
       hotelNights: 'Antall netter',
       kmReturn: 'KM retur',
       jobsToExport: 'Jobber å eksportere:',

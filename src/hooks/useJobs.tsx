@@ -42,6 +42,9 @@ export type Job = {
   kilometersReturn?: number;
   tollAmount?: number;
   workReport?: string;
+  // NEW: Persistent report fields
+  reportText?: string | null;
+  reportUpdatedAt?: string | null;
 };
 
 export const useJobs = () => {
@@ -108,7 +111,9 @@ export const useJobs = () => {
         kilometersOutbound: job.kilometers_outbound,
         kilometersReturn: job.kilometers_return,
         tollAmount: job.toll_amount,
-        workReport: job.work_report
+        workReport: job.work_report,
+        reportText: job.report_text,
+        reportUpdatedAt: job.report_updated_at
       }));
 
       setJobs(transformedJobs);

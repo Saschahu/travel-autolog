@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -27,6 +27,7 @@ import { useTranslation } from 'react-i18next';
 import { isFileSystemAccessSupported, writeFile, getDirectoryName } from '@/lib/fsAccess';
 import { loadExportHandle } from '@/lib/fsStore';
 import { getReportFileName } from '@/lib/reportFileName';
+import { saveReportDraft, loadReportDraft, clearReportDraft } from '@/lib/drafts';
 
 interface FinishJobTabProps {
   job: Job;
@@ -41,6 +42,8 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
   const [isSaving, setIsSaving] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [showRestoreDialog, setShowRestoreDialog] = useState(false);
+  const [draftToRestore, setDraftToRestore] = useState<string>('');
   const [dayOverrides, setDayOverrides] = useState<Record<string, DayOverrides>>({});
   const [showFallbackModal, setShowFallbackModal] = useState(false);
   const [fallbackFile, setFallbackFile] = useState<File | undefined>();
@@ -55,6 +58,97 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
   const { t } = useTranslation();
 
   const { calculateOvertime } = useOvertimeCalculation();
+
+  // Debounced auto-save function
+  const debouncedSaveDraft = useCallback(
+    (() => {
+      let timeoutId: NodeJS.Timeout;
+      return (text: string) => {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(async () => {
+          if (text !== (job.workReport || '')) {
+            try {
+              await saveReportDraft(job.id, {
+                text,
+                updatedAt: new Date().toISOString()
+              });
+            } catch (error) {
+              console.warn('Failed to save draft:', error);
+            }
+          }
+        }, 600);
+      };
+    })(),
+    [job.id, job.workReport]
+  );
+
+  // Load draft on mount and check if restore is needed
+  useEffect(() => {
+    const checkForDraft = async () => {
+      try {
+        const draft = await loadReportDraft(job.id);
+        if (draft && draft.text !== (job.workReport || '') && draft.text.trim() !== '') {
+          setDraftToRestore(draft.text);
+          setShowRestoreDialog(true);
+        }
+      } catch (error) {
+        console.warn('Failed to load draft:', error);
+      }
+    };
+    
+    checkForDraft();
+  }, [job.id, job.workReport]);
+
+  // Auto-save when workReport changes
+  useEffect(() => {
+    if (workReport !== (job.workReport || '')) {
+      debouncedSaveDraft(workReport);
+    }
+  }, [workReport, debouncedSaveDraft, job.workReport]);
+
+  // Auto-save before navigation
+  useEffect(() => {
+    const handleBeforeUnload = async () => {
+      if (workReport !== (job.workReport || '')) {
+        try {
+          await saveReportDraft(job.id, {
+            text: workReport,
+            updatedAt: new Date().toISOString()
+          });
+        } catch (error) {
+          console.warn('Failed to save draft on unload:', error);
+        }
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [job.id, workReport, job.workReport]);
+
+  // Restore draft handlers
+  const handleRestoreDraft = () => {
+    setWorkReport(draftToRestore);
+    setShowRestoreDialog(false);
+    setDraftToRestore('');
+    toast({
+      title: t('saved'),
+      description: 'Entwurf wurde wiederhergestellt',
+    });
+  };
+
+  const handleDiscardDraft = async () => {
+    try {
+      await clearReportDraft(job.id);
+      setShowRestoreDialog(false);
+      setDraftToRestore('');
+      toast({
+        title: t('saved'),
+        description: 'Entwurf wurde verworfen',
+      });
+    } catch (error) {
+      console.warn('Failed to clear draft:', error);
+    }
+  };
 
   // Calculate time entries and totals
   const timeEntries = useMemo(() => extractTimeEntriesFromJob(job), [job]);
@@ -100,6 +194,9 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
       onJobUpdate(updatedJob);
       setIsSaved(true);
       
+      // Clear draft when successfully saved
+      await clearReportDraft(job.id);
+      
       // Clear PDF cache and prepare new one
       clearReportPdfCache();
       setIsPdfReady(false);
@@ -142,6 +239,9 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
         currentJob = { ...job, workReport: workReport };
         onJobUpdate(currentJob);
         setIsSaved(true);
+        
+        // Clear draft when job is updated
+        await clearReportDraft(job.id);
         
         // Clear cache and rebuild
         clearReportPdfCache();
@@ -266,7 +366,19 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
     }
   };
 
-  const confirmGoToDashboard = () => {
+  const confirmGoToDashboard = async () => {
+    // Auto-save before navigating
+    if (hasUnsavedChanges) {
+      try {
+        await saveReportDraft(job.id, {
+          text: workReport,
+          updatedAt: new Date().toISOString()
+        });
+      } catch (error) {
+        console.warn('Failed to save draft before navigation:', error);
+      }
+    }
+    
     setShowConfirmDialog(false);
     onCloseDialog?.();
     navigate('/');
@@ -290,6 +402,19 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
                 placeholder="Beschreiben Sie die durchgeführten Arbeiten, Befunde, verwendete Materialien, etc..."
                 value={workReport}
                 onChange={(e) => setWorkReport(e.target.value)}
+                onBlur={async () => {
+                  // Save draft immediately when user leaves the field
+                  if (workReport !== (job.workReport || '')) {
+                    try {
+                      await saveReportDraft(job.id, {
+                        text: workReport,
+                        updatedAt: new Date().toISOString()
+                      });
+                    } catch (error) {
+                      console.warn('Failed to save draft on blur:', error);
+                    }
+                  }
+                }}
                 className="min-h-[120px] mt-2"
               />
             </div>
@@ -393,6 +518,24 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
             </Button>
             <Button onClick={confirmGoToDashboard}>
               {t('continueToDashboard')}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Restore Draft Dialog */}
+      <Dialog open={showRestoreDialog} onOpenChange={setShowRestoreDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Entwurf wiederherstellen</DialogTitle>
+          </DialogHeader>
+          <p>Es wurde ein neuerer Entwurf des Arbeitsberichts gefunden. Möchten Sie ihn wiederherstellen?</p>
+          <div className="flex justify-end gap-2 mt-4">
+            <Button variant="outline" onClick={handleDiscardDraft}>
+              Verwerfen
+            </Button>
+            <Button onClick={handleRestoreDraft}>
+              Wiederherstellen
             </Button>
           </div>
         </DialogContent>

@@ -810,6 +810,7 @@ const Index = () => {
                         onJobUpdate={(updatedJob) => {
                           setEditData(prev => ({ ...prev, workReport: updatedJob.workReport }));
                         }}
+                        onCloseDialog={() => setEditOpen(false)}
                       />
                     )}
                   </TabsContent>
@@ -818,7 +819,6 @@ const Index = () => {
             </div>
             
             <DialogFooter className="flex-shrink-0 mt-4">
-              <Button variant="outline" onClick={() => setEditOpen(false)}>{t('cancel')}</Button>
               <Button onClick={saveEdit}>{t('save')}</Button>
             </DialogFooter>
           </DialogContent>

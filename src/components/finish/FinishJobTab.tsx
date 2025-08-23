@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
 import { useEmailService } from '@/hooks/useEmailService';
 import { useOvertimeCalculation } from '@/hooks/useOvertimeCalculation';
@@ -12,6 +11,10 @@ import { Job } from '@/hooks/useJobs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useExcelExport } from '@/hooks/useExcelExport';
 import { useNavigate } from 'react-router-dom';
+import { TimeEntriesTable } from './TimeEntriesTable';
+import { OvertimeBreakdown } from './OvertimeBreakdown';
+import { A4Preview } from './A4Preview';
+import { extractTimeEntriesFromJob, calculateTotalHoursFromEntries } from '@/lib/timeCalc';
 
 interface FinishJobTabProps {
   job: Job;
@@ -24,13 +27,23 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
   const [isSaved, setIsSaved] = useState(!!job.workReport);
   const [isSending, setIsSending] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
-  const [previewContent, setPreviewContent] = useState<string>('');
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   
   const { toast } = useToast();
   const { sendJobReport } = useEmailService();
   const { generateJobExcel } = useExcelExport();
   const navigate = useNavigate();
+
+  const { calculateOvertime } = useOvertimeCalculation();
+
+  // Calculate time entries and totals
+  const timeEntries = useMemo(() => extractTimeEntriesFromJob(job), [job]);
+  const { totalMinutes, totalBreakMinutes } = useMemo(() => 
+    calculateTotalHoursFromEntries(timeEntries), [timeEntries]
+  );
+  
+  // Calculate overtime
+  const overtimeCalculation = useMemo(() => calculateOvertime(job), [job, calculateOvertime]);
 
   // Check if there are unsaved changes
   const hasUnsavedChanges = workReport !== (job.workReport || '');
@@ -77,52 +90,7 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
   };
 
   const handlePreviewReport = () => {
-    try {
-      const jobWithReport = { ...job, workReport: workReport };
-      
-      // Generate HTML preview content
-      const htmlContent = `
-        <div style="font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px;">
-          <h2>Arbeitsauftrag - ${jobWithReport.customerName}</h2>
-          <hr>
-          <div style="margin: 20px 0;">
-            <h3>Auftragsinformationen</h3>
-            <p><strong>Kunde:</strong> ${jobWithReport.customerName || 'Nicht angegeben'}</p>
-            <p><strong>Startdatum:</strong> ${jobWithReport.startDate ? new Date(jobWithReport.startDate).toLocaleDateString('de-DE') : 'Nicht angegeben'}</p>
-            <p><strong>Status:</strong> ${jobWithReport.status === 'pending' ? 'Offen' : jobWithReport.status === 'active' ? 'In Bearbeitung' : 'Abgeschlossen'}</p>
-          </div>
-          
-          <div style="margin: 20px 0;">
-            <h3>Maschineninformationen</h3>
-            <p><strong>Hersteller:</strong> ${jobWithReport.manufacturer || 'Nicht angegeben'}</p>
-            <p><strong>Modell:</strong> ${jobWithReport.model || 'Nicht angegeben'}</p>
-            <p><strong>Seriennummer:</strong> ${jobWithReport.serialNumber || 'Nicht angegeben'}</p>
-          </div>
-          
-          <div style="margin: 20px 0;">
-            <h3>Arbeitszeiten</h3>
-            <p><strong>Gesamtstunden:</strong> ${jobWithReport.totalHours || '0h 0m'}</p>
-            <p><strong>Geschätzte Tage:</strong> ${jobWithReport.estimatedDays || 1}</p>
-          </div>
-          
-          <div style="margin: 20px 0;">
-            <h3>Arbeitsbericht</h3>
-            <div style="border: 1px solid #ccc; padding: 15px; background-color: #f9f9f9; white-space: pre-wrap;">
-              ${workReport || 'Kein Arbeitsbericht verfasst.'}
-            </div>
-          </div>
-        </div>
-      `;
-      
-      setPreviewContent(htmlContent);
-      setIsPreviewOpen(true);
-    } catch (error) {
-      toast({
-        title: 'Fehler',
-        description: 'Fehler beim Erstellen der Vorschau',
-        variant: 'destructive',
-      });
-    }
+    setIsPreviewOpen(true);
   };
 
   const handleGoDashboard = () => {
@@ -210,20 +178,28 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
             </div>
           </CardContent>
         </Card>
+        
+        {/* Time Entries Table */}
+        <TimeEntriesTable 
+          entries={timeEntries}
+          totalMinutes={totalMinutes}
+          totalBreakMinutes={totalBreakMinutes}
+        />
+        
+        {/* Overtime Breakdown */}
+        <OvertimeBreakdown calculation={overtimeCalculation} />
       </div>
 
-      {/* Preview Dialog */}
-      <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
-        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>Report Vorschau</DialogTitle>
-          </DialogHeader>
-          <div 
-            dangerouslySetInnerHTML={{ __html: previewContent }}
-            className="border rounded-lg p-4 bg-background"
-          />
-        </DialogContent>
-      </Dialog>
+      {/* A4 Preview Dialog */}
+      <A4Preview 
+        open={isPreviewOpen}
+        onOpenChange={setIsPreviewOpen}
+        job={job}
+        workReport={workReport}
+        timeEntries={timeEntries}
+        totalMinutes={totalMinutes}
+        overtimeCalculation={overtimeCalculation}
+      />
 
       {/* Confirmation Dialog for unsaved changes */}
       <Dialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>

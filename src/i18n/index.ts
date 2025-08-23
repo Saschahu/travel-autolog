@@ -11,6 +11,24 @@ const resources = {
       location: 'Location',
       export: 'Export',
       
+      // Finish Tab
+      finishTitle: 'Finish service case',
+      reportLabel: 'Work report',
+      btnSavePdf: 'Save PDF',
+      btnPreview: 'Report preview',
+      btnEmail: 'Send by email',
+      shareSupported: 'Direct share with attachment supported',
+      savedTo: 'Saved to: {{folder}}',
+      savedAs: 'File name: {{name}}',
+      needFolder: 'No export folder selected. The file will be downloaded.',
+      saving: 'Creating PDF…',
+      pdfSaved: 'PDF saved',
+      failed: 'Could not save PDF.',
+      unsavedChanges: 'Unsaved Changes',
+      unsavedChangesText: 'There are unsaved changes. Continue to dashboard anyway?',
+      back: 'Back',
+      continueToDashboard: 'Continue to Dashboard',
+      
       // Job Entry Form Tabs
       customer: 'Customer',
       machine: 'Machine',
@@ -188,6 +206,24 @@ const resources = {
       location: 'GPS',
       export: 'Export',
       
+      // Finish Tab
+      finishTitle: 'Auftrag abschließen',
+      reportLabel: 'Arbeitsbericht',
+      btnSavePdf: 'PDF speichern',
+      btnPreview: 'Report Vorschau',
+      btnEmail: 'Per E-Mail versenden',
+      shareSupported: 'Direktes Teilen mit Anhang unterstützt',
+      savedTo: 'Gespeichert in: {{folder}}',
+      savedAs: 'Dateiname: {{name}}',
+      needFolder: 'Kein Exportordner gewählt. Datei wird heruntergeladen.',
+      saving: 'PDF wird erstellt …',
+      pdfSaved: 'PDF gespeichert',
+      failed: 'PDF konnte nicht gespeichert werden.',
+      unsavedChanges: 'Ungespeicherte Änderungen',
+      unsavedChangesText: 'Es liegen ungespeicherte Änderungen vor. Trotzdem zum Dashboard wechseln?',
+      back: 'Zurück',
+      continueToDashboard: 'Weiter zum Dashboard',
+      
       // Job Entry Form Tabs
       customer: 'Kunde',
       machine: 'Maschine',
@@ -364,6 +400,24 @@ const resources = {
       newJob: 'Ny jobb',
       location: 'GPS',
       export: 'Eksport',
+      
+      // Finish Tab
+      finishTitle: 'Fullfør oppdrag',
+      reportLabel: 'Arbeidsrapport',
+      btnSavePdf: 'Lagre PDF',
+      btnPreview: 'Forhåndsvisning',
+      btnEmail: 'Send på e-post',
+      shareSupported: 'Direkte deling med vedlegg støttes',
+      savedTo: 'Lagret i: {{folder}}',
+      savedAs: 'Filnavn: {{name}}',
+      needFolder: 'Ingen eksportmappe valgt. Filen lastes ned.',
+      saving: 'Lager PDF …',
+      pdfSaved: 'PDF lagret',
+      failed: 'Kunne ikke lagre PDF.',
+      unsavedChanges: 'Ulagrede endringer',
+      unsavedChangesText: 'Det finnes ulagrede endringer. Fortsett til dashboard likevel?',
+      back: 'Tilbake',
+      continueToDashboard: 'Fortsett til Dashboard',
       
       // Job Entry Form Tabs
       customer: 'Kunde',

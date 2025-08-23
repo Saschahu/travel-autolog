@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { useEmailService } from '@/hooks/useEmailService';
 import { useOvertimeCalculation } from '@/hooks/useOvertimeCalculation';
-import { FileCheck, Mail, Eye, LayoutDashboard } from 'lucide-react';
+import { FileCheck, Mail, Eye, LayoutDashboard, Save } from 'lucide-react';
 import { Job } from '@/hooks/useJobs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useExcelExport } from '@/hooks/useExcelExport';
@@ -20,9 +20,14 @@ import { useDayTypeDetection } from '@/hooks/useDayTypeDetection';
 import { DayOverrides } from '@/lib/holidays';
 import { extractTimeEntriesFromJob, calculateTotalHoursFromEntries } from '@/lib/timeCalc';
 import { shareReportWithAttachment, canShareFiles } from '@/lib/shareWithEmail';
-import { getOrBuildReportPdf, clearReportPdfCache } from '@/lib/reportPdf';
+import { getOrBuildReportPdf, clearReportPdfCache, generateReportFilename } from '@/lib/reportPdf';
 import { ShareFallbackModal } from './ShareFallbackModal';
 import { useUserProfile } from '@/contexts/UserProfileContext';
+import { useTranslation } from 'react-i18next';
+import { isFileSystemAccessSupported, writeFile, getDirectoryName } from '@/lib/fsAccess';
+import { loadExportHandle } from '@/lib/fsStore';
+import { sanitizeFileName } from '@/lib/strings';
+import { getOrderRefs, formatOrderRefsForFilename } from '@/lib/orderRefs';
 
 interface FinishJobTabProps {
   job: Job;
@@ -34,6 +39,7 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
   const [workReport, setWorkReport] = useState(job.workReport || '');
   const [isSaved, setIsSaved] = useState(!!job.workReport);
   const [isSending, setIsSending] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
   const [dayOverrides, setDayOverrides] = useState<Record<string, DayOverrides>>({});
@@ -47,6 +53,7 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
   const navigate = useNavigate();
   const { detectDayType } = useDayTypeDetection();
   const { profile } = useUserProfile();
+  const { t } = useTranslation();
 
   const { calculateOvertime } = useOvertimeCalculation();
 
@@ -99,7 +106,7 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
       setIsPdfReady(false);
       
       toast({
-        title: 'Gespeichert',
+        title: t('saved'),
         description: 'Arbeitsbericht wurde gespeichert',
       });
 
@@ -120,7 +127,7 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
       }, 100);
     } catch (error) {
       toast({
-        title: 'Fehler',
+        title: t('error'),
         description: 'Fehler beim Speichern des Arbeitsberichts',
         variant: 'destructive',
       });
@@ -172,12 +179,82 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
     } catch (error) {
       console.error('Error in handleSendReport:', error);
       toast({
-        title: 'Fehler',
+        title: t('error'),
         description: 'Fehler beim Versenden des Berichts',
         variant: 'destructive',
       });
     } finally {
       setIsSending(false);
+    }
+  };
+
+  const handleSavePdf = async () => {
+    setIsSaving(true);
+    try {
+      toast({
+        title: t('saving'),
+        description: 'PDF wird erstellt...',
+      });
+      
+      // Generate PDF with current report content
+      const pdfBlob = await getOrBuildReportPdf({
+        job,
+        workReport,
+        timeEntries,
+        totalMinutes,
+        overtimeCalculation
+      });
+
+      // Generate filename
+      const orderRefs = getOrderRefs({ id: job.id, evaticNo: job.evaticNo });
+      const evatic = orderRefs.find(r => r.label.startsWith('EVATIC'))?.value;
+      const fileName = sanitizeFileName(
+        `ServiceTracker_Report_${evatic ? `EVATIC-${evatic}_` : ''}Job-${job.id}.pdf`
+      );
+
+      // Try to save to selected export folder
+      if (isFileSystemAccessSupported()) {
+        try {
+          const handle = await loadExportHandle();
+          if (handle) {
+            await writeFile(handle, fileName, pdfBlob);
+            const folderName = await getDirectoryName(handle);
+            toast({
+              title: t('pdfSaved'),
+              description: `${t('savedTo', { folder: folderName })}`,
+            });
+            return;
+          }
+        } catch (fsError) {
+          console.warn('File system access failed, falling back to download:', fsError);
+        }
+      }
+      
+      // Fallback: Browser download
+      toast({
+        title: t('needFolder'),
+        description: 'Datei wird heruntergeladen...',
+      });
+      const url = URL.createObjectURL(pdfBlob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fileName;
+      a.click();
+      URL.revokeObjectURL(url);
+      toast({
+        title: t('pdfSaved'),
+        description: 'PDF wurde erfolgreich heruntergeladen.',
+      });
+      
+    } catch (error) {
+      console.error('Error saving PDF:', error);
+      toast({
+        title: t('error'),
+        description: t('failed'),
+        variant: 'destructive',
+      });
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -207,12 +284,12 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <FileCheck className="h-5 w-5" />
-              Auftrag abschließen
+              {t('finishTitle')}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <Label htmlFor="work-report">Arbeitsbericht</Label>
+              <Label htmlFor="work-report">{t('reportLabel')}</Label>
               <Textarea
                 id="work-report"
                 placeholder="Beschreiben Sie die durchgeführten Arbeiten, Befunde, verwendete Materialien, etc..."
@@ -222,14 +299,16 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
               />
             </div>
             
-            {/* Save button directly under textarea */}
+            {/* PDF Save button directly under textarea */}
             <Button 
-              data-testid="btn-save-report"
-              onClick={handleSaveWorkReport}
+              data-testid="btn-save-pdf"
+              onClick={handleSavePdf}
+              disabled={isSaving}
               variant="default"
-              className="mt-3"
+              className="mt-3 flex items-center gap-2"
             >
-              Arbeitsbericht speichern
+              <Save className="h-4 w-4" />
+              {isSaving ? t('saving') : t('btnSavePdf')}
             </Button>
             
             {/* Action row with Preview and Email buttons */}
@@ -241,7 +320,7 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
                 className="flex items-center gap-2"
               >
                 <Eye className="h-4 w-4" />
-                Report Vorschau
+                {t('btnPreview')}
               </Button>
               
               <Button 
@@ -253,7 +332,7 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
                 title={canShareFiles() ? "Öffnet E-Mail-App mit angehängtem PDF" : "Öffnet Fallback-Optionen"}
               >
                 <Mail className="h-4 w-4" />
-                {isSending ? 'Sende...' : 'Per E-Mail versenden'}
+                {isSending ? 'Sende...' : t('btnEmail')}
               </Button>
               
               {!isPdfReady && (
@@ -264,7 +343,7 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
               
               {isPdfReady && canShareFiles() && (
                 <p className="text-xs text-muted-foreground">
-                  ✓ Direktes Teilen mit Anhang unterstützt
+                  ✓ {t('shareSupported')}
                 </p>
               )}
             </div>
@@ -310,15 +389,15 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
       <Dialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Ungespeicherte Änderungen</DialogTitle>
+            <DialogTitle>{t('unsavedChanges')}</DialogTitle>
           </DialogHeader>
-          <p>Es liegen ungespeicherte Änderungen vor. Trotzdem zum Dashboard wechseln?</p>
+          <p>{t('unsavedChangesText')}</p>
           <div className="flex justify-end gap-2 mt-4">
             <Button variant="outline" onClick={() => setShowConfirmDialog(false)}>
-              Zurück
+              {t('back')}
             </Button>
             <Button onClick={confirmGoToDashboard}>
-              Weiter zum Dashboard
+              {t('continueToDashboard')}
             </Button>
           </div>
         </DialogContent>

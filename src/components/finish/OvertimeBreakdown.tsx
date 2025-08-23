@@ -92,12 +92,12 @@ export const OvertimeBreakdown = ({ calculation }: OvertimeBreakdownProps) => {
                   <span className="text-sm">
                     {item.type} ({item.rate}%)
                   </span>
-                  <div className="text-right">
-                    <div className="font-medium">{formatDecimalHours(item.hours)}</div>
-                    <div className="text-xs text-muted-foreground">
-                      Faktor: {item.amount.toFixed(2)}h
-                    </div>
-                  </div>
+                   <div className="text-right">
+                     <div className="font-medium">{formatDecimalHours(item.hours)}</div>
+                     <div className="text-xs text-muted-foreground">
+                       Zuschlag: {item.amount.toFixed(2)}h
+                     </div>
+                   </div>
                 </div>
               ))}
             </div>
@@ -111,12 +111,19 @@ export const OvertimeBreakdown = ({ calculation }: OvertimeBreakdownProps) => {
             <span>{formatDecimalHours(calculation.guaranteedHours)}</span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-muted-foreground">Tatsächlich gearbeitet:</span>
+            <span className="text-muted-foreground">Basis (Rohzeit):</span>
             <span>{formatDecimalHours(calculation.actualWorkedHours)}</span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="text-muted-foreground">Zuschläge:</span>
+            <span>{formatDecimalHours(calculation.totalOvertimeAmount)}</span>
           </div>
           <div className="flex justify-between items-center font-semibold text-lg border-t pt-2">
             <span>Abrechnungsstunden gesamt:</span>
             <span className="text-primary">{formatDecimalHours(calculation.totalPayableHours)}</span>
+          </div>
+          <div className="text-xs text-muted-foreground">
+            Basis {formatDecimalHours(calculation.actualWorkedHours)} + Zuschläge {formatDecimalHours(calculation.totalOvertimeAmount)}
           </div>
         </div>
       </CardContent>

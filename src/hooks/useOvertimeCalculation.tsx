@@ -219,48 +219,52 @@ export const useOvertimeCalculation = () => {
     // Build overtime breakdown
     const overtimeBreakdown = [];
     
-    // Hour-based overtime - Grundlohn + Zuschlag
+    // Hour-based overtime - Only premium portion (rate/100, not 1+rate/100)
     if (totalOvertime1Hours > 0) {
+      const premiumHours = totalOvertime1Hours * (overtimeSettings.overtimeRate1 / 100);
       overtimeBreakdown.push({
         type: `Überstunden ${overtimeSettings.overtimeThreshold1}-${overtimeSettings.overtimeThreshold2}h`,
         hours: totalOvertime1Hours,
         rate: overtimeSettings.overtimeRate1,
-        amount: totalOvertime1Hours * (1 + overtimeSettings.overtimeRate1 / 100)
+        amount: premiumHours // Only the premium portion
       });
     }
     
     if (totalOvertime2Hours > 0) {
+      const premiumHours = totalOvertime2Hours * (overtimeSettings.overtimeRate2 / 100);
       overtimeBreakdown.push({
         type: `Überstunden über ${overtimeSettings.overtimeThreshold2}h`,
         hours: totalOvertime2Hours,
         rate: overtimeSettings.overtimeRate2,
-        amount: totalOvertime2Hours * (1 + overtimeSettings.overtimeRate2 / 100)
+        amount: premiumHours // Only the premium portion
       });
     }
     
-    // Weekend overtime (if enabled) - Grundlohn + Zuschlag
+    // Weekend overtime (if enabled) - Only premium portion
     if (overtimeSettings.weekendEnabled) {
       if (totalSaturdayHours > 0) {
+        const premiumHours = totalSaturdayHours * (overtimeSettings.saturdayRate / 100);
         overtimeBreakdown.push({
           type: 'Samstag',
           hours: totalSaturdayHours,
           rate: overtimeSettings.saturdayRate,
-          amount: totalSaturdayHours * (1 + overtimeSettings.saturdayRate / 100)
+          amount: premiumHours // Only the premium portion
         });
       }
       
       if (totalSundayHours > 0) {
+        const premiumHours = totalSundayHours * (overtimeSettings.sundayRate / 100);
         overtimeBreakdown.push({
           type: 'Sonntag/Feiertag',
           hours: totalSundayHours,
           rate: overtimeSettings.sundayRate,
-          amount: totalSundayHours * (1 + overtimeSettings.sundayRate / 100)
+          amount: premiumHours // Only the premium portion
         });
       }
     }
     
     const totalOvertimeHours = totalOvertime1Hours + totalOvertime2Hours;
-    const totalOvertimeAmount = overtimeBreakdown.reduce((sum, item) => sum + item.amount, 0);
+    const totalPremiumAmount = overtimeBreakdown.reduce((sum, item) => sum + item.amount, 0);
     
     // For multi-day jobs, calculate guaranteed hours per actual days with time entries
     let numberOfPaidDays = 0;
@@ -278,7 +282,10 @@ export const useOvertimeCalculation = () => {
       numberOfPaidDays = hasTravel || hasWork || hasDeparture ? 1 : 0;
     }
     const guaranteedHours = overtimeSettings.guaranteedHours * numberOfPaidDays;
-    const totalPayableHours = guaranteedHours + totalOvertimeAmount;
+    
+    // Correct calculation: base hours + premium
+    const baseHours = actualWorkedHours; // All actual work hours
+    const totalPayableHours = Math.max(guaranteedHours, baseHours + totalPremiumAmount);
 
     return {
       guaranteedHours,
@@ -290,7 +297,7 @@ export const useOvertimeCalculation = () => {
       sundayHours: totalSundayHours,
       overtimeBreakdown,
       totalOvertimeHours,
-      totalOvertimeAmount,
+      totalOvertimeAmount: totalPremiumAmount,
       totalPayableHours
     };
   };

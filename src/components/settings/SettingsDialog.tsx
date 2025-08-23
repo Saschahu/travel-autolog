@@ -12,8 +12,10 @@ import { Switch } from '@/components/ui/switch';
 import { User, MapPin, Settings, Home, Clock, Globe, FolderOpen, AlertTriangle } from 'lucide-react';
 import { OvertimeSettings } from '@/components/settings/OvertimeSettings';
 import { GPSSettingsComponent } from '@/components/gps/GPSSettingsComponent';
+import { ExportSettings } from '@/components/settings/ExportSettings';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { resetAppData } from '@/utils/resetAppData';
+import { isFileSystemAccessSupported, loadHandle } from '@/lib/fsAccess';
 
 interface SettingsDialogProps {
   open: boolean;
@@ -36,6 +38,17 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
     gpsEnabled: false,
     localStoragePath: ''
   });
+
+  // Export settings state
+  const [exportSettings, setExportSettings] = useState<{
+    directoryHandle?: any;
+    directoryName: string;
+    preferredEmailProvider: string;
+  }>({
+    directoryHandle: undefined,
+    directoryName: '',
+    preferredEmailProvider: 'mailto'
+  });
   
   // GPS settings state (separate from profile data)
   const [gpsSettings, setGpsSettings] = useState({
@@ -49,21 +62,43 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
   
   const [saving, setSaving] = useState(false);
 
-  // Load GPS settings from localStorage on mount
+  // Load GPS and export settings from storage on mount
   useEffect(() => {
-    const loadGpsSettings = () => {
+    const loadSettings = async () => {
       try {
-        const saved = localStorage.getItem('gps-settings');
-        if (saved) {
-          const parsed = JSON.parse(saved);
+        // Load GPS settings
+        const savedGps = localStorage.getItem('gps-settings');
+        if (savedGps) {
+          const parsed = JSON.parse(savedGps);
           setGpsSettings(prev => ({ ...prev, ...parsed }));
         }
+
+        // Load export settings
+        const savedExportProvider = localStorage.getItem('preferred-email-provider');
+        if (savedExportProvider) {
+          setExportSettings(prev => ({ 
+            ...prev, 
+            preferredEmailProvider: savedExportProvider 
+          }));
+        }
+
+        if (isFileSystemAccessSupported()) {
+          const handle = await loadHandle();
+          if (handle) {
+            const name = handle.name || 'Ausgewählter Ordner';
+            setExportSettings(prev => ({
+              ...prev,
+              directoryHandle: handle as any,
+              directoryName: name
+            }));
+          }
+        }
       } catch (error) {
-        console.error('Error loading GPS settings:', error);
+        console.error('Error loading settings:', error);
       }
     };
 
-    loadGpsSettings();
+    loadSettings();
   }, []);
 
   // Update form when profile changes
@@ -90,8 +125,9 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
       
       await updateProfile(formData);
       
-      // Save GPS settings to localStorage
+      // Save GPS and export settings to localStorage
       localStorage.setItem('gps-settings', JSON.stringify(gpsSettings));
+      localStorage.setItem('preferred-email-provider', exportSettings.preferredEmailProvider);
       console.log('updateProfile completed successfully');
       
       // Change app language if language was updated
@@ -264,55 +300,10 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
           </TabsContent>
 
           <TabsContent value="export" className="space-y-6">
-            {/* Export Settings */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-base">
-                  <FolderOpen className="h-4 w-4 text-primary" />
-                  Export & E-Mail Einstellungen
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="localStoragePath">Lokaler Speicherpfad</Label>
-                  <Input
-                    id="localStoragePath"
-                    value={formData.localStoragePath}
-                    onChange={(e) => setFormData(prev => ({ ...prev, localStoragePath: e.target.value }))}
-                    placeholder="z.B. /Downloads oder C:\Dokumente\ServiceTracker"
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Optional: Pfad für lokale Speicherung der Excel-Dateien. Wenn leer, wird der Standard-Download-Ordner verwendet.
-                  </p>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="emailApp">Bevorzugte E-Mail-Anwendung</Label>
-                  <Select
-                    value={formData.preferredEmailApp}
-                    onValueChange={(value) => 
-                      setFormData(prev => ({ ...prev, preferredEmailApp: value }))
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="default">Standard E-Mail App</SelectItem>
-                      <SelectItem value="gmail">Gmail</SelectItem>
-                      <SelectItem value="outlook">Outlook</SelectItem>
-                      <SelectItem value="yahoo">Yahoo Mail</SelectItem>
-                      <SelectItem value="protonmail">ProtonMail</SelectItem>
-                      <SelectItem value="thunderbird">Thunderbird</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <p className="text-xs text-muted-foreground">
-                    Diese E-Mail-App wird beim "Per E-Mail versenden" geöffnet
-                  </p>
-                </div>
-
-              </CardContent>
-            </Card>
+            <ExportSettings 
+              settings={exportSettings}
+              onSettingsChange={setExportSettings}
+            />
           </TabsContent>
 
           <TabsContent value="gps" className="space-y-6">

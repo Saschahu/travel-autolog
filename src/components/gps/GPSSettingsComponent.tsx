@@ -1,10 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { MapPin, AlertTriangle } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { MapPin, AlertTriangle, Home, Navigation, Target } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { 
+  GeofenceMonitor, 
+  loadHomeGeofence, 
+  saveHomeGeofence,
+  formatCoordinates,
+  formatDistance,
+  getCurrentPosition 
+} from '@/lib/geo';
 
 interface GPSSettingsData {
   styleId: string;
@@ -29,6 +39,47 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
   const [mapboxToken, setMapboxToken] = useState(() => {
     return localStorage.getItem('mapbox_token') || '';
   });
+  const [geofenceMonitor] = useState(() => new GeofenceMonitor());
+  const [geofenceStatus, setGeofenceStatus] = useState<{
+    isAtHome: boolean;
+    distance?: number;
+    isWatching: boolean;
+  }>({
+    isAtHome: false,
+    distance: undefined,
+    isWatching: false
+  });
+
+  // Load saved home geofence on mount
+  useEffect(() => {
+    const savedHome = loadHomeGeofence();
+    if (savedHome) {
+      updateNestedSettings('homeGeofence', {
+        latitude: savedHome.latitude,
+        longitude: savedHome.longitude,
+        radius: savedHome.radius
+      });
+      geofenceMonitor.setHome(savedHome);
+    }
+  }, []);
+
+  // Set up geofence status listener
+  useEffect(() => {
+    const handleStatusChange = (isAtHome: boolean, distance?: number) => {
+      setGeofenceStatus(prev => ({
+        ...prev,
+        isAtHome,
+        distance
+      }));
+    };
+
+    geofenceMonitor.onStatusChange(handleStatusChange);
+    
+    return () => {
+      geofenceMonitor.removeListener(handleStatusChange);
+      geofenceMonitor.stopWatching();
+    };
+  }, [geofenceMonitor]);
 
   const updateSettings = (updates: Partial<GPSSettingsData>) => {
     onSettingsChange({ ...settings, ...updates });
@@ -47,29 +98,29 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
     }
   };
 
-  const getCurrentLocation = async () => {
+  const setCurrentAsHome = async () => {
     setIsGettingLocation(true);
     try {
-      if (!navigator.geolocation) {
-        throw new Error('Geolocation wird von diesem Browser nicht unterstützt');
-      }
-
-      const position = await new Promise<GeolocationPosition>((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(resolve, reject, {
-          enableHighAccuracy: true,
-          timeout: 10000,
-          maximumAge: 300000
-        });
-      });
+      const position = await getCurrentPosition();
+      
+      const homeGeofence = {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+        radius: settings.homeGeofence.radius
+      };
 
       updateNestedSettings('homeGeofence', {
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude
+        latitude: homeGeofence.latitude,
+        longitude: homeGeofence.longitude
       });
 
+      // Save to storage and update geofence monitor
+      saveHomeGeofence(homeGeofence);
+      geofenceMonitor.setHome(homeGeofence);
+
       toast({
-        title: 'Home-Standort gesetzt',
-        description: `Position: ${position.coords.latitude.toFixed(6)}, ${position.coords.longitude.toFixed(6)}`
+        title: 'Home-Position gesetzt',
+        description: `Position: ${formatCoordinates(homeGeofence.latitude, homeGeofence.longitude)}`
       });
 
     } catch (error) {
@@ -80,6 +131,53 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
       });
     } finally {
       setIsGettingLocation(false);
+    }
+  };
+
+  const saveHomeSettings = () => {
+    const { latitude, longitude, radius } = settings.homeGeofence;
+    
+    if (latitude !== null && longitude !== null) {
+      const homeGeofence = { latitude, longitude, radius };
+      saveHomeGeofence(homeGeofence);
+      geofenceMonitor.setHome(homeGeofence);
+      
+      toast({
+        title: 'Home-Position gespeichert',
+        description: `Position: ${formatCoordinates(latitude, longitude)}, Radius: ${radius}m`
+      });
+    } else {
+      toast({
+        title: 'Ungültige Position',
+        description: 'Bitte geben Sie gültige Koordinaten ein',
+        variant: 'destructive'
+      });
+    }
+  };
+
+  const toggleGeofenceMonitoring = () => {
+    if (geofenceStatus.isWatching) {
+      geofenceMonitor.stopWatching();
+      setGeofenceStatus(prev => ({ ...prev, isWatching: false }));
+      toast({
+        title: 'Geofence-Monitoring gestoppt',
+        description: 'Positionsüberwachung deaktiviert'
+      });
+    } else {
+      const success = geofenceMonitor.startWatching();
+      if (success) {
+        setGeofenceStatus(prev => ({ ...prev, isWatching: true }));
+        toast({
+          title: 'Geofence-Monitoring gestartet',
+          description: 'Positionsüberwachung aktiviert'
+        });
+      } else {
+        toast({
+          title: 'Fehler',
+          description: 'Geofence-Monitoring konnte nicht gestartet werden',
+          variant: 'destructive'
+        });
+      }
     }
   };
 
@@ -154,11 +252,51 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
-            <MapPin className="h-4 w-4 text-primary" />
+            <Home className="h-4 w-4 text-primary" />
             Home Geofence
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
+          {/* Status Display */}
+          {settings.homeGeofence.latitude && settings.homeGeofence.longitude ? (
+            <div className="space-y-3">
+              <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                <div>
+                  <p className="font-medium text-sm">Home-Position gesetzt</p>
+                  <p className="text-xs text-muted-foreground">
+                    {formatCoordinates(settings.homeGeofence.latitude, settings.homeGeofence.longitude)} 
+                    • Radius: {settings.homeGeofence.radius}m
+                  </p>
+                </div>
+                <Badge variant={geofenceStatus.isAtHome ? 'default' : 'secondary'}>
+                  {geofenceStatus.isAtHome ? 'Zuhause' : 'Auswärts'}
+                  {geofenceStatus.distance && (
+                    <span className="ml-1">({formatDistance(geofenceStatus.distance)})</span>
+                  )}
+                </Badge>
+              </div>
+              
+              <div className="flex gap-2">
+                <Button
+                  onClick={toggleGeofenceMonitoring}
+                  variant={geofenceStatus.isWatching ? 'destructive' : 'outline'}
+                  size="sm"
+                >
+                  <Target className="h-4 w-4 mr-2" />
+                  {geofenceStatus.isWatching ? 'Monitoring stoppen' : 'Monitoring starten'}
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <Alert>
+              <Home className="h-4 w-4" />
+              <AlertDescription>
+                Keine Home-Position gesetzt. Legen Sie zuerst eine Home-Position fest.
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {/* Configuration */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label htmlFor="home-lat">Latitude</Label>
@@ -166,7 +304,7 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
                 id="home-lat"
                 type="number"
                 step="0.000001"
-                placeholder="e.g., 47.3769"
+                placeholder="z.B. 47.3769"
                 value={settings.homeGeofence.latitude || ''}
                 onChange={(e) => updateNestedSettings('homeGeofence', {
                   latitude: e.target.value ? parseFloat(e.target.value) : null
@@ -180,7 +318,7 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
                 id="home-lng"
                 type="number"
                 step="0.000001"
-                placeholder="e.g., 8.5417"
+                placeholder="z.B. 8.5417"
                 value={settings.homeGeofence.longitude || ''}
                 onChange={(e) => updateNestedSettings('homeGeofence', {
                   longitude: e.target.value ? parseFloat(e.target.value) : null
@@ -190,7 +328,7 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="home-radius">Radius (meters)</Label>
+            <Label htmlFor="home-radius">Radius (Meter)</Label>
             <Input
               id="home-radius"
               type="number"
@@ -202,18 +340,36 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
               })}
             />
             <p className="text-xs text-muted-foreground">
-              Default: 100 meters
+              Standard: 100 Meter
             </p>
           </div>
 
-          <Button 
-            onClick={getCurrentLocation} 
-            disabled={isGettingLocation}
-            className="w-full"
-          >
-            <MapPin className="h-4 w-4 mr-2" />
-            {isGettingLocation ? 'Getting location...' : 'Use Current Location'}
-          </Button>
+          <div className="flex gap-2">
+            <Button 
+              onClick={setCurrentAsHome} 
+              disabled={isGettingLocation}
+              className="flex-1"
+            >
+              <Navigation className="h-4 w-4 mr-2" />
+              {isGettingLocation ? 'Ermittle Position...' : 'Aktuelle Position als Home setzen'}
+            </Button>
+            
+            <Button
+              onClick={saveHomeSettings}
+              disabled={!settings.homeGeofence.latitude || !settings.homeGeofence.longitude}
+              variant="outline"
+            >
+              Speichern
+            </Button>
+          </div>
+
+          <Alert>
+            <AlertTriangle className="h-4 w-4" />
+            <AlertDescription className="text-xs">
+              Das Geofence-Monitoring ist nur im Vordergrund aktiv und dient zur Demonstration. 
+              Echter Hintergrund-Geofence ist im Web nicht möglich.
+            </AlertDescription>
+          </Alert>
         </CardContent>
       </Card>
     </div>

@@ -9,6 +9,7 @@ import { useExcelExport } from '@/hooks/useExcelExport';
 import { JobFilterDropdown, type JobFilter } from '@/components/dashboard/JobFilterDropdown';
 import { ExcelUpload } from './ExcelUpload';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useExportSettings } from '@/hooks/useExportSettings';
 
 interface ExportPageProps {
   jobs: any[];
@@ -17,6 +18,7 @@ interface ExportPageProps {
 export const ExportPage = ({ jobs }: ExportPageProps) => {
   const { t } = useTranslation();
   const { exportToExcel } = useExcelExport();
+  const exportSettings = useExportSettings();
   const [exportFilter, setExportFilter] = useState<JobFilter>('all');
   const [isExporting, setIsExporting] = useState(false);
   const [selectedJobId, setSelectedJobId] = useState<string | 'all'>('all');
@@ -40,7 +42,7 @@ export const ExportPage = ({ jobs }: ExportPageProps) => {
       const filename = filteredJobs.length === 1
         ? `ServiceTracker_Arbeitszeit-Nachweis_${(filteredJobs[0].customerName || 'Kunde').replace(/\s+/g,'_')}_${dateStr}.xlsx`
         : `Auftraege_${exportFilter}_${dateStr}.xlsx`;
-      await exportToExcel(filteredJobs, filename);
+      await exportToExcel(filteredJobs, filename, exportSettings.exportDirUri);
     } finally {
       setIsExporting(false);
     }

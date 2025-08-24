@@ -49,10 +49,12 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
     directoryHandle?: any;
     directoryName: string;
     preferredEmailProvider: string;
+    exportDirUri?: string;
   }>({
     directoryHandle: undefined,
     directoryName: '',
-    preferredEmailProvider: 'mailto'
+    preferredEmailProvider: 'mailto',
+    exportDirUri: undefined
   });
   
   // GPS settings state (separate from profile data)
@@ -81,10 +83,18 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
 
         // Load export settings
         const savedExportProvider = localStorage.getItem('preferred-email-provider');
+        const savedExportUri = localStorage.getItem('android-export-dir-uri');
         if (savedExportProvider) {
           setExportSettings(prev => ({ 
             ...prev, 
             preferredEmailProvider: savedExportProvider 
+          }));
+        }
+        if (savedExportUri) {
+          setExportSettings(prev => ({ 
+            ...prev, 
+            exportDirUri: savedExportUri,
+            directoryName: 'Android Ordner' 
           }));
         }
 
@@ -166,6 +176,11 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
       // Save GPS and export settings to localStorage
       localStorage.setItem('gps-settings', JSON.stringify(gpsSettings));
       localStorage.setItem('preferred-email-provider', exportSettings.preferredEmailProvider);
+      if (exportSettings.exportDirUri) {
+        localStorage.setItem('android-export-dir-uri', exportSettings.exportDirUri);
+      } else {
+        localStorage.removeItem('android-export-dir-uri');
+      }
       console.log('updateProfile completed successfully');
       
       // Change app language if language was updated

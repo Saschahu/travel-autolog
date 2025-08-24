@@ -4,7 +4,12 @@ const config: CapacitorConfig = {
   appId: 'com.lovable.travelautolog',
   appName: 'Travel AutoLog',
   webDir: 'dist',
-  server: { androidScheme: 'https' }
+  server: { androidScheme: 'https' },
+  plugins: {
+    DirectoryPicker: {
+      class: 'DirectoryPickerPlugin'
+    }
+  }
 };
 
 export default config;

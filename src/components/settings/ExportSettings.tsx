@@ -26,11 +26,14 @@ import {
   getTestMessage,
   getProviderById
 } from '@/lib/emailProviders';
+import { DirectoryPicker } from '@/plugins/directoryPicker';
+import { isNativeAndroid } from '@/lib/platform';
 
 interface ExportSettingsData {
   directoryHandle?: any;
   directoryName: string;
   preferredEmailProvider: string;
+  exportDirUri?: string; // Android SAF URI
 }
 
 interface ExportSettingsProps {
@@ -120,11 +123,50 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
   }, [isSupported, reload]);
 
   const handleDirectoryPick = async () => {
-    if (!isSupported) return;
-    
     setIsPickingDirectory(true);
     
-    // Try direct picker first (if not in cross-origin iframe)
+    try {
+      if (isNativeAndroid()) {
+        // Android SAF picker
+        const { uri } = await DirectoryPicker.pickDirectory();
+        
+        // Save URI to settings
+        onSettingsChange({
+          ...settings,
+          exportDirUri: uri,
+          directoryName: 'Android Ordner'
+        });
+        
+        toast({
+          title: 'Ordner ausgewählt',
+          description: 'Android Ordner wurde erfolgreich ausgewählt'
+        });
+        
+        setIsPickingDirectory(false);
+        return;
+      }
+    } catch (error: any) {
+      if (String(error).includes('USER_CANCELLED')) {
+        setIsPickingDirectory(false);
+        return;
+      }
+      
+      toast({
+        variant: "destructive",
+        title: "Android Ordnerauswahl fehlgeschlagen",
+        description: "Bitte versuchen Sie es erneut.",
+      });
+      
+      setIsPickingDirectory(false);
+      return;
+    }
+    
+    if (!isSupported) {
+      setIsPickingDirectory(false);
+      return;
+    }
+    
+    // Web: Try direct picker first (if not in cross-origin iframe)
     if (isFileSystemAccessSupported() && !isInCrossOriginFrame()) {
       try {
         const handle = await pickDirectoryDirect();
@@ -313,11 +355,14 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {!isSupported ? (
+          {!isSupported && !isNativeAndroid() ? (
             <Alert>
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>
-                Ihr Browser unterstützt die Ordner-Auswahl nicht. Es wird der Standard-Download-Ordner verwendet.
+                {isNativeAndroid() 
+                  ? "Nutzen Sie den Android Ordner-Picker für bessere Funktionalität."
+                  : "Ihr Browser unterstützt die Ordner-Auswahl nicht. Es wird der Standard-Download-Ordner verwendet."
+                }
               </AlertDescription>
             </Alert>
           ) : (
@@ -325,18 +370,27 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
               <div className="mb-4">
                 <Label>Gewählter Ordner</Label>
                 <div className="mt-2 p-3 rounded-lg border bg-background">
-                  {hasHandle && displayName ? (
+                  {(hasHandle && displayName) || settings.exportDirUri ? (
                     <div className="flex items-center justify-between gap-3">
                       <div className="flex-1 min-w-0">
-                        <div className="font-medium truncate">{displayName}</div>
-                        <div className="text-xs text-muted-foreground">
-                          Berechtigung: {
-                            permissionStatus === 'granted' 
-                              ? 'erteilt' 
-                              : permissionStatus === 'denied' 
-                                ? 'verweigert' 
-                                : 'ausstehend'
+                        <div className="font-medium truncate">
+                          {isNativeAndroid() && settings.exportDirUri 
+                            ? settings.directoryName || 'Android Ordner'
+                            : displayName
                           }
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {isNativeAndroid() && settings.exportDirUri ? (
+                            'Android SAF Berechtigung: erteilt'
+                          ) : (
+                            `Berechtigung: ${
+                              permissionStatus === 'granted' 
+                                ? 'erteilt' 
+                                : permissionStatus === 'denied' 
+                                  ? 'verweigert' 
+                                  : 'ausstehend'
+                            }`
+                          )}
                         </div>
                       </div>
                       <div className="flex items-center gap-2 flex-shrink-0">
@@ -350,7 +404,21 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
                           </Button>
                         )}
                         <Button
-                          onClick={handleClearSelection}
+                          onClick={() => {
+                            if (isNativeAndroid() && settings.exportDirUri) {
+                              onSettingsChange({
+                                ...settings,
+                                exportDirUri: undefined,
+                                directoryName: ''
+                              });
+                              toast({
+                                title: 'Android Ordner entfernt',
+                                description: 'Ordnerauswahl wurde zurückgesetzt.'
+                              });
+                            } else {
+                              handleClearSelection();
+                            }
+                          }}
                           variant="outline"
                           size="sm"
                         >
@@ -381,7 +449,7 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
                     ) : (
                       <>
                         <FolderOpen className="mr-2 h-4 w-4" />
-                        Ordner wählen
+                        {isNativeAndroid() ? 'Ordner wählen (Android)' : 'Ordner wählen'}
                       </>
                     )}
                   </Button>

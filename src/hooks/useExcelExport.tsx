@@ -8,6 +8,9 @@ import { useToast } from '@/hooks/use-toast';
 import { ExcelTemplate, JobTemplateData } from '@/templates/ExcelTemplate';
 import { ExcelFormatter } from '@/utils/excelFormatter';
 import { generateSingleJobTemplateBuffer } from '@/templates/ExcelTemplateExcelJS';
+import { DirectoryPicker } from '@/plugins/directoryPicker';
+import { isNativeAndroid } from '@/lib/platform';
+import { toBase64 } from '@/lib/files';
 
 export const useExcelExport = () => {
   const { profile } = useUserProfile();
@@ -85,7 +88,7 @@ export const useExcelExport = () => {
     return workbook;
   };
 
-  const exportToExcel = async (jobs: any[], filename?: string) => {
+  const exportToExcel = async (jobs: any[], filename?: string, exportDirUri?: string) => {
     // Plattform unterscheiden
     const platform = Capacitor.getPlatform();
 
@@ -122,6 +125,25 @@ export const useExcelExport = () => {
           URL.revokeObjectURL(url);
         };
 
+        // Android SAF export
+        if (isNativeAndroid() && exportDirUri) {
+          try {
+            const base64 = await toBase64(blob);
+            await DirectoryPicker.createFile({
+              directoryUri: exportDirUri,
+              fileName: defaultFilename,
+              mime: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+              base64
+            });
+            toast({ title: 'Excel Export erfolgreich', description: 'Datei wurde in den gewählten Android Ordner gespeichert' });
+            return true;
+          } catch (error) {
+            console.error('Android SAF export failed:', error);
+            toast({ title: 'Android Export Fehler', description: 'Datei konnte nicht gespeichert werden', variant: 'destructive' });
+            return false;
+          }
+        }
+
         if (platform !== 'web') {
           await Share.share({ title: 'Excel Export - Auftrag', text: `Excel-Report: ${defaultFilename}`, url, dialogTitle: 'Excel-Datei teilen' });
         } else {
@@ -152,6 +174,27 @@ export const useExcelExport = () => {
       a.remove();
       URL.revokeObjectURL(url);
     };
+
+    // Android SAF export for multiple jobs
+    if (isNativeAndroid() && exportDirUri) {
+      try {
+        const base64 = await toBase64(blob);
+        await DirectoryPicker.createFile({
+          directoryUri: exportDirUri,
+          fileName: defaultFilename,
+          mime: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          base64
+        });
+        toast({ title: 'Excel Export erfolgreich', description: 'Datei wurde in den gewählten Android Ordner gespeichert' });
+        URL.revokeObjectURL(url);
+        return true;
+      } catch (error) {
+        console.error('Android SAF export failed:', error);
+        toast({ title: 'Android Export Fehler', description: 'Datei konnte nicht gespeichert werden', variant: 'destructive' });
+        URL.revokeObjectURL(url);
+        return false;
+      }
+    }
 
     try {
       if (platform !== 'web') {

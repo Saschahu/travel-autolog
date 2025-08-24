@@ -28,6 +28,8 @@ import {
 } from '@/lib/emailProviders';
 import { DirectoryPicker } from '@/plugins/directoryPicker';
 import { isNativeAndroid } from '@/lib/platform';
+import { Slider } from '@/components/ui/slider';
+import { useSettingsStore } from '@/state/settingsStore';
 
 interface ExportSettingsData {
   directoryHandle?: any;
@@ -43,6 +45,7 @@ interface ExportSettingsProps {
 
 export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsProps) => {
   const { toast } = useToast();
+  const { pdfQuality = 60, setPdfQuality } = useSettingsStore();
   const [isPickingDirectory, setIsPickingDirectory] = useState(false);
   const [isCreatingFolder, setIsCreatingFolder] = useState(false);
   const [isTesting, setIsTesting] = useState(false);
@@ -518,6 +521,36 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
               : "Excel-Dateien werden in Ihrem Standard-Download-Ordner gespeichert."
             }
           </p>
+        </CardContent>
+      </Card>
+
+      {/* PDF Quality Settings */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <Info className="h-4 w-4 text-primary" />
+            PDF-Einstellungen
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <Label htmlFor="pdf-quality">PDF-Qualität</Label>
+              <span className="text-sm font-medium">{pdfQuality}%</span>
+            </div>
+            <Slider
+              id="pdf-quality"
+              min={50}
+              max={80}
+              step={5}
+              value={[pdfQuality]}
+              onValueChange={([value]) => setPdfQuality(value)}
+              className="w-full"
+            />
+            <p className="text-xs text-muted-foreground">
+              Höhere Qualität = größere Dateien. 60% ist ein guter Kompromiss zwischen Qualität und Dateigröße.
+            </p>
+          </div>
         </CardContent>
       </Card>
 

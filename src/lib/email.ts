@@ -28,3 +28,22 @@ export function validateEmailInput(input?: string | null): { valid: boolean; err
     errors: invalid.length > 0 ? [`Ungültige E-Mail-Adresse(n): ${invalid.join(', ')}`] : []
   };
 }
+
+export function buildMailto({ to, subject, body }: { to?: string; subject: string; body: string }): string {
+  const s = encodeURIComponent(subject);
+  const b = encodeURIComponent(body); // -> %20 statt + ; neue Zeilen = %0A
+  const addr = to ? encodeURIComponent(to) : '';
+  return `mailto:${addr}?subject=${s}&body=${b}`;
+}
+
+export function buildGmailUrl(subject: string, body: string): string {
+  const s = encodeURIComponent(subject);
+  const b = encodeURIComponent(body);
+  return `https://mail.google.com/mail/?view=cm&fs=1&su=${s}&body=${b}`;
+}
+
+export function buildOutlookUrl(subject: string, body: string): string {
+  const s = encodeURIComponent(subject);
+  const b = encodeURIComponent(body);
+  return `https://outlook.live.com/mail/0/deeplink/compose?subject=${s}&body=${b}`;
+}

@@ -83,15 +83,16 @@ export function buildMailtoUrl(
   subject: string,
   body: string
 ): string {
-  const params = new URLSearchParams();
+  // Use proper encodeURIComponent for all parameters to avoid + issues
+  const parts = [];
   
-  if (recipients.cc) params.set('cc', recipients.cc);
-  if (recipients.bcc) params.set('bcc', recipients.bcc);
-  params.set('subject', subject);
-  params.set('body', body);
+  if (recipients.cc) parts.push(`cc=${encodeURIComponent(recipients.cc)}`);
+  if (recipients.bcc) parts.push(`bcc=${encodeURIComponent(recipients.bcc)}`);
+  parts.push(`subject=${encodeURIComponent(subject)}`);
+  parts.push(`body=${encodeURIComponent(body)}`);
 
-  const to = recipients.to || '';
-  return `mailto:${to}?${params.toString()}`;
+  const to = recipients.to ? encodeURIComponent(recipients.to) : '';
+  return `mailto:${to}?${parts.join('&')}`;
 }
 
 export function openMailtoLink(url: string): boolean {

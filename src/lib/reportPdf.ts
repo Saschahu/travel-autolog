@@ -8,6 +8,7 @@ import { renderReportElement } from '@/components/reports/renderReport';
 import { useSettingsStore } from '@/state/settingsStore';
 import { createRoot } from 'react-dom/client';
 import { getReportFileName } from '@/lib/reportFileName';
+import { makeReportPdf } from './pdfOptimized';
 
 let lastJobId: string | null = null;
 let lastBlob: Blob | null = null;
@@ -35,8 +36,10 @@ function hashJobData(data: ReportData): string {
 export async function buildReportPdf(data: ReportData): Promise<Blob> {
   return new Promise(async (resolve, reject) => {
     try {
-      // Get current report language
-      const lang = useSettingsStore.getState().getReportLang();
+      // Get current report language and PDF quality setting
+      const settings = useSettingsStore.getState();
+      const lang = settings.getReportLang();
+      const quality = (settings.pdfQuality ?? 60) / 100; // Default 60%
       
       // Create a temporary container for the report
       const container = document.createElement('div');
@@ -62,30 +65,11 @@ export async function buildReportPdf(data: ReportData): Promise<Blob> {
       document.body.appendChild(container);
 
       try {
-        // Convert HTML to canvas
-        const canvas = await html2canvas(container, {
-          width: 794, // A4 width in pixels at 96 DPI (210mm)
-          height: 1123, // A4 height in pixels at 96 DPI (297mm)
-          scale: 2, // Higher resolution
-          useCORS: true,
-          allowTaint: true,
-          backgroundColor: '#ffffff'
+        // Use optimized PDF generation with JPEG compression
+        const pdfBlob = await makeReportPdf(container, { 
+          quality, 
+          scale: 2 
         });
-
-        // Create PDF
-        const pdf = new jsPDF({
-          orientation: 'portrait',
-          unit: 'mm',
-          format: 'a4'
-        });
-
-        const imgData = canvas.toDataURL('image/png');
-        
-        // Add image to PDF
-        pdf.addImage(imgData, 'PNG', 0, 0, 210, 297);
-
-        // Convert to blob
-        const pdfBlob = pdf.output('blob');
         
         // Clean up
         root.unmount();

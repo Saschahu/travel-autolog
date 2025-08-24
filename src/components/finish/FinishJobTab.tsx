@@ -21,7 +21,9 @@ import { DayOverrides } from '@/lib/holidays';
 import { extractTimeEntriesFromJob, calculateTotalHoursFromEntries } from '@/lib/timeCalc';
 import { shareReportWithAttachment, canShareFiles } from '@/lib/shareWithEmail';
 import { getOrBuildReportPdf, clearReportPdfCache, generateReportFilename } from '@/lib/reportPdf';
+import { sendReportEmail } from '@/lib/sendReportEmail';
 import { ShareFallbackModal } from './ShareFallbackModal';
+import { useExportSettings } from '@/hooks/useExportSettings';
 import { useUserProfile } from '@/contexts/UserProfileContext';
 import { useTranslation } from 'react-i18next';
 import { tt } from '@/lib/i18nSafe';
@@ -57,6 +59,7 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
   const { detectDayType } = useDayTypeDetection();
   const { profile } = useUserProfile();
   const { t } = useTranslation();
+  const exportSettings = useExportSettings();
 
   const { calculateOvertime } = useOvertimeCalculation();
 
@@ -243,19 +246,8 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
         
         // Clear draft when job is updated
         await clearReportDraft(job.id);
-        
-        // Clear cache and rebuild
-        clearReportPdfCache();
-        await getOrBuildReportPdf({
-          job: currentJob,
-          workReport,
-          timeEntries,
-          totalMinutes,
-          overtimeCalculation
-        });
       }
 
-      // Try Web Share API first
       const reportData = {
         job: currentJob,
         workReport,
@@ -264,25 +256,67 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
         overtimeCalculation
       };
 
-      const result = await shareReportWithAttachment(reportData);
-      
-      if (result.ok) {
+      // Try new unified email sender
+      const result = await sendReportEmail({
+        data: reportData,
+        profile,
+        exportDirUri: exportSettings.exportDirUri
+      });
+
+      if (result.success) {
         toast({
           title: 'Bericht gesendet',
-          description: 'Der Auftragsbericht wurde erfolgreich per E-Mail versendet.',
+          description: result.method === 'native-android' ? 
+            'E-Mail-App wurde mit PDF-Anhang geöffnet.' :
+            'E-Mail-Client wurde geöffnet.',
         });
-      } else {
-        // Show fallback modal
-        setFallbackFile(result.file);
-        setShowFallbackModal(true);
       }
     } catch (error) {
       console.error('Error in handleSendReport:', error);
-      toast({
-        title: t('error'),
-        description: 'Fehler beim Versenden des Berichts',
-        variant: 'destructive',
-      });
+      
+      if (String(error).includes('NO_DIR')) {
+        toast({
+          title: t('error'),
+          description: 'Bitte zuerst einen Speicherordner unter Einstellungen → Export auswählen.',
+          variant: 'destructive',
+        });
+      } else if (String(error).includes('EMAIL_COMPOSE_FAILED')) {
+        toast({
+          title: t('error'),
+          description: 'E-Mail-App konnte nicht geöffnet werden. Bitte Standard-E-Mail-App prüfen.',
+          variant: 'destructive',
+        });
+      } else {
+        // Fallback to Web Share API
+        try {
+          const reportData = {
+            job,
+            workReport,
+            timeEntries,
+            totalMinutes,
+            overtimeCalculation
+          };
+
+          const result = await shareReportWithAttachment(reportData);
+          
+          if (result.ok) {
+            toast({
+              title: 'Bericht gesendet',
+              description: 'Der Auftragsbericht wurde erfolgreich per E-Mail versendet.',
+            });
+          } else {
+            // Show fallback modal
+            setFallbackFile(result.file);
+            setShowFallbackModal(true);
+          }
+        } catch (fallbackError) {
+          toast({
+            title: t('error'),
+            description: 'Fehler beim Versenden des Berichts',
+            variant: 'destructive',
+          });
+        }
+      }
     } finally {
       setIsSending(false);
     }

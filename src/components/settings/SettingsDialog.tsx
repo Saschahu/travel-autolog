@@ -14,7 +14,8 @@ import { User, MapPin, Settings, Home, Clock, Globe, FolderOpen, AlertTriangle, 
 import { OvertimeSettings } from '@/components/settings/OvertimeSettings';
 import { HolidaySettings } from '@/components/settings/HolidaySettings';
 import { GPSSettingsComponent } from '@/components/gps/GPSSettingsComponent';
-import { ExportSettings } from '@/components/settings/ExportSettings';
+import { ExportSettings } from './ExportSettings';
+import { LanguageSettings } from './LanguageSettings';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { resetAppData } from '@/utils/resetAppData';
 import { isFileSystemAccessSupported, loadHandle } from '@/lib/fsAccess';
@@ -453,6 +454,7 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
           </TabsContent>
 
           <TabsContent value="export" className="space-y-6">
+            <LanguageSettings />
             <ExportSettings 
               settings={exportSettings}
               onSettingsChange={setExportSettings}

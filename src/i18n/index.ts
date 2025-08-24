@@ -1,30 +1,118 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
+import { useSettingsStore } from '@/state/settingsStore';
+
+// Extract job translations to separate namespace files
+const jobTranslationsEn = {
+  dialogTitle: 'Edit Job',
+  subtitle: 'Edit all job data',
+  tabs: {
+    customer: 'Customer',
+    machine: 'Machine', 
+    times: 'Times',
+    overtime: 'Overtime',
+    finish: 'Finish'
+  },
+  customer: {
+    name: 'Customer Name',
+    namePlaceholder: 'Name of the customer',
+    address: 'Customer Address',
+    addressPlaceholder: 'Full address of the customer',
+    evatic: 'EVATIC Number',
+    evaticPlaceholder: 'EVATIC number (if available)',
+    hotelSection: 'Hotel & Overnight',
+    hotelName: 'Hotel Name',
+    hotelNamePlaceholder: 'Name of the hotel',
+    hotelAddress: 'Hotel Address',
+    hotelAddressPlaceholder: 'Address of the hotel',
+    hotelNights: 'Hotel Nights',
+    travelCosts: 'Travel Costs',
+    kmOutbound: 'Kilometers Outbound',
+    kmInbound: 'Kilometers Return',
+    tollFees: 'Toll Fees (€)'
+  },
+  machine: {
+    manufacturer: 'Manufacturer',
+    manufacturerPlaceholder: 'e.g. Siemens, ABB, Schneider',
+    model: 'Model/Type',
+    modelPlaceholder: 'e.g. S7-1200, CP1E',
+    serialNumber: 'Serial Number',
+    serialPlaceholder: 'Serial number of the machine/system',
+    workPerformed: 'Work to Perform',
+    workPerformedPlaceholder: 'Describe the work to perform...'
+  },
+  finish: {
+    title: 'Finish service case',
+    reportLabel: 'Work report',
+    reportPlaceholder: 'Describe the work performed, findings, materials used, etc...',
+    btnSaveReport: 'Save Work Report',
+    btnPreview: 'Report preview', 
+    btnEmail: 'Send by email',
+    btnDashboard: 'Dashboard'
+  },
+  buttons: {
+    save: 'Save',
+    cancel: 'Cancel'
+  }
+};
+
+const jobTranslationsDe = {
+  dialogTitle: 'Auftrag bearbeiten',
+  subtitle: 'Alle Job-Daten bearbeiten',
+  tabs: {
+    customer: 'Kunde',
+    machine: 'Maschine',
+    times: 'Zeiten', 
+    overtime: 'Überstunden',
+    finish: 'Abschluss'
+  },
+  customer: {
+    name: 'Kundenname',
+    namePlaceholder: 'Name des Kunden',
+    address: 'Kundenadresse',
+    addressPlaceholder: 'Vollständige Adresse des Kunden',
+    evatic: 'EVATIC-Nummer',
+    evaticPlaceholder: 'EVATIC-Nummer (falls vorhanden)',
+    hotelSection: 'Hotel & Übernachtung',
+    hotelName: 'Hotel Name',
+    hotelNamePlaceholder: 'Name des Hotels',
+    hotelAddress: 'Hotel Adresse',
+    hotelAddressPlaceholder: 'Adresse des Hotels',
+    hotelNights: 'Anzahl Nächte',
+    travelCosts: 'Reisekosten',
+    kmOutbound: 'Kilometer Hinfahrt',
+    kmInbound: 'Kilometer Rückfahrt',
+    tollFees: 'Mautgebühren (€)'
+  },
+  machine: {
+    manufacturer: 'Hersteller',
+    manufacturerPlaceholder: 'z.B. Siemens, ABB, Schneider',
+    model: 'Modell/Typ',
+    modelPlaceholder: 'z.B. S7-1200, CP1E',
+    serialNumber: 'Seriennummer',
+    serialPlaceholder: 'Seriennummer der Maschine/Anlage',
+    workPerformed: 'Zu leistende Arbeiten',
+    workPerformedPlaceholder: 'Beschreiben Sie die geplanten/zu leistenden Arbeiten...'
+  },
+  finish: {
+    title: 'Auftrag abschließen',
+    reportLabel: 'Arbeitsbericht',
+    reportPlaceholder: 'Beschreiben Sie die durchgeführten Arbeiten, Befunde, verwendete Materialien, etc...',
+    btnSaveReport: 'Arbeitsbericht speichern',
+    btnPreview: 'Report Vorschau',
+    btnEmail: 'Per E-Mail versenden', 
+    btnDashboard: 'Dashboard'
+  },
+  buttons: {
+    save: 'Speichern',
+    cancel: 'Abbrechen'
+  }
+};
 
 const resources = {
   en: {
     translation: {
-      // Core Job namespace
-      job: {
-        dialogTitle: 'Edit Job',
-        tabs: {
-          customer: 'Customer',
-          machine: 'Machine', 
-          times: 'Times',
-          overtime: 'Overtime',
-          finish: 'Finish'
-        },
-        finish: {
-          title: 'Finish service case',
-          reportLabel: 'Work report',
-          reportPlaceholder: 'Describe the work performed, findings, materials used, etc...',
-          btnSaveReport: 'Save Work Report',
-          btnPreview: 'Report preview', 
-          btnEmail: 'Send by email',
-          btnDashboard: 'Dashboard'
-        }
-      },
       // Navigation and Tabs
       dashboard: 'Dashboard',
       newJob: 'New Job',
@@ -216,30 +304,11 @@ const resources = {
       ruleOver12: '• Over 12 hours: 100% surcharge on overtime',
       weekendRules: 'Weekend Rules:',
       payment: '• Payment: At least guaranteed hours + overtime surcharges'
-    }
+    },
+    job: jobTranslationsEn
   },
   de: {
     translation: {
-      // Core Job namespace  
-      job: {
-        dialogTitle: 'Auftrag bearbeiten',
-        tabs: {
-          customer: 'Kunde',
-          machine: 'Maschine',
-          times: 'Zeiten', 
-          overtime: 'Überstunden',
-          finish: 'Abschluss'
-        },
-        finish: {
-          title: 'Auftrag abschließen',
-          reportLabel: 'Arbeitsbericht',
-          reportPlaceholder: 'Beschreiben Sie die durchgeführten Arbeiten, Befunde, verwendete Materialien, etc...',
-          btnSaveReport: 'Arbeitsbericht speichern',
-          btnPreview: 'Report Vorschau',
-          btnEmail: 'Per E-Mail versenden', 
-          btnDashboard: 'Dashboard'
-        }
-      },
       // Navigation and Tabs
       dashboard: 'Dashboard',
       newJob: 'Neuer Job',
@@ -431,30 +500,11 @@ const resources = {
       ruleOver12: '• Über 12 Stunden: 100% Zuschlag auf Überstunden',
       weekendRules: 'Wochenendregeln:',
       payment: '• Bezahlung: Mindestens garantierte Stunden + Überstundenzuschläge'
-    }
+    },
+    job: jobTranslationsDe
   },
   no: {
     translation: {
-      // Core Job namespace
-      job: {
-        dialogTitle: 'Rediger jobb',
-        tabs: {
-          customer: 'Kunde',
-          machine: 'Maskin',
-          times: 'Tider',
-          overtime: 'Overtid', 
-          finish: 'Ferdig'
-        },
-        finish: {
-          title: 'Fullfør oppdrag',
-          reportLabel: 'Arbeidsrapport',
-          reportPlaceholder: 'Beskriv arbeidet som ble utført, funn, materialer brukt, etc...',
-          btnSaveReport: 'Lagre arbeidsrapport',
-          btnPreview: 'Forhåndsvisning',
-          btnEmail: 'Send på e-post',
-          btnDashboard: 'Dashboard' 
-        }
-      },
       // Navigation and Tabs
       dashboard: 'Dashboard',
       newJob: 'Ny jobb',
@@ -646,20 +696,83 @@ const resources = {
       ruleOver12: '• Over 12 timer: 100% tillegg på overtid',
       weekendRules: 'Helgeregler:',
       payment: '• Betaling: Minst garanterte timer + overtidstillegg'
+    },
+    job: {
+      dialogTitle: 'Rediger jobb',
+      subtitle: 'Rediger alle jobbdata',
+      tabs: {
+        customer: 'Kunde',
+        machine: 'Maskin',
+        times: 'Tider',
+        overtime: 'Overtid', 
+        finish: 'Ferdig'
+      },
+      customer: {
+        name: 'Kundenavn',
+        namePlaceholder: 'Navn på kunden',
+        address: 'Kundeadresse',
+        addressPlaceholder: 'Full adresse til kunden',
+        evatic: 'EVATIC-nummer',
+        evaticPlaceholder: 'EVATIC-nummer (hvis tilgjengelig)',
+        hotelSection: 'Hotell & Overnatting',
+        hotelName: 'Hotellnavn',
+        hotelNamePlaceholder: 'Navn på hotellet',
+        hotelAddress: 'Hotelladresse',
+        hotelAddressPlaceholder: 'Adresse til hotellet',
+        hotelNights: 'Antall netter',
+        travelCosts: 'Reisekostnader',
+        kmOutbound: 'Kilometer utreise',
+        kmInbound: 'Kilometer hjemreise',
+        tollFees: 'Bomavgifter (€)'
+      },
+      machine: {
+        manufacturer: 'Produsent',
+        manufacturerPlaceholder: 'f.eks. Siemens, ABB, Schneider',
+        model: 'Modell/Type',
+        modelPlaceholder: 'f.eks. S7-1200, CP1E',
+        serialNumber: 'Serienummer',
+        serialPlaceholder: 'Serienummer på maskinen/anlegget',
+        workPerformed: 'Arbeid som skal utføres',
+        workPerformedPlaceholder: 'Beskriv arbeidet som skal utføres...'
+      },
+      finish: {
+        title: 'Fullfør oppdrag',
+        reportLabel: 'Arbeidsrapport',
+        reportPlaceholder: 'Beskriv arbeidet som ble utført, funn, materialer brukt, etc...',
+        btnSaveReport: 'Lagre arbeidsrapport',
+        btnPreview: 'Forhåndsvisning',
+        btnEmail: 'Send på e-post',
+        btnDashboard: 'Dashboard' 
+      },
+      buttons: {
+        save: 'Lagre',
+        cancel: 'Avbryt'
+      }
     }
   }
 };
 
 i18n
-  .use(LanguageDetector)
   .use(initReactI18next)
   .init({
     resources,
+    lng: 'de', // Set initial language from settings store
     fallbackLng: 'de',
     
     interpolation: {
       escapeValue: false
     }
   });
+
+// Connect i18n to settings store for reactive language switching
+const settingsStore = useSettingsStore.getState();
+i18n.changeLanguage(settingsStore.locale);
+
+// Subscribe to settings changes for live language switching
+useSettingsStore.subscribe((state) => {
+  if (i18n.language !== state.locale) {
+    i18n.changeLanguage(state.locale);
+  }
+});
 
 export default i18n;

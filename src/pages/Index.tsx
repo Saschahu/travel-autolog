@@ -41,7 +41,8 @@ type DayData = {
 };
 
 const Index = () => {
-  const { t, i18n } = useTranslation();
+  const { t: tJob } = useTranslation('job');
+  const { t } = useTranslation();
   const { profile } = useUserProfile();
   const [activeTab, setActiveTab] = useState(() => localStorage.getItem('activeTab') || 'dashboard');
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -363,13 +364,6 @@ const Index = () => {
     }
   };
 
-  // Initialize language based on user profile
-  useEffect(() => {
-    if (profile.preferredLanguage && i18n.language !== profile.preferredLanguage) {
-      i18n.changeLanguage(profile.preferredLanguage);
-    }
-  }, [profile.preferredLanguage, i18n]);
-
   // Fetch jobs on component mount and when activeTab changes to dashboard
   useEffect(() => {
     if (activeTab === 'dashboard') {
@@ -509,78 +503,78 @@ const Index = () => {
           <DialogContent className="max-w-4xl h-[90vh] flex flex-col">
             <DialogHeader className="flex-shrink-0">
               <DialogTitle>
-                {tt(t, 'job.dialogTitle', 'Auftrag bearbeiten')}
+                {tt(tJob, 'dialogTitle', 'Auftrag bearbeiten')}
                 {selectedJob?.id && editData.customerName && (
                   <span data-testid="job-title-customer" className="ml-2 text-muted-foreground">— {editData.customerName}</span>
                 )}
               </DialogTitle>
-              <DialogDescription>{tt(t, 'editAllJobData', 'Alle Job-Daten bearbeiten')}</DialogDescription>
+              <DialogDescription>{tt(tJob, 'subtitle', 'Alle Job-Daten bearbeiten')}</DialogDescription>
             </DialogHeader>
             
             <div className="flex-1 overflow-hidden">
               <Tabs defaultValue="customer" className="h-full flex flex-col">
                 <TabsList className="grid w-full grid-cols-5 flex-shrink-0">
-                  <TabsTrigger value="customer">{tt(t, 'job.tabs.customer', 'Kunde')}</TabsTrigger>
-                  <TabsTrigger value="machine">{tt(t, 'job.tabs.machine', 'Maschine')}</TabsTrigger>
-                  <TabsTrigger value="times">{tt(t, 'job.tabs.times', 'Zeiten')}</TabsTrigger>
-                  <TabsTrigger value="overtime">{tt(t, 'job.tabs.overtime', 'Überstunden')}</TabsTrigger>
-                  <TabsTrigger value="finish">{tt(t, 'job.tabs.finish', 'Abschluss')}</TabsTrigger>
+                  <TabsTrigger value="customer">{tt(tJob, 'tabs.customer', 'Kunde')}</TabsTrigger>
+                  <TabsTrigger value="machine">{tt(tJob, 'tabs.machine', 'Maschine')}</TabsTrigger>
+                  <TabsTrigger value="times">{tt(tJob, 'tabs.times', 'Zeiten')}</TabsTrigger>
+                  <TabsTrigger value="overtime">{tt(tJob, 'tabs.overtime', 'Überstunden')}</TabsTrigger>
+                  <TabsTrigger value="finish">{tt(tJob, 'tabs.finish', 'Abschluss')}</TabsTrigger>
                 </TabsList>
                 
                 <div className="flex-1 overflow-y-auto mt-4">
                   <TabsContent value="customer" className="space-y-4 mt-0">
                     <div className="space-y-4">
                       <div>
-                        <Label htmlFor="edit-customer">{t('customerName')} *</Label>
+                        <Label htmlFor="edit-customer">{tt(tJob, 'customer.name', 'Kundenname')} *</Label>
                         <Input 
                           id="edit-customer" 
                           value={editData.customerName} 
                           onChange={(e) => setEditData(prev => ({ ...prev, customerName: e.target.value }))} 
-                          placeholder={t('customerNamePlaceholder')}
+                          placeholder={tt(tJob, 'customer.namePlaceholder', 'Name des Kunden')}
                         />
                       </div>
                       <div>
-                        <Label htmlFor="edit-customer-address">{t('customerAddress')}</Label>
+                        <Label htmlFor="edit-customer-address">{tt(tJob, 'customer.address', 'Kundenadresse')}</Label>
                         <Input 
                           id="edit-customer-address" 
                           value={editData.customerAddress} 
                           onChange={(e) => setEditData(prev => ({ ...prev, customerAddress: e.target.value }))} 
-                          placeholder={t('customerAddressPlaceholder')}
+                          placeholder={tt(tJob, 'customer.addressPlaceholder', 'Vollständige Adresse des Kunden')}
                         />
                       </div>
                       <div>
-                        <Label htmlFor="edit-evatic">{t('evaticNumber')}</Label>
+                        <Label htmlFor="edit-evatic">{tt(tJob, 'customer.evatic', 'EVATIC-Nummer')}</Label>
                         <Input 
                           id="edit-evatic" 
                           value={editData.evaticNo} 
                           onChange={(e) => setEditData(prev => ({ ...prev, evaticNo: e.target.value }))} 
-                          placeholder={t('evaticPlaceholder')}
+                          placeholder={tt(tJob, 'customer.evaticPlaceholder', 'EVATIC-Nummer (falls vorhanden)')}
                         />
                       </div>
                       
                       <div className="border-t pt-4">
-                        <h4 className="font-medium text-sm mb-3">{t('hotelOvernight')}</h4>
+                        <h4 className="font-medium text-sm mb-3">{tt(tJob, 'customer.hotelSection', 'Hotel & Übernachtung')}</h4>
                         <div className="space-y-3">
                           <div>
-                            <Label htmlFor="edit-hotel-name">{t('hotelName')}</Label>
+                            <Label htmlFor="edit-hotel-name">{tt(tJob, 'customer.hotelName', 'Hotel Name')}</Label>
                             <Input 
                               id="edit-hotel-name" 
                               value={editData.hotelName} 
                               onChange={(e) => setEditData(prev => ({ ...prev, hotelName: e.target.value }))} 
-                              placeholder={t('hotelNamePlaceholder')}
+                              placeholder={tt(tJob, 'customer.hotelNamePlaceholder', 'Name des Hotels')}
                             />
                           </div>
                           <div>
-                            <Label htmlFor="edit-hotel-address">{t('hotelAddress')}</Label>
+                            <Label htmlFor="edit-hotel-address">{tt(tJob, 'customer.hotelAddress', 'Hotel Adresse')}</Label>
                             <Input 
                               id="edit-hotel-address" 
                               value={editData.hotelAddress} 
                               onChange={(e) => setEditData(prev => ({ ...prev, hotelAddress: e.target.value }))} 
-                              placeholder={t('hotelAddressPlaceholder')}
+                              placeholder={tt(tJob, 'customer.hotelAddressPlaceholder', 'Adresse des Hotels')}
                             />
                           </div>
                           <div>
-                            <Label htmlFor="edit-hotel-nights">{t('hotelNights')}</Label>
+                            <Label htmlFor="edit-hotel-nights">{tt(tJob, 'customer.hotelNights', 'Anzahl Nächte')}</Label>
                             <Input 
                               id="edit-hotel-nights" 
                               type="number"
@@ -593,10 +587,10 @@ const Index = () => {
                       </div>
                       
                       <div className="border-t pt-4">
-                        <h4 className="font-medium text-sm mb-3">{t('travelCosts')}</h4>
+                        <h4 className="font-medium text-sm mb-3">{tt(tJob, 'customer.travelCosts', 'Reisekosten')}</h4>
                         <div className="grid grid-cols-3 gap-3">
                           <div>
-                            <Label htmlFor="edit-km-outbound">{t('kmOutbound')}</Label>
+                            <Label htmlFor="edit-km-outbound">{tt(tJob, 'customer.kmOutbound', 'Kilometer Hinfahrt')}</Label>
                             <Input 
                               id="edit-km-outbound" 
                               type="number"
@@ -606,7 +600,7 @@ const Index = () => {
                             />
                           </div>
                           <div>
-                            <Label htmlFor="edit-km-return">{t('kmInbound')}</Label>
+                            <Label htmlFor="edit-km-return">{tt(tJob, 'customer.kmInbound', 'Kilometer Rückfahrt')}</Label>
                             <Input 
                               id="edit-km-return" 
                               type="number"
@@ -616,7 +610,7 @@ const Index = () => {
                             />
                           </div>
                           <div>
-                            <Label htmlFor="edit-toll">{t('tollFees')}</Label>
+                            <Label htmlFor="edit-toll">{tt(tJob, 'customer.tollFees', 'Mautgebühren (€)')}</Label>
                             <Input 
                               id="edit-toll" 
                               type="number"
@@ -635,41 +629,41 @@ const Index = () => {
                     <div className="space-y-4">
                       <div className="grid grid-cols-2 gap-3">
                         <div>
-                          <Label htmlFor="edit-manufacturer">{t('manufacturer')}</Label>
+                          <Label htmlFor="edit-manufacturer">{tt(tJob, 'machine.manufacturer', 'Hersteller')}</Label>
                           <Input 
                             id="edit-manufacturer"
                             value={editData.manufacturer} 
                             onChange={(e) => setEditData(prev => ({ ...prev, manufacturer: e.target.value }))} 
-                            placeholder={t('manufacturerPlaceholder')}
+                            placeholder={tt(tJob, 'machine.manufacturerPlaceholder', 'z.B. Siemens, ABB, Schneider')}
                           />
                         </div>
                         <div>
-                          <Label htmlFor="edit-model">{t('modelType')}</Label>
+                          <Label htmlFor="edit-model">{tt(tJob, 'machine.model', 'Modell/Typ')}</Label>
                           <Input 
                             id="edit-model"
                             value={editData.model} 
                             onChange={(e) => setEditData(prev => ({ ...prev, model: e.target.value }))} 
-                            placeholder={t('modelPlaceholder')}
+                            placeholder={tt(tJob, 'machine.modelPlaceholder', 'z.B. S7-1200, CP1E')}
                           />
                         </div>
                       </div>
                       <div>
-                        <Label htmlFor="edit-serial">{t('serialNumber')}</Label>
+                        <Label htmlFor="edit-serial">{tt(tJob, 'machine.serialNumber', 'Seriennummer')}</Label>
                         <Input 
                           id="edit-serial"
                           value={editData.serialNumber} 
                           onChange={(e) => setEditData(prev => ({ ...prev, serialNumber: e.target.value }))} 
-                          placeholder={t('serialPlaceholder')}
+                          placeholder={tt(tJob, 'machine.serialPlaceholder', 'Seriennummer der Maschine/Anlage')}
                         />
                       </div>
                       <div>
-                        <Label htmlFor="edit-work-performed">{t('workPerformed')}</Label>
+                        <Label htmlFor="edit-work-performed">{tt(tJob, 'machine.workPerformed', 'Zu leistende Arbeiten')}</Label>
                         <textarea 
                           id="edit-work-performed"
                           className="w-full min-h-[120px] p-3 border rounded-md resize-y"
                           value={editData.workPerformed} 
                           onChange={(e) => setEditData(prev => ({ ...prev, workPerformed: e.target.value }))} 
-                          placeholder={t('workPerformedPlaceholder')}
+                          placeholder={tt(tJob, 'machine.workPerformedPlaceholder', 'Beschreiben Sie die geplanten/zu leistenden Arbeiten...')}
                         />
                       </div>
                     </div>
@@ -825,7 +819,7 @@ const Index = () => {
             </div>
             
             <DialogFooter className="flex-shrink-0 mt-4">
-              <Button onClick={saveEdit}>{t('save')}</Button>
+              <Button onClick={saveEdit}>{tt(tJob, 'buttons.save', 'Speichern')}</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>

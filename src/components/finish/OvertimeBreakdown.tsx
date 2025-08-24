@@ -3,16 +3,31 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Calculator } from 'lucide-react';
 import { OvertimeCalculation } from '@/types/overtime';
 import { formatHours } from '@/lib/timeCalc';
+import { useOvertimeCalculation } from '@/hooks/useOvertimeCalculation';
+import { splitOvertime, generatePayableFormula, decimalHoursToMinutes } from '@/lib/overtimeCalc';
+import { useTranslation } from 'react-i18next';
 
 interface OvertimeBreakdownProps {
   calculation: OvertimeCalculation;
 }
 
 export const OvertimeBreakdown = ({ calculation }: OvertimeBreakdownProps) => {
+  const { t } = useTranslation();
+  const { overtimeSettings } = useOvertimeCalculation();
+  
   const formatDecimalHours = (hours: number): string => {
     const totalMinutes = Math.round(hours * 60);
     return formatHours(totalMinutes);
   };
+  
+  // Calculate splits for display
+  const ot50Minutes = decimalHoursToMinutes(calculation.overtime1Hours);
+  const ot100Minutes = decimalHoursToMinutes(calculation.overtime2Hours);
+  const saturdayMinutes = decimalHoursToMinutes(calculation.saturdayHours);
+  const sundayMinutes = decimalHoursToMinutes(calculation.sundayHours);
+  const regularMinutes = decimalHoursToMinutes(calculation.regularHours);
+  
+  const splits = splitOvertime(ot50Minutes, ot100Minutes, saturdayMinutes, sundayMinutes, overtimeSettings);
 
   return (
     <Card>
@@ -32,50 +47,62 @@ export const OvertimeBreakdown = ({ calculation }: OvertimeBreakdownProps) => {
             </div>
           </div>
           
-          {calculation.overtime1Hours > 0 && (
+          {splits.ot50Split && (
             <div className="bg-orange-500/10 border border-orange-500/20 rounded-lg p-3">
-              <div className="text-sm text-muted-foreground">
-                Überstunden 50% (x1.5)
+              <div className="text-sm text-muted-foreground mb-2">
+                Überstunden 8–12h ({splits.ot50Split.rate}%)
               </div>
-              <div className="text-lg font-semibold text-orange-600">
-                {formatDecimalHours(calculation.overtime1Hours)}
+              <div className="text-lg font-semibold text-orange-600 mb-1">
+                {formatHours(splits.ot50Split.baseMinutes)}
+              </div>
+              <div className="text-xs text-muted-foreground">
+                +{formatHours(splits.ot50Split.surchargeMinutes)} {t('overtime.surcharge')} • ={formatHours(splits.ot50Split.creditMinutes)} {t('overtime.credit')}
               </div>
             </div>
           )}
           
-          {calculation.overtime2Hours > 0 && (
+          {splits.ot100Split && (
             <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3">
-              <div className="text-sm text-muted-foreground">
-                Überstunden 100% (x2.0)
+              <div className="text-sm text-muted-foreground mb-2">
+                Überstunden über 12h ({splits.ot100Split.rate}%)
               </div>
-              <div className="text-lg font-semibold text-red-600">
-                {formatDecimalHours(calculation.overtime2Hours)}
+              <div className="text-lg font-semibold text-red-600 mb-1">
+                {formatHours(splits.ot100Split.baseMinutes)}
+              </div>
+              <div className="text-xs text-muted-foreground">
+                +{formatHours(splits.ot100Split.surchargeMinutes)} {t('overtime.surcharge')} • ={formatHours(splits.ot100Split.creditMinutes)} {t('overtime.credit')}
               </div>
             </div>
           )}
         </div>
 
         {/* Weekend Hours */}
-        {(calculation.saturdayHours > 0 || calculation.sundayHours > 0) && (
+        {(splits.saturdaySplit || splits.sundaySplit) && (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {calculation.saturdayHours > 0 && (
+            {splits.saturdaySplit && (
               <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-3">
-                <div className="text-sm text-muted-foreground">
-                  Samstag (50%)
+                <div className="text-sm text-muted-foreground mb-2">
+                  Samstag ({splits.saturdaySplit.rate}%)
                 </div>
-                <div className="text-lg font-semibold text-blue-600">
-                  {formatDecimalHours(calculation.saturdayHours)}
+                <div className="text-lg font-semibold text-blue-600 mb-1">
+                  {formatHours(splits.saturdaySplit.baseMinutes)}
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  +{formatHours(splits.saturdaySplit.surchargeMinutes)} {t('overtime.surcharge')} • ={formatHours(splits.saturdaySplit.creditMinutes)} {t('overtime.credit')}
                 </div>
               </div>
             )}
             
-            {calculation.sundayHours > 0 && (
+            {splits.sundaySplit && (
               <div className="bg-purple-500/10 border border-purple-500/20 rounded-lg p-3">
-                <div className="text-sm text-muted-foreground">
-                  Sonntag/Feiertag (100%)
+                <div className="text-sm text-muted-foreground mb-2">
+                  Sonntag/Feiertag ({splits.sundaySplit.rate}%)
                 </div>
-                <div className="text-lg font-semibold text-purple-600">
-                  {formatDecimalHours(calculation.sundayHours)}
+                <div className="text-lg font-semibold text-purple-600 mb-1">
+                  {formatHours(splits.sundaySplit.baseMinutes)}
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  +{formatHours(splits.sundaySplit.surchargeMinutes)} {t('overtime.surcharge')} • ={formatHours(splits.sundaySplit.creditMinutes)} {t('overtime.credit')}
                 </div>
               </div>
             )}
@@ -123,7 +150,7 @@ export const OvertimeBreakdown = ({ calculation }: OvertimeBreakdownProps) => {
             <span className="text-primary">{formatDecimalHours(calculation.totalPayableHours)}</span>
           </div>
           <div className="text-xs text-muted-foreground">
-            Basis {formatDecimalHours(calculation.actualWorkedHours)} + Zuschläge {formatDecimalHours(calculation.totalOvertimeAmount)}
+            {generatePayableFormula(regularMinutes, splits, t)}
           </div>
         </div>
       </CardContent>

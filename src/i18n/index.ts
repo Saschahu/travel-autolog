@@ -204,6 +204,15 @@ const resources = {
       weekendSurcharges: 'Weekend Surcharges',
       weekendDescription: 'Automatic surcharges from Friday evening to Monday morning',
       
+      // Overtime Display
+      'overtime.base': 'OT',
+      'overtime.surcharge': 'Surcharge',
+      'overtime.credit': 'creditable',
+      'overtime.formula.ot50': '{{base}} OT50 + {{surcharge}} Surcharge50',
+      'overtime.formula.ot100': '{{base}} OT100 + {{surcharge}} Surcharge100', 
+      'overtime.formula.saturday': '{{base}} Saturday + {{surcharge}} Surcharge',
+      'overtime.formula.sunday': '{{base}} Sunday + {{surcharge}} Surcharge',
+      
       // Location
       longitude: 'Longitude',
       jobs: 'Jobs',
@@ -399,6 +408,15 @@ const resources = {
       surchargeOver12h: 'Zuschlag über 12h (%)',
       weekendSurcharges: 'Wochenend-Zuschläge',
       weekendDescription: 'Automatische Zuschläge von Freitag Abend bis Montag Morgen',
+      
+      // Overtime Display
+      'overtime.base': 'ÜS',
+      'overtime.surcharge': 'Zuschlag',
+      'overtime.credit': 'anrechenbar',
+      'overtime.formula.ot50': '{{base}} ÜS50 + {{surcharge}} Zuschlag50',
+      'overtime.formula.ot100': '{{base}} ÜS100 + {{surcharge}} Zuschlag100',
+      'overtime.formula.saturday': '{{base}} Samstag + {{surcharge}} Zuschlag',
+      'overtime.formula.sunday': '{{base}} Sonntag + {{surcharge}} Zuschlag',
       
       // Location
       longitude: 'Längengrad',

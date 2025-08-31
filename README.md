@@ -1,6 +1,6 @@
 # Travel AutoLog
 
-ServiceTracker für automatische Dokumentation von Reise- und Arbeitszeiten für Servicetechniker.
+ServiceTracker automatische Dokumentation von Reise- und Arbeitszeiten für Servicetechniker.
 
 ## Project info
 

@@ -200,9 +200,17 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
   };
 
   const renderTimeSection = () => {
-    // Show time fields only for completed jobs (currentJobId exists)
-    // For new jobs (currentJobId is null), show only planned duration
-    if (currentJobId != null) {
+    const hasAnyTime = Boolean(
+      jobData.travelStart || jobData.travelStartDate ||
+      jobData.travelEnd || jobData.travelEndDate ||
+      jobData.workStart || jobData.workStartDate ||
+      jobData.workEnd || jobData.workEndDate ||
+      jobData.departureStart || jobData.departureStartDate ||
+      jobData.departureEnd || jobData.departureEndDate
+    );
+    const isEditView = isEditingJob && currentJobId != null && hasAnyTime;
+    console.log('renderTimeSection', { isEditingJob, currentJobId, hasAnyTime, isEditView });
+    if (isEditView) {
       // Show existing time fields for editing jobs
       return (
         <Card className="border-primary/20">

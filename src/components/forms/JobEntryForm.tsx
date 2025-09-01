@@ -200,7 +200,9 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
   };
 
   const renderTimeSection = () => {
-    if (isEditingJob && currentJobId != null) {
+    // Show time fields only for completed jobs (currentJobId exists)
+    // For new jobs (currentJobId is null), show only planned duration
+    if (currentJobId != null) {
       // Show existing time fields for editing jobs
       return (
         <Card className="border-primary/20">

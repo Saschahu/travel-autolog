@@ -48,7 +48,7 @@ interface JobEntryFormProps {
 
 export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
   const { t } = useTranslation();
-  const [jobData, setJobData] = useState<Partial<JobData>>({});
+  const [jobData, setJobData] = useState<Partial<JobData>>({ plannedDays: 1 });
   const [currentStep, setCurrentStep] = useState<'customer' | 'machine' | 'times' | 'travel'>('customer');
   const [isLoading, setIsLoading] = useState(false);
   const [currentJobId, setCurrentJobId] = useState<string | null>(null);

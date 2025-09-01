@@ -39,6 +39,7 @@ interface JobData {
   kilometersOutbound: number;
   kilometersReturn: number;
   tollAmount: number;
+  plannedDays: number;
 }
 
 interface JobEntryFormProps {
@@ -159,8 +160,8 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
       if (isPartialSave && currentStep === 'customer' && !error && data) {
         setCurrentStep('machine');
         toast({
-          title: 'Weiter zur Maschine',
-          description: 'Kunde gespeichert! Jetzt Maschinendaten eingeben.'
+          title: t('customerSavedGoMachineTitle'),
+          description: t('customerSavedGoMachineDesc')
         });
       }
 
@@ -188,238 +189,269 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
   };
 
   const startNewJob = () => {
-    setJobData({});
+    setJobData({ plannedDays: 1 });
     setCurrentStep('customer');
     setCurrentJobId(null);
     setIsEditingJob(false);
     toast({
-      title: 'Neuer Job',
+      title: t('newJob'),
       description: 'Neues Job-Formular gestartet'
     });
   };
 
-  const renderTimeSection = () => (
-    <Card className="border-primary/20">
-      <CardHeader className="pb-3">
-        <CardTitle className="flex items-center gap-2 text-lg">
-          <Clock className="h-5 w-5 text-primary" />
-          Arbeitszeiten
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="space-y-4">
-          <div>
-            <Label htmlFor="travel-start" className="text-sm font-medium">Anreise Start</Label>
-            <div className="grid grid-cols-2 gap-2 mt-1">
-              <Input
-                id="travel-start-date"
-                type="date"
-                placeholder="Datum"
-                value={jobData.travelStartDate || ''}
-                onChange={(e) => updateField('travelStartDate', e.target.value)}
-              />
-              <div className="flex gap-2">
-                <Input
-                  id="travel-start"
-                  type="time"
-                  value={jobData.travelStart || ''}
-                  onChange={(e) => updateField('travelStart', e.target.value)}
-                  className="flex-1"
-                />
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => {
-                    updateField('travelStart', getCurrentTime());
-                    updateField('travelStartDate', getCurrentDate());
-                  }}
-                >
-                  Jetzt
-                </Button>
+  const renderTimeSection = () => {
+    if (isEditingJob) {
+      // Show existing time fields for editing jobs
+      return (
+        <Card className="border-primary/20">
+          <CardHeader className="pb-3">
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <Clock className="h-5 w-5 text-primary" />
+              {t('timesTitle')}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="travel-start" className="text-sm font-medium">{t('travelStart')}</Label>
+                <div className="grid grid-cols-2 gap-2 mt-1">
+                  <Input
+                    id="travel-start-date"
+                    type="date"
+                    placeholder="Datum"
+                    value={jobData.travelStartDate || ''}
+                    onChange={(e) => updateField('travelStartDate', e.target.value)}
+                  />
+                  <div className="flex gap-2">
+                    <Input
+                      id="travel-start"
+                      type="time"
+                      value={jobData.travelStart || ''}
+                      onChange={(e) => updateField('travelStart', e.target.value)}
+                      className="flex-1"
+                    />
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => {
+                        updateField('travelStart', getCurrentTime());
+                        updateField('travelStartDate', getCurrentDate());
+                      }}
+                    >
+                      {t('now')}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <Label htmlFor="travel-end" className="text-sm font-medium">{t('travelEnd')}</Label>
+                <div className="grid grid-cols-2 gap-2 mt-1">
+                  <Input
+                    id="travel-end-date"
+                    type="date"
+                    placeholder="Datum"
+                    value={jobData.travelEndDate || ''}
+                    onChange={(e) => updateField('travelEndDate', e.target.value)}
+                  />
+                  <div className="flex gap-2">
+                    <Input
+                      id="travel-end"
+                      type="time"
+                      value={jobData.travelEnd || ''}
+                      onChange={(e) => updateField('travelEnd', e.target.value)}
+                      className="flex-1"
+                    />
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => {
+                        updateField('travelEnd', getCurrentTime());
+                        updateField('travelEndDate', getCurrentDate());
+                      }}
+                    >
+                      {t('now')}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <Label htmlFor="work-start" className="text-sm font-medium">{t('workStart')}</Label>
+                <div className="grid grid-cols-2 gap-2 mt-1">
+                  <Input
+                    id="work-start-date"
+                    type="date"
+                    placeholder="Datum"
+                    value={jobData.workStartDate || ''}
+                    onChange={(e) => updateField('workStartDate', e.target.value)}
+                  />
+                  <div className="flex gap-2">
+                    <Input
+                      id="work-start"
+                      type="time"
+                      value={jobData.workStart || ''}
+                      onChange={(e) => updateField('workStart', e.target.value)}
+                      className="flex-1"
+                    />
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => {
+                        updateField('workStart', getCurrentTime());
+                        updateField('workStartDate', getCurrentDate());
+                      }}
+                    >
+                      {t('now')}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <Label htmlFor="work-end" className="text-sm font-medium">{t('workEnd')}</Label>
+                <div className="grid grid-cols-2 gap-2 mt-1">
+                  <Input
+                    id="work-end-date"
+                    type="date"
+                    placeholder="Datum"
+                    value={jobData.workEndDate || ''}
+                    onChange={(e) => updateField('workEndDate', e.target.value)}
+                  />
+                  <div className="flex gap-2">
+                    <Input
+                      id="work-end"
+                      type="time"
+                      value={jobData.workEnd || ''}
+                      onChange={(e) => updateField('workEnd', e.target.value)}
+                      className="flex-1"
+                    />
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => {
+                        updateField('workEnd', getCurrentTime());
+                        updateField('workEndDate', getCurrentDate());
+                      }}
+                    >
+                      {t('now')}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <Label htmlFor="return-start" className="text-sm font-medium">{t('departureStart')}</Label>
+                <div className="grid grid-cols-2 gap-2 mt-1">
+                  <Input
+                    id="return-start-date"
+                    type="date"
+                    placeholder="Datum"
+                    value={jobData.departureStartDate || ''}
+                    onChange={(e) => updateField('departureStartDate', e.target.value)}
+                  />
+                  <div className="flex gap-2">
+                    <Input
+                      id="return-start"
+                      type="time"
+                      value={jobData.departureStart || ''}
+                      onChange={(e) => updateField('departureStart', e.target.value)}
+                      className="flex-1"
+                    />
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => {
+                        updateField('departureStart', getCurrentTime());
+                        updateField('departureStartDate', getCurrentDate());
+                      }}
+                    >
+                      {t('now')}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+              
+              <div>
+                <Label htmlFor="return-end" className="text-sm font-medium">{t('departureEnd')}</Label>
+                <div className="grid grid-cols-2 gap-2 mt-1">
+                  <Input
+                    id="return-end-date"
+                    type="date"
+                    placeholder="Datum"
+                    value={jobData.departureEndDate || ''}
+                    onChange={(e) => updateField('departureEndDate', e.target.value)}
+                  />
+                  <div className="flex gap-2">
+                    <Input
+                      id="return-end"
+                      type="time"
+                      value={jobData.departureEnd || ''}
+                      onChange={(e) => updateField('departureEnd', e.target.value)}
+                      className="flex-1"
+                    />
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => {
+                        updateField('departureEnd', getCurrentTime());
+                        updateField('departureEndDate', getCurrentDate());
+                      }}
+                    >
+                      {t('now')}
+                    </Button>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-          
-          <div>
-            <Label htmlFor="travel-end" className="text-sm font-medium">Anreise Ende</Label>
-            <div className="grid grid-cols-2 gap-2 mt-1">
+          </CardContent>
+        </Card>
+      );
+    } else {
+      // For new jobs, show only planned duration input
+      return (
+        <Card className="border-primary/20">
+          <CardHeader className="pb-3">
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <Clock className="h-5 w-5 text-primary" />
+              {t('timesTitle')}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <Label htmlFor="planned-days" className="text-sm font-medium">{t('plannedDaysLabel')}</Label>
               <Input
-                id="travel-end-date"
-                type="date"
-                placeholder="Datum"
-                value={jobData.travelEndDate || ''}
-                onChange={(e) => updateField('travelEndDate', e.target.value)}
+                id="planned-days"
+                type="number"
+                min={1}
+                step={1}
+                value={jobData.plannedDays ?? 1}
+                onChange={(e) => updateField('plannedDays', parseInt(e.target.value) || 1)}
+                className="mt-1"
               />
-              <div className="flex gap-2">
-                <Input
-                  id="travel-end"
-                  type="time"
-                  value={jobData.travelEnd || ''}
-                  onChange={(e) => updateField('travelEnd', e.target.value)}
-                  className="flex-1"
-                />
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => {
-                    updateField('travelEnd', getCurrentTime());
-                    updateField('travelEndDate', getCurrentDate());
-                  }}
-                >
-                  Jetzt
-                </Button>
-              </div>
             </div>
-          </div>
-          
-          <div>
-            <Label htmlFor="work-start" className="text-sm font-medium">Arbeit Start</Label>
-            <div className="grid grid-cols-2 gap-2 mt-1">
-              <Input
-                id="work-start-date"
-                type="date"
-                placeholder="Datum"
-                value={jobData.workStartDate || ''}
-                onChange={(e) => updateField('workStartDate', e.target.value)}
-              />
-              <div className="flex gap-2">
-                <Input
-                  id="work-start"
-                  type="time"
-                  value={jobData.workStart || ''}
-                  onChange={(e) => updateField('workStart', e.target.value)}
-                  className="flex-1"
-                />
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => {
-                    updateField('workStart', getCurrentTime());
-                    updateField('workStartDate', getCurrentDate());
-                  }}
-                >
-                  Jetzt
-                </Button>
-              </div>
-            </div>
-          </div>
-          
-          <div>
-            <Label htmlFor="work-end" className="text-sm font-medium">Arbeit Ende</Label>
-            <div className="grid grid-cols-2 gap-2 mt-1">
-              <Input
-                id="work-end-date"
-                type="date"
-                placeholder="Datum"
-                value={jobData.workEndDate || ''}
-                onChange={(e) => updateField('workEndDate', e.target.value)}
-              />
-              <div className="flex gap-2">
-                <Input
-                  id="work-end"
-                  type="time"
-                  value={jobData.workEnd || ''}
-                  onChange={(e) => updateField('workEnd', e.target.value)}
-                  className="flex-1"
-                />
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => {
-                    updateField('workEnd', getCurrentTime());
-                    updateField('workEndDate', getCurrentDate());
-                  }}
-                >
-                  Jetzt
-                </Button>
-              </div>
-            </div>
-          </div>
-          
-          <div>
-            <Label htmlFor="return-start" className="text-sm font-medium">Heimreise Start</Label>
-            <div className="grid grid-cols-2 gap-2 mt-1">
-              <Input
-                id="return-start-date"
-                type="date"
-                placeholder="Datum"
-                value={jobData.departureStartDate || ''}
-                onChange={(e) => updateField('departureStartDate', e.target.value)}
-              />
-              <div className="flex gap-2">
-                <Input
-                  id="return-start"
-                  type="time"
-                  value={jobData.departureStart || ''}
-                  onChange={(e) => updateField('departureStart', e.target.value)}
-                  className="flex-1"
-                />
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => {
-                    updateField('departureStart', getCurrentTime());
-                    updateField('departureStartDate', getCurrentDate());
-                  }}
-                >
-                  Jetzt
-                </Button>
-              </div>
-            </div>
-          </div>
-          
-          <div>
-            <Label htmlFor="return-end" className="text-sm font-medium">Heimreise Ende</Label>
-            <div className="grid grid-cols-2 gap-2 mt-1">
-              <Input
-                id="return-end-date"
-                type="date"
-                placeholder="Datum"
-                value={jobData.departureEndDate || ''}
-                onChange={(e) => updateField('departureEndDate', e.target.value)}
-              />
-              <div className="flex gap-2">
-                <Input
-                  id="return-end"
-                  type="time"
-                  value={jobData.departureEnd || ''}
-                  onChange={(e) => updateField('departureEnd', e.target.value)}
-                  className="flex-1"
-                />
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => {
-                    updateField('departureEnd', getCurrentTime());
-                    updateField('departureEndDate', getCurrentDate());
-                  }}
-                >
-                  Jetzt
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
+          </CardContent>
+        </Card>
+      );
+    }
+  };
 
   const renderCustomerSection = () => (
     <Card className="border-primary/20">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-lg">
           <User className="h-5 w-5 text-primary" />
-          Kundendaten
+          {t('customerData')}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div>
           <Label htmlFor="customer-name" className="text-sm font-medium">
-            Kundenname <Badge variant="destructive" className="ml-1 text-xs">Pflicht</Badge>
+            {t('customerName')} <Badge variant="destructive" className="ml-1 text-xs">{t('required')}</Badge>
           </Label>
           <Input
             id="customer-name"
-            placeholder="Firmenname oder Privatperson"
+            placeholder={t('customerName')}
             value={jobData.customerName || ''}
             onChange={(e) => updateField('customerName', e.target.value)}
             className="mt-1"
@@ -427,11 +459,11 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
           />
         </div>
         <div>
-          <Label htmlFor="customer-address" className="text-sm font-medium">Kundenadresse</Label>
+          <Label htmlFor="customer-address" className="text-sm font-medium">{t('customerAddress')}</Label>
           <div className="flex gap-2 mt-1">
             <Input
               id="customer-address"
-              placeholder="Automatisch über Maps API"
+              placeholder={t('customerAddress')}
               value={jobData.customerAddress || ''}
               onChange={(e) => updateField('customerAddress', e.target.value)}
               className="flex-1"
@@ -466,10 +498,10 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
         </div>
         
         <div>
-          <Label htmlFor="evatic-no" className="text-sm font-medium">Evatic No</Label>
+          <Label htmlFor="evatic-no" className="text-sm font-medium">{t('evaticNo')}</Label>
           <Input
             id="evatic-no"
-            placeholder="Evatic Nummer"
+            placeholder={t('evaticNo')}
             value={jobData.evaticNo || ''}
             onChange={(e) => updateField('evaticNo', e.target.value)}
             className="mt-1"
@@ -484,36 +516,36 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-lg">
           <Wrench className="h-5 w-5 text-primary" />
-          Maschinendaten
+          {t('machineData')}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid grid-cols-1 gap-3">
           <div>
-            <Label htmlFor="manufacturer" className="text-sm font-medium">Hersteller</Label>
+            <Label htmlFor="manufacturer" className="text-sm font-medium">{t('manufacturer')}</Label>
             <Input
               id="manufacturer"
-              placeholder="z.B. Siemens, ABB, Schneider"
+              placeholder={t('manufacturer')}
               value={jobData.manufacturer || ''}
               onChange={(e) => updateField('manufacturer', e.target.value)}
               className="mt-1"
             />
           </div>
           <div>
-            <Label htmlFor="model" className="text-sm font-medium">Modell</Label>
+            <Label htmlFor="model" className="text-sm font-medium">{t('model')}</Label>
             <Input
               id="model"
-              placeholder="Modellbezeichnung"
+              placeholder={t('model')}
               value={jobData.model || ''}
               onChange={(e) => updateField('model', e.target.value)}
               className="mt-1"
             />
           </div>
           <div>
-            <Label htmlFor="serial" className="text-sm font-medium">Seriennummer</Label>
+            <Label htmlFor="serial" className="text-sm font-medium">{t('serialNumber')}</Label>
             <Input
               id="serial"
-              placeholder="Seriennummer"
+              placeholder={t('serialNumber')}
               value={jobData.serialNumber || ''}
               onChange={(e) => updateField('serialNumber', e.target.value)}
               className="mt-1"
@@ -539,52 +571,29 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-lg">
           <Car className="h-5 w-5 text-primary" />
-          Reise & Unterkunft
+          {t('travelAndStay')}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <Label htmlFor="departure-start" className="text-sm font-medium">Abfahrt Start</Label>
-            <Input
-              id="departure-start"
-              type="time"
-              value={jobData.departureStart || ''}
-              onChange={(e) => updateField('departureStart', e.target.value)}
-              className="mt-1"
-            />
-          </div>
-          <div>
-            <Label htmlFor="departure-end" className="text-sm font-medium">Abfahrt Ende</Label>
-            <Input
-              id="departure-end"
-              type="time"
-              value={jobData.departureEnd || ''}
-              onChange={(e) => updateField('departureEnd', e.target.value)}
-              className="mt-1"
-            />
-          </div>
-        </div>
-
         <div className="space-y-3">
           <div>
             <Label htmlFor="hotel-name" className="text-sm font-medium">
               <Hotel className="h-4 w-4 inline mr-1" />
-              Hotel Name (optional)
+              {t('hotelNameOptional')}
             </Label>
             <Input
               id="hotel-name"
-              placeholder="Hotel Name"
+              placeholder={t('hotelNameOptional')}
               value={jobData.hotelName || ''}
               onChange={(e) => updateField('hotelName', e.target.value)}
               className="mt-1"
             />
           </div>
           <div>
-            <Label htmlFor="hotel-address" className="text-sm font-medium">Hotel Adresse</Label>
+            <Label htmlFor="hotel-address" className="text-sm font-medium">{t('hotelAddress')}</Label>
             <Input
               id="hotel-address"
-              placeholder="Automatisch über Maps API"
+              placeholder={t('hotelAddress')}
               value={jobData.hotelAddress || ''}
               onChange={(e) => updateField('hotelAddress', e.target.value)}
               className="mt-1"
@@ -608,7 +617,7 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <Label htmlFor="km-outbound" className="text-sm font-medium">KM Hinfahrt</Label>
+            <Label htmlFor="km-outbound" className="text-sm font-medium">{t('kmOutbound')}</Label>
             <Input
               id="km-outbound"
               type="number"
@@ -634,7 +643,7 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
         </div>
 
         <div>
-          <Label htmlFor="toll-amount" className="text-sm font-medium">Maut (NOK)</Label>
+          <Label htmlFor="toll-amount" className="text-sm font-medium">{t('tollAmountNok')}</Label>
           <Input
             id="toll-amount"
             type="number"
@@ -651,9 +660,9 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
   );
 
   const steps = [
-    { id: 'customer', label: 'Kunde', icon: User },
-    { id: 'machine', label: 'Maschine', icon: Wrench },
-    { id: 'times', label: 'Zeiten', icon: Clock },
+    { id: 'customer', label: t('customer'), icon: User },
+    { id: 'machine', label: t('machine'), icon: Wrench },
+    { id: 'times', label: t('times'), icon: Clock },
     { id: 'travel', label: 'Reise', icon: Car },
   ];
 
@@ -662,7 +671,7 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
       {/* Job Title with Customer Name */}
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-semibold">
-          Auftrag bearbeiten
+          {isEditingJob ? t('editJob') : t('newJob')}
           {isPersisted && customerName && (
             <span data-testid="job-title-customer" className="ml-2 text-muted-foreground">— {customerName}</span>
           )}
@@ -670,7 +679,7 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
         {isEditingJob && (
           <Badge variant="secondary" className="px-3 py-1">
             <Clock className="h-3 w-3 mr-1" />
-            Bearbeitung läuft
+            {t('jobEditing')}
           </Badge>
         )}
       </div>
@@ -730,7 +739,7 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
       {isEditingJob && (
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-center">
           <p className="text-sm text-blue-700">
-            📝 Job wird bearbeitet • ID: {currentJobId?.slice(0, 8)}... 
+            📝 {t('jobEditing')} • {t('jobIdShort')}: {currentJobId?.slice(0, 8)}... 
             {currentStep !== 'customer' && <span className="ml-2">{t('addMoreData')}</span>}
           </p>
         </div>
@@ -749,7 +758,7 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
             }}
             disabled={currentStep === 'customer'}
           >
-            Zurück
+            {t('back')}
           </Button>
           
           {isEditingJob && (
@@ -758,7 +767,7 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
               onClick={startNewJob}
               disabled={isLoading}
             >
-              Neuer Job
+              {t('newJob')}
             </Button>
           )}
         </div>
@@ -771,7 +780,7 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
               onClick={() => saveJobData(true)}
               disabled={isLoading}
             >
-              {isLoading ? 'Speichern...' : 'Speichern'}
+              {isLoading ? t('save') : t('save')}
             </Button>
           )}
           
@@ -793,10 +802,10 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
             }}
             disabled={isLoading || (currentStep === 'customer' && !jobData.customerName)}
           >
-            {isLoading ? 'Speichern...' : 
-             currentStep === 'customer' ? 'Kunde Speichern' : 
-             currentStep === 'travel' ? 'Job Abschließen' : 
-             'Weiter'}
+            {isLoading ? t('save') : 
+             currentStep === 'customer' ? t('saveCustomer') : 
+             currentStep === 'travel' ? t('completeJob') : 
+             t('next')}
           </Button>
         </div>
       </div>

@@ -49,7 +49,7 @@ interface JobEntryFormProps {
 export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
   const { t } = useTranslation();
   const [jobData, setJobData] = useState<Partial<JobData>>({ plannedDays: 1 });
-  const [currentStep, setCurrentStep] = useState<'customer' | 'machine' | 'times' | 'travel'>('customer');
+  const [currentStep, setCurrentStep] = useState<'customer' | 'machine' | 'travel'>('customer');
   const [isLoading, setIsLoading] = useState(false);
   const [currentJobId, setCurrentJobId] = useState<string | null>(null);
   const [isEditingJob, setIsEditingJob] = useState(false);
@@ -678,7 +678,6 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
   const steps = [
     { id: 'customer', label: t('customer'), icon: User },
     { id: 'machine', label: t('machine'), icon: Wrench },
-    { id: 'times', label: t('times'), icon: Clock },
     { id: 'travel', label: 'Reise', icon: Car },
   ];
 
@@ -748,7 +747,6 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
       {/* Current Step Content */}
       {currentStep === 'customer' && renderCustomerSection()}
       {currentStep === 'machine' && renderMachineSection()}
-      {currentStep === 'times' && renderTimeSection()}
       {currentStep === 'travel' && renderTravelSection()}
 
       {/* Status Indicator */}

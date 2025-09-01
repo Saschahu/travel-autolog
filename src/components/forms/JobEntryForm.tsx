@@ -200,7 +200,7 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
   };
 
   const renderTimeSection = () => {
-    if (isEditingJob) {
+    if (isEditingJob && currentJobId != null) {
       // Show existing time fields for editing jobs
       return (
         <Card className="border-primary/20">
@@ -418,17 +418,23 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div>
-              <Label htmlFor="planned-days" className="text-sm font-medium">{t('plannedDaysLabel')}</Label>
-              <Input
-                id="planned-days"
-                type="number"
-                min={1}
-                step={1}
-                value={jobData.plannedDays ?? 1}
-                onChange={(e) => updateField('plannedDays', parseInt(e.target.value) || 1)}
-                className="mt-1"
-              />
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="planned-days" className="text-sm font-medium">
+                  {t('plannedDaysLabel')}
+                </Label>
+                <Input
+                  id="planned-days"
+                  type="number"
+                  min={1}
+                  step={1}
+                  value={jobData.plannedDays ?? 1}
+                  onChange={(e) =>
+                    updateField('plannedDays', Math.max(1, parseInt(e.target.value) || 1))
+                  }
+                  className="mt-1 w-32"
+                />
+              </div>
             </div>
           </CardContent>
         </Card>

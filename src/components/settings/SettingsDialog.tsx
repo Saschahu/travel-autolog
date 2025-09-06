@@ -37,7 +37,7 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
     homeAddress: '',
     email: '',
     preferredEmailApp: 'default',
-    preferredLanguage: 'de' as 'en' | 'de' | 'no',
+    preferredLanguage: 'de' as 'en' | 'de' | 'nb',
     gpsEnabled: false,
     localStoragePath: '',
     reportTo: '',
@@ -239,7 +239,7 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
   const languageOptions = [
     { value: 'de', label: 'Deutsch' },
     { value: 'en', label: 'English' },
-    { value: 'no', label: 'Norsk' }
+    { value: 'nb', label: 'Norsk' }
   ];
 
   return (
@@ -409,7 +409,7 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
                       <Label htmlFor="language">{t('preferredLanguage')}</Label>
                       <Select
                         value={formData.preferredLanguage}
-                        onValueChange={(value: 'en' | 'de' | 'no') => 
+                        onValueChange={(value: 'en' | 'de' | 'nb') => 
                           setFormData(prev => ({ ...prev, preferredLanguage: value }))
                         }
                       >

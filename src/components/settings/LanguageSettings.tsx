@@ -7,7 +7,7 @@ import { Languages } from 'lucide-react';
 const languages = [
   { code: 'de', name: 'Deutsch' },
   { code: 'en', name: 'English' },
-  { code: 'no', name: 'Norsk' },
+  { code: 'nb', name: 'Norsk' },
   { code: 'sv', name: 'Svenska' },
   { code: 'da', name: 'Dansk' }
 ];
@@ -32,7 +32,7 @@ export const LanguageSettings = () => {
             </SelectTrigger>
             <SelectContent>
               {languages.map((lang) => (
-                <SelectItem key={lang.code} value={lang.code}>
+                <SelectItem key={lang.code} value={lang.code as LocaleCode}>
                   {lang.name}
                 </SelectItem>
               ))}

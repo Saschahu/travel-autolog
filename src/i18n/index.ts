@@ -769,10 +769,13 @@ const resources = {
   }
 };
 
+// Support both 'no' and 'nb' by aliasing 'nb' to the Norwegian resources
+const resourcesExtended: any = { ...resources, nb: (resources as any).no };
+
 i18n
   .use(initReactI18next)
   .init({
-    resources,
+    resources: resourcesExtended,
     lng: 'de', // Set initial language from settings store
     fallbackLng: 'de',
     

@@ -298,15 +298,15 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-base">
                       <Mail className="h-4 w-4 text-primary" />
-                      E-Mail-Versand Einstellungen
+                      {t('emailSendSettings')}
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="space-y-2">
                       <Label htmlFor="reportTo">
-                        Standard-Empfänger (TO)
+                        {t('defaultRecipient')}
                         <span className="text-xs text-muted-foreground block">
-                          Mehrere Adressen durch Komma oder Semikolon trennen
+                          {t('emailSeparatorNote')}
                         </span>
                       </Label>
                       <Input
@@ -330,7 +330,7 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
                       <Label htmlFor="reportCc">
                         CC (optional)
                         <span className="text-xs text-muted-foreground block">
-                          Mehrere Adressen durch Komma oder Semikolon trennen
+                          {t('emailSeparatorNote')}
                         </span>
                       </Label>
                       <Input
@@ -354,7 +354,7 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
                       <Label htmlFor="reportBcc">
                         BCC (optional)
                         <span className="text-xs text-muted-foreground block">
-                          Mehrere Adressen durch Komma oder Semikolon trennen
+                          {t('emailSeparatorNote')}
                         </span>
                       </Label>
                       <Input
@@ -376,8 +376,7 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
 
                     <div className="p-3 bg-muted rounded-lg">
                       <p className="text-xs text-muted-foreground">
-                        <strong>Hinweis:</strong> Die E-Mail wird aus Ihrer Mail-App gesendet. 
-                        Das Absender-Konto steuern Sie in der Mail-App.
+                        <strong>{t('note')}:</strong> {t('emailNote')}
                       </p>
                     </div>
                   </CardContent>

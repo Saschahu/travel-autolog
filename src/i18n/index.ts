@@ -167,13 +167,19 @@ const resources = {
       
       // Settings
       profile: 'Profile',
-      gps: 'GPS',
+      gps: 'GPS',  
       settings: 'Settings',
       holidays: 'Holidays',
       advanced: 'Advanced',
       appLanguage: 'App language',
       uiLanguage: 'Interface language',
       logout: 'Logout',
+      userProfile: 'User Profile',
+      emailSendSettings: 'Email Send Settings',
+      defaultRecipient: 'Default Recipient (TO)',
+      emailSeparatorNote: 'Separate multiple addresses with comma or semicolon',
+      emailNote: 'The email will be sent from your mail app. You control the sender account in your mail app.',
+      note: 'Note',
       languageNote: 'Language changes immediately and applies across the app.',
       
       // Form Labels
@@ -428,6 +434,12 @@ const resources = {
       appLanguage: 'App-Sprache',
       uiLanguage: 'Sprache der Benutzeroberfläche',
       logout: 'Abmelden',
+      userProfile: 'Benutzerprofil',
+      emailSendSettings: 'E-Mail-Versand Einstellungen',
+      defaultRecipient: 'Standard-Empfänger (TO)',
+      emailSeparatorNote: 'Mehrere Adressen durch Komma oder Semikolon trennen',
+      emailNote: 'Die E-Mail wird aus Ihrer Mail-App gesendet. Das Absender-Konto steuern Sie in der Mail-App.',
+      note: 'Hinweis',
       languageNote: 'Die Sprache wird sofort geändert und gilt in der gesamten App.',
       
       // Form Labels
@@ -686,6 +698,12 @@ const resources = {
       appLanguage: 'App-språk',
       uiLanguage: 'Grensesnittspråk',
       logout: 'Logg ut',
+      userProfile: 'Brukerprofil',
+      emailSendSettings: 'E-postsendingsinnstillinger',
+      defaultRecipient: 'Standard mottaker (TO)',
+      emailSeparatorNote: 'Skill flere adresser med komma eller semikolon',
+      emailNote: 'E-posten vil bli sendt fra din e-postapp. Du kontrollerer avsenderkontoen i e-postappen din.',
+      note: 'Merk',
       languageNote: 'Språket endres umiddelbart og gjelder i hele appen.',
       
       // Form Labels

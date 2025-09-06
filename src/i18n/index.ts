@@ -316,6 +316,11 @@ const resources = {
       // Export
       supportedFormats: 'Supported formats: .xlsx, .xls',
       maxFileSize: 'Maximum file size: 10 MB',
+      excelImport: 'Excel Import',
+      excelImportDescription: 'Upload Excel files to import job data',
+      selectExcelFile: 'Select Excel file',
+      uploading: 'Uploading...',
+      pleaseSelectExcelFile: 'Please select an Excel file (.xlsx or .xls)',
       
       // General
       addMoreData: 'You can add more data',
@@ -619,6 +624,11 @@ const resources = {
       // Export
       supportedFormats: 'Unterstützte Formate: .xlsx, .xls',
       maxFileSize: 'Maximale Dateigröße: 10 MB',
+      excelImport: 'Excel Import',
+      excelImportDescription: 'Laden Sie Excel-Dateien hoch um Auftragsdaten zu importieren',
+      selectExcelFile: 'Excel-Datei auswählen',
+      uploading: 'Wird hochgeladen...',
+      pleaseSelectExcelFile: 'Bitte wählen Sie eine Excel-Datei (.xlsx oder .xls)',
       
       // General
       addMoreData: 'Du kannst weitere Daten hinzufügen',
@@ -928,6 +938,11 @@ const resources = {
       // Export
       supportedFormats: 'Støttede formater: .xlsx, .xls',
       maxFileSize: 'Maksimal filstørrelse: 10 MB',
+      excelImport: 'Excel Import',
+      excelImportDescription: 'Last opp Excel-filer for å importere jobbdata',
+      selectExcelFile: 'Velg Excel-fil',
+      uploading: 'Laster opp...',
+      pleaseSelectExcelFile: 'Vennligst velg en Excel-fil (.xlsx eller .xls)',
       
       // General
       addMoreData: 'Du kan legge til mer data',

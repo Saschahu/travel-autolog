@@ -25,7 +25,7 @@ export const ExcelUpload = () => {
     ];
 
     if (!allowedTypes.includes(file.type)) {
-      alert('Bitte wählen Sie eine Excel-Datei (.xlsx oder .xls)');
+      alert(t('pleaseSelectExcelFile'));
       return;
     }
 
@@ -42,10 +42,10 @@ export const ExcelUpload = () => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <FileSpreadsheet className="h-5 w-5" />
-          Excel Import
+          {t('excelImport')}
         </CardTitle>
         <CardDescription>
-          Laden Sie Excel-Dateien hoch um Auftragsdaten zu importieren
+          {t('excelImportDescription')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -68,7 +68,7 @@ export const ExcelUpload = () => {
           ) : (
             <Upload className="h-4 w-4 mr-2" />
           )}
-          {isUploading ? 'Wird hochgeladen...' : 'Excel-Datei auswählen'}
+          {isUploading ? t('uploading') : t('selectExcelFile')}
         </Button>
 
         <div className="text-sm text-muted-foreground">

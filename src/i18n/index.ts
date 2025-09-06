@@ -603,6 +603,15 @@ const resources = {
       surchargeOver12h: 'Tillegg over 12t (%)',
       weekendSurcharges: 'Helgetillegg',
       weekendDescription: 'Automatiske tillegg fra fredag kveld til mandag morgen',
+
+      // Overtime Display
+      'overtime.base': 'OT',
+      'overtime.surcharge': 'Tillegg',
+      'overtime.credit': 'krediterbar',
+      'overtime.formula.ot50': '{{base}} OT50 + {{surcharge}} Tillegg50',
+      'overtime.formula.ot100': '{{base}} OT100 + {{surcharge}} Tillegg100',
+      'overtime.formula.saturday': '{{base}} Lørdag + {{surcharge}} Tillegg',
+      'overtime.formula.sunday': '{{base}} Søndag + {{surcharge}} Tillegg',
       
       // Location
       longitude: 'Lengdegrad',

@@ -6,36 +6,36 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { FolderOpen, Mail, Plus, TestTube, AlertCircle, Check, X, Info, Loader2 } from 'lucide-react';
+import { FolderOpen, Mail, Plus, TestTube, AlertCircle, Check, X, Info, Loader2, RefreshCw } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import {
+  pickDirectory,
+  loadPersistedDirectory,
+  persistDirectory,
+  clearDirectorySelection,
+  testWrite,
+  checkDirectoryPermission,
+  getDisplayName,
+  getPermissionStatus,
   isFileSystemAccessSupported,
-  isInCrossOriginFrame,
-  pickDirectoryDirect,
-  openDirectoryPickerBridge,
-  waitForBridgeSelection,
-  createSubdirectory,
-  queryPermission,
-  requestPermission,
-  computeDisplayName
-} from '@/lib/fsAccess';
-import { loadExportHandle, loadExportMeta, saveExportHandle, clearExportHandle } from '@/lib/fsStore';
+  isInCrossOriginFrame
+} from '@/lib/fs/directoryPicker';
 import {
   EMAIL_PROVIDERS,
   openCompose,
   getTestMessage,
   getProviderById
 } from '@/lib/emailProviders';
-import { DirectoryPicker } from '@/plugins/directoryPicker';
 import { isNativeAndroid } from '@/lib/platform';
 import { Slider } from '@/components/ui/slider';
 import { useSettingsStore } from '@/state/settingsStore';
+import type { ExportFolderRef } from '@/lib/fs/directoryPicker';
 
 interface ExportSettingsData {
   directoryHandle?: any;
   directoryName: string;
   preferredEmailProvider: string;
-  exportDirUri?: string; // Android SAF URI
+  exportDirUri?: string; // Android SAF URI (legacy)
 }
 
 interface ExportSettingsProps {
@@ -45,197 +45,118 @@ interface ExportSettingsProps {
 
 export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsProps) => {
   const { toast } = useToast();
-  const { pdfQuality = 60, setPdfQuality } = useSettingsStore();
+  const { pdfQuality = 60, setPdfQuality, exportDirRef, setExportDirRef } = useSettingsStore();
   const [isPickingDirectory, setIsPickingDirectory] = useState(false);
-  const [isCreatingFolder, setIsCreatingFolder] = useState(false);
+  const [isTestingWrite, setIsTestingWrite] = useState(false);
+  const [isCheckingPermission, setIsCheckingPermission] = useState(false);
+  const [permissionValid, setPermissionValid] = useState<boolean | null>(null);
   const [isTesting, setIsTesting] = useState(false);
-  const [folderName, setFolderName] = useState('ServiceTracker');
-  const [displayName, setDisplayName] = useState<string | null>(null);
-  const [permissionStatus, setPermissionStatus] = useState<PermissionState | null>(null);
-  const [hasHandle, setHasHandle] = useState(false);
   
-  const isSupported = isFileSystemAccessSupported();
+  const isWebSupported = isFileSystemAccessSupported();
+  const isAndroid = isNativeAndroid();
+  const isCrossOrigin = isInCrossOriginFrame();
 
-  // Reload folder state from storage
-  const reload = useCallback(async () => {
+  // Load and validate directory state
+  const reloadDirectory = useCallback(async () => {
     try {
-      const [handle, meta] = await Promise.all([loadExportHandle(), loadExportMeta()]);
-      if (handle) {
-        setHasHandle(true);
-        const permission = await queryPermission(handle);
-        setPermissionStatus(permission);
-        const name = computeDisplayName(handle, meta || undefined);
-        setDisplayName(name);
+      const ref = await loadPersistedDirectory();
+      if (ref) {
+        // Check permission
+        const hasPermission = await checkDirectoryPermission(ref);
+        setPermissionValid(hasPermission);
         
-        onSettingsChange({
-          ...settings,
-          directoryHandle: handle,
-          directoryName: name
-        });
+        if (hasPermission) {
+          setExportDirRef(ref);
+          await persistDirectory(ref); // Ensure it's persisted
+        } else {
+          // Permission lost, clear reference
+          setExportDirRef(undefined);
+          await clearDirectorySelection();
+        }
       } else {
-        setHasHandle(false);
-        setPermissionStatus(null);
-        setDisplayName(null);
-        onSettingsChange({
-          ...settings,
-          directoryHandle: undefined,
-          directoryName: ''
-        });
+        setExportDirRef(undefined);
+        setPermissionValid(null);
       }
     } catch (error) {
-      console.error('Failed to reload folder state:', error);
-      setHasHandle(false);
-      setPermissionStatus(null);
-      setDisplayName(null);
+      console.error('Failed to reload directory state:', error);
+      setExportDirRef(undefined);
+      setPermissionValid(null);
     }
-  }, [settings, onSettingsChange]);
+  }, [setExportDirRef]);
 
-  // Load persisted directory handle on mount and setup listeners
+  // Load directory on mount and setup listeners
   useEffect(() => {
-    if (isSupported) {
-      reload();
-    }
+    reloadDirectory();
 
-    // Listen for bridge selection via BroadcastChannel
-    let bc: BroadcastChannel | null = null;
-    try {
-      bc = new BroadcastChannel('fs-bridge');
-      bc.onmessage = (ev) => {
-        if (ev.data?.type === 'fs:selected' && ev.data.key === 'exportDir') {
-          reload();
+    // Listen for bridge selection via BroadcastChannel (web only)
+    if (!isAndroid) {
+      let bc: BroadcastChannel | null = null;
+      try {
+        bc = new BroadcastChannel('fs-bridge');
+        bc.onmessage = (ev) => {
+          if (ev.data?.type === 'fs:selected' && ev.data.key === 'exportDir') {
+            reloadDirectory();
+          }
+        };
+      } catch (error) {
+        console.warn('BroadcastChannel not available:', error);
+      }
+
+      // Fallback: listen for focus events and check localStorage
+      const onFocus = () => {
+        const timestamp = localStorage.getItem('fs.exportDir.selectedAt');
+        if (timestamp && Number(timestamp) > Date.now() - 30000) {
+          localStorage.removeItem('fs.exportDir.selectedAt');
+          reloadDirectory();
         }
       };
-    } catch (error) {
-      console.warn('BroadcastChannel not available:', error);
+      window.addEventListener('focus', onFocus);
+
+      return () => {
+        if (bc) bc.close();
+        window.removeEventListener('focus', onFocus);
+      };
     }
-
-    // Fallback: listen for focus events and check localStorage
-    const onFocus = () => {
-      const timestamp = localStorage.getItem('fs.exportDir.selectedAt');
-      if (timestamp && Number(timestamp) > Date.now() - 30000) {
-        localStorage.removeItem('fs.exportDir.selectedAt');
-        reload();
-      }
-    };
-    window.addEventListener('focus', onFocus);
-
-    return () => {
-      if (bc) bc.close();
-      window.removeEventListener('focus', onFocus);
-    };
-  }, [isSupported, reload]);
+  }, [reloadDirectory, isAndroid]);
 
   const handleDirectoryPick = async () => {
     setIsPickingDirectory(true);
     
     try {
-      if (isNativeAndroid()) {
-        // Android SAF picker
-        const { uri } = await DirectoryPicker.pickDirectory();
-        
-        // Save URI to settings
-        onSettingsChange({
-          ...settings,
-          exportDirUri: uri,
-          directoryName: 'Android Ordner'
-        });
+      const result = await pickDirectory();
+      
+      if (result.success && result.ref) {
+        setExportDirRef(result.ref);
+        await persistDirectory(result.ref);
+        setPermissionValid(true);
         
         toast({
           title: 'Ordner ausgewählt',
-          description: 'Android Ordner wurde erfolgreich ausgewählt'
+          description: `Exportpfad gesetzt: ${getDisplayName(result.ref)}`
         });
+      } else if (result.error && !result.error.includes('cancelled')) {
+        let friendlyMessage = result.error;
         
-        setIsPickingDirectory(false);
-        return;
-      }
-    } catch (error: any) {
-      if (String(error).includes('USER_CANCELLED')) {
-        setIsPickingDirectory(false);
-        return;
-      }
-      
-      toast({
-        variant: "destructive",
-        title: "Android Ordnerauswahl fehlgeschlagen",
-        description: "Bitte versuchen Sie es erneut.",
-      });
-      
-      setIsPickingDirectory(false);
-      return;
-    }
-    
-    if (!isSupported) {
-      setIsPickingDirectory(false);
-      return;
-    }
-    
-    // Web: Try direct picker first (if not in cross-origin iframe)
-    if (isFileSystemAccessSupported() && !isInCrossOriginFrame()) {
-      try {
-        const handle = await pickDirectoryDirect();
-        
-        if (handle) {
-          await reload(); // Reload state after successful selection
-          
-          toast({
-            title: 'Ordner ausgewählt',
-            description: `Exportpfad gesetzt: ${computeDisplayName(handle)}`
-          });
-          
-          setIsPickingDirectory(false);
-          return;
-        }
-      } catch (error) {
-        console.error('Directory picker error:', error);
-        const message = error instanceof Error ? error.message : 'Ordnerauswahl fehlgeschlagen';
-        
-        // Handle specific error cases
-        let friendlyMessage = message;
-        if (message.includes('No user activation')) {
+        if (result.error.includes('No user activation')) {
           friendlyMessage = 'Bitte klicken Sie den Button direkt an (keine automatischen Aktionen).';
-        } else if (message.includes('not supported')) {
+        } else if (result.error.includes('not supported')) {
           friendlyMessage = 'Ihr Browser unterstützt die Ordnerauswahl nicht.';
-        } else if (message.includes('denied')) {
-          friendlyMessage = 'Berechtigung verweigert. Bitte versuchen Sie es erneut.';
+        } else if (result.error.includes('Pop-up blocked')) {
+          friendlyMessage = 'Pop-ups wurden blockiert. Bitte erlauben Sie Pop-ups und versuchen Sie es erneut.';
         }
         
         toast({
           variant: "destructive",
-          title: "Ordnerauswahl nicht möglich",
+          title: "Ordnerauswahl fehlgeschlagen",
           description: friendlyMessage,
         });
-        
-        setIsPickingDirectory(false);
-        return;
       }
-    }
-    
-    // Bridge flow: open new tab and wait for selection
-    try {
-      const opened = openDirectoryPickerBridge();
-      
-      if (!opened) {
-        toast({
-          variant: "destructive",
-          title: "Pop-up blockiert",
-          description: "Bitte erlauben Sie Pop-ups für diese Seite und versuchen Sie es erneut.",
-        });
-        setIsPickingDirectory(false);
-        return;
-      }
-      
-      toast({
-        title: "Neuer Tab geöffnet",
-        description: "Bitte klicken Sie dort auf 'Ordnerauswahl starten'.",
-      });
-      
-      // Don't wait here - let the BroadcastChannel/focus listeners handle it
     } catch (error) {
-      console.error('Bridge selection error:', error);
+      console.error('Directory picker error:', error);
       toast({
         variant: "destructive",
-        title: "Ordnerauswahl fehlgeschlagen",
-        description: "Bitte versuchen Sie es erneut.",
+        title: "Fehler bei Ordnerauswahl",
+        description: "Ein unbekannter Fehler ist aufgetreten.",
       });
     } finally {
       setIsPickingDirectory(false);
@@ -252,63 +173,85 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
         title: "Pop-up blockiert",
         description: "Bitte erlauben Sie Pop-ups für diese Seite und versuchen Sie es erneut.",
       });
-    }
-  };
-
-  const handleCreateSubfolder = async () => {
-    if (!settings.directoryHandle || !folderName.trim()) return;
-    
-    setIsCreatingFolder(true);
-    try {
-      const subHandle = await createSubdirectory(settings.directoryHandle, folderName.trim());
-      const parentName = displayName || settings.directoryHandle.name || 'Ausgewählter Ordner';
-      const newDisplayName = `${parentName}/${folderName.trim()}`;
-      
-      await saveExportHandle(subHandle, { 
-        displayName: newDisplayName,
-        createdByApp: true 
-      });
-      
-      await reload(); // Reload state after creating subfolder
-      
-      toast({
-        title: 'Unterordner erstellt',
-        description: `Neuer Exportpfad: ${newDisplayName}`
-      });
-    } catch (error) {
-      console.error('Failed to create subdirectory:', error);
-      toast({
-        title: 'Fehler beim Erstellen des Unterordners',
-        description: error instanceof Error ? error.message : 'Unbekannter Fehler',
-        variant: 'destructive'
-      });
-    } finally {
-      setIsCreatingFolder(false);
-    }
-  };
-
-  const handleRequestPermission = async () => {
-    if (!settings.directoryHandle) return;
-    
-    const granted = await requestPermission(settings.directoryHandle);
-    if (granted) {
-      await reload();
-      toast({
-        title: 'Berechtigung erteilt',
-        description: 'Zugriff auf den Ordner wurde wieder erlaubt.'
-      });
     } else {
       toast({
-        title: 'Berechtigung verweigert',
-        description: 'Zugriff auf den Ordner wurde nicht erlaubt.',
-        variant: 'destructive'
+        title: "Neuer Tab geöffnet",
+        description: "Bitte klicken Sie dort auf 'Ordnerauswahl starten'.",
       });
+    }
+  };
+
+  const handleTestWrite = async () => {
+    if (!exportDirRef) return;
+    
+    setIsTestingWrite(true);
+    try {
+      const result = await testWrite(exportDirRef);
+      
+      if (result.success) {
+        toast({
+          title: 'Testschreibung erfolgreich',
+          description: `Datei "${result.fileName}" wurde erfolgreich erstellt.`
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: 'Testschreibung fehlgeschlagen',
+          description: result.error || 'Unbekannter Fehler beim Schreiben der Testdatei'
+        });
+      }
+    } catch (error) {
+      console.error('Test write error:', error);
+      toast({
+        variant: "destructive",
+        title: 'Testschreibung fehlgeschlagen',
+        description: 'Ein unbekannter Fehler ist aufgetreten.'
+      });
+    } finally {
+      setIsTestingWrite(false);
+    }
+  };
+
+  const handleCheckPermission = async () => {
+    if (!exportDirRef) return;
+    
+    setIsCheckingPermission(true);
+    try {
+      const hasPermission = await checkDirectoryPermission(exportDirRef);
+      setPermissionValid(hasPermission);
+      
+      if (hasPermission) {
+        toast({
+          title: 'Berechtigung gültig',
+          description: 'Zugriff auf den Ordner ist weiterhin erlaubt.'
+        });
+      } else {
+        toast({
+          title: 'Berechtigung verloren',
+          description: 'Zugriff auf den Ordner wurde entzogen. Bitte wählen Sie den Ordner erneut.',
+          variant: 'destructive'
+        });
+        // Clear the invalid reference
+        setExportDirRef(undefined);
+        await clearDirectorySelection();
+      }
+    } catch (error) {
+      console.error('Permission check error:', error);
+      toast({
+        variant: "destructive",
+        title: 'Fehler bei Berechtigungsprüfung',
+        description: 'Berechtigungsstatus konnte nicht überprüft werden.'
+      });
+    } finally {
+      setIsCheckingPermission(false);
     }
   };
 
   const handleClearSelection = async () => {
-    await clearExportHandle();
-    await reload();
+    setExportDirRef(undefined);
+    await clearDirectorySelection();
+    setPermissionValid(null);
+    
     toast({
       title: 'Auswahl gelöscht',
       description: 'Ordnerauswahl wurde entfernt.'
@@ -358,14 +301,11 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {!isSupported && !isNativeAndroid() ? (
+          {!isWebSupported && !isAndroid ? (
             <Alert>
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>
-                {isNativeAndroid() 
-                  ? "Nutzen Sie den Android Ordner-Picker für bessere Funktionalität."
-                  : "Ihr Browser unterstützt die Ordner-Auswahl nicht. Es wird der Standard-Download-Ordner verwendet."
-                }
+                Ihr Browser unterstützt die Ordner-Auswahl nicht. Es wird der Standard-Download-Ordner verwendet.
               </AlertDescription>
             </Alert>
           ) : (
@@ -373,55 +313,59 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
               <div className="mb-4">
                 <Label>Gewählter Ordner</Label>
                 <div className="mt-2 p-3 rounded-lg border bg-background">
-                  {(hasHandle && displayName) || settings.exportDirUri ? (
+                  {exportDirRef ? (
                     <div className="flex items-center justify-between gap-3">
                       <div className="flex-1 min-w-0">
                         <div className="font-medium truncate">
-                          {isNativeAndroid() && settings.exportDirUri 
-                            ? settings.directoryName || 'Android Ordner'
-                            : displayName
-                          }
+                          {getDisplayName(exportDirRef)}
                         </div>
-                        <div className="text-xs text-muted-foreground">
-                          {isNativeAndroid() && settings.exportDirUri ? (
-                            'Android SAF Berechtigung: erteilt'
-                          ) : (
-                            `Berechtigung: ${
-                              permissionStatus === 'granted' 
-                                ? 'erteilt' 
-                                : permissionStatus === 'denied' 
-                                  ? 'verweigert' 
-                                  : 'ausstehend'
-                            }`
+                        <div className="text-xs text-muted-foreground flex items-center gap-2">
+                          <span>
+                            {getPermissionStatus(exportDirRef)}
+                            {permissionValid === false && ' (verloren)'}
+                          </span>
+                          {permissionValid === false && (
+                            <Badge variant="destructive" className="text-xs">
+                              Berechtigung verloren
+                            </Badge>
                           )}
                         </div>
                       </div>
                       <div className="flex items-center gap-2 flex-shrink-0">
-                        {permissionStatus !== 'granted' && (
+                        {permissionValid === false && (
                           <Button
-                            onClick={handleRequestPermission}
+                            onClick={handleCheckPermission}
+                            disabled={isCheckingPermission}
                             variant="outline"
                             size="sm"
                           >
-                            Zugriff erlauben
+                            {isCheckingPermission ? (
+                              <Loader2 className="h-3 w-3 animate-spin" />
+                            ) : (
+                              <RefreshCw className="h-3 w-3" />
+                            )}
                           </Button>
                         )}
                         <Button
-                          onClick={() => {
-                            if (isNativeAndroid() && settings.exportDirUri) {
-                              onSettingsChange({
-                                ...settings,
-                                exportDirUri: undefined,
-                                directoryName: ''
-                              });
-                              toast({
-                                title: 'Android Ordner entfernt',
-                                description: 'Ordnerauswahl wurde zurückgesetzt.'
-                              });
-                            } else {
-                              handleClearSelection();
-                            }
-                          }}
+                          onClick={handleTestWrite}
+                          disabled={isTestingWrite || !exportDirRef || permissionValid === false}
+                          variant="secondary"
+                          size="sm"
+                        >
+                          {isTestingWrite ? (
+                            <>
+                              <Loader2 className="mr-1 h-3 w-3 animate-spin" />
+                              Test...
+                            </>
+                          ) : (
+                            <>
+                              <TestTube className="mr-1 h-3 w-3" />
+                              Test schreiben
+                            </>
+                          )}
+                        </Button>
+                        <Button
+                          onClick={handleClearSelection}
                           variant="outline"
                           size="sm"
                         >
@@ -452,11 +396,11 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
                     ) : (
                       <>
                         <FolderOpen className="mr-2 h-4 w-4" />
-                        {isNativeAndroid() ? 'Ordner wählen (Android)' : 'Ordner wählen'}
+                        {isAndroid ? 'Ordner wählen (Android)' : 'Ordner wählen'}
                       </>
                     )}
                   </Button>
-                  {isInCrossOriginFrame() && (
+                  {isCrossOrigin && !isAndroid && (
                     <Button
                       onClick={handleDirectoryPickInNewTab}
                       variant="secondary"
@@ -468,47 +412,21 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
                 </div>
               </div>
               
-              {isInCrossOriginFrame() && (
+              {isCrossOrigin && !isAndroid && (
                 <Alert className="mb-4">
                   <Info className="h-4 w-4" />
                   <AlertDescription>
                     Ordnerauswahl im eingebetteten Fenster nicht möglich. 
-                    Klicken Sie "Ordner wählen", es öffnet sich ein neuer Tab. 
-                    Dort auf "Ordnerauswahl starten" klicken.
+                    Verwenden Sie "In neuem Tab wählen" oder "Ordner wählen" (öffnet neuen Tab).
                   </AlertDescription>
                 </Alert>
               )}
-
-              {hasHandle && permissionStatus === 'granted' && (
-                <div className="space-y-3 pt-3 border-t">
-                  <Label htmlFor="folder-name">Neuen Unterordner anlegen</Label>
-                  <div className="flex gap-2">
-                    <Input
-                      id="folder-name"
-                      value={folderName}
-                      onChange={(e) => setFolderName(e.target.value)}
-                      placeholder="Ordnername (z.B. ServiceTracker)"
-                      className="flex-1"
-                    />
-                    <Button
-                      onClick={handleCreateSubfolder}
-                      disabled={isCreatingFolder || !folderName.trim()}
-                      variant="outline"
-                      size="sm"
-                    >
-                      <Plus className="h-4 w-4 mr-2" />
-                      {isCreatingFolder ? 'Erstelle...' : 'Erstellen'}
-                    </Button>
-                  </div>
-                </div>
-              )}
-
-              {permissionStatus === 'denied' && hasHandle && (
-                <Alert>
-                  <AlertCircle className="h-4 w-4" />
+              
+              {isAndroid && !exportDirRef && (
+                <Alert className="mb-4">
+                  <Info className="h-4 w-4" />
                   <AlertDescription>
-                    Zugriff auf den gewählten Ordner wurde verweigert oder ist abgelaufen. 
-                    Bitte wählen Sie den Ordner erneut aus.
+                    Wählen Sie einen Ordner für den Export. Die App verwendet den Android Storage Access Framework (SAF) für sicheren Dateizugriff.
                   </AlertDescription>
                 </Alert>
               )}
@@ -516,7 +434,7 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
           )}
 
           <p className="text-xs text-muted-foreground">
-            {isSupported 
+            {isWebSupported || isAndroid
               ? "Wenn kein Ordner gewählt ist, wird der Standard-Download-Ordner verwendet."
               : "Excel-Dateien werden in Ihrem Standard-Download-Ordner gespeichert."
             }

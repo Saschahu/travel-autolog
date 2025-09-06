@@ -8,7 +8,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import { Auth } from "./pages/Auth";
 import NotFound from "./pages/NotFound";
-import DirectoryPickerBridge from "./pages/DirectoryPickerBridge";
+import { DirectoryPickerBridge } from "./pages/DirectoryPickerBridge";
 
 const queryClient = new QueryClient();
 

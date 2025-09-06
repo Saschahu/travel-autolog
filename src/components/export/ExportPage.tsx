@@ -63,7 +63,7 @@ export const ExportPage = ({ jobs }: ExportPageProps) => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <FileSpreadsheet className="h-5 w-5 text-primary" />
-            Excel Export
+            {t('excelExport')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -79,7 +79,7 @@ export const ExportPage = ({ jobs }: ExportPageProps) => {
                 <SelectValue placeholder="Alle" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Alle</SelectItem>
+                <SelectItem value="all">{t('exportAll')}</SelectItem>
                 {jobs.map(j => (
                   <SelectItem key={j.id} value={j.id}>{`${j.customerName || 'Unbenannt'} — ${j.id}`}</SelectItem>
                 ))}
@@ -92,19 +92,19 @@ export const ExportPage = ({ jobs }: ExportPageProps) => {
             <h4 className="text-sm font-medium mb-3">{t('exportOverview')}</h4>
             <div className="grid grid-cols-2 gap-2 text-sm">
               <div className="flex justify-between">
-                <span>Gesamt:</span>
+                <span>{t('totalJobs')}</span>
                 <Badge variant="outline">{stats.total}</Badge>
               </div>
               <div className="flex justify-between">
-                <span>Aktive:</span>
+                <span>{t('activeJobsStats')}</span>
                 <Badge variant="default">{stats.active}</Badge>
               </div>
               <div className="flex justify-between">
-                <span>Offene:</span>
+                <span>{t('openJobsStats')}</span>
                 <Badge variant="outline">{stats.open}</Badge>
               </div>
               <div className="flex justify-between">
-                <span>Abgeschlossen:</span>
+                <span>{t('completedJobsStats')}</span>
                 <Badge variant="secondary">{stats.completed}</Badge>
               </div>
             </div>
@@ -118,7 +118,7 @@ export const ExportPage = ({ jobs }: ExportPageProps) => {
             className="w-full gap-2"
           >
             <Download className="h-4 w-4" />
-            {isExporting ? 'Exportiere...' : `Excel exportieren (${filteredJobs.length} Aufträge)`}
+            {isExporting ? t('exporting') : `${t('exportExcel')} (${filteredJobs.length} ${t('jobsCount')})`}
           </Button>
         </CardContent>
       </Card>
@@ -131,14 +131,14 @@ export const ExportPage = ({ jobs }: ExportPageProps) => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Calendar className="h-5 w-5 text-primary" />
-            Export-Verlauf
+            {t('exportHistory')}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-center py-8 text-muted-foreground">
             <FileSpreadsheet className="h-12 w-12 mx-auto mb-4 opacity-50" />
-            <p className="text-sm">Noch keine Exports erstellt</p>
-            <p className="text-xs mt-1">Deine Export-Historie wird hier angezeigt</p>
+            <p className="text-sm">{t('noExportsCreated')}</p>
+            <p className="text-xs mt-1">{t('exportHistoryWillShow')}</p>
           </div>
         </CardContent>
       </Card>
@@ -148,22 +148,22 @@ export const ExportPage = ({ jobs }: ExportPageProps) => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Mail className="h-5 w-5 text-primary" />
-            Export-Informationen
+            {t('exportInformation')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3 text-sm text-muted-foreground">
           <div className="flex items-start gap-2">
             <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
             <div>
-              <p className="font-medium text-foreground">Excel-Format</p>
-              <p>Exportiert als .xlsx Datei mit formatierten Tabellen</p>
+              <p className="font-medium text-foreground">{t('excelFormat')}</p>
+              <p>{t('exportedAsXlsx')}</p>
             </div>
           </div>
           <div className="flex items-start gap-2">
             <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
             <div>
-              <p className="font-medium text-foreground">E-Mail Integration</p>
-              <p>Direkte Weiterleitung an deine bevorzugte E-Mail-App</p>
+              <p className="font-medium text-foreground">{t('emailIntegration')}</p>
+              <p>{t('directForwarding')}</p>
             </div>
           </div>
           <div className="flex items-start gap-2">

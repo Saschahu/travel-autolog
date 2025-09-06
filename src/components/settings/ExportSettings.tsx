@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -45,6 +46,7 @@ interface ExportSettingsProps {
 
 export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsProps) => {
   const { toast } = useToast();
+  const { t } = useTranslation();
   const { pdfQuality = 60, setPdfQuality, exportDirRef, setExportDirRef } = useSettingsStore();
   const [isPickingDirectory, setIsPickingDirectory] = useState(false);
   const [isTestingWrite, setIsTestingWrite] = useState(false);
@@ -297,7 +299,7 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
             <FolderOpen className="h-4 w-4 text-primary" />
-            Lokaler Speicherpfad
+            {t('localStoragePath')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -311,7 +313,7 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
           ) : (
             <>
               <div className="mb-4">
-                <Label>Gewählter Ordner</Label>
+                <Label>{t('selectedFolder')}</Label>
                 <div className="mt-2 p-3 rounded-lg border bg-background">
                   {exportDirRef ? (
                     <div className="flex items-center justify-between gap-3">
@@ -326,7 +328,7 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
                           </span>
                           {permissionValid === false && (
                             <Badge variant="destructive" className="text-xs">
-                              Berechtigung verloren
+                              {t('permissionLost')}
                             </Badge>
                           )}
                         </div>
@@ -360,7 +362,7 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
                           ) : (
                             <>
                               <TestTube className="mr-1 h-3 w-3" />
-                              Test schreiben
+                              {t('testWrite')}
                             </>
                           )}
                         </Button>
@@ -369,13 +371,13 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
                           variant="outline"
                           size="sm"
                         >
-                          Auswahl löschen
+                          {t('clearSelection')}
                         </Button>
                       </div>
                     </div>
                   ) : (
                     <div className="text-sm text-muted-foreground">
-                      Kein Ordner ausgewählt
+                      {t('noFolderSelected')}
                     </div>
                   )}
                 </div>
@@ -391,12 +393,12 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
                     {isPickingDirectory ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Wähle Ordner...
+                        {t('selectingFolder')}
                       </>
                     ) : (
                       <>
                         <FolderOpen className="mr-2 h-4 w-4" />
-                        {isAndroid ? 'Ordner wählen (Android)' : 'Ordner wählen'}
+                        {isAndroid ? `${t('selectFolder')} (Android)` : t('selectFolder')}
                       </>
                     )}
                   </Button>
@@ -406,7 +408,7 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
                       variant="secondary"
                       size="sm"
                     >
-                      In neuem Tab wählen
+                      {t('selectInNewTab')}
                     </Button>
                   )}
                 </div>
@@ -447,13 +449,13 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
             <Info className="h-4 w-4 text-primary" />
-            PDF-Einstellungen
+            {t('pdfSettings')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <Label htmlFor="pdf-quality">PDF-Qualität</Label>
+              <Label htmlFor="pdf-quality">{t('pdfQuality')}</Label>
               <span className="text-sm font-medium">{pdfQuality}%</span>
             </div>
             <Slider
@@ -477,12 +479,12 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
             <Mail className="h-4 w-4 text-primary" />
-            Bevorzugte E-Mail-Anwendung
+            {t('preferredEmailApp')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email-provider">E-Mail-Provider auswählen</Label>
+            <Label htmlFor="email-provider">{t('selectEmailProvider')}</Label>
             <Select
               value={settings.preferredEmailProvider}
               onValueChange={(value) => 
@@ -528,7 +530,7 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
                 size="sm"
               >
                 <TestTube className="h-4 w-4 mr-2" />
-                {isTesting ? 'Teste...' : 'Testen'}
+                {isTesting ? t('testing') : t('test')}
               </Button>
             </div>
           )}
@@ -536,8 +538,7 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
           <Alert>
             <AlertCircle className="h-4 w-4" />
             <AlertDescription className="text-xs">
-              Installierte Desktop-Programme können im Browser nicht automatisch erkannt werden. 
-              Die Auswahl öffnet Web-basierte E-Mail-Clients oder das System-Standard-Programm.
+              {t('emailClientLimitation')}
             </AlertDescription>
           </Alert>
         </CardContent>

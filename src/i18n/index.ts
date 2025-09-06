@@ -168,6 +168,13 @@ const resources = {
       // Settings
       profile: 'Profile',
       gps: 'GPS',
+      settings: 'Settings',
+      holidays: 'Holidays',
+      advanced: 'Advanced',
+      appLanguage: 'App language',
+      uiLanguage: 'Interface language',
+      languageNote: 'Language changes immediately and applies across the app.',
+      preferredLanguage: 'Preferred language',
       
       // Form Labels
       jobsToExport: 'Jobs to Export:',
@@ -368,6 +375,13 @@ const resources = {
       // Settings
       profile: 'Profil',
       gps: 'GPS',
+      settings: 'Einstellungen',
+      holidays: 'Feiertage',
+      advanced: 'Erweitert',
+      appLanguage: 'App-Sprache',
+      uiLanguage: 'Sprache der Benutzeroberfläche',
+      languageNote: 'Die Sprache wird sofort geändert und gilt in der gesamten App.',
+      preferredLanguage: 'Bevorzugte Sprache',
       
       // Form Labels
       jobsToExport: 'Zu exportierende Aufträge:',
@@ -570,6 +584,13 @@ const resources = {
       // Settings
       profile: 'Profil',
       gps: 'GPS',
+      settings: 'Innstillinger',
+      holidays: 'Helligdager',
+      advanced: 'Avansert',
+      appLanguage: 'App-språk',
+      uiLanguage: 'Grensesnittspråk',
+      languageNote: 'Språket endres umiddelbart og gjelder i hele appen.',
+      preferredLanguage: 'Foretrukket språk',
       
       // Form Labels
       workPerformed: 'Arbeid som skal utføres',

@@ -248,7 +248,7 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Settings className="h-5 w-5 text-primary" />
-            Einstellungen
+            {t('settings')}
           </DialogTitle>
         </DialogHeader>
 
@@ -258,8 +258,8 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
             <TabsTrigger value="export">{t('export')}</TabsTrigger>
             <TabsTrigger value="gps">{t('gps')}</TabsTrigger>
             <TabsTrigger value="overtime">{t('overtime')}</TabsTrigger>
-            <TabsTrigger value="holidays">Feiertage</TabsTrigger>
-            <TabsTrigger value="advanced">Erweitert</TabsTrigger>
+            <TabsTrigger value="holidays">{t('holidays')}</TabsTrigger>
+            <TabsTrigger value="advanced">{t('advanced')}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="profile" className="space-y-6">
@@ -438,14 +438,14 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
                     onClick={() => { console.log('Dashboard button clicked'); onOpenChange(false); onGoDashboard?.(); }}
                     className="flex-1 h-12 text-base font-medium touch-manipulation"
                   >
-                    Dashboard
+                    {t('dashboard')}
                   </Button>
                   <Button
                     type="submit"
                     disabled={saving}
                     className="flex-1 h-12 text-base font-medium touch-manipulation"
                   >
-                    {saving ? 'Speichern…' : 'Speichern'}
+                    {saving ? t('saving') : t('save')}
                   </Button>
                 </div>
                 

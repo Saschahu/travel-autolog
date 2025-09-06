@@ -3,6 +3,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Label } from '@/components/ui/label';
 import { useSettingsStore, type LocaleCode } from '@/state/settingsStore';
 import { Languages } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const languages = [
   { code: 'de', name: 'Deutsch' },
@@ -13,6 +14,7 @@ const languages = [
 ];
 
 export const LanguageSettings = () => {
+  const { t } = useTranslation();
   const { locale, setLocale } = useSettingsStore();
 
   return (
@@ -20,12 +22,12 @@ export const LanguageSettings = () => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
           <Languages className="h-4 w-4 text-primary" />
-          App-Sprache
+          {t('appLanguage')}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="app-language">Sprache der Benutzeroberfläche</Label>
+          <Label htmlFor="app-language">{t('uiLanguage')}</Label>
           <Select value={locale} onValueChange={(value: LocaleCode) => setLocale(value)}>
             <SelectTrigger>
               <SelectValue />
@@ -40,8 +42,7 @@ export const LanguageSettings = () => {
           </Select>
         </div>
         <p className="text-xs text-muted-foreground">
-          Die Sprache wird sofort geändert und beeinflusst alle Texte in der App, 
-          einschließlich Dialoge und Berichte.
+          {t('languageNote')}
         </p>
       </CardContent>
     </Card>

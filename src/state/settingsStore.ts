@@ -34,17 +34,13 @@ export const useSettingsStore = create<SettingsState>()(
     }),
     {
       name: 'settings-store',
-      // Custom serialization for ExportFolderRef (cannot serialize FileSystemDirectoryHandle)
-      serialize: (state) => {
-        const { exportDirRef, ...rest } = state.state;
-        return JSON.stringify({
-          state: {
-            ...rest,
-            // Only persist Android URI references, web handles are stored in IndexedDB
-            exportDirRef: exportDirRef?.kind === 'android-uri' ? exportDirRef : undefined
-          },
-          version: state.version
-        });
+      partialize: (state) => {
+        const { exportDirRef, ...rest } = state;
+        return {
+          ...rest,
+          // Only persist Android URI references, web handles are stored in IndexedDB
+          exportDirRef: exportDirRef?.kind === 'android-uri' ? exportDirRef : undefined
+        };
       }
     }
   )

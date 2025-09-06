@@ -129,11 +129,11 @@ export const useExcelExport = () => {
         if (isNativeAndroid() && exportDirUri) {
           try {
             const base64 = await toBase64(blob);
-            await DirectoryPicker.createFile({
-              directoryUri: exportDirUri,
+            await DirectoryPicker.writeFile({
+              dirUri: exportDirUri,
               fileName: defaultFilename,
-              mime: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-              base64
+              mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+              base64Data: base64
             });
             toast({ title: 'Excel Export erfolgreich', description: 'Datei wurde in den gewählten Android Ordner gespeichert' });
             return true;
@@ -179,11 +179,11 @@ export const useExcelExport = () => {
     if (isNativeAndroid() && exportDirUri) {
       try {
         const base64 = await toBase64(blob);
-        await DirectoryPicker.createFile({
-          directoryUri: exportDirUri,
+        await DirectoryPicker.writeFile({
+          dirUri: exportDirUri,
           fileName: defaultFilename,
-          mime: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-          base64
+          mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          base64Data: base64
         });
         toast({ title: 'Excel Export erfolgreich', description: 'Datei wurde in den gewählten Android Ordner gespeichert' });
         URL.revokeObjectURL(url);

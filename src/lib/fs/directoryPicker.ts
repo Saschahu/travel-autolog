@@ -19,6 +19,9 @@ import {
   writeTestFileAndroid
 } from './androidDirectory';
 
+// Re-export functions for external use
+export { isFileSystemAccessSupported, isInCrossOriginFrame } from './webDirectory';
+
 export type ExportFolderRef = WebDirectoryHandle | AndroidDirectoryRef;
 
 export interface DirectoryPickerResult {

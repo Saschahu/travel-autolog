@@ -58,11 +58,11 @@ export async function sendReportEmail(ctx: SendEmailContext): Promise<{ success:
     try {
       // Save PDF to SAF directory
       const base64 = await toBase64(blob);
-      const { uri } = await DirectoryPicker.createFile({
-        directoryUri: exportDirUri,
+      const { uri } = await DirectoryPicker.writeFile({
+        dirUri: exportDirUri,
         fileName,
-        mime: 'application/pdf',
-        base64
+        mimeType: 'application/pdf',
+        base64Data: base64
       });
       
       // Open email composer with attachment

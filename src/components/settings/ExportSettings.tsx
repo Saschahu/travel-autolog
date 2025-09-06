@@ -133,23 +133,23 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
         setPermissionValid(true);
         
         toast({
-          title: 'Ordner ausgewählt',
-          description: `Exportpfad gesetzt: ${getDisplayName(result.ref)}`
+          title: t('success'),
+          description: `${t('exportPathSet')} ${getDisplayName(result.ref)}`
         });
       } else if (result.error && !result.error.includes('cancelled')) {
         let friendlyMessage = result.error;
         
         if (result.error.includes('No user activation')) {
-          friendlyMessage = 'Bitte klicken Sie den Button direkt an (keine automatischen Aktionen).';
+          friendlyMessage = t('clickButtonDirectly');
         } else if (result.error.includes('not supported')) {
-          friendlyMessage = 'Ihr Browser unterstützt die Ordnerauswahl nicht.';
+          friendlyMessage = t('browserNotSupportFolder');
         } else if (result.error.includes('Pop-up blocked')) {
-          friendlyMessage = 'Pop-ups wurden blockiert. Bitte erlauben Sie Pop-ups und versuchen Sie es erneut.';
+          friendlyMessage = t('popupsBlocked');
         }
         
         toast({
           variant: "destructive",
-          title: "Ordnerauswahl fehlgeschlagen",
+          title: t('folderSelectionFailed'),
           description: friendlyMessage,
         });
       }
@@ -157,8 +157,8 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
       console.error('Directory picker error:', error);
       toast({
         variant: "destructive",
-        title: "Fehler bei Ordnerauswahl",
-        description: "Ein unbekannter Fehler ist aufgetreten.",
+        title: t('folderSelectionError'),
+        description: t('unknownError'),
       });
     } finally {
       setIsPickingDirectory(false);
@@ -172,13 +172,13 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
     if (!newTab) {
       toast({
         variant: "destructive",
-        title: "Pop-up blockiert",
-        description: "Bitte erlauben Sie Pop-ups für diese Seite und versuchen Sie es erneut.",
+        title: t('popupBlocked'),
+        description: t('allowPopups'),
       });
     } else {
       toast({
-        title: "Neuer Tab geöffnet",
-        description: "Bitte klicken Sie dort auf 'Ordnerauswahl starten'.",
+        title: t('newTabOpened'),
+        description: t('clickStartFolder'),
       });
     }
   };
@@ -192,22 +192,22 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
       
       if (result.success) {
         toast({
-          title: 'Testschreibung erfolgreich',
-          description: `Datei "${result.fileName}" wurde erfolgreich erstellt.`
+          title: t('testWriteSuccess'),
+          description: t('fileCreatedSuccessfully').replace('{fileName}', result.fileName || '')
         });
       } else {
         toast({
           variant: "destructive",
-          title: 'Testschreibung fehlgeschlagen',
-          description: result.error || 'Unbekannter Fehler beim Schreiben der Testdatei'
+          title: t('testWriteFailed'),
+          description: result.error || t('unknownWriteError')
         });
       }
     } catch (error) {
       console.error('Test write error:', error);
       toast({
         variant: "destructive",
-        title: 'Testschreibung fehlgeschlagen',
-        description: 'Ein unbekannter Fehler ist aufgetreten.'
+        title: t('testWriteFailed'),
+        description: t('unknownError')
       });
     } finally {
       setIsTestingWrite(false);
@@ -224,13 +224,13 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
       
       if (hasPermission) {
         toast({
-          title: 'Berechtigung gültig',
-          description: 'Zugriff auf den Ordner ist weiterhin erlaubt.'
+          title: t('permissionValid'),
+          description: t('folderAccessStillAllowed')
         });
       } else {
         toast({
-          title: 'Berechtigung verloren',
-          description: 'Zugriff auf den Ordner wurde entzogen. Bitte wählen Sie den Ordner erneut.',
+          title: t('permissionLost'),
+          description: t('folderAccessRevoked'),
           variant: 'destructive'
         });
         // Clear the invalid reference
@@ -241,8 +241,8 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
       console.error('Permission check error:', error);
       toast({
         variant: "destructive",
-        title: 'Fehler bei Berechtigungsprüfung',
-        description: 'Berechtigungsstatus konnte nicht überprüft werden.'
+        title: t('permissionCheckError'),
+        description: t('permissionStatusNotChecked')
       });
     } finally {
       setIsCheckingPermission(false);
@@ -255,8 +255,8 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
     setPermissionValid(null);
     
     toast({
-      title: 'Auswahl gelöscht',
-      description: 'Ordnerauswahl wurde entfernt.'
+      title: t('selectionCleared'),
+      description: t('folderSelectionRemoved')
     });
   };
 
@@ -268,21 +268,21 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
       
       if (success) {
         toast({
-          title: 'E-Mail-App geöffnet',
-          description: 'Compose-Fenster wurde erfolgreich geöffnet'
+          title: t('emailAppOpened'),
+          description: t('composeWindowOpened')
         });
       } else {
         toast({
-          title: 'Popup blockiert',
-          description: 'Bitte erlauben Sie Popups für diese Seite und versuchen Sie es erneut',
+          title: t('popupBlockedEmail'),
+          description: t('allowPopupsForEmail'),
           variant: 'destructive'
         });
       }
     } catch (error) {
       console.error('Email test error:', error);
       toast({
-        title: 'Fehler beim Öffnen der E-Mail-App',
-        description: 'E-Mail-App konnte nicht geöffnet werden',
+        title: t('emailAppError'),
+        description: t('emailAppNotOpened'),
         variant: 'destructive'
       });
     } finally {
@@ -307,7 +307,7 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
             <Alert>
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>
-                Ihr Browser unterstützt die Ordner-Auswahl nicht. Es wird der Standard-Download-Ordner verwendet.
+                {t('browserNotSupportFolderAlert')}
               </AlertDescription>
             </Alert>
           ) : (
@@ -324,7 +324,7 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
                         <div className="text-xs text-muted-foreground flex items-center gap-2">
                           <span>
                             {getPermissionStatus(exportDirRef)}
-                            {permissionValid === false && ' (verloren)'}
+                            {permissionValid === false && ` ${t('permissionLostBadge')}`}
                           </span>
                           {permissionValid === false && (
                             <Badge variant="destructive" className="text-xs">
@@ -418,8 +418,7 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
                 <Alert className="mb-4">
                   <Info className="h-4 w-4" />
                   <AlertDescription>
-                    Ordnerauswahl im eingebetteten Fenster nicht möglich. 
-                    Verwenden Sie "In neuem Tab wählen" oder "Ordner wählen" (öffnet neuen Tab).
+                    {t('folderEmbeddedAlert')}
                   </AlertDescription>
                 </Alert>
               )}
@@ -428,7 +427,7 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
                 <Alert className="mb-4">
                   <Info className="h-4 w-4" />
                   <AlertDescription>
-                    Wählen Sie einen Ordner für den Export. Die App verwendet den Android Storage Access Framework (SAF) für sicheren Dateizugriff.
+                    {t('androidFolderAlert')}
                   </AlertDescription>
                 </Alert>
               )}
@@ -437,8 +436,8 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
 
           <p className="text-xs text-muted-foreground">
             {isWebSupported || isAndroid
-              ? "Wenn kein Ordner gewählt ist, wird der Standard-Download-Ordner verwendet."
-              : "Excel-Dateien werden in Ihrem Standard-Download-Ordner gespeichert."
+              ? t('noFolderInfo')
+              : t('standardDownloadInfo')
             }
           </p>
         </CardContent>
@@ -468,7 +467,7 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
               className="w-full"
             />
             <p className="text-xs text-muted-foreground">
-              Höhere Qualität = größere Dateien. 60% ist ein guter Kompromiss zwischen Qualität und Dateigröße.
+              {t('pdfQualityInfo')}
             </p>
           </div>
         </CardContent>
@@ -492,7 +491,7 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
               }
             >
               <SelectTrigger>
-                <SelectValue placeholder="Option wählen" />
+                <SelectValue placeholder={t('selectOption')} />
               </SelectTrigger>
               <SelectContent>
                 {EMAIL_PROVIDERS.map((provider) => (

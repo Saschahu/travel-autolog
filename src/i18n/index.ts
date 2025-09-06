@@ -215,6 +215,12 @@ const resources = {
       overtimeSettingsSaved: 'Overtime settings have been successfully saved.',
       notesSection: 'Notes',
       
+      // Advanced Settings
+      advancedSettings: 'Advanced Settings',
+      resetAppData: 'Reset App Data',
+      resetAppDescription: 'Deletes all locally stored data, settings and cache. The app will reload after reset.',
+      deleteAppData: 'Delete App Data',
+      
       // Overtime Display
       'overtime.base': 'OT',
       'overtime.surcharge': 'Surcharge',
@@ -461,6 +467,12 @@ const resources = {
       guaranteedHoursPerDay: 'Garantierte Stunden pro Tag',
       overtimeSettingsSaved: 'Überstunden-Einstellungen wurden erfolgreich gespeichert.',
       notesSection: 'Hinweise',
+      
+      // Advanced Settings
+      advancedSettings: 'Erweiterte Einstellungen',
+      resetAppData: 'Appdaten zurücksetzen',
+      resetAppDescription: 'Löscht alle lokal gespeicherten Daten, Einstellungen und den Cache. Die App wird nach dem Reset neu geladen.',
+      deleteAppData: 'App-Daten löschen',
       
       // Overtime Display
       'overtime.base': 'ÜS',
@@ -716,6 +728,12 @@ const resources = {
       guaranteedHoursPerDay: 'Garanterte timer per dag',
       overtimeSettingsSaved: 'Overtidsinnstillingene er lagret.',
       notesSection: 'Notater',
+      
+      // Advanced Settings
+      advancedSettings: 'Avanserte innstillinger',
+      resetAppData: 'Tilbakestill appdata',
+      resetAppDescription: 'Sletter alle lokalt lagrede data, innstillinger og cache. Appen vil laste på nytt etter tilbakestilling.',
+      deleteAppData: 'Slett appdata',
 
       // Overtime Display
       'overtime.base': 'OT',

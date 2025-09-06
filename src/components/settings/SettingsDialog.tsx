@@ -435,15 +435,14 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Settings className="h-5 w-5" />
-                  Erweiterte Einstellungen
+                  {t('advancedSettings')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label className="font-medium">Appdaten zurücksetzen</Label>
+                  <Label className="font-medium">{t('resetAppData')}</Label>
                   <p className="text-sm text-muted-foreground">
-                    Löscht alle lokal gespeicherten Daten, Einstellungen und den Cache. 
-                    Die App wird nach dem Reset neu geladen.
+                    {t('resetAppDescription')}
                   </p>
                   <Button 
                     variant="destructive"
@@ -452,7 +451,7 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
                     onClick={handleResetAppData}
                   >
                     <AlertTriangle className="h-4 w-4" />
-                    App-Daten löschen
+                    {t('deleteAppData')}
                   </Button>
                 </div>
               </CardContent>

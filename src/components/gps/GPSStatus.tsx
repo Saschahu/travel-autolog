@@ -154,7 +154,7 @@ export const GPSStatus: React.FC<GPSStatusProps> = ({ gpsTracking }) => {
               onClick={handleStartTracking}
             >
               <Play className="h-4 w-4 mr-2" />
-              Tracking starten
+              {t('startTracking')}
             </Button>
           ) : (
             <Button 
@@ -163,7 +163,7 @@ export const GPSStatus: React.FC<GPSStatusProps> = ({ gpsTracking }) => {
               onClick={handleStopTracking}
             >
               <Square className="h-4 w-4 mr-2" />
-              Tracking stoppen
+              {t('stopTracking')}
             </Button>
           )}
 

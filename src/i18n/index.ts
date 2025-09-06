@@ -242,6 +242,11 @@ const resources = {
       jobs: 'Jobs',
       activateGpsTracking: '3. Activate GPS tracking for automatic detection',
       
+      // GPS Tracking
+      startTracking: 'Start Tracking',
+      stopTracking: 'Stop Tracking',
+      trackingCouldNotStart: 'Tracking could not be started:',
+      
       // Mapbox Errors
       mapboxTokenMissing: 'No Mapbox token found. (Native: VITE_MAPBOX_TOKEN_MOBILE, Web: VITE_MAPBOX_TOKEN_WEB or save in GPS UI)',
       mapboxTokenInvalid: 'Invalid Mapbox token (must start with "pk.").',
@@ -501,6 +506,11 @@ const resources = {
       longitude: 'Längengrad',
       jobs: 'Aufträge',
       activateGpsTracking: '3. GPS Tracking aktivieren für automatische Erkennung',
+      
+      // GPS Tracking
+      startTracking: 'Tracking starten',
+      stopTracking: 'Tracking stoppen',
+      trackingCouldNotStart: 'Tracking konnte nicht gestartet werden:',
       
       // Mapbox Errors
       mapboxTokenMissing: 'Kein Mapbox-Token gefunden. (Native: VITE_MAPBOX_TOKEN_MOBILE, Web: VITE_MAPBOX_TOKEN_WEB oder im GPS-UI speichern)',
@@ -769,6 +779,11 @@ const resources = {
       longitude: 'Lengdegrad',
       jobs: 'Jobber',
       activateGpsTracking: '3. Aktiver GPS-sporing for automatisk gjenkjennelse',
+      
+      // GPS Tracking
+      startTracking: 'Start sporing',
+      stopTracking: 'Stopp sporing',
+      trackingCouldNotStart: 'Sporing kunne ikke startes:',
       
       // Mapbox Errors
       mapboxTokenMissing: 'Ingen Mapbox-token funnet. (Native: VITE_MAPBOX_TOKEN_MOBILE, Web: VITE_MAPBOX_TOKEN_WEB eller lagre i GPS-UI)',

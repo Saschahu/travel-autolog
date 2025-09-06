@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { MapPin, Play, Square } from 'lucide-react';
 import MapView from '@/components/MapView';
@@ -7,6 +8,7 @@ import { Capacitor } from '@capacitor/core';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
 export const GPSPage: React.FC = () => {
+  const { t } = useTranslation();
   const [center, setCenter] = useState<[number, number]>();
   const [msg, setMsg] = useState<string>();
   const [isTracking, setIsTracking] = useState(false);
@@ -52,7 +54,7 @@ export const GPSPage: React.FC = () => {
       });
       setIsTracking(true);
     } catch (error: any) {
-      setMsg('Tracking konnte nicht gestartet werden: ' + (error?.message ?? ''));
+      setMsg(t('trackingCouldNotStart') + ' ' + (error?.message ?? ''));
     }
   };
 
@@ -84,7 +86,7 @@ export const GPSPage: React.FC = () => {
               size="sm"
             >
               <Play className="h-4 w-4" />
-              Tracking starten
+              {t('startTracking')}
             </Button>
           ) : (
             <Button 
@@ -94,7 +96,7 @@ export const GPSPage: React.FC = () => {
               size="sm"
             >
               <Square className="h-4 w-4" />
-              Tracking stoppen
+              {t('stopTracking')}
             </Button>
           )}
         </div>

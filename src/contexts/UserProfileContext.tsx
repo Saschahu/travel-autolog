@@ -6,7 +6,6 @@ export interface UserProfile {
   homeAddress: string;
   email: string;
   preferredEmailApp: string;
-  preferredLanguage: 'en' | 'de' | 'nb';
   gpsEnabled: boolean;
   localStoragePath: string;
   // Email report recipients
@@ -26,7 +25,6 @@ const defaultProfile: UserProfile = {
   homeAddress: '',
   email: '',
   preferredEmailApp: 'default',
-  preferredLanguage: 'de',
   gpsEnabled: false,
   localStoragePath: '',
   reportTo: null,
@@ -82,12 +80,10 @@ export const UserProfileProvider: React.FC<UserProfileProviderProps> = ({ childr
         const savedProfile = JSON.parse(value);
         console.log('UserProfile: Parsed saved profile:', savedProfile);
         
-        // Migration: Set reportTo to email if not set and map legacy 'no' -> 'nb'
-        const preferredLanguage = savedProfile.preferredLanguage === 'no' ? 'nb' : savedProfile.preferredLanguage;
+        // Migration: Set reportTo to email if not set
         const migratedProfile = { 
           ...defaultProfile, 
           ...savedProfile,
-          preferredLanguage,
           reportTo: savedProfile.reportTo ?? (savedProfile.email || null)
         };
         

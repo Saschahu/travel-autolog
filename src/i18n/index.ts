@@ -174,7 +174,6 @@ const resources = {
       appLanguage: 'App language',
       uiLanguage: 'Interface language',
       languageNote: 'Language changes immediately and applies across the app.',
-      preferredLanguage: 'Preferred language',
       
       // Form Labels
       jobsToExport: 'Jobs to Export:',
@@ -381,7 +380,6 @@ const resources = {
       appLanguage: 'App-Sprache',
       uiLanguage: 'Sprache der Benutzeroberfläche',
       languageNote: 'Die Sprache wird sofort geändert und gilt in der gesamten App.',
-      preferredLanguage: 'Bevorzugte Sprache',
       
       // Form Labels
       jobsToExport: 'Zu exportierende Aufträge:',
@@ -590,7 +588,6 @@ const resources = {
       appLanguage: 'App-språk',
       uiLanguage: 'Grensesnittspråk',
       languageNote: 'Språket endres umiddelbart og gjelder i hele appen.',
-      preferredLanguage: 'Foretrukket språk',
       
       // Form Labels
       workPerformed: 'Arbeid som skal utføres',

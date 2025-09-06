@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { User, MapPin, Settings, Home, Clock, Globe, FolderOpen, AlertTriangle, Mail } from 'lucide-react';
+import { User, MapPin, Settings, Home, Clock, FolderOpen, AlertTriangle, Mail } from 'lucide-react';
 import { OvertimeSettings } from '@/components/settings/OvertimeSettings';
 import { HolidaySettings } from '@/components/settings/HolidaySettings';
 import { GPSSettingsComponent } from '@/components/gps/GPSSettingsComponent';
@@ -37,7 +37,6 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
     homeAddress: '',
     email: '',
     preferredEmailApp: 'default',
-    preferredLanguage: 'de' as 'en' | 'de' | 'nb',
     gpsEnabled: false,
     localStoragePath: '',
     reportTo: '',
@@ -125,7 +124,6 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
       homeAddress: profile.homeAddress,
       email: profile.email,
       preferredEmailApp: profile.preferredEmailApp,
-      preferredLanguage: profile.preferredLanguage,
       gpsEnabled: profile.gpsEnabled,
       localStoragePath: profile.localStoragePath,
       reportTo: profile.reportTo || '',
@@ -184,12 +182,6 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
       }
       console.log('updateProfile completed successfully');
       
-      // Change app language if language was updated
-      if (formData.preferredLanguage !== profile.preferredLanguage) {
-        console.log('Changing language to:', formData.preferredLanguage);
-        i18n.changeLanguage(formData.preferredLanguage);
-      }
-      
       console.log('About to show success toast and close dialog');
       toast({
         title: 'Erfolg',
@@ -235,12 +227,6 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
       });
     }
   };
-
-  const languageOptions = [
-    { value: 'de', label: 'Deutsch' },
-    { value: 'en', label: 'English' },
-    { value: 'nb', label: 'Norsk' }
-  ];
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -397,39 +383,8 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
                   </CardContent>
                 </Card>
 
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-base">
-                      <Globe className="h-4 w-4 text-primary" />
-                      {t('preferredLanguage')}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="language">{t('preferredLanguage')}</Label>
-                      <Select
-                        value={formData.preferredLanguage}
-                        onValueChange={(value: 'en' | 'de' | 'nb') => 
-                          setFormData(prev => ({ ...prev, preferredLanguage: value }))
-                        }
-                      >
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {languageOptions.map((option) => (
-                            <SelectItem key={option.value} value={option.value}>
-                              <div className="flex items-center gap-2">
-                                <Globe className="h-4 w-4" />
-                                {option.label}
-                              </div>
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </CardContent>
-                </Card>
+                {/* Language Settings */}
+                <LanguageSettings />
 
                 <div className="flex gap-2 pt-4 sticky bottom-0 bg-background border-t p-4 -m-4 mt-0">
                   <Button 
@@ -454,7 +409,6 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
           </TabsContent>
 
           <TabsContent value="export" className="space-y-6">
-            <LanguageSettings />
             <ExportSettings 
               settings={exportSettings}
               onSettingsChange={setExportSettings}

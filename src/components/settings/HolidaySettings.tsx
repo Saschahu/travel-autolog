@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
@@ -20,6 +21,7 @@ import {
 } from '@/lib/holidays';
 
 export const HolidaySettings = () => {
+  const { t } = useTranslation();
   const [settings, setSettings] = useState<HolidaySettingsType>(DEFAULT_HOLIDAY_SETTINGS);
   const [availableRegions, setAvailableRegions] = useState<{ code: string; name: string }[]>([]);
   const [icsCalendars, setIcsCalendars] = useState<{ id: string; name: string; eventCount: number }[]>([]);
@@ -96,13 +98,13 @@ export const HolidaySettings = () => {
       setIcsCalendars(listICSCalendars());
       
       toast({
-        title: 'Kalender hinzugefügt',
-        description: `${name} wurde erfolgreich importiert`,
+        title: t('calendarAdded'),
+        description: t('calendarImportedSuccess').replace('{name}', name),
       });
     } catch (error) {
       toast({
-        title: 'Fehler',
-        description: 'Fehler beim Importieren der ICS-Datei',
+        title: t('error'),
+        description: t('errorImportingICS'),
         variant: 'destructive',
       });
     } finally {
@@ -125,8 +127,8 @@ export const HolidaySettings = () => {
     setIcsCalendars(listICSCalendars());
     
     toast({
-      title: 'Kalender entfernt',
-      description: 'Der Kalender wurde erfolgreich entfernt',
+      title: t('calendarRemoved'),
+      description: t('calendarRemovedSuccess'),
     });
   };
 
@@ -146,7 +148,7 @@ export const HolidaySettings = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Calendar className="h-5 w-5" />
-            Feiertage & Kalender
+            {t('holidaysAndCalendar')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -155,11 +157,11 @@ export const HolidaySettings = () => {
             <div className="space-y-2">
               <Label className="flex items-center gap-2">
                 <MapPin className="h-4 w-4" />
-                Land auswählen
+                {t('selectCountry')}
               </Label>
               <Select value={settings.country} onValueChange={handleCountryChange}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Land auswählen" />
+                  <SelectValue placeholder={t('selectCountryPlaceholder')} />
                 </SelectTrigger>
                 <SelectContent>
                   {countries.map(country => (
@@ -173,10 +175,10 @@ export const HolidaySettings = () => {
 
             {availableRegions.length > 0 && (
               <div className="space-y-2">
-                <Label>Region/Bundesland</Label>
+                <Label>{t('regionState')}</Label>
                 <Select value={settings.region} onValueChange={handleRegionChange}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Region auswählen" />
+                    <SelectValue placeholder={t('selectRegion')} />
                   </SelectTrigger>
                   <SelectContent>
                     {availableRegions.map(region => (
@@ -194,11 +196,11 @@ export const HolidaySettings = () => {
           <div className="space-y-2">
             <Label className="flex items-center gap-2">
               <Clock className="h-4 w-4" />
-              Zeitzone
+              {t('timezone')}
             </Label>
             <Select value={settings.timezone} onValueChange={handleTimezoneChange}>
               <SelectTrigger>
-                <SelectValue placeholder="Zeitzone auswählen" />
+                <SelectValue placeholder={t('selectTimezone')} />
               </SelectTrigger>
               <SelectContent>
                 {commonTimezones.map(tz => (
@@ -209,7 +211,7 @@ export const HolidaySettings = () => {
               </SelectContent>
             </Select>
             <p className="text-sm text-muted-foreground">
-              Aktuelle Zeitzone: {Intl.DateTimeFormat().resolvedOptions().timeZone}
+              {t('currentTimezone')} {Intl.DateTimeFormat().resolvedOptions().timeZone}
             </p>
           </div>
 
@@ -218,7 +220,7 @@ export const HolidaySettings = () => {
             <div className="flex items-center justify-between">
               <Label className="flex items-center gap-2">
                 <Upload className="h-4 w-4" />
-                Eigene Kalender (ICS)
+                {t('ownCalendarsICS')}
               </Label>
               <div className="relative">
                 <Input
@@ -229,7 +231,7 @@ export const HolidaySettings = () => {
                   className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                 />
                 <Button variant="outline" disabled={uploadingICS}>
-                  {uploadingICS ? 'Lade...' : 'Kalender hinzufügen'}
+                  {uploadingICS ? t('loading') : t('addCalendar')}
                 </Button>
               </div>
             </div>
@@ -237,7 +239,7 @@ export const HolidaySettings = () => {
             {/* List of ICS Calendars */}
             {icsCalendars.length > 0 && (
               <div className="space-y-2">
-                <Label>Aktivierte Kalender</Label>
+                <Label>{t('activeCalendars')}</Label>
                 <div className="space-y-2">
                   {icsCalendars.map(calendar => (
                     <div key={calendar.id} className="flex items-center justify-between p-3 border rounded-lg">
@@ -245,7 +247,7 @@ export const HolidaySettings = () => {
                         <Calendar className="h-4 w-4" />
                         <span className="font-medium">{calendar.name}</span>
                         <Badge variant="secondary">
-                          {calendar.eventCount} Termine
+                          {calendar.eventCount} {t('appointments')}
                         </Badge>
                       </div>
                       <Button
@@ -263,8 +265,7 @@ export const HolidaySettings = () => {
             )}
 
             <p className="text-sm text-muted-foreground">
-              Feiertage unterscheiden sich je nach Land/Region. Eigene ICS-Kalender werden zusätzlich berücksichtigt.
-              ICS-Kalender haben Vorrang vor den Standard-Feiertagen.
+              {t('holidayExplanation')}
             </p>
           </div>
         </CardContent>

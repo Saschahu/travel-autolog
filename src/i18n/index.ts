@@ -218,6 +218,17 @@ const resources = {
       jobs: 'Jobs',
       activateGpsTracking: '3. Activate GPS tracking for automatic detection',
       
+      // Mapbox Errors
+      mapboxTokenMissing: 'No Mapbox token found. (Native: VITE_MAPBOX_TOKEN_MOBILE, Web: VITE_MAPBOX_TOKEN_WEB or save in GPS UI)',
+      mapboxTokenInvalid: 'Invalid Mapbox token (must start with "pk.").',
+      mapboxTokenRejected: 'Mapbox rejects the token (401/403). For Web: Domain in URL restrictions. For Native: use separate mobile token without URL restrictions.',
+      mapboxTokenMissingShort: 'Mapbox token missing.',
+      mapboxEnvTokenMissing: 'VITE_MAPBOX_TOKEN is not set. Please configure .env file with your Mapbox Public Token.',
+      mapboxInitError: 'Error initializing the map. Check your Mapbox token.',
+      mapboxTokenRequired: 'Mapbox Token Required',
+      mapboxPublicToken: 'Mapbox Public Token',
+      mapboxTokenSaved: 'Mapbox Token Saved',
+      
       // Export
       supportedFormats: 'Supported formats: .xlsx, .xls',
       maxFileSize: 'Maximum file size: 10 MB',
@@ -423,6 +434,17 @@ const resources = {
       longitude: 'Längengrad',
       jobs: 'Aufträge',
       activateGpsTracking: '3. GPS Tracking aktivieren für automatische Erkennung',
+      
+      // Mapbox Errors
+      mapboxTokenMissing: 'Kein Mapbox-Token gefunden. (Native: VITE_MAPBOX_TOKEN_MOBILE, Web: VITE_MAPBOX_TOKEN_WEB oder im GPS-UI speichern)',
+      mapboxTokenInvalid: 'Mapbox-Token ungültig (muss mit "pk." beginnen).',
+      mapboxTokenRejected: 'Mapbox lehnt den Token ab (401/403). Für Web: Domain in URL-Restrictions. Für Native: separaten mobilen Token ohne URL-Restrictions nutzen.',
+      mapboxTokenMissingShort: 'Mapbox-Token fehlt.',
+      mapboxEnvTokenMissing: 'VITE_MAPBOX_TOKEN ist nicht gesetzt. Bitte .env-Datei mit Ihrem Mapbox Public Token konfigurieren.',
+      mapboxInitError: 'Fehler beim Initialisieren der Karte. Überprüfen Sie Ihren Mapbox Token.',
+      mapboxTokenRequired: 'Mapbox Token erforderlich',
+      mapboxPublicToken: 'Mapbox Public Token',
+      mapboxTokenSaved: 'Mapbox Token gespeichert',
       
       // Export
       supportedFormats: 'Unterstützte Formate: .xlsx, .xls',
@@ -635,6 +657,17 @@ const resources = {
       longitude: 'Lengdegrad',
       jobs: 'Jobber',
       activateGpsTracking: '3. Aktiver GPS-sporing for automatisk gjenkjennelse',
+      
+      // Mapbox Errors
+      mapboxTokenMissing: 'Ingen Mapbox-token funnet. (Native: VITE_MAPBOX_TOKEN_MOBILE, Web: VITE_MAPBOX_TOKEN_WEB eller lagre i GPS-UI)',
+      mapboxTokenInvalid: 'Ugyldig Mapbox-token (må begynne med "pk.").',
+      mapboxTokenRejected: 'Mapbox avviser token (401/403). For Web: Domene i URL-restriksjoner. For Native: bruk separat mobil token uten URL-restriksjoner.',
+      mapboxTokenMissingSht: 'Mapbox-token mangler.',
+      mapboxEnvTokenMissing: 'VITE_MAPBOX_TOKEN er ikke satt. Vennligst konfigurer .env-fil med ditt Mapbox Public Token.',
+      mapboxInitError: 'Feil ved initialisering av kart. Sjekk ditt Mapbox token.',
+      mapboxTokenRequired: 'Mapbox Token Påkrevd',
+      mapboxPublicToken: 'Mapbox Public Token',
+      mapboxTokenSaved: 'Mapbox Token Lagret',
       
       // Export
       supportedFormats: 'Støttede formater: .xlsx, .xls',

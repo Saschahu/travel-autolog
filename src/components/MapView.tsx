@@ -2,10 +2,12 @@ import { useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { getMapboxToken, looksLikePublicToken } from '@/lib/mapboxToken';
+import { useTranslation } from 'react-i18next';
 
 type Props = { center?: [number, number]; zoom?: number };
 
 export default function MapView({ center, zoom = 14 }: Props) {
+  const { t } = useTranslation();
   const hostRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const markerRef = useRef<mapboxgl.Marker | null>(null);
@@ -17,11 +19,11 @@ export default function MapView({ center, zoom = 14 }: Props) {
     if (!hostRef.current || mapRef.current) return;
 
     if (!token) {
-      setError('Kein Mapbox-Token gefunden. (Native: VITE_MAPBOX_TOKEN_MOBILE, Web: VITE_MAPBOX_TOKEN_WEB oder im GPS-UI speichern)');
+      setError(t('mapboxTokenMissing'));
       return;
     }
     if (!looksLikePublicToken(token)) {
-      setError('Mapbox-Token ungültig (muss mit "pk." beginnen).');
+      setError(t('mapboxTokenInvalid'));
       return;
     }
 
@@ -40,13 +42,13 @@ export default function MapView({ center, zoom = 14 }: Props) {
         const status = (evt?.error as any)?.status;
         const msg = (evt?.error as any)?.message ?? '';
         if (status === 401 || status === 403 || /Unauthorized|Invalid|forbidden/i.test(msg)) {
-          setError('Mapbox lehnt den Token ab (401/403). Für Web: Domain in URL-Restrictions. Für Native: separaten mobilen Token ohne URL-Restrictions nutzen.');
+          setError(t('mapboxTokenRejected'));
         }
       });
 
       return () => { map.remove(); mapRef.current = null; };
     } catch (e: any) {
-      setError(`Fehler beim Initialisieren der Karte: ${e?.message ?? String(e)}`);
+      setError(`${t('mapboxInitError')}: ${e?.message ?? String(e)}`);
     }
   }, []); // init once
 
@@ -61,6 +63,6 @@ export default function MapView({ center, zoom = 14 }: Props) {
   }, [center, zoom]);
 
   if (error) return <div className="p-3 rounded bg-red-50 text-red-700 text-sm">{error}</div>;
-  if (!token) return <div className="p-3 rounded bg-yellow-50 text-yellow-900 text-sm">Mapbox-Token fehlt.</div>;
+  if (!token) return <div className="p-3 rounded bg-yellow-50 text-yellow-900 text-sm">{t('mapboxTokenMissingShort')}</div>;
   return <div ref={hostRef} className="w-full h-[420px] rounded" />;
 }

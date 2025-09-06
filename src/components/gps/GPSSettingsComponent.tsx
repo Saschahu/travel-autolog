@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { MapPin, AlertTriangle, Home, Navigation, Target } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useTranslation } from 'react-i18next';
 import { 
   GeofenceMonitor, 
   loadHomeGeofence, 
@@ -34,6 +35,7 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
   settings, 
   onSettingsChange 
 }) => {
+  const { t } = useTranslation();
   const { toast } = useToast();
   const [isGettingLocation, setIsGettingLocation] = useState(false);
   const [mapboxToken, setMapboxToken] = useState(() => {
@@ -184,7 +186,7 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
   const handleTokenSave = () => {
     localStorage.setItem('mapbox_token', mapboxToken);
     toast({
-      title: 'Mapbox Token gespeichert',
+      title: t('mapboxTokenSaved'),
       description: 'Token wurde erfolgreich gespeichert'
     });
   };
@@ -201,7 +203,7 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="mapbox-token">Mapbox Token</Label>
+            <Label htmlFor="mapbox-token">{t('mapboxPublicToken')}</Label>
             <div className="flex gap-2">
               <Input
                 id="mapbox-token"

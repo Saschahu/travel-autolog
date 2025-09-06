@@ -133,7 +133,7 @@ export const LocationMap: React.FC<LocationMapProps> = ({
               Geben Sie Ihr Mapbox Public Access Token ein (beginnt mit "pk."):
             </p>
             <div className="space-y-2">
-              <Label htmlFor="mapbox-token">Mapbox Token</Label>
+              <Label htmlFor="mapbox-token">{t('mapboxPublicToken')}</Label>
               <Input
                 id="mapbox-token"
                 type="text"

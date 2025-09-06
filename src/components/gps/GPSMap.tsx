@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertTriangle } from 'lucide-react';
 import { LocationData, GPSEvent } from '@/types/gps-events';
+import { useTranslation } from 'react-i18next';
 
 interface GPSMapProps {
   currentLocation: LocationData | null;
@@ -19,6 +20,7 @@ interface GPSMapProps {
 }
 
 export const GPSMap: React.FC<GPSMapProps> = ({ currentLocation, homeLocation, todaysEvents }) => {
+  const { t } = useTranslation();
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const [mapboxToken, setMapboxToken] = useState<string>('');
@@ -36,7 +38,7 @@ export const GPSMap: React.FC<GPSMapProps> = ({ currentLocation, homeLocation, t
     } else {
       console.warn('Mapbox Token fehlt. Bitte .env-Datei konfigurieren.');
       setShowTokenInput(true);
-      setError('VITE_MAPBOX_TOKEN ist nicht gesetzt. Bitte .env-Datei mit Ihrem Mapbox Public Token konfigurieren.');
+      setError(t('mapboxEnvTokenMissing'));
     }
   }, []);
 
@@ -74,7 +76,7 @@ export const GPSMap: React.FC<GPSMapProps> = ({ currentLocation, homeLocation, t
       setShowTokenInput(false);
 
     } catch (err) {
-      setError('Fehler beim Initialisieren der Karte. Überprüfen Sie Ihren Mapbox Token.');
+      setError(t('mapboxInitError'));
       setShowTokenInput(true);
     }
 
@@ -102,7 +104,7 @@ export const GPSMap: React.FC<GPSMapProps> = ({ currentLocation, homeLocation, t
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <AlertTriangle className="h-5 w-5 text-warning" />
-              Mapbox Token erforderlich
+              {t('mapboxTokenRequired')}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -113,7 +115,7 @@ export const GPSMap: React.FC<GPSMapProps> = ({ currentLocation, homeLocation, t
             )}
             <div className="space-y-2">
               <Label htmlFor="mapbox-token">
-                Mapbox Public Token
+                {t('mapboxPublicToken')}
               </Label>
               <Input
                 id="mapbox-token"

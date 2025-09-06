@@ -7,6 +7,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 interface AppHeaderProps {
   title?: string;
@@ -15,6 +16,7 @@ interface AppHeaderProps {
 
 export const AppHeader = ({ title = "Travel AutoLog", onSettingsClick }: AppHeaderProps) => {
   const { user, signOut } = useAuth();
+  const { t } = useTranslation();
 
   const handleSignOut = async () => {
     await signOut();
@@ -38,11 +40,11 @@ export const AppHeader = ({ title = "Travel AutoLog", onSettingsClick }: AppHead
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={onSettingsClick}>
                 <Settings className="h-4 w-4 mr-2" />
-                Einstellungen
+                {t('settings')}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={handleSignOut}>
                 <LogOut className="h-4 w-4 mr-2" />
-                Abmelden
+                {t('logout')}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

@@ -173,6 +173,7 @@ const resources = {
       advanced: 'Advanced',
       appLanguage: 'App language',
       uiLanguage: 'Interface language',
+      logout: 'Logout',
       languageNote: 'Language changes immediately and applies across the app.',
       
       // Form Labels
@@ -426,6 +427,7 @@ const resources = {
       advanced: 'Erweitert',
       appLanguage: 'App-Sprache',
       uiLanguage: 'Sprache der Benutzeroberfläche',
+      logout: 'Abmelden',
       languageNote: 'Die Sprache wird sofort geändert und gilt in der gesamten App.',
       
       // Form Labels
@@ -683,6 +685,7 @@ const resources = {
       advanced: 'Avansert',
       appLanguage: 'App-språk',
       uiLanguage: 'Grensesnittspråk',
+      logout: 'Logg ut',
       languageNote: 'Språket endres umiddelbart og gjelder i hele appen.',
       
       // Form Labels

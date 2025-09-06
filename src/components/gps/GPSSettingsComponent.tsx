@@ -198,7 +198,7 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
             <MapPin className="h-4 w-4 text-primary" />
-            Mapbox Settings
+            {t('mapboxSettings')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -214,16 +214,16 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
                 className="flex-1"
               />
               <Button onClick={handleTokenSave} variant="outline">
-                Speichern
+                {t('save')}
               </Button>
             </div>
             <p className="text-xs text-muted-foreground">
-              Hol dir einen kostenlosen Token von <a href="https://mapbox.com" target="_blank" rel="noopener noreferrer" className="underline">mapbox.com</a>
+              {t('getTokenFromMapbox')} <a href="https://mapbox.com" target="_blank" rel="noopener noreferrer" className="underline">mapbox.com</a>
             </p>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="mapbox-style">Map Style ID</Label>
+            <Label htmlFor="mapbox-style">{t('mapStyleId')}</Label>
             <Input
               id="mapbox-style"
               placeholder="mapbox://styles/mapbox/streets-v12"
@@ -231,7 +231,7 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
               onChange={(e) => updateSettings({ styleId: e.target.value })}
             />
             <p className="text-xs text-muted-foreground">
-              Default: mapbox://styles/mapbox/streets-v12
+              {t('mapStyleDefault')}
             </p>
           </div>
 
@@ -239,10 +239,9 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
             <div className="flex items-start gap-2">
               <AlertTriangle className="h-4 w-4 text-warning mt-0.5" />
               <div className="text-xs">
-                <p className="font-medium">Token Configuration</p>
+                <p className="font-medium">{t('tokenConfig')}</p>
                 <p className="text-muted-foreground mt-1">
-                  Mapbox-Token kommt aus VITE_MAPBOX_TOKEN (.env/Secret). 
-                  Für lokale Entwicklung standardmäßig http://localhost:8080/* als URL-Restriction im Mapbox-Dashboard eintragen.
+                  {t('tokenConfigDesc')}
                 </p>
               </div>
             </div>
@@ -255,7 +254,7 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
             <Home className="h-4 w-4 text-primary" />
-            Home Geofence
+            {t('homeGeofence')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -264,14 +263,14 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
             <div className="space-y-3">
               <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                 <div>
-                  <p className="font-medium text-sm">Home-Position gesetzt</p>
+                  <p className="font-medium text-sm">{t('homePositionSet')}</p>
                   <p className="text-xs text-muted-foreground">
                     {formatCoordinates(settings.homeGeofence.latitude, settings.homeGeofence.longitude)} 
-                    • Radius: {settings.homeGeofence.radius}m
+                    • {t('radius')}: {settings.homeGeofence.radius}m
                   </p>
                 </div>
                 <Badge variant={geofenceStatus.isAtHome ? 'default' : 'secondary'}>
-                  {geofenceStatus.isAtHome ? 'Zuhause' : 'Auswärts'}
+                  {geofenceStatus.isAtHome ? t('atHome') : t('away')}
                   {geofenceStatus.distance && (
                     <span className="ml-1">({formatDistance(geofenceStatus.distance)})</span>
                   )}
@@ -285,7 +284,7 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
                   size="sm"
                 >
                   <Target className="h-4 w-4 mr-2" />
-                  {geofenceStatus.isWatching ? 'Monitoring stoppen' : 'Monitoring starten'}
+                  {geofenceStatus.isWatching ? t('stopMonitoring') : t('startMonitoring')}
                 </Button>
               </div>
             </div>
@@ -293,7 +292,7 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
             <Alert>
               <Home className="h-4 w-4" />
               <AlertDescription>
-                Keine Home-Position gesetzt. Legen Sie zuerst eine Home-Position fest.
+                {t('noHomePosition')}
               </AlertDescription>
             </Alert>
           )}
@@ -301,7 +300,7 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
           {/* Configuration */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="home-lat">Latitude</Label>
+              <Label htmlFor="home-lat">{t('latitude')}</Label>
               <Input
                 id="home-lat"
                 type="number"
@@ -315,7 +314,7 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="home-lng">Longitude</Label>
+              <Label htmlFor="home-lng">{t('longitude')}</Label>
               <Input
                 id="home-lng"
                 type="number"
@@ -330,7 +329,7 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="home-radius">Radius (Meter)</Label>
+            <Label htmlFor="home-radius">{t('radiusLabel')}</Label>
             <Input
               id="home-radius"
               type="number"
@@ -342,7 +341,7 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
               })}
             />
             <p className="text-xs text-muted-foreground">
-              Standard: 100 Meter
+              {t('radiusDefault')}
             </p>
           </div>
 
@@ -353,7 +352,7 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
               className="flex-1"
             >
               <Navigation className="h-4 w-4 mr-2" />
-              {isGettingLocation ? 'Ermittle Position...' : 'Aktuelle Position als Home setzen'}
+              {isGettingLocation ? t('gettingLocation') : t('getCurrentLocation')}
             </Button>
             
             <Button
@@ -361,15 +360,14 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
               disabled={!settings.homeGeofence.latitude || !settings.homeGeofence.longitude}
               variant="outline"
             >
-              Speichern
+              {t('save')}
             </Button>
           </div>
 
           <Alert>
             <AlertTriangle className="h-4 w-4" />
             <AlertDescription className="text-xs">
-              Das Geofence-Monitoring ist nur im Vordergrund aktiv und dient zur Demonstration. 
-              Echter Hintergrund-Geofence ist im Web nicht möglich.
+              {t('geofenceWarning')}
             </AlertDescription>
           </Alert>
         </CardContent>

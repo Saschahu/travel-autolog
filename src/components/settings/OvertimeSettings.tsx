@@ -21,8 +21,8 @@ export const OvertimeSettings = () => {
   const handleSave = () => {
     saveSettings(localSettings);
     toast({
-      title: 'Gespeichert',
-      description: 'Überstunden-Einstellungen wurden erfolgreich gespeichert.'
+      title: t('saved'),
+      description: t('overtimeSettingsSaved')
     });
   };
 
@@ -32,7 +32,7 @@ export const OvertimeSettings = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Clock className="h-4 w-4" />
-            Überstunden-Zuschläge konfigurieren
+            {t('overtimeSettingsTitle')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -63,7 +63,7 @@ export const OvertimeSettings = () => {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="overtime-rate-1">Zuschlag 8-12h (%)</Label>
+                <Label htmlFor="overtime-rate-1">{t('surcharge8to12h')}</Label>
                 <Input
                   id="overtime-rate-1"
                   type="number"
@@ -134,7 +134,7 @@ export const OvertimeSettings = () => {
             {localSettings.weekendEnabled && (
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="saturday-rate">Samstag-Zuschlag (%)</Label>
+                  <Label htmlFor="saturday-rate">{t('saturdaySurcharge')}</Label>
                   <Input
                     id="saturday-rate"
                     type="number"
@@ -151,7 +151,7 @@ export const OvertimeSettings = () => {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="sunday-rate">Sonntag/Feiertag-Zuschlag (%)</Label>
+                  <Label htmlFor="sunday-rate">{t('sundayHolidaySurcharge')}</Label>
                   <Input
                     id="sunday-rate"
                     type="number"
@@ -175,14 +175,14 @@ export const OvertimeSettings = () => {
           {/* Guaranteed Hours Settings */}
           <div className="p-4 border rounded-lg space-y-4">
             <div className="space-y-1">
-              <Label>Garantierte Stunden</Label>
+              <Label>{t('guaranteedHoursConfig')}</Label>
               <p className="text-sm text-muted-foreground">
-                Mindestbezahlung pro Tag, unabhängig von der tatsächlichen Arbeitszeit
+                {t('guaranteedHoursDescription')}
               </p>
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="guaranteed-hours">Garantierte Stunden pro Tag</Label>
+              <Label htmlFor="guaranteed-hours">{t('guaranteedHoursPerDay')}</Label>
               <Input
                 id="guaranteed-hours"
                 type="number"
@@ -205,7 +205,7 @@ export const OvertimeSettings = () => {
               className="w-full"
             >
               <Save className="h-4 w-4 mr-2" />
-              Speichern
+              {t('save')}
             </Button>
           </div>
         </CardContent>
@@ -213,7 +213,7 @@ export const OvertimeSettings = () => {
       
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Hinweise</CardTitle>
+          <CardTitle className="text-base">{t('notesSection')}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-2 text-sm text-muted-foreground">
           <p>{t('overtimeRules')}</p>

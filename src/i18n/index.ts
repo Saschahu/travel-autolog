@@ -204,6 +204,17 @@ const resources = {
       weekendSurcharges: 'Weekend Surcharges',
       weekendDescription: 'Automatic surcharges from Friday evening to Monday morning',
       
+      // Additional overtime settings
+      overtimeSettingsTitle: 'Configure Overtime Surcharges',
+      surcharge8to12h: 'Surcharge 8-12h (%)',
+      saturdaySurcharge: 'Saturday Surcharge (%)',
+      sundayHolidaySurcharge: 'Sunday/Holiday Surcharge (%)',
+      guaranteedHoursConfig: 'Guaranteed Hours',
+      guaranteedHoursDescription: 'Minimum pay per day, regardless of actual working time',
+      guaranteedHoursPerDay: 'Guaranteed Hours per Day',
+      overtimeSettingsSaved: 'Overtime settings have been successfully saved.',
+      notesSection: 'Notes',
+      
       // Overtime Display
       'overtime.base': 'OT',
       'overtime.surcharge': 'Surcharge',
@@ -439,6 +450,17 @@ const resources = {
       surchargeOver12h: 'Zuschlag über 12h (%)',
       weekendSurcharges: 'Wochenend-Zuschläge',
       weekendDescription: 'Automatische Zuschläge von Freitag Abend bis Montag Morgen',
+      
+      // Additional overtime settings
+      overtimeSettingsTitle: 'Überstunden-Zuschläge konfigurieren',
+      surcharge8to12h: 'Zuschlag 8-12h (%)',
+      saturdaySurcharge: 'Samstag-Zuschlag (%)',
+      sundayHolidaySurcharge: 'Sonntag/Feiertag-Zuschlag (%)',
+      guaranteedHoursConfig: 'Garantierte Stunden',
+      guaranteedHoursDescription: 'Mindestbezahlung pro Tag, unabhängig von der tatsächlichen Arbeitszeit',
+      guaranteedHoursPerDay: 'Garantierte Stunden pro Tag',
+      overtimeSettingsSaved: 'Überstunden-Einstellungen wurden erfolgreich gespeichert.',
+      notesSection: 'Hinweise',
       
       // Overtime Display
       'overtime.base': 'ÜS',
@@ -683,6 +705,17 @@ const resources = {
       surchargeOver12h: 'Tillegg over 12t (%)',
       weekendSurcharges: 'Helgetillegg',
       weekendDescription: 'Automatiske tillegg fra fredag kveld til mandag morgen',
+      
+      // Additional overtime settings
+      overtimeSettingsTitle: 'Konfigurer overtidstillegg',
+      surcharge8to12h: 'Tillegg 8-12t (%)',
+      saturdaySurcharge: 'Lørdagstillegg (%)',
+      sundayHolidaySurcharge: 'Søndag/Helligdagstillegg (%)',
+      guaranteedHoursConfig: 'Garanterte timer',
+      guaranteedHoursDescription: 'Minimum betaling per dag, uavhengig av faktisk arbeidstid',
+      guaranteedHoursPerDay: 'Garanterte timer per dag',
+      overtimeSettingsSaved: 'Overtidsinnstillingene er lagret.',
+      notesSection: 'Notater',
 
       // Overtime Display
       'overtime.base': 'OT',

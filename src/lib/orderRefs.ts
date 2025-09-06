@@ -6,13 +6,10 @@ export interface OrderRefs {
 export function getOrderRefs(job: { id: string; evaticNo?: string | null }): OrderRefs[] {
   const refs: OrderRefs[] = [];
   
-  // Add EVATIC number first if it exists
+  // Add EVATIC number if it exists
   if (job.evaticNo && job.evaticNo.trim().length > 0) {
     refs.push({ label: 'EVATIC Nr.', value: job.evaticNo.trim() });
   }
-  
-  // Always add Job-ID
-  refs.push({ label: 'Job-ID', value: job.id });
   
   return refs;
 }

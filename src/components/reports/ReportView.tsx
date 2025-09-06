@@ -56,8 +56,7 @@ export default function ReportView({
       <div className="header mb-6">
         <div className="flex justify-between items-start mb-4">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">{t('title')}</h1>
-            <p className="text-gray-600">{t('subtitle')}</p>
+            <h2 className="text-lg font-semibold text-gray-900">{t('title')}</h2>
           </div>
           <div className="text-right text-sm text-gray-600">
             <p>{t('createdAt')}: {createdAtFormatted}</p>

@@ -4,8 +4,7 @@ import { initReactI18next } from 'react-i18next';
 // Import report translations
 const reportTranslations = {
   de: {
-    title: 'ServiceTracker',
-    subtitle: 'Arbeitsbericht',
+    title: 'Arbeitsbericht',
     createdAt: 'Erstellt am',
     customer: 'Kunde',
     address: 'Adresse',
@@ -46,8 +45,7 @@ const reportTranslations = {
     departure: 'Abreise',
   },
   en: {
-    title: 'ServiceTracker',
-    subtitle: 'Work Report',
+    title: 'Work Report',
     createdAt: 'Created at',
     customer: 'Customer',
     address: 'Address',
@@ -88,8 +86,7 @@ const reportTranslations = {
     departure: 'Departure',
   },
   nb: {
-    title: 'ServiceTracker',
-    subtitle: 'Arbeidsrapport',
+    title: 'Arbeidsrapport',
     createdAt: 'Opprettet',
     customer: 'Kunde',
     address: 'Adresse',
@@ -130,8 +127,7 @@ const reportTranslations = {
     departure: 'Avreise',
   },
   sv: {
-    title: 'ServiceTracker',
-    subtitle: 'Arbetsrapport',
+    title: 'Arbetsrapport',
     createdAt: 'Skapad',
     customer: 'Kund',
     address: 'Adress',
@@ -172,8 +168,7 @@ const reportTranslations = {
     departure: 'Avresa',
   },
   da: {
-    title: 'ServiceTracker',
-    subtitle: 'Arbejdsrapport',
+    title: 'Arbejdsrapport',
     createdAt: 'Oprettet',
     customer: 'Kunde',
     address: 'Adresse',

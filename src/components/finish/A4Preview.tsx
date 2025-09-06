@@ -54,7 +54,10 @@ export const A4Preview = ({
   }, [open, job, workReport, timeEntries, totalMinutes, overtimeCalculation, getReportLang]);
   
   const handlePrint = () => {
+    const originalTitle = document.title;
+    document.title = 'Arbeitsbericht';
     window.print();
+    document.title = originalTitle;
   };
 
   return (

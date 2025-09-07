@@ -1223,7 +1223,24 @@ const resources = {
       gpsTrackingNote: "Sporer posisjonen din automatisk under arbeid",
       homeLocation: "Hjemmelokasjon",
       setHomeLocation: "Angi hjemmelokasjon",
-      homeLocationNote: "Brukes for å beregne reiseavstand"
+      homeLocationNote: "Brukes for å beregne reiseavstand",
+
+      // Additional Settings Dialog Labels (non-duplicates only)
+      gps: "GPS",
+      holidays: "Ferier", 
+      advanced: "Avansert",
+      name: "Navn",
+      homeAddress: "Hjemmeadresse",
+      email: "E-post",
+      emailSendSettings: "E-postsendingsinnstillinger",
+      defaultRecipient: "Standard mottaker",
+      emailSeparatorNote: "Skill flere e-postadresser med komma",
+      emailNote: "E-postadressen din og standardmottakerne brukes for hurtig rapportdeling",
+      saving: "Lagrer",
+      advancedSettings: "Avanserte innstillinger",
+      resetAppData: "Tilbakestill app-data",
+      resetAppDescription: "Dette vil slette alle jobber, innstillinger og data permanent. Handlingen kan ikke angres.",
+      deleteAppData: "Slett app-data"
     }
   }
 };

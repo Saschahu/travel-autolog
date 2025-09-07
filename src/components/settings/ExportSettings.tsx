@@ -357,7 +357,7 @@ export const ExportSettings = ({ settings, onSettingsChange }: ExportSettingsPro
                           {isTestingWrite ? (
                             <>
                               <Loader2 className="mr-1 h-3 w-3 animate-spin" />
-                              Test...
+                              {t('testing')}
                             </>
                           ) : (
                             <>

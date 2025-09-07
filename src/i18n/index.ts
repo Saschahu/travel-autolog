@@ -213,6 +213,9 @@ const resources = {
       languageNote: 'Language changes immediately and applies across the app.',
       
       // Form Labels
+      name: 'Name',
+      homeAddress: 'Home address',
+      email: 'Email',
       jobsToExport: 'Jobs to Export:',
       singleJobTemplate: 'Single Job (Template, optional):',
       exportOverview: 'Export Overview',
@@ -584,8 +587,11 @@ const resources = {
       note: 'Hinweis',
       languageNote: 'Die Sprache wird sofort geändert und gilt in der gesamten App.',
       
-      // Form Labels
-      jobsToExport: 'Zu exportierende Aufträge:',
+       // Form Labels
+       name: 'Name',
+       homeAddress: 'Wohnadresse',
+       email: 'E-Mail',
+       jobsToExport: 'Zu exportierende Aufträge:',
       singleJobTemplate: 'Einzelauftrag (Template, optional):',
       exportOverview: 'Export-Übersicht',
       mobileCompatibility: 'Mobile Kompatibilität',
@@ -979,8 +985,11 @@ const resources = {
       note: 'Merk',
       languageNote: 'Språket endres umiddelbart og gjelder i hele appen.',
       
-      // Form Labels
-      workPerformed: 'Arbeid som skal utføres',
+       // Form Labels
+       name: 'Navn',
+       homeAddress: 'Hjemadresse',
+       email: 'E-post',
+       workPerformed: 'Arbeid som skal utføres',
       workPerformedPlaceholder: 'Beskriv arbeidet som skal utføres...',
       hotelNights: 'Antall netter',
       kmReturn: 'KM retur',

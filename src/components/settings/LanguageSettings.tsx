@@ -8,9 +8,7 @@ import { useTranslation } from 'react-i18next';
 const languages = [
   { code: 'de', name: 'Deutsch' },
   { code: 'en', name: 'English' },
-  { code: 'nb', name: 'Norsk' },
-  { code: 'sv', name: 'Svenska' },
-  { code: 'da', name: 'Dansk' }
+  { code: 'nb', name: 'Norsk' }
 ];
 
 export const LanguageSettings = () => {

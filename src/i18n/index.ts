@@ -1172,16 +1172,71 @@ const resources = {
 
       // Export Settings
       exportSettings: "Eksportinnstillinger",
+      localStoragePath: "Lokal lagringsbane",
+      selectedFolder: "Valgt mappe",
+      selectFolder: "Velg mappe",
+      selectInNewTab: "Velg i ny fane",
+      noFolderSelected: "Ingen mappe valgt",
+      selectingFolder: "Velger mappe...",
+      clearSelection: "Tøm valg",
+      testWrite: "Test skriving",
+      testing: "Tester...",
+      test: "Test",
       pdfSettings: "PDF-innstillinger",
       pdfQuality: "PDF-kvalitet",
+      pdfQualityInfo: "Høyere kvalitet gir større filer. 60% anbefales for beste balanse.",
       directorySettings: "Mappeinnstillinger",
       exportDirectory: "Eksportmappe",
       selectDirectory: "Velg mappe",
       emailSettings: "E-postinnstillinger",
       preferredEmailProvider: "Foretrukket e-postleverandør",
+      preferredEmailApp: "Foretrukket e-postapp",
+      selectEmailProvider: "Velg e-postleverandør",
+      selectOption: "Velg alternativ",
+      emailClientLimitation: "E-postklienter kan ha begrensninger på vedleggsstørrelse og antall.",
       testEmailButton: "Test e-post",
       testEmailSuccess: "Test-e-post åpnet!",
       testEmailError: "Kunne ikke åpne e-postklient",
+      
+      // Folder Selection Messages
+      browserNotSupportFolderAlert: "Nettleseren din støtter ikke mappevalg. Filer vil bli lastet ned til standard nedlastingsmappe.",
+      folderEmbeddedAlert: "Mappevalg fungerer ikke i innebygd modus. Bruk 'Velg i ny fane' eller åpne appen direkte.",
+      androidFolderAlert: "På Android kan du velge en mappe for eksport. Dette vil be om tilgang til den valgte mappen.",
+      noFolderInfo: "Hvis ingen mappe er valgt, vil filer bli lastet ned til nettleserens standardmappe.",
+      standardDownloadInfo: "Filer vil bli lastet ned til nettleserens standardmappe.",
+      
+      // Permission Status
+      permissionLostBadge: "- tilgang tapt",
+      
+      // Toast Messages
+      exportPathSet: "Eksportbane satt til:",
+      clickButtonDirectly: "Vennligst klikk knappen direkte for å velge mappe.",
+      browserNotSupportFolder: "Nettleseren din støtter ikke mappevalg.",
+      popupsBlocked: "Popup-vinduer er blokkert. Vennligst tillat popup-vinduer.",
+      folderSelectionFailed: "Mappevalg feilet",
+      folderSelectionError: "Feil under mappevalg",
+      unknownError: "Ukjent feil",
+      popupBlocked: "Popup blokkert",
+      allowPopups: "Vennligst tillat popup-vinduer for denne siden.",
+      newTabOpened: "Ny fane åpnet",
+      clickStartFolder: "Klikk 'Start mappevalg' i den nye fanen.",
+      testWriteSuccess: "Skrivetest vellykket",
+      fileCreatedSuccessfully: "Fil opprettet: {fileName}",
+      testWriteFailed: "Skrivetest feilet",
+      unknownWriteError: "Ukjent skrivefeil",
+      permissionValid: "Tilgang gyldig",
+      folderAccessStillAllowed: "Mappeadgang er fortsatt tillatt.",
+      folderAccessRevoked: "Mappeadgang er trukket tilbake. Vennligst velg mappen på nytt.",
+      permissionCheckError: "Feil ved kontroll av tilgang",
+      permissionStatusNotChecked: "Kunne ikke kontrollere tilgangsstatus.",
+      selectionCleared: "Valg tømt",
+      folderSelectionRemoved: "Mappevalg fjernet.",
+      emailAppOpened: "E-postapp åpnet",
+      composeWindowOpened: "Skrivevindu åpnet i e-postklient.",
+      popupBlockedEmail: "Popup blokkert for e-post",
+      allowPopupsForEmail: "Vennligst tillat popup-vinduer for å åpne e-postklient.",
+      emailAppError: "E-postapp-feil",
+      emailAppNotOpened: "Kunne ikke åpne e-postapp.",
 
       // Overtime Settings
       overtimeSettingsTitle: "Overtidsinnstillinger",
@@ -1225,7 +1280,8 @@ const resources = {
       setHomeLocation: "Angi hjemmelokasjon",
       homeLocationNote: "Brukes for å beregne reiseavstand",
 
-      // Additional Settings Dialog Labels (non-duplicates only)
+      
+      // General Settings
       gps: "GPS",
       holidays: "Ferier", 
       advanced: "Avansert",

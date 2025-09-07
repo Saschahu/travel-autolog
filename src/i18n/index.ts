@@ -65,6 +65,7 @@ const jobTranslationsDe = {
     machine: 'Maschine',
     times: 'Zeiten', 
     overtime: 'Überstunden',
+    report: 'Report',
     finish: 'Abschluss'
   },
   customer: {
@@ -512,7 +513,7 @@ const resources = {
       machine: 'Maschine',
       times: 'Zeiten',
       overtime: 'Überstunden',
-      finish: 'Abschluss',
+      reports: 'Report',
       
       // Dashboard and Quick Actions
       quickActions: 'Schnellaktionen',
@@ -1263,6 +1264,7 @@ const resources = {
         machine: 'Maskin',
         times: 'Tider',
         overtime: 'Overtid', 
+        report: 'Rapport',
         finish: 'Ferdig'
       },
       customer: {

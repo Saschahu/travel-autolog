@@ -1,7 +1,6 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { useEmailService } from '@/hooks/useEmailService';
@@ -30,7 +29,7 @@ import { tt } from '@/lib/i18nSafe';
 import { isFileSystemAccessSupported, writeFile, getDirectoryName } from '@/lib/fsAccess';
 import { loadExportHandle } from '@/lib/fsStore';
 import { getReportFileName } from '@/lib/reportFileName';
-import { saveReportDraft, loadReportDraft, clearReportDraft } from '@/lib/drafts';
+import { buildReportSummary } from '@/features/jobs/report/helpers';
 
 interface FinishJobTabProps {
   job: Job;
@@ -39,14 +38,18 @@ interface FinishJobTabProps {
 }
 
 export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabProps) => {
-  const [workReport, setWorkReport] = useState(job.workReport || '');
-  const [isSaved, setIsSaved] = useState(!!job.workReport);
+  // Build workReport from reports array for backwards compatibility and PDF generation
+  const workReport = useMemo(() => {
+    if (job.reports && job.reports.length > 0) {
+      return buildReportSummary(job.reports);
+    }
+    return job.workReport || '';
+  }, [job.reports, job.workReport]);
+
   const [isSending, setIsSending] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
-  const [showRestoreDialog, setShowRestoreDialog] = useState(false);
-  const [draftToRestore, setDraftToRestore] = useState<string>('');
   const [dayOverrides, setDayOverrides] = useState<Record<string, DayOverrides>>({});
   const [showFallbackModal, setShowFallbackModal] = useState(false);
   const [fallbackFile, setFallbackFile] = useState<File | undefined>();
@@ -63,97 +66,6 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
 
   const { calculateOvertime } = useOvertimeCalculation();
 
-  // Debounced auto-save function
-  const debouncedSaveDraft = useCallback(
-    (() => {
-      let timeoutId: NodeJS.Timeout;
-      return (text: string) => {
-        clearTimeout(timeoutId);
-        timeoutId = setTimeout(async () => {
-          if (text !== (job.workReport || '')) {
-            try {
-              await saveReportDraft(job.id, {
-                text,
-                updatedAt: new Date().toISOString()
-              });
-            } catch (error) {
-              console.warn('Failed to save draft:', error);
-            }
-          }
-        }, 600);
-      };
-    })(),
-    [job.id, job.workReport]
-  );
-
-  // Load draft on mount and check if restore is needed
-  useEffect(() => {
-    const checkForDraft = async () => {
-      try {
-        const draft = await loadReportDraft(job.id);
-        if (draft && draft.text !== (job.workReport || '') && draft.text.trim() !== '') {
-          setDraftToRestore(draft.text);
-          setShowRestoreDialog(true);
-        }
-      } catch (error) {
-        console.warn('Failed to load draft:', error);
-      }
-    };
-    
-    checkForDraft();
-  }, [job.id, job.workReport]);
-
-  // Auto-save when workReport changes
-  useEffect(() => {
-    if (workReport !== (job.workReport || '')) {
-      debouncedSaveDraft(workReport);
-    }
-  }, [workReport, debouncedSaveDraft, job.workReport]);
-
-  // Auto-save before navigation
-  useEffect(() => {
-    const handleBeforeUnload = async () => {
-      if (workReport !== (job.workReport || '')) {
-        try {
-          await saveReportDraft(job.id, {
-            text: workReport,
-            updatedAt: new Date().toISOString()
-          });
-        } catch (error) {
-          console.warn('Failed to save draft on unload:', error);
-        }
-      }
-    };
-
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, [job.id, workReport, job.workReport]);
-
-  // Restore draft handlers
-  const handleRestoreDraft = () => {
-    setWorkReport(draftToRestore);
-    setShowRestoreDialog(false);
-    setDraftToRestore('');
-       toast({
-         title: t('saved'),
-         description: t('draftRestored'),
-       });
-  };
-
-  const handleDiscardDraft = async () => {
-    try {
-      await clearReportDraft(job.id);
-      setShowRestoreDialog(false);
-      setDraftToRestore('');
-       toast({
-         title: t('saved'),
-         description: t('draftDiscarded'),
-       });
-    } catch (error) {
-      console.warn('Failed to clear draft:', error);
-    }
-  };
-
   // Calculate time entries and totals
   const timeEntries = useMemo(() => extractTimeEntriesFromJob(job), [job]);
   const { totalMinutes, totalBreakMinutes } = useMemo(() => 
@@ -162,9 +74,6 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
   
   // Calculate overtime
   const overtimeCalculation = useMemo(() => calculateOvertime(job), [job, calculateOvertime]);
-
-  // Check if there are unsaved changes
-  const hasUnsavedChanges = workReport !== (job.workReport || '');
 
   // Prepare PDF in the background when tab is opened
   useEffect(() => {
@@ -193,63 +102,18 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
   }, [workReport]);
 
   const handleSaveWorkReport = async () => {
-    try {
-      const updatedJob = { ...job, workReport: workReport };
-      onJobUpdate(updatedJob);
-      setIsSaved(true);
-      
-      // Clear draft when successfully saved
-      await clearReportDraft(job.id);
-      
-      // Clear PDF cache and prepare new one
-      clearReportPdfCache();
-      setIsPdfReady(false);
-      
-       toast({
-         title: t('saved'),
-         description: t('workReportSaved'),
-       });
-
-      // Prepare updated PDF
-      setTimeout(async () => {
-        try {
-          await getOrBuildReportPdf({
-            job: updatedJob,
-            workReport,
-            timeEntries,
-            totalMinutes,
-            overtimeCalculation
-          });
-          setIsPdfReady(true);
-        } catch (error) {
-          console.error('Failed to prepare updated PDF:', error);
-        }
-      }, 100);
-    } catch (error) {
-       toast({
-         title: t('error'),
-         description: t('errorSavingReport'),
-         variant: 'destructive',
-       });
-    }
+    // This is now handled by the Report tab
+    toast({
+      title: t('info'),
+      description: 'Reports werden im Report-Tab bearbeitet',
+    });
   };
 
   const handleSendReport = async () => {
     setIsSending(true);
     try {
-      // First save if there are unsaved changes
-      let currentJob = job;
-      if (hasUnsavedChanges) {
-        currentJob = { ...job, workReport: workReport };
-        onJobUpdate(currentJob);
-        setIsSaved(true);
-        
-        // Clear draft when job is updated
-        await clearReportDraft(job.id);
-      }
-
       const reportData = {
-        job: currentJob,
+        job,
         workReport,
         timeEntries,
         totalMinutes,
@@ -393,28 +257,6 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
   };
 
   const handleGoDashboard = () => {
-    if (hasUnsavedChanges) {
-      setShowConfirmDialog(true);
-    } else {
-      onCloseDialog?.();
-      navigate('/');
-    }
-  };
-
-  const confirmGoToDashboard = async () => {
-    // Auto-save before navigating
-    if (hasUnsavedChanges) {
-      try {
-        await saveReportDraft(job.id, {
-          text: workReport,
-          updatedAt: new Date().toISOString()
-        });
-      } catch (error) {
-        console.warn('Failed to save draft before navigation:', error);
-      }
-    }
-    
-    setShowConfirmDialog(false);
     onCloseDialog?.();
     navigate('/');
   };
@@ -431,30 +273,19 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <Label htmlFor="work-report">{tt(t, 'job.finish.reportLabel', 'Arbeitsbericht')}</Label>
-              <Textarea
-                id="work-report"
-                placeholder={tt(t, 'job.finish.reportPlaceholder', 'Beschreiben Sie die durchgeführten Arbeiten, Befunde, verwendete Materialien, etc...')}
-                value={workReport}
-                onChange={(e) => setWorkReport(e.target.value)}
-                onBlur={async () => {
-                  // Save draft immediately when user leaves the field
-                  if (workReport !== (job.workReport || '')) {
-                    try {
-                      await saveReportDraft(job.id, {
-                        text: workReport,
-                        updatedAt: new Date().toISOString()
-                      });
-                    } catch (error) {
-                      console.warn('Failed to save draft on blur:', error);
-                    }
-                  }
-                }}
-                className="min-h-[120px] mt-2"
-              />
+              <Label htmlFor="work-report-summary">{tt(t, 'job.finish.reportSummaryLabel', 'Arbeitsbericht Zusammenfassung')}</Label>
+              <div 
+                data-testid="report-summary"
+                className="mt-2 min-h-[120px] p-3 border rounded-md bg-muted/10 text-sm whitespace-pre-wrap font-mono"
+              >
+                {workReport || 'Keine Reports erstellt'}
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">
+                Reports können im "Report" Tab bearbeitet werden.
+              </p>
             </div>
             
-            {/* PDF Save button directly under textarea */}
+            {/* PDF Save button */}
             <Button 
               data-testid="btn-save-pdf"
               onClick={handleSavePdf}
@@ -540,41 +371,7 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
         overtimeCalculation={overtimeCalculation}
       />
 
-      {/* Confirmation Dialog for unsaved changes */}
-      <Dialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{t('unsavedChanges')}</DialogTitle>
-          </DialogHeader>
-          <p>{t('unsavedChangesText')}</p>
-          <div className="flex justify-end gap-2 mt-4">
-            <Button variant="outline" onClick={() => setShowConfirmDialog(false)}>
-              {t('back')}
-            </Button>
-            <Button onClick={confirmGoToDashboard}>
-              {t('continueToDashboard')}
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Restore Draft Dialog */}
-      <Dialog open={showRestoreDialog} onOpenChange={setShowRestoreDialog}>
-        <DialogContent>
-           <DialogHeader>
-             <DialogTitle>{t('restoreDraft')}</DialogTitle>
-           </DialogHeader>
-           <p>{t('restoreDraftDescription')}</p>
-           <div className="flex justify-end gap-2 mt-4">
-             <Button variant="outline" onClick={handleDiscardDraft}>
-               {t('discardDraft')}
-             </Button>
-             <Button onClick={handleRestoreDraft}>
-               {t('restoreButton')}
-             </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      {/* Confirmation Dialog - removed since no unsaved changes */}
 
       {/* Share Fallback Modal */}
       <ShareFallbackModal

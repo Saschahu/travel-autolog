@@ -26,6 +26,7 @@ import { useJobs, type Job } from '@/hooks/useJobs';
 import { supabase } from '@/integrations/supabase/client';
 import { OvertimeTab } from '@/components/overtime/OvertimeTab';
 import { FinishJobTab } from '@/components/finish/FinishJobTab';
+import { ReportTab } from '@/components/reports/ReportTab';
 import { BuildInfo } from '@/components/ui/build-info';
 import React from 'react';
 
@@ -513,11 +514,12 @@ const Index = () => {
             
             <div className="flex-1 overflow-hidden">
               <Tabs defaultValue="customer" className="h-full flex flex-col">
-                <TabsList className="grid w-full grid-cols-5 flex-shrink-0">
+                <TabsList className="grid w-full grid-cols-6 flex-shrink-0">
                   <TabsTrigger value="customer">{tt(tJob, 'tabs.customer', 'Kunde')}</TabsTrigger>
                   <TabsTrigger value="machine">{tt(tJob, 'tabs.machine', 'Maschine')}</TabsTrigger>
                   <TabsTrigger value="times">{tt(tJob, 'tabs.times', 'Zeiten')}</TabsTrigger>
                   <TabsTrigger value="overtime">{tt(tJob, 'tabs.overtime', 'Überstunden')}</TabsTrigger>
+                  <TabsTrigger value="report">{tt(tJob, 'tabs.report', 'Report')}</TabsTrigger>
                   <TabsTrigger value="finish">{tt(tJob, 'tabs.finish', 'Abschluss')}</TabsTrigger>
                 </TabsList>
                 
@@ -799,6 +801,21 @@ const Index = () => {
                     )}
                   </TabsContent>
                   
+                  <TabsContent value="report" className="space-y-4 mt-0">
+                    {selectedJob && (
+                      <ReportTab 
+                        job={{
+                          ...selectedJob,
+                          ...editData,
+                          days: editData.days
+                        } as Job}
+                        onJobUpdate={(updatedJob) => {
+                          setEditData(prev => ({ ...prev, reports: updatedJob.reports }));
+                        }}
+                      />
+                    )}
+                  </TabsContent>
+                  
                   <TabsContent value="finish" className="space-y-4 mt-0">
                     {selectedJob && (
                       <FinishJobTab 
@@ -808,7 +825,11 @@ const Index = () => {
                           days: editData.days
                         } as Job}
                         onJobUpdate={(updatedJob) => {
-                          setEditData(prev => ({ ...prev, workReport: updatedJob.workReport }));
+                          setEditData(prev => ({ 
+                            ...prev, 
+                            workReport: updatedJob.workReport,
+                            reports: updatedJob.reports
+                          }));
                         }}
                         onCloseDialog={() => setEditOpen(false)}
                       />

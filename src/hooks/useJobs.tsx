@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { DayReport } from '@/types/dayReport';
 
 export type Job = {
   id: string;
@@ -41,7 +42,9 @@ export type Job = {
   kilometersOutbound?: number;
   kilometersReturn?: number;
   tollAmount?: number;
-  workReport?: string;
+  // Report system
+  reports?: DayReport[];     // NEW: daily reports
+  workReport?: string;       // @deprecated - will be migrated to reports
 };
 
 export const useJobs = () => {

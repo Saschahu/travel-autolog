@@ -123,7 +123,7 @@ export const JobStatusCard = (props: JobStatusCardProps) => {
                 const formatTime = (minutes: number) => {
                   const hours = Math.floor(minutes / 60);
                   const mins = minutes % 60;
-                  return `${hours}h ${mins}m`;
+                  return `${hours}${t('hoursShort')} ${mins}${t('minutesShort')}`;
                 };
                 
                 return (
@@ -150,7 +150,7 @@ export const JobStatusCard = (props: JobStatusCardProps) => {
                 const totalMinutes = timeBreakdown.travelTime + timeBreakdown.workTime + timeBreakdown.departureTime;
                 const hours = Math.floor(totalMinutes / 60);
                 const mins = totalMinutes % 60;
-                return `${hours}h ${mins}m`;
+                return `${hours}${t('hoursShort')} ${mins}${t('minutesShort')}`;
               })()}
             </div>
           </div>

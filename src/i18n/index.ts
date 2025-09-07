@@ -200,7 +200,11 @@ const resources = {
       totalOvertime: 'Total Overtime',
       payableHours: 'Payable Hours',
       overtimeExplanation: 'Explanation: You receive payment for at least',
-      hoursMinimum: 'hours minimum, even if you work less. All hours outside 8-16 are overtime with surcharge.',
+       hoursMinimum: 'hours minimum, even if you work less. All hours outside 8-16 are overtime with surcharge.',
+       
+       // Time format
+       hoursShort: 'h',
+       minutesShort: 'min',
       
       // Overtime Settings
       hourBasedOvertime: 'Hour-based Overtime',
@@ -568,7 +572,11 @@ const resources = {
       totalOvertime: 'Überstunden gesamt',
       payableHours: 'Bezahlbare Stunden',
       overtimeExplanation: 'Erklärung: Sie erhalten mindestens',
-      hoursMinimum: 'Stunden bezahlt, auch wenn Sie weniger arbeiten. Alle Stunden außerhalb 8-16 Uhr sind Überstunden mit Zuschlag.',
+       hoursMinimum: 'Stunden bezahlt, auch wenn Sie weniger arbeiten. Alle Stunden außerhalb 8-16 Uhr sind Überstunden mit Zuschlag.',
+       
+       // Time format
+       hoursShort: 'Std',
+       minutesShort: 'Min',
       
       // Overtime Settings
       hourBasedOvertime: 'Stundenbasierte Überstunden',
@@ -944,7 +952,11 @@ const resources = {
       totalOvertime: 'Total overtid',
       payableHours: 'Betalbare timer',
       overtimeExplanation: 'Forklaring: Du får betalt for minst',
-      hoursMinimum: 'timer minimum, selv om du arbeider mindre. Alle timer utenfor 8-16 er overtid med tillegg.',
+       hoursMinimum: 'timer minimum, selv om du arbeider mindre. Alle timer utenfor 8-16 er overtid med tillegg.',
+       
+       // Time format
+       hoursShort: 't',
+       minutesShort: 'min',
       
       // Overtime Settings
       hourBasedOvertime: 'Timebasert overtid',

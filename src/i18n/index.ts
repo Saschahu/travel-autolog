@@ -971,6 +971,7 @@ const resources = {
 
       // Navigation and Basic UI
       newJob: "Ny jobb",
+      editJob: "Rediger jobb",
       location: "GPS", 
       export: "Eksport",
 
@@ -1028,6 +1029,7 @@ const resources = {
       customerSavedGoMachineDesc: "Kunde lagret! Nå legg inn maskindata.",
       jobEditing: "Jobb redigeres",
       jobIdShort: "ID",
+      addMoreData: "Du kan legge til mer data",
 
       // Job Details
       jobDetails: "Jobbdetaljer",
@@ -1083,7 +1085,76 @@ const resources = {
       rule8to12: "• 8-12 timer: 50% tillegg på overtid",
       ruleOver12: "• Over 12 timer: 100% tillegg på overtid", 
       weekendRules: "Helgeregler:",
-      payment: "• Betaling: Minst garanterte timer + overtidstillegg"
+      payment: "• Betaling: Minst garanterte timer + overtidstillegg",
+
+      // Job (Auftrag bearbeiten / Report Tab)
+      job: {
+        dialogTitle: "Rediger jobb",
+        subtitle: "Rediger alle jobbdata",
+        tabs: {
+          customer: "Kunde",
+          machine: "Maskin",
+          times: "Tider",
+          overtime: "Overtid",
+          report: "Rapport",
+          finish: "Ferdig"
+        },
+        customer: {
+          name: "Kundenavn",
+          namePlaceholder: "Navn på kunden",
+          address: "Kundeadresse",
+          addressPlaceholder: "Full adresse til kunden",
+          evatic: "EVATIC-nummer",
+          evaticPlaceholder: "EVATIC-nummer (hvis tilgjengelig)",
+          hotelSection: "Hotell & Overnatting",
+          hotelName: "Hotellnavn",
+          hotelNamePlaceholder: "Navn på hotellet",
+          hotelAddress: "Hotelladresse",
+          hotelAddressPlaceholder: "Adresse til hotellet",
+          hotelNights: "Antall netter",
+          travelCosts: "Reisekostnader",
+          kmOutbound: "Kilometer utreise",
+          kmInbound: "Kilometer hjemreise",
+          tollFees: "Bomavgifter (€)"
+        },
+        machine: {
+          manufacturer: "Produsent",
+          manufacturerPlaceholder: "f.eks. Siemens, ABB, Schneider",
+          model: "Modell/Type",
+          modelPlaceholder: "f.eks. S7-1200, CP1E",
+          serialNumber: "Serienummer",
+          serialPlaceholder: "Serienummer på maskinen/anlegget",
+          workPerformed: "Arbeid som skal utføres",
+          workPerformedPlaceholder: "Beskriv arbeidet som skal utføres..."
+        },
+        report: {
+          tab: "Rapport",
+          day: "Dag {{n}}",
+          dayWithDate: "{{date}}",
+          placeholder: "Rapport for {{label}}",
+          save: "Lagre",
+          prev: "Forrige dag",
+          next: "Neste dag",
+          saved: "Rapport lagret",
+          trimTitle: "Reduser dager?",
+          trimBody: "Rapporter for dagene {{from}}–{{to}} blir slettet. Fortsette?",
+          cancel: "Avbryt",
+          confirm: "Fortsett"
+        },
+        finish: {
+          title: "Fullfør oppdrag",
+          reportLabel: "Arbeidsrapport",
+          reportPlaceholder: "Beskriv arbeidet som ble utført, funn, materialer brukt, etc...",
+          btnSaveReport: "Lagre arbeidsrapport",
+          btnPreview: "Forhåndsvisning",
+          btnEmail: "Send på e-post",
+          btnDashboard: "Dashboard"
+        },
+        buttons: {
+          save: "Lagre",
+          cancel: "Avbryt"
+        }
+      }
     }
   }
 };

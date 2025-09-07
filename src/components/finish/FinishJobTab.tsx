@@ -134,10 +134,10 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
     setWorkReport(draftToRestore);
     setShowRestoreDialog(false);
     setDraftToRestore('');
-    toast({
-      title: t('saved'),
-      description: 'Entwurf wurde wiederhergestellt',
-    });
+       toast({
+         title: t('saved'),
+         description: t('draftRestored'),
+       });
   };
 
   const handleDiscardDraft = async () => {
@@ -145,10 +145,10 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
       await clearReportDraft(job.id);
       setShowRestoreDialog(false);
       setDraftToRestore('');
-      toast({
-        title: t('saved'),
-        description: 'Entwurf wurde verworfen',
-      });
+       toast({
+         title: t('saved'),
+         description: t('draftDiscarded'),
+       });
     } catch (error) {
       console.warn('Failed to clear draft:', error);
     }
@@ -205,10 +205,10 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
       clearReportPdfCache();
       setIsPdfReady(false);
       
-      toast({
-        title: t('saved'),
-        description: 'Arbeitsbericht wurde gespeichert',
-      });
+       toast({
+         title: t('saved'),
+         description: t('workReportSaved'),
+       });
 
       // Prepare updated PDF
       setTimeout(async () => {
@@ -226,11 +226,11 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
         }
       }, 100);
     } catch (error) {
-      toast({
-        title: t('error'),
-        description: 'Fehler beim Speichern des Arbeitsberichts',
-        variant: 'destructive',
-      });
+       toast({
+         title: t('error'),
+         description: t('errorSavingReport'),
+         variant: 'destructive',
+       });
     }
   };
 
@@ -264,28 +264,28 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
       });
 
       if (result.success) {
-        toast({
-          title: 'Bericht gesendet',
-          description: result.method === 'native-android' ? 
-            'E-Mail-App wurde mit PDF-Anhang geöffnet.' :
-            'E-Mail-Client wurde geöffnet.',
-        });
+         toast({
+           title: t('reportSent'),
+           description: result.method === 'native-android' ? 
+             t('directShareSupported') :
+             t('reportSent'),
+         });
       }
     } catch (error) {
       console.error('Error in handleSendReport:', error);
       
       if (String(error).includes('NO_DIR')) {
-        toast({
-          title: t('error'),
-          description: 'Bitte zuerst einen Speicherordner unter Einstellungen → Export auswählen.',
-          variant: 'destructive',
-        });
+         toast({
+           title: t('error'),
+           description: t('selectFolderFirst'),
+           variant: 'destructive',
+         });
       } else if (String(error).includes('EMAIL_COMPOSE_FAILED')) {
-        toast({
-          title: t('error'),
-          description: 'E-Mail-App konnte nicht geöffnet werden. Bitte Standard-E-Mail-App prüfen.',
-          variant: 'destructive',
-        });
+         toast({
+           title: t('error'),
+           description: t('emailAppError'),
+           variant: 'destructive',
+         });
       } else {
         // Fallback to Web Share API
         try {
@@ -300,21 +300,21 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
           const result = await shareReportWithAttachment(reportData);
           
           if (result.ok) {
-            toast({
-              title: 'Bericht gesendet',
-              description: 'Der Auftragsbericht wurde erfolgreich per E-Mail versendet.',
-            });
+             toast({
+               title: t('reportSent'),
+               description: t('reportSentSuccess'),
+             });
           } else {
             // Show fallback modal
             setFallbackFile(result.file);
             setShowFallbackModal(true);
           }
         } catch (fallbackError) {
-          toast({
-            title: t('error'),
-            description: 'Fehler beim Versenden des Berichts',
-            variant: 'destructive',
-          });
+           toast({
+             title: t('error'),
+             description: t('errorSendingReport'),
+             variant: 'destructive',
+           });
         }
       }
     } finally {
@@ -325,10 +325,10 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
   const handleSavePdf = async () => {
     setIsSaving(true);
     try {
-      toast({
-        title: t('saving'),
-        description: 'PDF wird erstellt...',
-      });
+       toast({
+         title: t('saving'),
+         description: t('creatingPdf'),
+       });
       
       // Generate PDF with current report content
       const pdfBlob = await getOrBuildReportPdf({
@@ -360,21 +360,21 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
         }
       }
       
-      // Fallback: Browser download
-      toast({
-        title: t('needFolder'),
-        description: 'Datei wird heruntergeladen...',
-      });
+       // Fallback: Browser download
+       toast({
+         title: t('needFolder'),
+         description: t('downloadingFile'),
+       });
       const url = URL.createObjectURL(pdfBlob);
       const a = document.createElement('a');
       a.href = url;
       a.download = fileName;
       a.click();
       URL.revokeObjectURL(url);
-      toast({
-        title: t('pdfSaved'),
-        description: 'PDF wurde erfolgreich heruntergeladen.',
-      });
+       toast({
+         title: t('pdfSaved'),
+         description: t('pdfDownloadSuccess'),
+       });
       
     } catch (error) {
       console.error('Error saving PDF:', error);
@@ -463,7 +463,7 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
               className="mt-3 flex items-center gap-2"
             >
               <Save className="h-4 w-4" />
-              {isSaving ? tt(t, 'saving', 'PDF wird erstellt...') : tt(t, 'job.finish.btnSaveReport', 'Arbeitsbericht speichern')}
+              {isSaving ? t('saving') : tt(t, 'job.finish.btnSaveReport', 'Arbeitsbericht speichern')}
             </Button>
             
             {/* Action row with Preview and Email buttons */}
@@ -484,17 +484,17 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
                 disabled={isSending}
                 variant="default"
                 className="flex items-center gap-2"
-                title={canShareFiles() ? "Öffnet E-Mail-App mit angehängtem PDF" : "Öffnet Fallback-Optionen"}
+                title={canShareFiles() ? t('directShareSupported') : t('errorSendingReport')}
               >
                 <Mail className="h-4 w-4" />
-                {isSending ? 'Sende...' : tt(t, 'job.finish.btnEmail', 'Per E-Mail versenden')}
+                {isSending ? t('sending') : tt(t, 'job.finish.btnEmail', 'Per E-Mail versenden')}
               </Button>
               
-              {!isPdfReady && (
-                <p className="text-xs text-muted-foreground">
-                  Report wird vorbereitet...
-                </p>
-              )}
+               {!isPdfReady && (
+                 <p className="text-xs text-muted-foreground">
+                   {t('reportPreparingBackground')}
+                 </p>
+               )}
               
               {isPdfReady && canShareFiles() && (
                 <p className="text-xs text-muted-foreground">
@@ -561,17 +561,17 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
       {/* Restore Draft Dialog */}
       <Dialog open={showRestoreDialog} onOpenChange={setShowRestoreDialog}>
         <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Entwurf wiederherstellen</DialogTitle>
-          </DialogHeader>
-          <p>Es wurde ein neuerer Entwurf des Arbeitsberichts gefunden. Möchten Sie ihn wiederherstellen?</p>
-          <div className="flex justify-end gap-2 mt-4">
-            <Button variant="outline" onClick={handleDiscardDraft}>
-              Verwerfen
-            </Button>
-            <Button onClick={handleRestoreDraft}>
-              Wiederherstellen
-            </Button>
+           <DialogHeader>
+             <DialogTitle>{t('restoreDraft')}</DialogTitle>
+           </DialogHeader>
+           <p>{t('restoreDraftDescription')}</p>
+           <div className="flex justify-end gap-2 mt-4">
+             <Button variant="outline" onClick={handleDiscardDraft}>
+               {t('discardDraft')}
+             </Button>
+             <Button onClick={handleRestoreDraft}>
+               {t('restoreButton')}
+             </Button>
           </div>
         </DialogContent>
       </Dialog>

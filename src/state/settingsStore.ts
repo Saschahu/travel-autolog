@@ -21,7 +21,7 @@ export interface SettingsState {
 export const useSettingsStore = create<SettingsState>()(
   persist(
     (set, get) => ({
-      locale: 'de',
+      locale: 'en',
       reportLanguage: undefined,
       pdfQuality: 60, // default 60%
       exportDirRef: undefined,

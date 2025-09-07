@@ -1154,7 +1154,76 @@ const resources = {
           save: "Lagre",
           cancel: "Avbryt"
         }
-      }
+      },
+
+      // Settings Übersetzungen
+      settings: "Innstillinger",
+      settingsTitle: "Innstillinger",
+      userProfile: "Brukerprofil",
+      displayName: "Visningsnavn",
+      displayNamePlaceholder: "Skriv inn visningsnavnet ditt",
+      timezone: "Tidssone",
+      selectTimezone: "Velg tidssone",
+
+      // Language Settings
+      appLanguage: "Appspråk",
+      uiLanguage: "Grensesnittspråk",
+      languageNote: "Språkendringer trer i kraft umiddelbart",
+
+      // Export Settings
+      exportSettings: "Eksportinnstillinger",
+      pdfSettings: "PDF-innstillinger",
+      pdfQuality: "PDF-kvalitet",
+      directorySettings: "Mappeinnstillinger",
+      exportDirectory: "Eksportmappe",
+      selectDirectory: "Velg mappe",
+      emailSettings: "E-postinnstillinger",
+      preferredEmailProvider: "Foretrukket e-postleverandør",
+      testEmailButton: "Test e-post",
+      testEmailSuccess: "Test-e-post åpnet!",
+      testEmailError: "Kunne ikke åpne e-postklient",
+
+      // Overtime Settings
+      overtimeSettingsTitle: "Overtidsinnstillinger",
+      overtimeSettingsSaved: "Overtidsinnstillinger lagret!",
+      hourBasedOvertime: "Timebasert overtid",
+      firstOvertimeThreshold: "Første overtidsgrense (timer)",
+      firstOvertimeRate: "Første overtidssats (%)",
+      secondOvertimeThreshold: "Andre overtidsgrense (timer)",
+      secondOvertimeRate: "Andre overtidssats (%)",
+      weekendSettings: "Helgeinnstillinger",
+      enableWeekendOvertime: "Aktiver helgeovertid",
+      saturdayRate: "Lørdagssats (%)",
+      sundayRate: "Søndagssats (%)",
+      guaranteedHours: "Garanterte timer",
+      guaranteedHoursNote: "Minimum timer som alltid blir betalt",
+
+      // Holiday Settings
+      holidaySettings: "Ferieinnstillinger",
+      holidayCountry: "Land",
+      holidayRegion: "Region",
+      selectCountry: "Velg land",
+      selectRegion: "Velg region",
+      customHolidays: "Tilpassede ferier",
+      addCustomHoliday: "Legg til tilpasset ferie",
+      customHolidayName: "Ferienavn",
+      customHolidayNamePlaceholder: "f.eks. Bedriftsferie",
+      icsCalendars: "ICS-kalendere",
+      addIcsCalendar: "Legg til ICS-kalender",
+      icsUrl: "ICS-URL",
+      icsUrlPlaceholder: "https://example.com/calendar.ics",
+      icsName: "Kalendernavn",
+      icsNamePlaceholder: "f.eks. Bedriftskalender",
+      removeCalendar: "Fjern kalender",
+
+      // Location Settings
+      locationSettings: "Posisjonsinnstillinger", 
+      gpsTracking: "GPS-sporing",
+      enableGpsTracking: "Aktiver GPS-sporing",
+      gpsTrackingNote: "Sporer posisjonen din automatisk under arbeid",
+      homeLocation: "Hjemmelokasjon",
+      setHomeLocation: "Angi hjemmelokasjon",
+      homeLocationNote: "Brukes for å beregne reiseavstand"
     }
   }
 };

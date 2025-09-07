@@ -467,6 +467,24 @@ const resources = {
       jobIdShort: 'ID',
       editJob: 'Edit Job',
       
+      // Job Edit Dialog
+      editAllJobData: 'Edit all job data',
+      evaticNumber: 'EVATIC number',
+      evaticPlaceholder: 'EVATIC number (if available)',
+      hotelOvernight: 'Hotel & Overnight',
+      travelCosts: 'Travel costs',
+      tollFees: 'Toll fees (€)',
+      manufacturerPlaceholder: 'e.g. Siemens, ABB, Schneider',
+      modelType: 'Model/Type',
+      modelPlaceholder: 'e.g. S7-1200, CP1E',
+      serialPlaceholder: 'Serial number of the machine/system',
+      workReport: 'Work report',
+      workReportPlaceholder: 'Detailed description of performed work...',
+      estimatedDays: 'Estimated days',
+      currentDay: 'Current day',
+      totalTimeCalculated: 'Total time calculated automatically: Travel + Work time + Departure for all days',
+      dailyTimes: 'Daily times',
+      
       // Job Details
       jobDetails: 'Job Details',
       jobDetailsDescription: 'Information about the selected job',
@@ -843,6 +861,24 @@ const resources = {
       jobEditing: 'Job wird bearbeitet',
       jobIdShort: 'ID',
       editJob: 'Auftrag bearbeiten',
+      
+      // Job Edit Dialog
+      editAllJobData: 'Alle Auftragsdaten bearbeiten',
+      evaticNumber: 'EVATIC-Nummer',
+      evaticPlaceholder: 'EVATIC-Nummer (falls vorhanden)',
+      hotelOvernight: 'Hotel & Übernachtung',
+      travelCosts: 'Reisekosten',
+      tollFees: 'Mautgebühren (€)',
+      manufacturerPlaceholder: 'z.B. Siemens, ABB, Schneider',
+      modelType: 'Modell/Typ',
+      modelPlaceholder: 'z.B. S7-1200, CP1E',
+      serialPlaceholder: 'Seriennummer der Maschine/Anlage',
+      workReport: 'Arbeitsbericht',
+      workReportPlaceholder: 'Detaillierte Beschreibung der durchgeführten Arbeiten...',
+      estimatedDays: 'Geschätzte Tage',
+      currentDay: 'Aktueller Tag',
+      totalTimeCalculated: 'Gesamtzeit wird automatisch berechnet: Anreise + Arbeitszeit + Abreise für alle Tage',
+      dailyTimes: 'Tägliche Zeiten',
       
       // Job Details
       jobDetails: 'Auftragsdetails',

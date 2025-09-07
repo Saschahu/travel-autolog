@@ -29,6 +29,8 @@ import { FinishJobTab } from '@/components/finish/FinishJobTab';
 import { ReportTab } from '@/components/reports/ReportTab';
 import { BuildInfo } from '@/components/ui/build-info';
 import React from 'react';
+import { DayReport } from '@/types/dayReport';
+import { initializeReports, adjustReportsToEstimatedDays } from '@/features/jobs/report/helpers';
 
 type DayData = {
   day: number;
@@ -86,6 +88,7 @@ const Index = () => {
     kilometersReturn: 0,
     tollAmount: 0,
     workReport: '',
+    reports: [] as DayReport[],
   });
 
 
@@ -106,6 +109,16 @@ const Index = () => {
       days.push({ day: i + 1 });
     }
     
+    // Initialize reports only if missing; keep existing texts
+    const baseReports = (job.reports && job.reports.length > 0)
+      ? job.reports
+      : initializeReports(estimatedDays, job.reports, job.workReport);
+    // Sync dateISO from times only if not already set
+    const reports = (baseReports || []).map((r) => ({
+      ...r,
+      dateISO: r.dateISO ?? days[r.dayIndex]?.date,
+    }));
+    
     setEditData({
       customerName: job.customerName,
       customerAddress: job.customerAddress || '',
@@ -125,6 +138,7 @@ const Index = () => {
       kilometersReturn: job.kilometersReturn || 0,
       tollAmount: job.tollAmount || 0,
       workReport: job.workReport || '',
+      reports,
     });
     setEditOpen(true);
   };
@@ -156,7 +170,8 @@ const Index = () => {
           kilometers_return: editData.kilometersReturn,
           toll_amount: editData.tollAmount,
           work_report: editData.workReport,
-        })
+          reports: editData.reports,
+        } as any)
         .eq('id', selectedJob.id);
 
       if (error) throw error;
@@ -184,6 +199,7 @@ const Index = () => {
               kilometersReturn: editData.kilometersReturn,
               tollAmount: editData.tollAmount,
               workReport: editData.workReport,
+              reports: editData.reports,
               // Update legacy fields for display
               workStartTime: editData.days[0]?.workStart,
               workEndTime: editData.days[editData.currentDay - 1]?.workEnd,
@@ -256,23 +272,46 @@ const Index = () => {
   };
 
   const updateEstimatedDays = (newEstimatedDays: number) => {
-    const days = [...editData.days];
-    
+    const prev = editData;
+    const days = [...prev.days];
+
     // Add missing days
     for (let i = days.length; i < newEstimatedDays; i++) {
       days.push({ day: i + 1 });
     }
-    
-    // Remove excess days
+    // Remove excess days in UI list only after confirmation (handled below)
+
+    // Adjust reports without losing existing texts unless confirmed
+    const prevReports = (prev.reports || []) as DayReport[];
+    const { reports: adjustedReports, needsConfirmation } = adjustReportsToEstimatedDays(prevReports, newEstimatedDays);
+
+    if (needsConfirmation) {
+      const from = newEstimatedDays + 1;
+      const to = prevReports.length;
+      const confirmed = window.confirm(t('report.trimBody', { from, to }));
+      if (!confirmed) {
+        // Revert input by not changing state
+        return;
+      }
+    }
+
+    // Apply slicing if neededConfirmation true; adjustedReports already sliced
+    const finalReports = adjustedReports.map((r) => ({
+      ...r,
+      dateISO: r.dateISO ?? days[r.dayIndex]?.date,
+    }));
+
+    // Finally trim days to newEstimatedDays
     if (days.length > newEstimatedDays) {
       days.splice(newEstimatedDays);
     }
-    
-    setEditData(prev => ({
-      ...prev,
+
+    setEditData(prevState => ({
+      ...prevState,
       estimatedDays: newEstimatedDays,
-      days: days,
-      currentDay: Math.min(prev.currentDay, newEstimatedDays)
+      days,
+      currentDay: Math.min(prevState.currentDay, newEstimatedDays - 1),
+      reports: finalReports,
     }));
   };
 
@@ -809,8 +848,20 @@ const Index = () => {
                           ...editData,
                           days: editData.days
                         } as Job}
-                        onJobUpdate={(updatedJob) => {
-                          setEditData(prev => ({ ...prev, reports: updatedJob.reports }));
+                        onJobUpdate={async (updatedJob) => {
+                          try {
+                            await supabase
+                              .from('jobs')
+                              .update({ reports: updatedJob.reports } as any)
+                              .eq('id', selectedJob.id);
+
+                            // Update local edit state
+                            setEditData(prev => ({ ...prev, reports: updatedJob.reports || [] }));
+                            // Update jobs list for immediate UI feedback
+                            setJobs(prev => prev.map(j => j.id === selectedJob.id ? { ...j, reports: updatedJob.reports } : j));
+                          } catch (e) {
+                            console.error('Failed to persist reports:', e);
+                          }
                         }}
                       />
                     )}

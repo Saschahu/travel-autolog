@@ -111,6 +111,7 @@ export const useJobs = () => {
         kilometersOutbound: job.kilometers_outbound,
         kilometersReturn: job.kilometers_return,
         tollAmount: job.toll_amount,
+        reports: Array.isArray((job as any).reports) ? ((job as any).reports as DayReport[]) : undefined,
         workReport: job.work_report
       }));
 

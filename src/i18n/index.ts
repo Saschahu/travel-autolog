@@ -1308,8 +1308,8 @@ i18n
   .use(initReactI18next)
   .init({
     resources: resourcesExtended,
-    lng: 'de', // Set initial language from settings store
-    fallbackLng: 'de',
+    lng: 'en', // Set initial language from settings store
+    fallbackLng: 'en',
     
     interpolation: {
       escapeValue: false

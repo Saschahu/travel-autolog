@@ -63,6 +63,8 @@ export type Database = {
       }
       jobs: {
         Row: {
+          contact_name: string | null
+          contact_phone: string | null
           created_at: string
           current_day: number | null
           customer_address: string | null
@@ -82,6 +84,7 @@ export type Database = {
           kilometers_return: number | null
           manufacturer: string | null
           model: string | null
+          reports: Json | null
           serial_number: string | null
           status: string
           toll_amount: number | null
@@ -99,6 +102,8 @@ export type Database = {
           work_start_time: string | null
         }
         Insert: {
+          contact_name?: string | null
+          contact_phone?: string | null
           created_at?: string
           current_day?: number | null
           customer_address?: string | null
@@ -118,6 +123,7 @@ export type Database = {
           kilometers_return?: number | null
           manufacturer?: string | null
           model?: string | null
+          reports?: Json | null
           serial_number?: string | null
           status?: string
           toll_amount?: number | null
@@ -135,6 +141,8 @@ export type Database = {
           work_start_time?: string | null
         }
         Update: {
+          contact_name?: string | null
+          contact_phone?: string | null
           created_at?: string
           current_day?: number | null
           customer_address?: string | null
@@ -154,6 +162,7 @@ export type Database = {
           kilometers_return?: number | null
           manufacturer?: string | null
           model?: string | null
+          reports?: Json | null
           serial_number?: string | null
           status?: string
           toll_amount?: number | null

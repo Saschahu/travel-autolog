@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useToast } from '@/hooks/use-toast';
 import { ChevronLeft, ChevronRight, Save, FileText } from 'lucide-react';
 import { Job } from '@/hooks/useJobs';
@@ -84,7 +85,7 @@ export const ReportTab = ({ job, onJobUpdate }: ReportTabProps) => {
 
     if (!isAutoSave) {
       toast({
-        title: t('saved'),
+        title: t('job.report.saved'),
         description: `Report für ${formatDayTitle(reportData, currentDayIndex)} gespeichert`,
       });
     }
@@ -128,7 +129,7 @@ export const ReportTab = ({ job, onJobUpdate }: ReportTabProps) => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <FileText className="h-5 w-5" />
-            Report
+            {t('job.report.tab')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -160,7 +161,11 @@ export const ReportTab = ({ job, onJobUpdate }: ReportTabProps) => {
           <div>
             <Textarea
               data-testid="report-textarea"
-              placeholder={`Report für ${dayTitle}`}
+              placeholder={t('job.report.placeholder', { 
+                label: currentReport?.dateISO 
+                  ? t('job.report.dayWithDate', { date: dayTitle }) 
+                  : t('job.report.day', { n: currentDayIndex + 1 })
+              })}
               value={currentText}
               onChange={(e) => handleTextChange(e.target.value)}
               className="w-full min-h-[40vh] resize-vertical rounded-xl border p-3"
@@ -168,41 +173,51 @@ export const ReportTab = ({ job, onJobUpdate }: ReportTabProps) => {
           </div>
 
           {/* Footer controls */}
-          <div className="mt-3 flex items-center justify-between gap-3">
-            <Button
-              data-testid="report-prev"
-              variant="outline"
-              size="sm"
-              onClick={handlePreviousDay}
-              disabled={currentDayIndex === 0}
-              title="Vorheriger Tag"
-            >
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
+          <TooltipProvider>
+            <div className="mt-3 flex items-center justify-between gap-3">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    data-testid="report-prev"
+                    variant="outline"
+                    size="sm"
+                    onClick={handlePreviousDay}
+                    disabled={currentDayIndex === 0}
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>{t('job.report.prev')}</TooltipContent>
+              </Tooltip>
 
-            <Button
-              data-testid="report-save"
-              variant="default"
-              size="sm"
-              onClick={() => handleSaveCurrentDay()}
-              className="flex items-center gap-2"
-            >
-              <Save className="h-4 w-4" />
-              Speichern
-              {isDirty && <span className="text-xs">(•)</span>}
-            </Button>
+              <Button
+                data-testid="report-save"
+                variant="default"
+                size="sm"
+                onClick={() => handleSaveCurrentDay()}
+                className="flex items-center gap-2"
+              >
+                <Save className="h-4 w-4" />
+                {t('job.report.save')}
+                {isDirty && <span className="text-xs">(•)</span>}
+              </Button>
 
-            <Button
-              data-testid="report-next"
-              variant="outline"
-              size="sm"
-              onClick={handleNextDay}
-              disabled={currentDayIndex === totalDays - 1}
-              title="Nächster Tag"
-            >
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </div>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    data-testid="report-next"
+                    variant="outline"
+                    size="sm"
+                    onClick={handleNextDay}
+                    disabled={currentDayIndex === totalDays - 1}
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>{t('job.report.next')}</TooltipContent>
+              </Tooltip>
+            </div>
+          </TooltipProvider>
         </CardContent>
       </Card>
     </div>

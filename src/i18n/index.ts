@@ -12,6 +12,7 @@ const jobTranslationsEn = {
     machine: 'Machine', 
     times: 'Times',
     overtime: 'Overtime',
+    report: 'Report',
     finish: 'Finish'
   },
   customer: {
@@ -41,6 +42,20 @@ const jobTranslationsEn = {
     serialPlaceholder: 'Serial number of the machine/system',
     workPerformed: 'Work to Perform',
     workPerformedPlaceholder: 'Describe the work to perform...'
+  },
+  report: {
+    tab: 'Report',
+    day: 'Day {{n}}',
+    dayWithDate: '{{date}}',
+    placeholder: 'Report for {{label}}',
+    save: 'Save',
+    prev: 'Previous day',
+    next: 'Next day',
+    saved: 'Report saved',
+    trimTitle: 'Reduce days?',
+    trimBody: 'Reports for days {{from}}–{{to}} will be deleted. Continue?',
+    cancel: 'Cancel',
+    confirm: 'Continue'
   },
   finish: {
     title: 'Finish service case',
@@ -95,6 +110,20 @@ const jobTranslationsDe = {
     serialPlaceholder: 'Seriennummer der Maschine/Anlage',
     workPerformed: 'Zu leistende Arbeiten',
     workPerformedPlaceholder: 'Beschreiben Sie die geplanten/zu leistenden Arbeiten...'
+  },
+  report: {
+    tab: 'Report',
+    day: 'Tag {{n}}',
+    dayWithDate: '{{date}}',
+    placeholder: 'Report für {{label}}',
+    save: 'Speichern',
+    prev: 'Vorheriger Tag',
+    next: 'Nächster Tag',
+    saved: 'Report gespeichert',
+    trimTitle: 'Tage reduzieren?',
+    trimBody: 'Es werden Reports für die Tage {{from}}–{{to}} dauerhaft gelöscht. Fortfahren?',
+    cancel: 'Abbrechen',
+    confirm: 'Fortfahren'
   },
   finish: {
     title: 'Auftrag abschließen',
@@ -1294,6 +1323,20 @@ const resources = {
         serialPlaceholder: 'Serienummer på maskinen/anlegget',
         workPerformed: 'Arbeid som skal utføres',
         workPerformedPlaceholder: 'Beskriv arbeidet som skal utføres...'
+      },
+      report: {
+        tab: 'Rapport',
+        day: 'Dag {{n}}',
+        dayWithDate: '{{date}}',
+        placeholder: 'Rapport for {{label}}',
+        save: 'Lagre',
+        prev: 'Forrige dag',
+        next: 'Neste dag',
+        saved: 'Rapport lagret',
+        trimTitle: 'Reduser dager?',
+        trimBody: 'Rapporter for dagene {{from}}–{{to}} blir slettet. Fortsette?',
+        cancel: 'Avbryt',
+        confirm: 'Fortsett'
       },
       finish: {
         title: 'Fullfør oppdrag',

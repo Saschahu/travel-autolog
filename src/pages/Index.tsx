@@ -66,6 +66,7 @@ const Index = () => {
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
+  const [newJobOpen, setNewJobOpen] = useState(false);
   const [leavingHomeOpen, setLeavingHomeOpen] = useState(false);
   const { hasLeftHome } = useLocation();
   const { toast } = useToast();
@@ -458,8 +459,7 @@ const Index = () => {
 
   const handleLeavingHomeSelection = (type: 'work' | 'private') => {
     if (type === 'work') {
-      // Open new job dialog instead of navigating to removed tab
-      // For now, just show a toast
+      setNewJobOpen(true);
       toast({
         title: t('workTripStarted'),
         description: t('newJobDescription'),
@@ -509,6 +509,14 @@ const Index = () => {
           <div className="flex-1">
             <JobFilterDropdown value={jobFilter} onValueChange={setJobFilter} />
           </div>
+          <Button 
+            size="sm" 
+            className="gap-2 ml-2"
+            onClick={() => setNewJobOpen(true)}
+          >
+            <Plus className="h-4 w-4" />
+            {t('newJob')}
+          </Button>
         </div>
         
         {filteredJobs.map((job) => (
@@ -563,7 +571,17 @@ const Index = () => {
           </div>
         </Tabs>
 
-        {/* Modals */}
+        {/* New Job Dialog */}
+        <Dialog open={newJobOpen} onOpenChange={setNewJobOpen}>
+          <DialogContent className="max-w-4xl h-[90vh] flex flex-col p-0">
+            <JobEntryForm onJobSaved={() => { 
+              setNewJobOpen(false); 
+              fetchJobs(); 
+            }} />
+          </DialogContent>
+        </Dialog>
+
+        {/* Edit Job Dialog */}
         <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
           <DialogContent>
             <DialogHeader>

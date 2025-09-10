@@ -1,11 +1,13 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Clock, Calculator, TrendingUp } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Clock, Calculator, TrendingUp, RefreshCw } from 'lucide-react';
 import { Job } from '@/hooks/useJobs';
 import { useOvertimeCalculation } from '@/hooks/useOvertimeCalculation';
 import { useTranslation } from 'react-i18next';
 import { formatHours } from '@/lib/timeCalc';
 import { splitOvertime, generatePayableFormula, decimalHoursToMinutes } from '@/lib/overtimeCalc';
+import { useMemo } from 'react';
 
 interface OvertimeTabProps {
   job: Job;
@@ -13,10 +15,10 @@ interface OvertimeTabProps {
 
 export const OvertimeTab = ({ job }: OvertimeTabProps) => {
   const { t } = useTranslation();
-  const { calculateOvertime, calculateTimeBreakdown, formatMinutesToHours, overtimeSettings } = useOvertimeCalculation();
+  const { calculateOvertime, calculateTimeBreakdown, formatMinutesToHours, overtimeSettings, forceRecalculation, recalcTrigger } = useOvertimeCalculation();
   
-  const timeBreakdown = calculateTimeBreakdown(job);
-  const overtimeCalculation = calculateOvertime(job);
+  const timeBreakdown = useMemo(() => calculateTimeBreakdown(job), [job, calculateTimeBreakdown, recalcTrigger]);
+  const overtimeCalculation = useMemo(() => calculateOvertime(job), [job, calculateOvertime, recalcTrigger]);
   
   // Calculate splits for display
   const ot50Minutes = decimalHoursToMinutes(overtimeCalculation.overtime1Hours);
@@ -42,6 +44,19 @@ export const OvertimeTab = ({ job }: OvertimeTabProps) => {
 
   return (
     <div className="space-y-6">
+      {/* Recalculate Button */}
+      <div className="flex justify-end">
+        <Button 
+          variant="outline" 
+          size="sm" 
+          onClick={forceRecalculation}
+          className="flex items-center gap-2"
+        >
+          <RefreshCw className="h-4 w-4" />
+          Neu berechnen
+        </Button>
+      </div>
+      
       {/* Time Breakdown */}
       <Card>
         <CardHeader>

@@ -4,6 +4,7 @@ import { Job } from '@/hooks/useJobs';
 
 export const useOvertimeCalculation = () => {
   const [overtimeSettings, setOvertimeSettings] = useState<OvertimeSettings>(DEFAULT_OVERTIME_SETTINGS);
+  const [recalcTrigger, setRecalcTrigger] = useState(0);
 
   useEffect(() => {
     const saved = localStorage.getItem('overtimeSettings');
@@ -393,11 +394,17 @@ export const useOvertimeCalculation = () => {
     };
   };
 
+  const forceRecalculation = () => {
+    setRecalcTrigger(prev => prev + 1);
+  };
+
   return {
     overtimeSettings,
     saveSettings,
     calculateOvertime,
     calculateTimeBreakdown,
-    formatMinutesToHours
+    formatMinutesToHours,
+    forceRecalculation,
+    recalcTrigger
   };
 };

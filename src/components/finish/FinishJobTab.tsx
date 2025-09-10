@@ -64,7 +64,7 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
   const { t } = useTranslation();
   const exportSettings = useExportSettings();
 
-  const { calculateOvertime } = useOvertimeCalculation();
+  const { calculateOvertime, recalcTrigger } = useOvertimeCalculation();
 
   // Calculate time entries and totals
   const timeEntries = useMemo(() => extractTimeEntriesFromJob(job), [job]);
@@ -73,7 +73,7 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
   );
   
   // Calculate overtime
-  const overtimeCalculation = useMemo(() => calculateOvertime(job), [job, calculateOvertime]);
+  const overtimeCalculation = useMemo(() => calculateOvertime(job), [job, calculateOvertime, recalcTrigger]);
 
   // Prepare PDF in the background when tab is opened
   useEffect(() => {

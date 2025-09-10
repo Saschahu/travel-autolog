@@ -791,11 +791,17 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
               if (currentStep === 'customer') {
                 // Save customer data (partial save)
                 saveJobData(true);
+              } else if (currentStep === 'machine' && !isEditingJob) {
+                // For new jobs: save and switch to edit mode after machine step
+                saveJobData(true).then(() => {
+                  // After saving, we'll be in edit mode, so navigate to times tab
+                  setCurrentStep('times');
+                });
               } else {
                 const currentIndex = steps.findIndex(s => s.id === currentStep);
                 if (currentIndex < steps.length - 1) {
                   setCurrentStep(steps[currentIndex + 1].id as any);
-                } else if (currentStep === 'travel') {
+                } else if (currentStep === 'finish') {
                   // Complete the job
                   saveJobData(false);
                 }
@@ -805,7 +811,8 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
           >
             {isLoading ? t('save') : 
              currentStep === 'customer' ? t('saveCustomer') : 
-             currentStep === 'travel' ? t('completeJob') : 
+             currentStep === 'machine' && !isEditingJob ? t('saveAndContinue') :
+             currentStep === 'finish' ? t('completeJob') : 
              t('next')}
           </Button>
         </div>

@@ -598,8 +598,6 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
   const newJobSteps = [
     { id: 'customer', label: t('customerData'), icon: User },
     { id: 'machine', label: t('machineData'), icon: Wrench },
-    { id: 'hotel', label: t('hotelData'), icon: Hotel },
-    { id: 'travel', label: t('travel'), icon: Car },
   ] as const;
 
   const editJobStepsRow1 = [

@@ -6,10 +6,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
-import { Clock, MapPin, User, Wrench, Hotel, Car } from 'lucide-react';
+import { Clock, MapPin, User, Wrench, Hotel, Car, Calendar, BarChart3, FileText, CheckCircle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { OvertimeTab } from '@/components/overtime/OvertimeTab';
+import { ReportTab } from '@/components/reports/ReportTab';
+import { FinishJobTab } from '@/components/finish/FinishJobTab';
 
 interface JobData {
   travelStart: string;
@@ -41,6 +44,7 @@ interface JobData {
   kilometersReturn: number;
   tollAmount: number;
   plannedDays: number;
+  estimatedDays: number;
 }
 
 interface JobEntryFormProps {
@@ -49,8 +53,8 @@ interface JobEntryFormProps {
 
 export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
   const { t } = useTranslation();
-  const [jobData, setJobData] = useState<Partial<JobData>>({ plannedDays: 1 });
-  const [currentStep, setCurrentStep] = useState<'customer' | 'machine' | 'hotel' | 'travel'>('customer');
+  const [jobData, setJobData] = useState<Partial<JobData>>({ plannedDays: 1, estimatedDays: 1 });
+  const [currentStep, setCurrentStep] = useState<'customer' | 'machine' | 'times' | 'hotel' | 'travel' | 'overtime' | 'report' | 'finish'>('customer');
   const [isLoading, setIsLoading] = useState(false);
   const [currentJobId, setCurrentJobId] = useState<string | null>(null);
   const [isEditingJob, setIsEditingJob] = useState(false);
@@ -244,6 +248,103 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
     });
   };
 
+
+  const renderTimesSection = () => (
+    <Card className="border-primary/20">
+      <CardHeader className="pb-3">
+        <CardTitle className="flex items-center gap-2 text-lg">
+          <Calendar className="h-5 w-5 text-primary" />
+          {t('times')}
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div>
+          <Label htmlFor="estimated-days" className="text-sm font-medium">{t('estimatedDays')}</Label>
+          <Input
+            id="estimated-days"
+            type="number"
+            min="1"
+            placeholder="1"
+            value={jobData.estimatedDays || ''}
+            onChange={(e) => updateField('estimatedDays', parseInt(e.target.value) || 1)}
+            className="mt-1"
+          />
+        </div>
+        <div>
+          <Label htmlFor="planned-days" className="text-sm font-medium">{t('plannedDays')}</Label>
+          <Input
+            id="planned-days"
+            type="number"
+            min="1"
+            placeholder="1"
+            value={jobData.plannedDays || ''}
+            onChange={(e) => updateField('plannedDays', parseInt(e.target.value) || 1)}
+            className="mt-1"
+          />
+        </div>
+      </CardContent>
+    </Card>
+  );
+
+  const renderOvertimeSection = () => {
+    if (!isEditingJob || !currentJobId) {
+      return (
+        <Card className="border-primary/20">
+          <CardContent className="pt-6">
+            <p className="text-muted-foreground">{t('saveJobFirst')}</p>
+          </CardContent>
+        </Card>
+      );
+    }
+
+    const mockJob = {
+      id: currentJobId,
+      customer_name: jobData.customerName || '',
+      // Add other required fields for the OvertimeTab
+    };
+
+    return <OvertimeTab job={mockJob as any} />;
+  };
+
+  const renderReportSection = () => {
+    if (!isEditingJob || !currentJobId) {
+      return (
+        <Card className="border-primary/20">
+          <CardContent className="pt-6">
+            <p className="text-muted-foreground">{t('saveJobFirst')}</p>
+          </CardContent>
+        </Card>
+      );
+    }
+
+    const mockJob = {
+      id: currentJobId,
+      customer_name: jobData.customerName || '',
+      // Add other required fields for the ReportTab
+    };
+
+    return <ReportTab job={mockJob as any} onJobUpdate={() => {}} />;
+  };
+
+  const renderFinishSection = () => {
+    if (!isEditingJob || !currentJobId) {
+      return (
+        <Card className="border-primary/20">
+          <CardContent className="pt-6">
+            <p className="text-muted-foreground">{t('saveJobFirst')}</p>
+          </CardContent>
+        </Card>
+      );
+    }
+
+    const mockJob = {
+      id: currentJobId,
+      customer_name: jobData.customerName || '',
+      // Add other required fields for the FinishJobTab
+    };
+
+    return <FinishJobTab job={mockJob as any} onJobUpdate={() => {}} onCloseDialog={() => {}} />;
+  };
 
   const renderCustomerSection = () => (
     <Card className="border-primary/20">
@@ -493,15 +594,29 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
     </Card>
   );
 
-  // Always show all steps including hotel
-  const allSteps = [
+  // Steps configuration - different for new job vs editing
+  const newJobSteps = [
     { id: 'customer', label: t('customerData'), icon: User },
     { id: 'machine', label: t('machineData'), icon: Wrench },
     { id: 'hotel', label: t('hotelData'), icon: Hotel },
     { id: 'travel', label: t('travel'), icon: Car },
   ] as const;
-  
-  const steps = allSteps;
+
+  const editJobStepsRow1 = [
+    { id: 'customer', label: t('customerData'), icon: User },
+    { id: 'machine', label: t('machineData'), icon: Wrench },
+    { id: 'times', label: t('times'), icon: Calendar },
+    { id: 'hotel', label: t('hotelData'), icon: Hotel },
+  ] as const;
+
+  const editJobStepsRow2 = [
+    { id: 'travel', label: t('travel'), icon: Car },
+    { id: 'overtime', label: t('overtime'), icon: BarChart3 },
+    { id: 'report', label: t('report'), icon: FileText },
+    { id: 'finish', label: t('finish'), icon: CheckCircle },
+  ] as const;
+
+  const steps = isEditingJob ? [...editJobStepsRow1, ...editJobStepsRow2] : newJobSteps;
 
   // Auto-navigate to Hotel tab when a hotel name is entered
   useEffect(() => {
@@ -531,38 +646,88 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
       </div>
 
       {/* Step Navigation */}
-      <div className="flex justify-between items-center">
-        {steps.map((step, index) => {
-          const Icon = step.icon;
-          const isActive = currentStep === step.id;
-          const isCompleted = steps.findIndex(s => s.id === currentStep) > index;
-          const isAccessible = isEditingJob || step.id === 'customer'; // Make all tabs accessible when editing
+      {isEditingJob ? (
+        // 2-row layout for editing mode
+        <div className="space-y-2">
+          {/* Row 1: Customer, Machine, Times, Hotel */}
+          <div className="flex justify-between items-center gap-1">
+            {editJobStepsRow1.map((step, index) => {
+              const Icon = step.icon;
+              const isActive = currentStep === step.id;
+              const isCompleted = [...editJobStepsRow1, ...editJobStepsRow2].findIndex(s => s.id === currentStep) > [...editJobStepsRow1, ...editJobStepsRow2].indexOf(step);
+              
+              return (
+                <Button
+                  key={step.id}
+                  variant={isActive ? "default" : isCompleted ? "secondary" : "outline"}
+                  size="sm"
+                  onClick={() => setCurrentStep(step.id as typeof currentStep)}
+                  className="flex-1 mx-0.5"
+                >
+                  <Icon className="h-4 w-4 mr-1" />
+                  <span className="hidden sm:inline">{step.label}</span>
+                </Button>
+              );
+            })}
+          </div>
           
-          return (
-            <Button
-              key={step.id}
-              variant={isActive ? "default" : isCompleted ? "secondary" : "outline"}
-              size="sm"
-              onClick={() => {
-                if (isAccessible) {
-                  setCurrentStep(step.id as any);
-                } else {
-                  toast({
-                    title: t('saveCustomerFirst'),
-                    description: t('saveCustomerFirstDesc'),
-                    variant: 'destructive'
-                  });
-                }
-              }}
-              className={`flex-1 mx-1 ${!isAccessible ? 'opacity-50 cursor-not-allowed' : ''}`}
-              disabled={!isAccessible}
-            >
-              <Icon className="h-4 w-4 mr-1" />
-              <span className="hidden sm:inline">{step.label}</span>
-            </Button>
-          );
-        })}
-      </div>
+          {/* Row 2: Travel, Overtime, Report, Finish */}
+          <div className="flex justify-between items-center gap-1">
+            {editJobStepsRow2.map((step, index) => {
+              const Icon = step.icon;
+              const isActive = currentStep === step.id;
+              const isCompleted = [...editJobStepsRow1, ...editJobStepsRow2].findIndex(s => s.id === currentStep) > [...editJobStepsRow1, ...editJobStepsRow2].indexOf(step);
+              
+              return (
+                <Button
+                  key={step.id}
+                  variant={isActive ? "default" : isCompleted ? "secondary" : "outline"}
+                  size="sm"
+                  onClick={() => setCurrentStep(step.id as typeof currentStep)}
+                  className="flex-1 mx-0.5"
+                >
+                  <Icon className="h-4 w-4 mr-1" />
+                  <span className="hidden sm:inline">{step.label}</span>
+                </Button>
+              );
+            })}
+          </div>
+        </div>
+      ) : (
+        // Single row layout for new job
+        <div className="flex justify-between items-center">
+          {newJobSteps.map((step, index) => {
+            const Icon = step.icon;
+            const isActive = currentStep === step.id;
+            const isCompleted = newJobSteps.findIndex(s => s.id === currentStep) > index;
+            const isAccessible = step.id === 'customer'; // Only customer accessible for new jobs
+            
+            return (
+              <Button
+                key={step.id}
+                variant={isActive ? "default" : isCompleted ? "secondary" : "outline"}
+                size="sm"
+                onClick={() => {
+                  if (isAccessible) {
+                    setCurrentStep(step.id as any);
+                  } else {
+                    toast({
+                      title: t('saveCustomerFirst'),
+                      description: t('saveCustomerFirstDesc'),
+                      variant: 'destructive'
+                    });
+                  }
+                }}
+                className={`flex-1 mx-1 ${!isAccessible ? 'opacity-50 cursor-not-allowed' : ''}`}
+                disabled={!isAccessible}
+              >
+                <Icon className="h-4 w-4 mr-1" />
+                <span className="hidden sm:inline">{step.label}</span>
+              </Button>
+            );
+          })}
+        </div>
+      )}
 
       {/* Context Bar - Customer Info */}
       {isPersisted && customerName && (
@@ -578,8 +743,12 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
       {/* Current Step Content */}
       {currentStep === 'customer' && renderCustomerSection()}
       {currentStep === 'machine' && renderMachineSection()}
+      {currentStep === 'times' && renderTimesSection()}
       {currentStep === 'hotel' && renderHotelSection()}
       {currentStep === 'travel' && renderTravelSection()}
+      {currentStep === 'overtime' && renderOvertimeSection()}
+      {currentStep === 'report' && renderReportSection()}
+      {currentStep === 'finish' && renderFinishSection()}
 
       {/* Status Indicator */}
       {isEditingJob && (

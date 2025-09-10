@@ -626,7 +626,7 @@ const resources = {
       totalOvertime: 'Überstunden gesamt',
       payableHours: 'Bezahlbare Stunden',
       overtimeExplanation: 'Erklärung: Sie erhalten mindestens',
-       hoursMinimum: 'Stunden bezahlt, auch wenn Sie weniger arbeiten. Alle Stunden außerhalb 8-16 Uhr sind Überstunden mit Zuschlag.',
+       hoursMinimum: 'Stunden bezahlt, auch wenn Sie weniger arbeiten. Alle Stunden über 8 Stunden sind Überstunden mit Zuschlag.',
        
        // Time format
        hoursShort: 'Std',

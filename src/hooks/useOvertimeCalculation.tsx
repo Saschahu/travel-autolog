@@ -146,14 +146,19 @@ export const useOvertimeCalculation = () => {
   const calculateOvertime = (job: Job): OvertimeCalculation => {
     const timeBreakdown = calculateTimeBreakdown(job);
     
-    // For multi-day jobs, we need to calculate overtime per day
-    let totalRegularHours = 0;
-    let totalOvertime1Hours = 0;
-    let totalOvertime2Hours = 0;
-    let totalSaturdayHours = 0;
-    let totalSundayHours = 0;
+    // Work buckets for proper calculation
+    let totalRegularMinutes = 0;
+    let totalOvertime1Minutes = 0;
+    let totalOvertime2Minutes = 0;
+    let totalSaturdayMinutes = 0;
+    let totalSundayMinutes = 0;
     
-    // If we have days data, calculate per day
+    // Track weekend hours in regular/OT buckets to avoid double counting
+    let weekendRegularMinutes = 0;
+    let weekendOT1Minutes = 0;
+    let weekendOT2Minutes = 0;
+    
+    // Calculate per day to properly handle overtime thresholds
     if (job.days && Array.isArray(job.days) && job.days.length > 0) {
       job.days.forEach((day: any) => {
         let dayTotalMinutes = 0;
@@ -177,96 +182,182 @@ export const useOvertimeCalculation = () => {
           dayTotalMinutes += endMinutes > startMinutes ? endMinutes - startMinutes : (24 * 60) - startMinutes + endMinutes;
         }
         
-        const dayHours = formatMinutesToHours(dayTotalMinutes);
         const dayOfWeek = getDayOfWeek(day.date);
+        const isWeekendDay = dayOfWeek === 6 || dayOfWeek === 0; // Saturday or Sunday
         
-        // Calculate regular vs overtime for this day
-        const dayRegularHours = Math.min(dayHours, overtimeSettings.overtimeThreshold1);
-        const dayOvertime1Hours = Math.max(0, Math.min(dayHours - overtimeSettings.overtimeThreshold1, overtimeSettings.overtimeThreshold2 - overtimeSettings.overtimeThreshold1));
-        const dayOvertime2Hours = Math.max(0, dayHours - overtimeSettings.overtimeThreshold2);
+        // Categorize minutes into regular/OT1/OT2 for this day
+        const threshold1Minutes = overtimeSettings.overtimeThreshold1 * 60;
+        const threshold2Minutes = overtimeSettings.overtimeThreshold2 * 60;
         
-        totalRegularHours += dayRegularHours;
-        totalOvertime1Hours += dayOvertime1Hours;
-        totalOvertime2Hours += dayOvertime2Hours;
+        const dayRegularMinutes = Math.min(dayTotalMinutes, threshold1Minutes);
+        const dayOT1Minutes = Math.max(0, Math.min(dayTotalMinutes - threshold1Minutes, threshold2Minutes - threshold1Minutes));
+        const dayOT2Minutes = Math.max(0, dayTotalMinutes - threshold2Minutes);
         
-        // Weekend hours
-        if (dayOfWeek === 6) { // Saturday
-          totalSaturdayHours += dayHours;
-        } else if (dayOfWeek === 0) { // Sunday
-          totalSundayHours += dayHours;
+        // Add to totals
+        totalRegularMinutes += dayRegularMinutes;
+        totalOvertime1Minutes += dayOT1Minutes;
+        totalOvertime2Minutes += dayOT2Minutes;
+        
+        // Track weekend hours separately for premium calculation
+        if (isWeekendDay && overtimeSettings.weekendEnabled) {
+          if (dayOfWeek === 6) { // Saturday
+            totalSaturdayMinutes += dayTotalMinutes;
+          } else if (dayOfWeek === 0) { // Sunday
+            totalSundayMinutes += dayTotalMinutes;
+          }
+          
+          // Track weekend hours by category for correct premium calculation
+          weekendRegularMinutes += dayRegularMinutes;
+          weekendOT1Minutes += dayOT1Minutes;
+          weekendOT2Minutes += dayOT2Minutes;
         }
       });
     } else {
       // Single day calculation (fallback)
       const totalMinutes = timeBreakdown.travelTime + timeBreakdown.workTime + timeBreakdown.departureTime;
-      const totalHours = formatMinutesToHours(totalMinutes);
       
-      totalRegularHours = Math.min(totalHours, overtimeSettings.overtimeThreshold1);
-      totalOvertime1Hours = Math.max(0, Math.min(totalHours - overtimeSettings.overtimeThreshold1, overtimeSettings.overtimeThreshold2 - overtimeSettings.overtimeThreshold1));
-      totalOvertime2Hours = Math.max(0, totalHours - overtimeSettings.overtimeThreshold2);
+      const threshold1Minutes = overtimeSettings.overtimeThreshold1 * 60;
+      const threshold2Minutes = overtimeSettings.overtimeThreshold2 * 60;
+      
+      totalRegularMinutes = Math.min(totalMinutes, threshold1Minutes);
+      totalOvertime1Minutes = Math.max(0, Math.min(totalMinutes - threshold1Minutes, threshold2Minutes - threshold1Minutes));
+      totalOvertime2Minutes = Math.max(0, totalMinutes - threshold2Minutes);
       
       // Check if single day falls on weekend
       const dayOfWeek = getDayOfWeek(job.travelStartDate || job.workStartDate || job.departureStartDate);
-      if (dayOfWeek === 6) {
-        totalSaturdayHours = totalHours;
-      } else if (dayOfWeek === 0) {
-        totalSundayHours = totalHours;
+      if ((dayOfWeek === 6 || dayOfWeek === 0) && overtimeSettings.weekendEnabled) {
+        if (dayOfWeek === 6) {
+          totalSaturdayMinutes = totalMinutes;
+        } else if (dayOfWeek === 0) {
+          totalSundayMinutes = totalMinutes;
+        }
+        
+        weekendRegularMinutes = totalRegularMinutes;
+        weekendOT1Minutes = totalOvertime1Minutes;
+        weekendOT2Minutes = totalOvertime2Minutes;
       }
     }
+    
+    // Convert back to hours for display
+    const totalRegularHours = formatMinutesToHours(totalRegularMinutes);
+    const totalOvertime1Hours = formatMinutesToHours(totalOvertime1Minutes);
+    const totalOvertime2Hours = formatMinutesToHours(totalOvertime2Minutes);
+    const totalSaturdayHours = formatMinutesToHours(totalSaturdayMinutes);
+    const totalSundayHours = formatMinutesToHours(totalSundayMinutes);
     
     const actualWorkedHours = totalRegularHours + totalOvertime1Hours + totalOvertime2Hours;
     
-    // Build overtime breakdown
+    // Calculate premiums correctly
     const overtimeBreakdown = [];
+    let totalPremiumHours = 0;
     
-    // Hour-based overtime - Only premium portion (rate/100, not 1+rate/100)
-    if (totalOvertime1Hours > 0) {
-      const premiumHours = totalOvertime1Hours * (overtimeSettings.overtimeRate1 / 100);
+    // Regular overtime premiums (only on non-weekend hours)
+    const nonWeekendOT1Minutes = totalOvertime1Minutes - weekendOT1Minutes;
+    const nonWeekendOT2Minutes = totalOvertime2Minutes - weekendOT2Minutes;
+    
+    if (nonWeekendOT1Minutes > 0) {
+      const premiumHours = formatMinutesToHours(nonWeekendOT1Minutes) * (overtimeSettings.overtimeRate1 / 100);
+      totalPremiumHours += premiumHours;
       overtimeBreakdown.push({
         type: `Überstunden ${overtimeSettings.overtimeThreshold1}-${overtimeSettings.overtimeThreshold2}h`,
-        hours: totalOvertime1Hours,
+        hours: formatMinutesToHours(nonWeekendOT1Minutes),
         rate: overtimeSettings.overtimeRate1,
-        amount: premiumHours // Only the premium portion
+        amount: premiumHours
       });
     }
     
-    if (totalOvertime2Hours > 0) {
-      const premiumHours = totalOvertime2Hours * (overtimeSettings.overtimeRate2 / 100);
+    if (nonWeekendOT2Minutes > 0) {
+      const premiumHours = formatMinutesToHours(nonWeekendOT2Minutes) * (overtimeSettings.overtimeRate2 / 100);
+      totalPremiumHours += premiumHours;
       overtimeBreakdown.push({
         type: `Überstunden über ${overtimeSettings.overtimeThreshold2}h`,
-        hours: totalOvertime2Hours,
+        hours: formatMinutesToHours(nonWeekendOT2Minutes),
         rate: overtimeSettings.overtimeRate2,
-        amount: premiumHours // Only the premium portion
+        amount: premiumHours
       });
     }
     
-    // Weekend overtime (if enabled) - Only premium portion
+    // Weekend premiums (applied to ALL weekend hours)
     if (overtimeSettings.weekendEnabled) {
-      if (totalSaturdayHours > 0) {
-        const premiumHours = totalSaturdayHours * (overtimeSettings.saturdayRate / 100);
+      if (totalSaturdayMinutes > 0) {
+        const saturdayHours = formatMinutesToHours(totalSaturdayMinutes);
+        const premiumHours = saturdayHours * (overtimeSettings.saturdayRate / 100);
+        totalPremiumHours += premiumHours;
         overtimeBreakdown.push({
-          type: 'Samstag',
-          hours: totalSaturdayHours,
+          type: 'Samstag-Zuschlag',
+          hours: saturdayHours,
           rate: overtimeSettings.saturdayRate,
-          amount: premiumHours // Only the premium portion
+          amount: premiumHours
         });
+        
+        // Add weekend overtime premiums on top of Saturday premium
+        if (weekendOT1Minutes > 0) {
+          const weekendOT1Hours = formatMinutesToHours(weekendOT1Minutes);
+          const weekendOT1Premium = weekendOT1Hours * (overtimeSettings.overtimeRate1 / 100);
+          totalPremiumHours += weekendOT1Premium;
+          overtimeBreakdown.push({
+            type: `Samstag Überstunden ${overtimeSettings.overtimeThreshold1}-${overtimeSettings.overtimeThreshold2}h`,
+            hours: weekendOT1Hours,
+            rate: overtimeSettings.overtimeRate1,
+            amount: weekendOT1Premium
+          });
+        }
+        
+        if (weekendOT2Minutes > 0) {
+          const weekendOT2Hours = formatMinutesToHours(weekendOT2Minutes);
+          const weekendOT2Premium = weekendOT2Hours * (overtimeSettings.overtimeRate2 / 100);
+          totalPremiumHours += weekendOT2Premium;
+          overtimeBreakdown.push({
+            type: `Samstag Überstunden über ${overtimeSettings.overtimeThreshold2}h`,
+            hours: weekendOT2Hours,
+            rate: overtimeSettings.overtimeRate2,
+            amount: weekendOT2Premium
+          });
+        }
       }
       
-      if (totalSundayHours > 0) {
-        const premiumHours = totalSundayHours * (overtimeSettings.sundayRate / 100);
+      if (totalSundayMinutes > 0) {
+        const sundayHours = formatMinutesToHours(totalSundayMinutes);
+        const premiumHours = sundayHours * (overtimeSettings.sundayRate / 100);
+        totalPremiumHours += premiumHours;
         overtimeBreakdown.push({
-          type: 'Sonntag/Feiertag',
-          hours: totalSundayHours,
+          type: 'Sonntag/Feiertag-Zuschlag',
+          hours: sundayHours,
           rate: overtimeSettings.sundayRate,
-          amount: premiumHours // Only the premium portion
+          amount: premiumHours
         });
+        
+        // Add weekend overtime premiums on top of Sunday premium
+        const sundayOT1Minutes = totalSundayMinutes > 0 ? weekendOT1Minutes : 0;
+        const sundayOT2Minutes = totalSundayMinutes > 0 ? weekendOT2Minutes : 0;
+        
+        if (sundayOT1Minutes > 0) {
+          const sundayOT1Hours = formatMinutesToHours(sundayOT1Minutes);
+          const sundayOT1Premium = sundayOT1Hours * (overtimeSettings.overtimeRate1 / 100);
+          totalPremiumHours += sundayOT1Premium;
+          overtimeBreakdown.push({
+            type: `Sonntag Überstunden ${overtimeSettings.overtimeThreshold1}-${overtimeSettings.overtimeThreshold2}h`,
+            hours: sundayOT1Hours,
+            rate: overtimeSettings.overtimeRate1,
+            amount: sundayOT1Premium
+          });
+        }
+        
+        if (sundayOT2Minutes > 0) {
+          const sundayOT2Hours = formatMinutesToHours(sundayOT2Minutes);
+          const sundayOT2Premium = sundayOT2Hours * (overtimeSettings.overtimeRate2 / 100);
+          totalPremiumHours += sundayOT2Premium;
+          overtimeBreakdown.push({
+            type: `Sonntag Überstunden über ${overtimeSettings.overtimeThreshold2}h`,
+            hours: sundayOT2Hours,
+            rate: overtimeSettings.overtimeRate2,
+            amount: sundayOT2Premium
+          });
+        }
       }
     }
     
-    const totalOvertimeHours = totalOvertime1Hours + totalOvertime2Hours;
-    const totalPremiumAmount = overtimeBreakdown.reduce((sum, item) => sum + item.amount, 0);
-    
-    // For multi-day jobs, calculate guaranteed hours per actual days with time entries
+    // Calculate guaranteed hours (per day with time entries)
     let numberOfPaidDays = 0;
     if (job.days && Array.isArray(job.days) && job.days.length > 0) {
       numberOfPaidDays = job.days.filter((day: any) => {
@@ -283,9 +374,9 @@ export const useOvertimeCalculation = () => {
     }
     const guaranteedHours = overtimeSettings.guaranteedHours * numberOfPaidDays;
     
-    // Correct calculation: base hours + premium
-    const baseHours = actualWorkedHours; // All actual work hours
-    const totalPayableHours = Math.max(guaranteedHours, baseHours + totalPremiumAmount);
+    // Correct payable hours calculation
+    const totalPayableHours = Math.max(guaranteedHours, actualWorkedHours + totalPremiumHours);
+    const totalOvertimeHours = totalOvertime1Hours + totalOvertime2Hours;
 
     return {
       guaranteedHours,
@@ -297,7 +388,7 @@ export const useOvertimeCalculation = () => {
       sundayHours: totalSundayHours,
       overtimeBreakdown,
       totalOvertimeHours,
-      totalOvertimeAmount: totalPremiumAmount,
+      totalOvertimeAmount: totalPremiumHours,
       totalPayableHours
     };
   };

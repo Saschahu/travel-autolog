@@ -1308,8 +1308,8 @@ i18n
   .use(initReactI18next)
   .init({
     resources: resourcesExtended,
-    lng: 'en', // Set initial language from settings store
-    fallbackLng: 'en',
+    lng: 'de', // Default to German
+    fallbackLng: 'de',
     
     interpolation: {
       escapeValue: false
@@ -1317,13 +1317,22 @@ i18n
   });
 
 // Connect i18n to settings store for reactive language switching
-const settingsStore = useSettingsStore.getState();
-i18n.changeLanguage(settingsStore.locale);
+const initializeLanguage = () => {
+  const settingsStore = useSettingsStore.getState();
+  const currentLocale = settingsStore.locale || 'de'; // Default to German
+  
+  if (i18n.language !== currentLocale) {
+    i18n.changeLanguage(currentLocale);
+  }
+};
+
+// Initialize language immediately
+initializeLanguage();
 
 // Subscribe to settings changes for live language switching
 useSettingsStore.subscribe((state) => {
   if (i18n.language !== state.locale) {
-    i18n.changeLanguage(state.locale);
+    i18n.changeLanguage(state.locale || 'de');
   }
 });
 

@@ -49,16 +49,73 @@ interface JobData {
 
 interface JobEntryFormProps {
   onJobSaved?: () => void;
+  jobId?: string; // For editing existing jobs
 }
 
-export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
+export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
   const { t } = useTranslation();
   const [jobData, setJobData] = useState<Partial<JobData>>({ plannedDays: 1, estimatedDays: 1 });
   const [currentStep, setCurrentStep] = useState<'customer' | 'machine' | 'times' | 'hotel' | 'travel' | 'overtime' | 'report' | 'finish'>('customer');
   const [isLoading, setIsLoading] = useState(false);
-  const [currentJobId, setCurrentJobId] = useState<string | null>(null);
-  const [isEditingJob, setIsEditingJob] = useState(false);
+  const [currentJobId, setCurrentJobId] = useState<string | null>(jobId || null);
+  const [isEditingJob, setIsEditingJob] = useState(Boolean(jobId));
   const { toast } = useToast();
+
+  // Load existing job data when jobId is provided
+  useEffect(() => {
+    const loadJobData = async () => {
+      if (jobId) {
+        try {
+          setIsLoading(true);
+          const { data: job, error } = await supabase
+            .from('jobs')
+            .select('*')
+            .eq('id', jobId)
+            .single();
+
+          if (error) throw error;
+
+          if (job) {
+            // Convert database fields to camelCase for the form
+            setJobData({
+              customerName: job.customer_name || '',
+              customerAddress: job.customer_address || '',
+              contactName: job.contact_name || '',
+              contactPhone: job.contact_phone || '',
+              evaticNo: job.evatic_no || '',
+              manufacturer: job.manufacturer || '',
+              model: job.model || '',
+              serialNumber: job.serial_number || '',
+              workPerformed: job.work_performed || '',
+              hotelName: job.hotel_name || '',
+              hotelAddress: job.hotel_address || '',
+              hotelNights: job.hotel_nights || 0,
+              hotelPrice: job.hotel_price || 0,
+              kilometersOutbound: job.kilometers_outbound || 0,
+              kilometersReturn: job.kilometers_return || 0,
+              tollAmount: job.toll_amount || 0,
+              plannedDays: Array.isArray(job.days_data) ? job.days_data.length : 1,
+              estimatedDays: job.estimated_days || 1,
+            });
+            setCurrentJobId(job.id);
+            setIsEditingJob(true);
+            setCurrentStep('customer'); // Start at customer tab for consistency
+          }
+        } catch (error) {
+          console.error('Error loading job:', error);
+          toast({
+            title: t('error'),
+            description: t('errorLoadingJob'),
+            variant: 'destructive'
+          });
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    loadJobData();
+  }, [jobId, toast, t]);
 
   // Computed values for UI display
   const isPersisted = Boolean(currentJobId);
@@ -811,7 +868,7 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
           >
             {isLoading ? t('save') : 
              currentStep === 'customer' ? t('saveCustomer') : 
-             currentStep === 'machine' && !isEditingJob ? t('saveAndContinue') :
+             currentStep === 'machine' && !isEditingJob ? t('completeJob') :
              currentStep === 'finish' ? t('completeJob') : 
              t('next')}
           </Button>

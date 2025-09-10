@@ -129,6 +129,29 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
           .single();
         data = result.data;
         error = result.error;
+
+        if (!error && data) {
+          // Keep local state in sync (camelCase)
+          setJobData(prev => ({ 
+            ...prev, 
+            customerName: data.customer_name,
+            customerAddress: data.customer_address,
+            contactName: data.contact_name,
+            contactPhone: data.contact_phone,
+            evaticNo: data.evatic_no,
+            manufacturer: data.manufacturer,
+            model: data.model,
+            serialNumber: data.serial_number,
+            workPerformed: data.work_performed,
+            hotelName: data.hotel_name,
+            hotelAddress: data.hotel_address,
+            hotelNights: data.hotel_nights,
+            hotelPrice: data.hotel_price,
+            kilometersOutbound: data.kilometers_outbound,
+            kilometersReturn: data.kilometers_return,
+            tollAmount: data.toll_amount,
+          }));
+        }
       } else {
         // Create new job
         const result = await supabase
@@ -484,10 +507,11 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
   );
 
   // Dynamic steps based on whether hotel data exists
+  const hasHotel = Boolean(jobData.hotelName && jobData.hotelName.trim().length > 0);
   const allSteps = [
     { id: 'customer', label: t('customerData'), icon: User },
     { id: 'machine', label: t('machineData'), icon: Wrench },
-    ...(jobData.hotelName ? [{ id: 'hotel', label: t('hotelData'), icon: Hotel }] : []),
+    ...(hasHotel ? [{ id: 'hotel', label: t('hotelData'), icon: Hotel }] : []),
     { id: 'travel', label: t('travelAndStay'), icon: Car },
   ] as const;
   

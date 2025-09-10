@@ -135,6 +135,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
   };
 
   const saveJobData = async (isPartialSave = false) => {
+    console.log('saveJobData called with isPartialSave:', isPartialSave, 'currentStep:', currentStep, 'isCreatingNewJob:', isCreatingNewJob);
     setIsLoading(true);
     try {
       console.log('Starting saveJobData with data:', jobData, 'currentJobId:', currentJobId);
@@ -277,6 +278,9 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
         setIsEditingJob(false);
         onJobSaved?.();
       }
+
+      console.log('saveJobData completed successfully, isPartialSave:', isPartialSave);
+      return true; // Indicate success
       
     } catch (error) {
       console.error('Detailed error beim Speichern:', error);
@@ -287,6 +291,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
         description: t('errorSaving'),
         variant: 'destructive'
       });
+      return false; // Indicate failure
     } finally {
       setIsLoading(false);
     }
@@ -838,22 +843,32 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
           
           {/* Main action button */}
           <Button
-            onClick={() => {
+            onClick={async () => {
               if (currentStep === 'customer') {
                 // Save customer data (partial save)
-                saveJobData(true);
+                await saveJobData(true);
               } else if (currentStep === 'machine' && isCreatingNewJob) {
                 // For new jobs: save and return to dashboard
-                saveJobData(true).then(() => {
-                  onJobSaved?.();
-                });
+                console.log('Machine step for new job - attempting to save and return to dashboard');
+                try {
+                  const success = await saveJobData(true);
+                  console.log('Save result:', success);
+                  if (success) {
+                    console.log('Save successful, calling onJobSaved');
+                    onJobSaved?.();
+                  } else {
+                    console.error('Save failed, not returning to dashboard');
+                  }
+                } catch (error) {
+                  console.error('Error in machine step save:', error);
+                }
               } else {
                 const currentIndex = steps.findIndex(s => s.id === currentStep);
                 if (currentIndex < steps.length - 1) {
                   setCurrentStep(steps[currentIndex + 1].id as any);
                 } else if (currentStep === 'finish') {
                   // Complete the job
-                  saveJobData(false);
+                  await saveJobData(false);
                 }
               }
             }}

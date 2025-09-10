@@ -383,7 +383,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                           selected={jobData[`travelStartDate${dayIndex}`] ? new Date(jobData[`travelStartDate${dayIndex}`]) : undefined}
                           onSelect={(date) => updateField(`travelStartDate${dayIndex}` as any, date?.toISOString().split('T')[0] || '')}
                           initialFocus
-                          className={cn("p-3 pointer-events-auto")}
+                          className="p-3 pointer-events-auto"
                         />
                       </PopoverContent>
                     </Popover>
@@ -422,7 +422,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                           selected={jobData[`travelEndDate${dayIndex}`] ? new Date(jobData[`travelEndDate${dayIndex}`]) : undefined}
                           onSelect={(date) => updateField(`travelEndDate${dayIndex}` as any, date?.toISOString().split('T')[0] || '')}
                           initialFocus
-                          className={cn("p-3 pointer-events-auto")}
+                          className="p-3 pointer-events-auto"
                         />
                       </PopoverContent>
                     </Popover>
@@ -468,7 +468,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                           selected={jobData[`workStartDate${dayIndex}`] ? new Date(jobData[`workStartDate${dayIndex}`]) : undefined}
                           onSelect={(date) => updateField(`workStartDate${dayIndex}` as any, date?.toISOString().split('T')[0] || '')}
                           initialFocus
-                          className={cn("p-3 pointer-events-auto")}
+                          className="p-3 pointer-events-auto"
                         />
                       </PopoverContent>
                     </Popover>
@@ -507,7 +507,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                           selected={jobData[`workEndDate${dayIndex}`] ? new Date(jobData[`workEndDate${dayIndex}`]) : undefined}
                           onSelect={(date) => updateField(`workEndDate${dayIndex}` as any, date?.toISOString().split('T')[0] || '')}
                           initialFocus
-                          className={cn("p-3 pointer-events-auto")}
+                          className="p-3 pointer-events-auto"
                         />
                       </PopoverContent>
                     </Popover>
@@ -553,7 +553,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                           selected={jobData[`departureStartDate${dayIndex}`] ? new Date(jobData[`departureStartDate${dayIndex}`]) : undefined}
                           onSelect={(date) => updateField(`departureStartDate${dayIndex}` as any, date?.toISOString().split('T')[0] || '')}
                           initialFocus
-                          className={cn("p-3 pointer-events-auto")}
+                          className="p-3 pointer-events-auto"
                         />
                       </PopoverContent>
                     </Popover>
@@ -592,7 +592,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                           selected={jobData[`departureEndDate${dayIndex}`] ? new Date(jobData[`departureEndDate${dayIndex}`]) : undefined}
                           onSelect={(date) => updateField(`departureEndDate${dayIndex}` as any, date?.toISOString().split('T')[0] || '')}
                           initialFocus
-                          className={cn("p-3 pointer-events-auto")}
+                          className="p-3 pointer-events-auto"
                         />
                       </PopoverContent>
                     </Popover>

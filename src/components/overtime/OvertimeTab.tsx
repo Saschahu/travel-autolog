@@ -177,21 +177,6 @@ export const OvertimeTab = ({ job }: OvertimeTabProps) => {
 
           {/* Total */}
           <div className="border-t pt-4 space-y-3">
-            <div className="flex justify-between items-center p-3 bg-blue-50 border border-blue-200 rounded-md">
-              <div className="flex items-center gap-2">
-                <TrendingUp className="h-4 w-4 text-blue-600" />
-                <span className="font-semibold text-blue-800">{t('payableHours')}</span>
-              </div>
-              <div className="text-right">
-                <div className="font-mono text-lg font-semibold text-blue-800">
-                  {formatHours(decimalHoursToMinutes(overtimeCalculation.totalPayableHours))}
-                </div>
-                <div className="font-mono text-xs text-blue-600 mt-1">
-                  {generatePayableFormula(regularMinutes, splits, t)}
-                </div>
-              </div>
-            </div>
-            
             <div className="text-xs text-muted-foreground bg-muted/50 p-3 rounded-md">
               <strong>{t('overtimeExplanation')}</strong> {overtimeCalculation.guaranteedHours} {t('hoursMinimum')}
             </div>

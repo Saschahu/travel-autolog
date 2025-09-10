@@ -458,7 +458,8 @@ const Index = () => {
 
   const handleLeavingHomeSelection = (type: 'work' | 'private') => {
     if (type === 'work') {
-      setActiveTab('new-job');
+      // Open new job dialog instead of navigating to removed tab
+      // For now, just show a toast
       toast({
         title: t('workTripStarted'),
         description: t('newJobDescription'),
@@ -508,14 +509,6 @@ const Index = () => {
           <div className="flex-1">
             <JobFilterDropdown value={jobFilter} onValueChange={setJobFilter} />
           </div>
-          <Button 
-            size="sm" 
-            className="gap-2 ml-2"
-            onClick={() => setActiveTab('new-job')}
-          >
-            <Plus className="h-4 w-4" />
-            {t('newJob')}
-          </Button>
         </div>
         
         {filteredJobs.map((job) => (
@@ -540,14 +533,10 @@ const Index = () => {
       
       <div className="flex-1 overflow-y-auto">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full h-full flex flex-col">
-          <TabsList className="grid w-full grid-cols-4 mx-4 mt-4">
+          <TabsList className="grid w-full grid-cols-3 mx-4 mt-4">
             <TabsTrigger value="dashboard" className="flex items-center gap-2">
               <BarChart3 className="h-4 w-4" />
               {t('dashboard')}
-            </TabsTrigger>
-            <TabsTrigger value="new-job" className="flex items-center gap-2">
-              <Plus className="h-4 w-4" />
-              {t('newJob')}
             </TabsTrigger>
             <TabsTrigger value="location" className="flex items-center gap-2">
               <Navigation className="h-4 w-4" />
@@ -562,10 +551,6 @@ const Index = () => {
           <div className="flex-1 overflow-y-auto">
             <TabsContent value="dashboard" className="p-4 mt-6 h-full">
               {renderDashboard()}
-            </TabsContent>
-            
-            <TabsContent value="new-job" className="mt-6 h-full">
-              <JobEntryForm onJobSaved={() => { setActiveTab('dashboard'); fetchJobs(); }} />
             </TabsContent>
             
             <TabsContent value="location" className="mt-6 h-full">

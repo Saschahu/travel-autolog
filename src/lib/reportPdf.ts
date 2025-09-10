@@ -22,14 +22,34 @@ interface ReportData {
   overtimeCalculation: OvertimeCalculation;
 }
 
-// Generate a simple hash of the job data to detect changes
+// Generate a detailed hash of the job data to detect changes
 function hashJobData(data: ReportData): string {
   return JSON.stringify({
     jobId: data.job.id,
     workReport: data.workReport,
     timeEntriesCount: data.timeEntries.length,
     totalMinutes: data.totalMinutes,
-    timestamp: Date.now()
+    // Include detailed time entries data to detect date changes
+    timeEntries: data.timeEntries.map(entry => ({
+      id: entry.id,
+      date: entry.date,
+      type: entry.type,
+      start: entry.start,
+      end: entry.end,
+      breakMinutes: entry.breakMinutes,
+      note: entry.note
+    })),
+    // Include job days data to detect date changes
+    jobDays: data.job.days?.map(day => ({
+      date: day.date,
+      travelStartTime: day.travelStartTime,
+      travelEndTime: day.travelEndTime,
+      workStartTime: day.workStartTime,
+      workEndTime: day.workEndTime,
+      departureStartTime: day.departureStartTime,
+      departureEndTime: day.departureEndTime
+    })) || [],
+    overtimeHours: data.overtimeCalculation.totalOvertimeHours
   });
 }
 

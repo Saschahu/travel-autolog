@@ -253,6 +253,8 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
   };
 
   const handlePreviewReport = () => {
+    // Clear cache to ensure latest data is used
+    clearReportPdfCache();
     setIsPreviewOpen(true);
   };
 

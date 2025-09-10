@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import useEmblaCarousel from 'embla-carousel-react';
 import { useTranslation } from 'react-i18next';
 import { tt } from '@/lib/i18nSafe';
 import { MobileLayout } from '@/components/layout/MobileLayout';
@@ -432,6 +433,35 @@ const Index = () => {
     }
   }, [hasLeftHome, leavingHomeOpen]);
 
+  // Swipeable Tabs for Edit Dialog
+  const editTabs = ['customer', 'machine', 'times', 'overtime', 'report', 'finish'];
+  const [activeEditTab, setActiveEditTab] = useState(editTabs[0]);
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    align: 'start',
+    containScroll: 'trimSnaps',
+  });
+
+  const onTabSelect = useCallback((tab: string) => {
+    const index = editTabs.indexOf(tab);
+    if (emblaApi && index !== -1) {
+      emblaApi.scrollTo(index);
+      setActiveEditTab(tab);
+    }
+  }, [emblaApi]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    const onSelect = () => {
+      const selectedIndex = emblaApi.selectedScrollSnap();
+      setActiveEditTab(editTabs[selectedIndex]);
+    };
+    emblaApi.on('select', onSelect);
+    return () => {
+      emblaApi.off('select', onSelect);
+    };
+  }, [emblaApi]);
+
+
   const renderDashboard = () => (
     <div className="space-y-6">
 
@@ -552,340 +582,334 @@ const Index = () => {
             </DialogHeader>
             
             <div className="flex-1 overflow-hidden">
-              <Tabs defaultValue="customer" className="h-full flex flex-col">
+              <Tabs value={activeEditTab} onValueChange={onTabSelect} className="h-full flex flex-col">
                 <TabsList className="grid w-full grid-cols-6 flex-shrink-0">
-                  <TabsTrigger value="customer">{tt(tJob, 'tabs.customer', 'Kunde')}</TabsTrigger>
-                  <TabsTrigger value="machine">{tt(tJob, 'tabs.machine', 'Maschine')}</TabsTrigger>
-                  <TabsTrigger value="times">{tt(tJob, 'tabs.times', 'Zeiten')}</TabsTrigger>
-                  <TabsTrigger value="overtime">{tt(tJob, 'tabs.overtime', 'Überstunden')}</TabsTrigger>
-                  <TabsTrigger value="report">{tt(tJob, 'tabs.report', 'Report')}</TabsTrigger>
-                  <TabsTrigger value="finish">{tt(tJob, 'tabs.finish', 'Abschluss')}</TabsTrigger>
+                  {editTabs.map(tab => (
+                    <TabsTrigger key={tab} value={tab}>{tt(tJob, `tabs.${tab}`, tab.charAt(0).toUpperCase() + tab.slice(1))}</TabsTrigger>
+                  ))}
                 </TabsList>
                 
-                <div className="flex-1 overflow-y-auto mt-4">
-                  <TabsContent value="customer" className="space-y-4 mt-0">
-                    <div className="space-y-4">
-                      <div>
-                        <Label htmlFor="edit-customer">{tt(tJob, 'customer.name', 'Kundenname')} *</Label>
-                        <Input 
-                          id="edit-customer" 
-                          value={editData.customerName} 
-                          onChange={(e) => setEditData(prev => ({ ...prev, customerName: e.target.value }))} 
-                          placeholder={tt(tJob, 'customer.namePlaceholder', 'Name des Kunden')}
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="edit-customer-address">{tt(tJob, 'customer.address', 'Kundenadresse')}</Label>
-                        <Input 
-                          id="edit-customer-address" 
-                          value={editData.customerAddress} 
-                          onChange={(e) => setEditData(prev => ({ ...prev, customerAddress: e.target.value }))} 
-                          placeholder={tt(tJob, 'customer.addressPlaceholder', 'Vollständige Adresse des Kunden')}
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="edit-evatic">{tt(tJob, 'customer.evatic', 'EVATIC-Nummer')}</Label>
-                        <Input 
-                          id="edit-evatic" 
-                          value={editData.evaticNo} 
-                          onChange={(e) => setEditData(prev => ({ ...prev, evaticNo: e.target.value }))} 
-                          placeholder={tt(tJob, 'customer.evaticPlaceholder', 'EVATIC-Nummer (falls vorhanden)')}
-                        />
-                      </div>
-                      
-                      <div className="border-t pt-4">
-                        <h4 className="font-medium text-sm mb-3">{tt(tJob, 'customer.hotelSection', 'Hotel & Übernachtung')}</h4>
-                        <div className="space-y-3">
-                          <div>
-                            <Label htmlFor="edit-hotel-name">{tt(tJob, 'customer.hotelName', 'Hotel Name')}</Label>
-                            <Input 
-                              id="edit-hotel-name" 
-                              value={editData.hotelName} 
-                              onChange={(e) => setEditData(prev => ({ ...prev, hotelName: e.target.value }))} 
-                              placeholder={tt(tJob, 'customer.hotelNamePlaceholder', 'Name des Hotels')}
-                            />
-                          </div>
-                          <div>
-                            <Label htmlFor="edit-hotel-address">{tt(tJob, 'customer.hotelAddress', 'Hotel Adresse')}</Label>
-                            <Input 
-                              id="edit-hotel-address" 
-                              value={editData.hotelAddress} 
-                              onChange={(e) => setEditData(prev => ({ ...prev, hotelAddress: e.target.value }))} 
-                              placeholder={tt(tJob, 'customer.hotelAddressPlaceholder', 'Adresse des Hotels')}
-                            />
-                          </div>
-                          <div>
-                            <Label htmlFor="edit-hotel-nights">{tt(tJob, 'customer.hotelNights', 'Anzahl Nächte')}</Label>
-                            <Input 
-                              id="edit-hotel-nights" 
-                              type="number"
-                              min="0"
-                              value={editData.hotelNights} 
-                              onChange={(e) => setEditData(prev => ({ ...prev, hotelNights: parseInt(e.target.value) || 0 }))} 
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="border-t pt-4">
-                        <h4 className="font-medium text-sm mb-3">{tt(tJob, 'customer.travelCosts', 'Reisekosten')}</h4>
-                        <div className="grid grid-cols-3 gap-3">
-                          <div>
-                            <Label htmlFor="edit-km-outbound">{tt(tJob, 'customer.kmOutbound', 'Kilometer Hinfahrt')}</Label>
-                            <Input 
-                              id="edit-km-outbound" 
-                              type="number"
-                              min="0"
-                              value={editData.kilometersOutbound} 
-                              onChange={(e) => setEditData(prev => ({ ...prev, kilometersOutbound: parseInt(e.target.value) || 0 }))} 
-                            />
-                          </div>
-                          <div>
-                            <Label htmlFor="edit-km-return">{tt(tJob, 'customer.kmInbound', 'Kilometer Rückfahrt')}</Label>
-                            <Input 
-                              id="edit-km-return" 
-                              type="number"
-                              min="0"
-                              value={editData.kilometersReturn} 
-                              onChange={(e) => setEditData(prev => ({ ...prev, kilometersReturn: parseInt(e.target.value) || 0 }))} 
-                            />
-                          </div>
-                          <div>
-                            <Label htmlFor="edit-toll">{tt(tJob, 'customer.tollFees', 'Mautgebühren (€)')}</Label>
-                            <Input 
-                              id="edit-toll" 
-                              type="number"
-                              min="0"
-                              step="0.01"
-                              value={editData.tollAmount} 
-                              onChange={(e) => setEditData(prev => ({ ...prev, tollAmount: parseFloat(e.target.value) || 0 }))} 
-                            />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </TabsContent>
-                  
-                  <TabsContent value="machine" className="space-y-4 mt-0">
-                    <div className="space-y-4">
-                      <div className="grid grid-cols-2 gap-3">
-                        <div>
-                          <Label htmlFor="edit-manufacturer">{tt(tJob, 'machine.manufacturer', 'Hersteller')}</Label>
-                          <Input 
-                            id="edit-manufacturer"
-                            value={editData.manufacturer} 
-                            onChange={(e) => setEditData(prev => ({ ...prev, manufacturer: e.target.value }))} 
-                            placeholder={tt(tJob, 'machine.manufacturerPlaceholder', 'z.B. Siemens, ABB, Schneider')}
-                          />
-                        </div>
-                        <div>
-                          <Label htmlFor="edit-model">{tt(tJob, 'machine.model', 'Modell/Typ')}</Label>
-                          <Input 
-                            id="edit-model"
-                            value={editData.model} 
-                            onChange={(e) => setEditData(prev => ({ ...prev, model: e.target.value }))} 
-                            placeholder={tt(tJob, 'machine.modelPlaceholder', 'z.B. S7-1200, CP1E')}
-                          />
-                        </div>
-                      </div>
-                      <div>
-                        <Label htmlFor="edit-serial">{tt(tJob, 'machine.serialNumber', 'Seriennummer')}</Label>
-                        <Input 
-                          id="edit-serial"
-                          value={editData.serialNumber} 
-                          onChange={(e) => setEditData(prev => ({ ...prev, serialNumber: e.target.value }))} 
-                          placeholder={tt(tJob, 'machine.serialPlaceholder', 'Seriennummer der Maschine/Anlage')}
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="edit-work-performed">{tt(tJob, 'machine.workPerformed', 'Zu leistende Arbeiten')}</Label>
-                        <textarea 
-                          id="edit-work-performed"
-                          className="w-full min-h-[120px] p-3 border rounded-md resize-y"
-                          value={editData.workPerformed} 
-                          onChange={(e) => setEditData(prev => ({ ...prev, workPerformed: e.target.value }))} 
-                          placeholder={tt(tJob, 'machine.workPerformedPlaceholder', 'Beschreiben Sie die geplanten/zu leistenden Arbeiten...')}
-                        />
-                      </div>
-                    </div>
-                  </TabsContent>
-                  
-                  <TabsContent value="times" className="space-y-4 mt-0">
-                    <div className="space-y-4">
-                      <div className="grid grid-cols-3 gap-3">
-                        <div>
-                          <Label htmlFor="edit-estimated-days">{t('estimatedDays')}</Label>
-                          <Input 
-                            id="edit-estimated-days" 
-                            type="number"
-                            min="1"
-                            value={editData.estimatedDays} 
-                            onChange={(e) => updateEstimatedDays(parseInt(e.target.value) || 1)} 
-                          />
-                        </div>
-                        <div>
-                          <Label htmlFor="edit-current-day">{t('currentDay')}</Label>
-                          <Input 
-                            id="edit-current-day" 
-                            type="number"
-                            min="0"
-                            max={editData.estimatedDays}
-                            value={editData.currentDay} 
-                            onChange={(e) => setEditData(prev => ({ ...prev, currentDay: parseInt(e.target.value) || 0 }))} 
-                          />
-                        </div>
-                        <div>
-                          <Label htmlFor="edit-total-hours">{t('totalHours')}</Label>
-                          <Input 
-                            id="edit-total-hours" 
-                            type="text"
-                            value={editData.totalHours} 
-                            readOnly
-                            className="bg-muted font-mono"
-                            placeholder="0h 0m"
-                          />
-                        </div>
-                      </div>
-                      
-                      <p className="text-xs text-muted-foreground">
-                        {t('totalTimeCalculated')}
-                      </p>
+                <div className="flex-1 mt-4 overflow-hidden embla" ref={emblaRef}>
+                  <div className="embla__container h-full">
+                    {editTabs.map(tab => (
+                      <div key={tab} className="embla__slide overflow-y-auto">
+                        <div className="p-1">
+                          {tab === 'customer' && (
+                            <div className="space-y-4">
+                              <div>
+                                <Label htmlFor="edit-customer">{tt(tJob, 'customer.name', 'Kundenname')} *</Label>
+                                <Input
+                                  id="edit-customer"
+                                  value={editData.customerName}
+                                  onChange={(e) => setEditData(prev => ({ ...prev, customerName: e.target.value }))}
+                                  placeholder={tt(tJob, 'customer.namePlaceholder', 'Name des Kunden')}
+                                />
+                              </div>
+                              <div>
+                                <Label htmlFor="edit-customer-address">{tt(tJob, 'customer.address', 'Kundenadresse')}</Label>
+                                <Input
+                                  id="edit-customer-address"
+                                  value={editData.customerAddress}
+                                  onChange={(e) => setEditData(prev => ({ ...prev, customerAddress: e.target.value }))}
+                                  placeholder={tt(tJob, 'customer.addressPlaceholder', 'Vollständige Adresse des Kunden')}
+                                />
+                              </div>
+                              <div>
+                                <Label htmlFor="edit-evatic">{tt(tJob, 'customer.evatic', 'EVATIC-Nummer')}</Label>
+                                <Input
+                                  id="edit-evatic"
+                                  value={editData.evaticNo}
+                                  onChange={(e) => setEditData(prev => ({ ...prev, evaticNo: e.target.value }))}
+                                  placeholder={tt(tJob, 'customer.evaticPlaceholder', 'EVATIC-Nummer (falls vorhanden)')}
+                                />
+                              </div>
 
-                      {/* Daily Time Entries */}
-                      <div className="space-y-4">
-                        <h4 className="font-medium text-sm">{t('dailyTimes')}</h4>
-                        {editData.days.map((day, dayIndex) => (
-                          <div key={dayIndex} className="border rounded-lg p-4 space-y-3">
-                            <div className="flex items-center gap-3">
-                              <h5 className="font-medium text-sm text-primary">{t('day')} {day.day}</h5>
-                              <Input 
-                                type="date"
-                                value={day.date || ''} 
-                                onChange={(e) => updateDayField(dayIndex, 'date', e.target.value)}
-                                className="w-auto text-xs"
-                              />
+                              <div className="border-t pt-4">
+                                <h4 className="font-medium text-sm mb-3">{tt(tJob, 'customer.hotelSection', 'Hotel & Übernachtung')}</h4>
+                                <div className="space-y-3">
+                                  <div>
+                                    <Label htmlFor="edit-hotel-name">{tt(tJob, 'customer.hotelName', 'Hotel Name')}</Label>
+                                    <Input
+                                      id="edit-hotel-name"
+                                      value={editData.hotelName}
+                                      onChange={(e) => setEditData(prev => ({ ...prev, hotelName: e.target.value }))}
+                                      placeholder={tt(tJob, 'customer.hotelNamePlaceholder', 'Name des Hotels')}
+                                    />
+                                  </div>
+                                  <div>
+                                    <Label htmlFor="edit-hotel-address">{tt(tJob, 'customer.hotelAddress', 'Hotel Adresse')}</Label>
+                                    <Input
+                                      id="edit-hotel-address"
+                                      value={editData.hotelAddress}
+                                      onChange={(e) => setEditData(prev => ({ ...prev, hotelAddress: e.target.value }))}
+                                      placeholder={tt(tJob, 'customer.hotelAddressPlaceholder', 'Adresse des Hotels')}
+                                    />
+                                  </div>
+                                  <div>
+                                    <Label htmlFor="edit-hotel-nights">{tt(tJob, 'customer.hotelNights', 'Anzahl Nächte')}</Label>
+                                    <Input
+                                      id="edit-hotel-nights"
+                                      type="number"
+                                      min="0"
+                                      value={editData.hotelNights}
+                                      onChange={(e) => setEditData(prev => ({ ...prev, hotelNights: parseInt(e.target.value) || 0 }))}
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="border-t pt-4">
+                                <h4 className="font-medium text-sm mb-3">{tt(tJob, 'customer.travelCosts', 'Reisekosten')}</h4>
+                                <div className="grid grid-cols-3 gap-3">
+                                  <div>
+                                    <Label htmlFor="edit-km-outbound">{tt(tJob, 'customer.kmOutbound', 'Kilometer Hinfahrt')}</Label>
+                                    <Input
+                                      id="edit-km-outbound"
+                                      type="number"
+                                      min="0"
+                                      value={editData.kilometersOutbound}
+                                      onChange={(e) => setEditData(prev => ({ ...prev, kilometersOutbound: parseInt(e.target.value) || 0 }))}
+                                    />
+                                  </div>
+                                  <div>
+                                    <Label htmlFor="edit-km-return">{tt(tJob, 'customer.kmInbound', 'Kilometer Rückfahrt')}</Label>
+                                    <Input
+                                      id="edit-km-return"
+                                      type="number"
+                                      min="0"
+                                      value={editData.kilometersReturn}
+                                      onChange={(e) => setEditData(prev => ({ ...prev, kilometersReturn: parseInt(e.target.value) || 0 }))}
+                                    />
+                                  </div>
+                                  <div>
+                                    <Label htmlFor="edit-toll">{tt(tJob, 'customer.tollFees', 'Mautgebühren (€)')}</Label>
+                                    <Input
+                                      id="edit-toll"
+                                      type="number"
+                                      min="0"
+                                      step="0.01"
+                                      value={editData.tollAmount}
+                                      onChange={(e) => setEditData(prev => ({ ...prev, tollAmount: parseFloat(e.target.value) || 0 }))}
+                                    />
+                                  </div>
+                                </div>
+                              </div>
                             </div>
-                            
-                             <div className="grid grid-cols-2 gap-2 text-xs">
-                               <div>
-                                 <Label htmlFor={`travel-start-${dayIndex}`}>{t('travelStart')}</Label>
-                                 <Input 
-                                   id={`travel-start-${dayIndex}`}
-                                   type="time"
-                                   value={day.travelStart || ''} 
-                                   onChange={(e) => updateDayField(dayIndex, 'travelStart', e.target.value)} 
-                                 />
-                               </div>
-                               <div>
-                                 <Label htmlFor={`travel-end-${dayIndex}`}>{t('travelEnd')}</Label>
-                                 <Input 
-                                   id={`travel-end-${dayIndex}`}
-                                   type="time"
-                                   value={day.travelEnd || ''} 
-                                   onChange={(e) => updateDayField(dayIndex, 'travelEnd', e.target.value)} 
-                                 />
-                               </div>
-                               <div>
-                                 <Label htmlFor={`work-start-${dayIndex}`}>{t('workStart')}</Label>
-                                 <Input 
-                                   id={`work-start-${dayIndex}`}
-                                   type="time"
-                                   value={day.workStart || ''} 
-                                   onChange={(e) => updateDayField(dayIndex, 'workStart', e.target.value)} 
-                                 />
-                               </div>
-                               <div>
-                                 <Label htmlFor={`work-end-${dayIndex}`}>{t('workEnd')}</Label>
-                                 <Input 
-                                   id={`work-end-${dayIndex}`}
-                                   type="time"
-                                   value={day.workEnd || ''} 
-                                   onChange={(e) => updateDayField(dayIndex, 'workEnd', e.target.value)} 
-                                 />
-                               </div>
-                               <div>
-                                 <Label htmlFor={`departure-start-${dayIndex}`}>{t('departureStart')}</Label>
-                                 <Input 
-                                   id={`departure-start-${dayIndex}`}
-                                   type="time"
-                                   value={day.departureStart || ''} 
-                                   onChange={(e) => updateDayField(dayIndex, 'departureStart', e.target.value)} 
-                                 />
-                               </div>
-                               <div>
-                                 <Label htmlFor={`departure-end-${dayIndex}`}>{t('departureEnd')}</Label>
-                                 <Input 
-                                   id={`departure-end-${dayIndex}`}
-                                   type="time"
-                                   value={day.departureEnd || ''} 
-                                   onChange={(e) => updateDayField(dayIndex, 'departureEnd', e.target.value)} 
-                                 />
-                               </div>
-                             </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </TabsContent>
-                  
-                  <TabsContent value="overtime" className="space-y-4 mt-0">
-                    {selectedJob && (
-                      <OvertimeTab 
-                        job={{
-                          ...selectedJob,
-                          ...editData,
-                          days: editData.days
-                        } as Job} 
-                      />
-                    )}
-                  </TabsContent>
-                  
-                  <TabsContent value="report" className="space-y-4 mt-0">
-                    {selectedJob && (
-                      <ReportTab 
-                        job={{
-                          ...selectedJob,
-                          ...editData,
-                          days: editData.days
-                        } as Job}
-                        onJobUpdate={async (updatedJob) => {
-                          try {
-                            await supabase
-                              .from('jobs')
-                              .update({ reports: updatedJob.reports } as any)
-                              .eq('id', selectedJob.id);
+                          )}
+                          {tab === 'machine' && (
+                            <div className="space-y-4">
+                              <div className="grid grid-cols-2 gap-3">
+                                <div>
+                                  <Label htmlFor="edit-manufacturer">{tt(tJob, 'machine.manufacturer', 'Hersteller')}</Label>
+                                  <Input
+                                    id="edit-manufacturer"
+                                    value={editData.manufacturer}
+                                    onChange={(e) => setEditData(prev => ({ ...prev, manufacturer: e.target.value }))}
+                                    placeholder={tt(tJob, 'machine.manufacturerPlaceholder', 'z.B. Siemens, ABB, Schneider')}
+                                  />
+                                </div>
+                                <div>
+                                  <Label htmlFor="edit-model">{tt(tJob, 'machine.model', 'Modell/Typ')}</Label>
+                                  <Input
+                                    id="edit-model"
+                                    value={editData.model}
+                                    onChange={(e) => setEditData(prev => ({ ...prev, model: e.target.value }))}
+                                    placeholder={tt(tJob, 'machine.modelPlaceholder', 'z.B. S7-1200, CP1E')}
+                                  />
+                                </div>
+                              </div>
+                              <div>
+                                <Label htmlFor="edit-serial">{tt(tJob, 'machine.serialNumber', 'Seriennummer')}</Label>
+                                <Input
+                                  id="edit-serial"
+                                  value={editData.serialNumber}
+                                  onChange={(e) => setEditData(prev => ({ ...prev, serialNumber: e.target.value }))}
+                                  placeholder={tt(tJob, 'machine.serialPlaceholder', 'Seriennummer der Maschine/Anlage')}
+                                />
+                              </div>
+                              <div>
+                                <Label htmlFor="edit-work-performed">{tt(tJob, 'machine.workPerformed', 'Zu leistende Arbeiten')}</Label>
+                                <textarea
+                                  id="edit-work-performed"
+                                  className="w-full min-h-[120px] p-3 border rounded-md resize-y"
+                                  value={editData.workPerformed}
+                                  onChange={(e) => setEditData(prev => ({ ...prev, workPerformed: e.target.value }))}
+                                  placeholder={tt(tJob, 'machine.workPerformedPlaceholder', 'Beschreiben Sie die geplanten/zu leistenden Arbeiten...')}
+                                />
+                              </div>
+                            </div>
+                          )}
+                          {tab === 'times' && (
+                            <div className="space-y-4">
+                              <div className="grid grid-cols-3 gap-3">
+                                <div>
+                                  <Label htmlFor="edit-estimated-days">{t('estimatedDays')}</Label>
+                                  <Input
+                                    id="edit-estimated-days"
+                                    type="number"
+                                    min="1"
+                                    value={editData.estimatedDays}
+                                    onChange={(e) => updateEstimatedDays(parseInt(e.target.value) || 1)}
+                                  />
+                                </div>
+                                <div>
+                                  <Label htmlFor="edit-current-day">{t('currentDay')}</Label>
+                                  <Input
+                                    id="edit-current-day"
+                                    type="number"
+                                    min="0"
+                                    max={editData.estimatedDays}
+                                    value={editData.currentDay}
+                                    onChange={(e) => setEditData(prev => ({ ...prev, currentDay: parseInt(e.target.value) || 0 }))}
+                                  />
+                                </div>
+                                <div>
+                                  <Label htmlFor="edit-total-hours">{t('totalHours')}</Label>
+                                  <Input
+                                    id="edit-total-hours"
+                                    type="text"
+                                    value={editData.totalHours}
+                                    readOnly
+                                    className="bg-muted font-mono"
+                                    placeholder="0h 0m"
+                                  />
+                                </div>
+                              </div>
 
-                            // Update local edit state
-                            setEditData(prev => ({ ...prev, reports: updatedJob.reports || [] }));
-                            // Update jobs list for immediate UI feedback
-                            setJobs(prev => prev.map(j => j.id === selectedJob.id ? { ...j, reports: updatedJob.reports } : j));
-                          } catch (e) {
-                            console.error('Failed to persist reports:', e);
-                          }
-                        }}
-                      />
-                    )}
-                  </TabsContent>
-                  
-                  <TabsContent value="finish" className="space-y-4 mt-0">
-                    {selectedJob && (
-                      <FinishJobTab 
-                        job={{
-                          ...selectedJob,
-                          ...editData,
-                          days: editData.days
-                        } as Job}
-                        onJobUpdate={(updatedJob) => {
-                          setEditData(prev => ({ 
-                            ...prev, 
-                            workReport: updatedJob.workReport,
-                            reports: updatedJob.reports
-                          }));
-                        }}
-                        onCloseDialog={() => setEditOpen(false)}
-                      />
-                    )}
-                  </TabsContent>
+                              <p className="text-xs text-muted-foreground">
+                                {t('totalTimeCalculated')}
+                              </p>
+
+                              {/* Daily Time Entries */}
+                              <div className="space-y-4">
+                                <h4 className="font-medium text-sm">{t('dailyTimes')}</h4>
+                                {editData.days.map((day, dayIndex) => (
+                                  <div key={dayIndex} className="border rounded-lg p-4 space-y-3">
+                                    <div className="flex items-center gap-3">
+                                      <h5 className="font-medium text-sm text-primary">{t('day')} {day.day}</h5>
+                                      <Input
+                                        type="date"
+                                        value={day.date || ''}
+                                        onChange={(e) => updateDayField(dayIndex, 'date', e.target.value)}
+                                        className="w-auto text-xs"
+                                      />
+                                    </div>
+
+                                     <div className="grid grid-cols-2 gap-2 text-xs">
+                                       <div>
+                                         <Label htmlFor={`travel-start-${dayIndex}`}>{t('travelStart')}</Label>
+                                         <Input
+                                           id={`travel-start-${dayIndex}`}
+                                           type="time"
+                                           value={day.travelStart || ''}
+                                           onChange={(e) => updateDayField(dayIndex, 'travelStart', e.target.value)}
+                                         />
+                                       </div>
+                                       <div>
+                                         <Label htmlFor={`travel-end-${dayIndex}`}>{t('travelEnd')}</Label>
+                                         <Input
+                                           id={`travel-end-${dayIndex}`}
+                                           type="time"
+                                           value={day.travelEnd || ''}
+                                           onChange={(e) => updateDayField(dayIndex, 'travelEnd', e.target.value)}
+                                         />
+                                       </div>
+                                       <div>
+                                         <Label htmlFor={`work-start-${dayIndex}`}>{t('workStart')}</Label>
+                                         <Input
+                                           id={`work-start-${dayIndex}`}
+                                           type="time"
+                                           value={day.workStart || ''}
+                                           onChange={(e) => updateDayField(dayIndex, 'workStart', e.target.value)}
+                                         />
+                                       </div>
+                                       <div>
+                                         <Label htmlFor={`work-end-${dayIndex}`}>{t('workEnd')}</Label>
+                                         <Input
+                                           id={`work-end-${dayIndex}`}
+                                           type="time"
+                                           value={day.workEnd || ''}
+                                           onChange={(e) => updateDayField(dayIndex, 'workEnd', e.target.value)}
+                                         />
+                                       </div>
+                                       <div>
+                                         <Label htmlFor={`departure-start-${dayIndex}`}>{t('departureStart')}</Label>
+                                         <Input
+                                           id={`departure-start-${dayIndex}`}
+                                           type="time"
+                                           value={day.departureStart || ''}
+                                           onChange={(e) => updateDayField(dayIndex, 'departureStart', e.target.value)}
+                                         />
+                                       </div>
+                                       <div>
+                                         <Label htmlFor={`departure-end-${dayIndex}`}>{t('departureEnd')}</Label>
+                                         <Input
+                                           id={`departure-end-${dayIndex}`}
+                                           type="time"
+                                           value={day.departureEnd || ''}
+                                           onChange={(e) => updateDayField(dayIndex, 'departureEnd', e.target.value)}
+                                         />
+                                       </div>
+                                     </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                          {tab === 'overtime' && (
+                            <OvertimeTab
+                              job={{
+                                ...selectedJob,
+                                ...editData,
+                                days: editData.days
+                              } as Job}
+                            />
+                          )}
+                          {tab === 'report' && (
+                            <ReportTab
+                              job={{
+                                ...selectedJob,
+                                ...editData,
+                                days: editData.days
+                              } as Job}
+                              onJobUpdate={async (updatedJob) => {
+                                try {
+                                  await supabase
+                                    .from('jobs')
+                                    .update({ reports: updatedJob.reports } as any)
+                                    .eq('id', selectedJob.id);
+
+                                  // Update local edit state
+                                  setEditData(prev => ({ ...prev, reports: updatedJob.reports || [] }));
+                                  // Update jobs list for immediate UI feedback
+                                  setJobs(prev => prev.map(j => j.id === selectedJob.id ? { ...j, reports: updatedJob.reports } : j));
+                                } catch (e) {
+                                  console.error('Failed to persist reports:', e);
+                                }
+                              }}
+                            />
+                          )}
+                          {tab === 'finish' && (
+                            <FinishJobTab
+                              job={{
+                                ...selectedJob,
+                                ...editData,
+                                days: editData.days
+                              } as Job}
+                              onJobUpdate={(updatedJob) => {
+                                setEditData(prev => ({
+                                  ...prev,
+                                  workReport: updatedJob.workReport,
+                                  reports: updatedJob.reports
+                                }));
+                              }}
+                              onCloseDialog={() => setEditOpen(false)}
+                            />
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </Tabs>
             </div>

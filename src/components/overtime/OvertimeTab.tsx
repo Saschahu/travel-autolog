@@ -62,7 +62,7 @@ export const OvertimeTab = ({ job }: OvertimeTabProps) => {
           className="flex items-center gap-2"
         >
           <RefreshCw className="h-4 w-4" />
-          Neu berechnen
+          {t('recalculate', 'Neu berechnen')}
         </Button>
       </div>
       
@@ -121,7 +121,7 @@ export const OvertimeTab = ({ job }: OvertimeTabProps) => {
             {splits.ot50Split && (
               <div className="bg-orange-500/10 border border-orange-500/20 rounded-lg p-3">
                 <div className="text-sm text-muted-foreground mb-2">
-                  Überstunden 8–12h ({splits.ot50Split.rate}%)
+                  {t('overtime.8to12hours', 'Überstunden 8–12h')} ({splits.ot50Split.rate}%)
                 </div>
                 <div className="text-lg font-semibold text-orange-600 mb-1">
                   {formatHours(splits.ot50Split.baseMinutes)}
@@ -135,7 +135,7 @@ export const OvertimeTab = ({ job }: OvertimeTabProps) => {
             {splits.ot100Split && (
               <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3">
                 <div className="text-sm text-muted-foreground mb-2">
-                  Überstunden über 12h ({splits.ot100Split.rate}%)
+                  {t('overtime.over12hours', 'Überstunden über 12h')} ({splits.ot100Split.rate}%)
                 </div>
                 <div className="text-lg font-semibold text-red-600 mb-1">
                   {formatHours(splits.ot100Split.baseMinutes)}
@@ -149,7 +149,7 @@ export const OvertimeTab = ({ job }: OvertimeTabProps) => {
             {splits.saturdaySplit && (
               <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-3">
                 <div className="text-sm text-muted-foreground mb-2">
-                  Samstag ({splits.saturdaySplit.rate}%)
+                  {t('overtime.saturday', 'Samstag')} ({splits.saturdaySplit.rate}%)
                 </div>
                 <div className="text-lg font-semibold text-blue-600 mb-1">
                   {formatHours(splits.saturdaySplit.baseMinutes)}
@@ -163,7 +163,7 @@ export const OvertimeTab = ({ job }: OvertimeTabProps) => {
             {splits.sundaySplit && (
               <div className="bg-purple-500/10 border border-purple-500/20 rounded-lg p-3">
                 <div className="text-sm text-muted-foreground mb-2">
-                  Sonntag/Feiertag ({splits.sundaySplit.rate}%)
+                  {t('overtime.sundayHoliday', 'Sonntag/Feiertag')} ({splits.sundaySplit.rate}%)
                 </div>
                 <div className="text-lg font-semibold text-purple-600 mb-1">
                   {formatHours(splits.sundaySplit.baseMinutes)}

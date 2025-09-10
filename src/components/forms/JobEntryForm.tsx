@@ -678,208 +678,215 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
   }, [jobData.hotelName, isEditingJob]);
 
   return (
-    <div className="p-4 space-y-6">
-      {/* Job Title with Customer Name */}
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold">
-          {isEditingJob ? t('editJob') : t('newJob')}
-          {isPersisted && customerName && (
-            <span data-testid="job-title-customer" className="ml-2 text-muted-foreground">— {customerName}</span>
+    <div className="h-full flex flex-col">
+      <div className="p-4 space-y-6">
+        {/* Job Title with Customer Name */}
+        <div className="flex items-center justify-between">
+          <h2 className="text-xl font-semibold">
+            {isEditingJob ? t('editJob') : t('newJob')}
+            {isPersisted && customerName && (
+              <span data-testid="job-title-customer" className="ml-2 text-muted-foreground">— {customerName}</span>
+            )}
+          </h2>
+          {isEditingJob && (
+            <Badge variant="secondary" className="px-3 py-1">
+              <Clock className="h-3 w-3 mr-1" />
+              {t('jobEditing')}
+            </Badge>
           )}
-        </h2>
+        </div>
+
+        {/* Step Navigation */}
+        {isEditingJob ? (
+          // 2-row layout for editing mode
+          <div className="space-y-2">
+            {/* Row 1: Customer, Machine, Times, Hotel */}
+            <div className="flex justify-between items-center gap-1">
+              {editJobStepsRow1.map((step, index) => {
+                const Icon = step.icon;
+                const isActive = currentStep === step.id;
+                const isCompleted = [...editJobStepsRow1, ...editJobStepsRow2].findIndex(s => s.id === currentStep) > [...editJobStepsRow1, ...editJobStepsRow2].indexOf(step);
+                
+                return (
+                  <Button
+                    key={step.id}
+                    variant={isActive ? "default" : isCompleted ? "secondary" : "outline"}
+                    size="sm"
+                    onClick={() => setCurrentStep(step.id as typeof currentStep)}
+                    className="flex-1 mx-0.5"
+                  >
+                    <Icon className="h-4 w-4 mr-1" />
+                    <span className="hidden sm:inline">{step.label}</span>
+                  </Button>
+                );
+              })}
+            </div>
+            
+            {/* Row 2: Travel, Overtime, Report, Finish */}
+            <div className="flex justify-between items-center gap-1">
+              {editJobStepsRow2.map((step, index) => {
+                const Icon = step.icon;
+                const isActive = currentStep === step.id;
+                const isCompleted = [...editJobStepsRow1, ...editJobStepsRow2].findIndex(s => s.id === currentStep) > [...editJobStepsRow1, ...editJobStepsRow2].indexOf(step);
+                
+                return (
+                  <Button
+                    key={step.id}
+                    variant={isActive ? "default" : isCompleted ? "secondary" : "outline"}
+                    size="sm"
+                    onClick={() => setCurrentStep(step.id as typeof currentStep)}
+                    className="flex-1 mx-0.5"
+                  >
+                    <Icon className="h-4 w-4 mr-1" />
+                    <span className="hidden sm:inline">{step.label}</span>
+                  </Button>
+                );
+              })}
+            </div>
+          </div>
+        ) : (
+          // Single row layout for new job
+          <div className="flex justify-between items-center">
+            {newJobSteps.map((step, index) => {
+              const Icon = step.icon;
+              const isActive = currentStep === step.id;
+              const isCompleted = newJobSteps.findIndex(s => s.id === currentStep) > index;
+              const isAccessible = step.id === 'customer'; // Only customer accessible for new jobs
+              
+              return (
+                <Button
+                  key={step.id}
+                  variant={isActive ? "default" : isCompleted ? "secondary" : "outline"}
+                  size="sm"
+                  onClick={() => {
+                    if (isAccessible) {
+                      setCurrentStep(step.id as any);
+                    } else {
+                      toast({
+                        title: t('saveCustomerFirst'),
+                        description: t('saveCustomerFirstDesc'),
+                        variant: 'destructive'
+                      });
+                    }
+                  }}
+                  className={`flex-1 mx-1 ${!isAccessible ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  disabled={!isAccessible}
+                >
+                  <Icon className="h-4 w-4 mr-1" />
+                  <span className="hidden sm:inline">{step.label}</span>
+                </Button>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Context Bar - Customer Info */}
+        {isPersisted && customerName && (
+          <div data-testid="job-context-bar" className="text-sm text-muted-foreground">
+            <span className="inline-flex items-center gap-2 rounded-full bg-muted px-3 py-1">
+              <span className="font-medium">Kunde:</span> {customerName}
+            </span>
+          </div>
+        )}
+
+        <Separator />
+      </div>
+
+      {/* Scrollable Content Area */}
+      <div className="flex-1 overflow-y-auto px-4">
+        {/* Current Step Content */}
+        {currentStep === 'customer' && renderCustomerSection()}
+        {currentStep === 'machine' && renderMachineSection()}
+        {currentStep === 'times' && renderTimesSection()}
+        {currentStep === 'hotel' && renderHotelSection()}
+        {currentStep === 'travel' && renderTravelSection()}
+        {currentStep === 'overtime' && renderOvertimeSection()}
+        {currentStep === 'report' && renderReportSection()}
+        {currentStep === 'finish' && renderFinishSection()}
+
+        {/* Status Indicator */}
         {isEditingJob && (
-          <Badge variant="secondary" className="px-3 py-1">
-            <Clock className="h-3 w-3 mr-1" />
-            {t('jobEditing')}
-          </Badge>
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-center my-4">
+            <p className="text-sm text-blue-700">
+              📝 {t('jobEditing')} • {t('jobIdShort')}: {currentJobId?.slice(0, 8)}... 
+              {currentStep !== 'customer' && <span className="ml-2">{t('addMoreData')}</span>}
+            </p>
+          </div>
         )}
       </div>
 
-      {/* Step Navigation */}
-      {isEditingJob ? (
-        // 2-row layout for editing mode
-        <div className="space-y-2">
-          {/* Row 1: Customer, Machine, Times, Hotel */}
-          <div className="flex justify-between items-center gap-1">
-            {editJobStepsRow1.map((step, index) => {
-              const Icon = step.icon;
-              const isActive = currentStep === step.id;
-              const isCompleted = [...editJobStepsRow1, ...editJobStepsRow2].findIndex(s => s.id === currentStep) > [...editJobStepsRow1, ...editJobStepsRow2].indexOf(step);
-              
-              return (
-                <Button
-                  key={step.id}
-                  variant={isActive ? "default" : isCompleted ? "secondary" : "outline"}
-                  size="sm"
-                  onClick={() => setCurrentStep(step.id as typeof currentStep)}
-                  className="flex-1 mx-0.5"
-                >
-                  <Icon className="h-4 w-4 mr-1" />
-                  <span className="hidden sm:inline">{step.label}</span>
-                </Button>
-              );
-            })}
-          </div>
-          
-          {/* Row 2: Travel, Overtime, Report, Finish */}
-          <div className="flex justify-between items-center gap-1">
-            {editJobStepsRow2.map((step, index) => {
-              const Icon = step.icon;
-              const isActive = currentStep === step.id;
-              const isCompleted = [...editJobStepsRow1, ...editJobStepsRow2].findIndex(s => s.id === currentStep) > [...editJobStepsRow1, ...editJobStepsRow2].indexOf(step);
-              
-              return (
-                <Button
-                  key={step.id}
-                  variant={isActive ? "default" : isCompleted ? "secondary" : "outline"}
-                  size="sm"
-                  onClick={() => setCurrentStep(step.id as typeof currentStep)}
-                  className="flex-1 mx-0.5"
-                >
-                  <Icon className="h-4 w-4 mr-1" />
-                  <span className="hidden sm:inline">{step.label}</span>
-                </Button>
-              );
-            })}
-          </div>
-        </div>
-      ) : (
-        // Single row layout for new job
-        <div className="flex justify-between items-center">
-          {newJobSteps.map((step, index) => {
-            const Icon = step.icon;
-            const isActive = currentStep === step.id;
-            const isCompleted = newJobSteps.findIndex(s => s.id === currentStep) > index;
-            const isAccessible = step.id === 'customer'; // Only customer accessible for new jobs
-            
-            return (
-              <Button
-                key={step.id}
-                variant={isActive ? "default" : isCompleted ? "secondary" : "outline"}
-                size="sm"
-                onClick={() => {
-                  if (isAccessible) {
-                    setCurrentStep(step.id as any);
-                  } else {
-                    toast({
-                      title: t('saveCustomerFirst'),
-                      description: t('saveCustomerFirstDesc'),
-                      variant: 'destructive'
-                    });
-                  }
-                }}
-                className={`flex-1 mx-1 ${!isAccessible ? 'opacity-50 cursor-not-allowed' : ''}`}
-                disabled={!isAccessible}
-              >
-                <Icon className="h-4 w-4 mr-1" />
-                <span className="hidden sm:inline">{step.label}</span>
-              </Button>
-            );
-          })}
-        </div>
-      )}
-
-      {/* Context Bar - Customer Info */}
-      {isPersisted && customerName && (
-        <div data-testid="job-context-bar" className="text-sm text-muted-foreground">
-          <span className="inline-flex items-center gap-2 rounded-full bg-muted px-3 py-1">
-            <span className="font-medium">Kunde:</span> {customerName}
-          </span>
-        </div>
-      )}
-
-      <Separator />
-
-      {/* Current Step Content */}
-      {currentStep === 'customer' && renderCustomerSection()}
-      {currentStep === 'machine' && renderMachineSection()}
-      {currentStep === 'times' && renderTimesSection()}
-      {currentStep === 'hotel' && renderHotelSection()}
-      {currentStep === 'travel' && renderTravelSection()}
-      {currentStep === 'overtime' && renderOvertimeSection()}
-      {currentStep === 'report' && renderReportSection()}
-      {currentStep === 'finish' && renderFinishSection()}
-
-      {/* Status Indicator */}
-      {isEditingJob && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-center">
-          <p className="text-sm text-blue-700">
-            📝 {t('jobEditing')} • {t('jobIdShort')}: {currentJobId?.slice(0, 8)}... 
-            {currentStep !== 'customer' && <span className="ml-2">{t('addMoreData')}</span>}
-          </p>
-        </div>
-      )}
-
-      {/* Navigation Buttons */}
-      <div className="flex justify-between pt-4 gap-2">
-        <div className="flex gap-2">
-          <Button
-            variant="outline"
-            onClick={() => {
-              const currentIndex = steps.findIndex(s => s.id === currentStep);
-              if (currentIndex > 0) {
-                setCurrentStep(steps[currentIndex - 1].id as any);
-              }
-            }}
-            disabled={currentStep === 'customer'}
-          >
-            {t('back')}
-          </Button>
-          
-          {/* Show "New Job" button only in edit mode and not when creating new job */}
-          {isEditingJob && !isCreatingNewJob && (
+      {/* Fixed Navigation Buttons */}
+      <div className="p-4 border-t bg-background">
+        <div className="flex justify-between gap-2">
+          <div className="flex gap-2">
             <Button
-              variant="secondary"
-              onClick={startNewJob}
-              disabled={isLoading}
-            >
-              {t('newJob')}
-            </Button>
-          )}
-        </div>
-        
-        <div className="flex gap-2">
-          {/* Save partial data button removed - auto-save on navigation */}
-          
-          {/* Main action button */}
-          <Button
-            onClick={async () => {
-              if (currentStep === 'customer') {
-                // Save customer data (partial save)
-                await saveJobData(true);
-              } else if (currentStep === 'machine' && isCreatingNewJob) {
-                // For new jobs: save and return to dashboard
-                console.log('Machine step for new job - attempting to save and return to dashboard');
-                try {
-                  const success = await saveJobData(true);
-                  console.log('Save result:', success);
-                  if (success) {
-                    console.log('Save successful, calling onJobSaved');
-                    onJobSaved?.();
-                  } else {
-                    console.error('Save failed, not returning to dashboard');
-                  }
-                } catch (error) {
-                  console.error('Error in machine step save:', error);
-                }
-              } else {
+              variant="outline"
+              onClick={() => {
                 const currentIndex = steps.findIndex(s => s.id === currentStep);
-                if (currentIndex < steps.length - 1) {
-                  setCurrentStep(steps[currentIndex + 1].id as any);
-                } else if (currentStep === 'finish') {
-                  // Complete the job
-                  await saveJobData(false);
+                if (currentIndex > 0) {
+                  setCurrentStep(steps[currentIndex - 1].id as any);
                 }
-              }
-            }}
-            disabled={isLoading || (currentStep === 'customer' && !jobData.customerName)}
-          >
-             {isLoading ? t('save') : 
-              currentStep === 'customer' ? t('next') : 
-              currentStep === 'machine' && isCreatingNewJob ? t('dashboard') :
-              currentStep === 'finish' ? t('completeJob') : 
-              t('next')}
-          </Button>
+              }}
+              disabled={currentStep === 'customer'}
+            >
+              {t('back')}
+            </Button>
+            
+            {/* Show "New Job" button only in edit mode and not when creating new job */}
+            {isEditingJob && !isCreatingNewJob && (
+              <Button
+                variant="secondary"
+                onClick={startNewJob}
+                disabled={isLoading}
+              >
+                {t('newJob')}
+              </Button>
+            )}
+          </div>
+          
+          <div className="flex gap-2">
+            {/* Save partial data button removed - auto-save on navigation */}
+            
+            {/* Main action button */}
+            <Button
+              onClick={async () => {
+                if (currentStep === 'customer') {
+                  // Save customer data (partial save)
+                  await saveJobData(true);
+                } else if (currentStep === 'machine' && isCreatingNewJob) {
+                  // For new jobs: save and return to dashboard
+                  console.log('Machine step for new job - attempting to save and return to dashboard');
+                  try {
+                    const success = await saveJobData(true);
+                    console.log('Save result:', success);
+                    if (success) {
+                      console.log('Save successful, calling onJobSaved');
+                      onJobSaved?.();
+                    } else {
+                      console.error('Save failed, not returning to dashboard');
+                    }
+                  } catch (error) {
+                    console.error('Error in machine step save:', error);
+                  }
+                } else {
+                  const currentIndex = steps.findIndex(s => s.id === currentStep);
+                  if (currentIndex < steps.length - 1) {
+                    setCurrentStep(steps[currentIndex + 1].id as any);
+                  } else if (currentStep === 'finish') {
+                    // Complete the job
+                    await saveJobData(false);
+                  }
+                }
+              }}
+              disabled={isLoading || (currentStep === 'customer' && !jobData.customerName)}
+            >
+              {isLoading ? t('save') : 
+               currentStep === 'customer' ? t('next') : 
+               currentStep === 'machine' && isCreatingNewJob ? t('dashboard') :
+               currentStep === 'finish' ? t('completeJob') : 
+               t('next')}
+            </Button>
+          </div>
         </div>
       </div>
     </div>

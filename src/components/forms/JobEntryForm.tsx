@@ -832,16 +832,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
               {t('back')}
             </Button>
             
-            {/* Show "New Job" button only in edit mode and not when creating new job */}
-            {isEditingJob && !isCreatingNewJob && (
-              <Button
-                variant="secondary"
-                onClick={startNewJob}
-                disabled={isLoading}
-              >
-                {t('newJob')}
-              </Button>
-            )}
+            {/* "Neuer Job" button entfernt - nur im Dashboard verfügbar */}
           </div>
           
           <div className="flex gap-2">

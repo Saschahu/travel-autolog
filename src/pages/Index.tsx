@@ -538,7 +538,7 @@ const Index = () => {
     <MobileLayout>
       <AppHeader onSettingsClick={() => setSettingsOpen(true)} />
       
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-4 mx-4 mt-4">
             <TabsTrigger value="dashboard" className="flex items-center gap-2">

@@ -121,43 +121,35 @@ const Index = () => {
     
     // Compute initial total hours (travel + work + departure) or fallback to estimatedDays * 8h
     let initialTotalMinutes = 0;
-    console.log('DEBUG: Computing initial total hours for', estimatedDays, 'days');
-    console.log('DEBUG: Days array:', days);
     
-    days.forEach((day, idx) => {
-      console.log('DEBUG: Processing day', idx + 1, day);
+    days.forEach((day) => {
       if (day.travelStart && day.travelEnd) {
         const [sH, sM] = day.travelStart.split(':').map(Number);
         const [eH, eM] = day.travelEnd.split(':').map(Number);
         const m = (eH * 60 + eM) - (sH * 60 + sM);
         if (m > 0) initialTotalMinutes += m;
-        console.log('DEBUG: Travel time for day', idx + 1, ':', m, 'minutes');
       }
       if (day.workStart && day.workEnd) {
         const [sH, sM] = day.workStart.split(':').map(Number);
         const [eH, eM] = day.workEnd.split(':').map(Number);
         const m = (eH * 60 + eM) - (sH * 60 + sM);
         if (m > 0) initialTotalMinutes += m;
-        console.log('DEBUG: Work time for day', idx + 1, ':', m, 'minutes');
       }
       if (day.departureStart && day.departureEnd) {
         const [sH, sM] = day.departureStart.split(':').map(Number);
         const [eH, eM] = day.departureEnd.split(':').map(Number);
         const m = (eH * 60 + eM) - (sH * 60 + sM);
         if (m > 0) initialTotalMinutes += m;
-        console.log('DEBUG: Departure time for day', idx + 1, ':', m, 'minutes');
       }
     });
     
     if (initialTotalMinutes === 0) {
       initialTotalMinutes = estimatedDays * 8 * 60;
-      console.log('DEBUG: No time entries found, using fallback:', estimatedDays, '* 8 * 60 =', initialTotalMinutes, 'minutes');
     }
     
     const initialHours = Math.floor(initialTotalMinutes / 60);
     const initialMinutes = initialTotalMinutes % 60;
     const totalTimeString = `${initialHours}h ${initialMinutes}m`;
-    console.log('DEBUG: Final totalTimeString:', totalTimeString);
     
     setEditData({
       customerName: job.customerName,

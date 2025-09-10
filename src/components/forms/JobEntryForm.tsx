@@ -444,6 +444,22 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
+        <div>
+          <Label htmlFor="hotel-name-travel" className="text-sm font-medium">
+            <Hotel className="h-4 w-4 inline mr-1" />
+            {t('hotelNameOptional')}
+          </Label>
+          <Input
+            id="hotel-name-travel"
+            placeholder={t('hotelNameOptional')}
+            value={jobData.hotelName || ''}
+            onChange={(e) => updateField('hotelName', e.target.value)}
+            className="mt-1"
+          />
+        </div>
+
+        <Separator />
+
         <div className="grid grid-cols-2 gap-3">
           <div>
             <Label htmlFor="km-outbound" className="text-sm font-medium">{t('kmOutbound')}</Label>
@@ -483,88 +499,6 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
             onChange={(e) => updateField('tollAmount', parseFloat(e.target.value) || 0)}
             className="mt-1"
           />
-        </div>
-
-        {/* Day-based time entries */}
-        <Separator />
-        
-        <div className="space-y-4">
-          <h4 className="font-medium">{t('timeEntries')} ({jobData.plannedDays || 1} {t('days')})</h4>
-          
-          {Array.from({ length: jobData.plannedDays || 1 }, (_, index) => (
-            <Card key={index} className="border-muted">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm">{t('day')} {index + 1}</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <Label className="text-xs text-muted-foreground">{t('travelStart')}</Label>
-                    <div className="flex gap-2">
-                      <Input
-                        type="date"
-                        placeholder={t('date')}
-                        className="text-xs"
-                      />
-                      <Input
-                        type="time"
-                        placeholder={t('time')}
-                        className="text-xs"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <Label className="text-xs text-muted-foreground">{t('workStart')}</Label>
-                    <div className="flex gap-2">
-                      <Input
-                        type="date"
-                        placeholder={t('date')}
-                        className="text-xs"
-                      />
-                      <Input
-                        type="time"
-                        placeholder={t('time')}
-                        className="text-xs"
-                      />
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <Label className="text-xs text-muted-foreground">{t('workEnd')}</Label>
-                    <div className="flex gap-2">
-                      <Input
-                        type="date"
-                        placeholder={t('date')}
-                        className="text-xs"
-                      />
-                      <Input
-                        type="time"
-                        placeholder={t('time')}
-                        className="text-xs"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <Label className="text-xs text-muted-foreground">{t('travelEnd')}</Label>
-                    <div className="flex gap-2">
-                      <Input
-                        type="date"
-                        placeholder={t('date')}
-                        className="text-xs"
-                      />
-                      <Input
-                        type="time"
-                        placeholder={t('time')}
-                        className="text-xs"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
         </div>
       </CardContent>
     </Card>

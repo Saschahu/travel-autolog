@@ -564,7 +564,7 @@ const Index = () => {
           </TabsContent>
           
           <TabsContent value="new-job" className="mt-6">
-            <JobEntryForm onJobSaved={() => fetchJobs()} />
+            <JobEntryForm onJobSaved={() => { setActiveTab('dashboard'); fetchJobs(); }} />
           </TabsContent>
           
           <TabsContent value="location" className="mt-6">

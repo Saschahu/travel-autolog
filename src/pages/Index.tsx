@@ -119,11 +119,40 @@ const Index = () => {
       dateISO: r.dateISO ?? days[r.dayIndex]?.date,
     }));
     
+    // Compute initial total hours (travel + work + departure) or fallback to estimatedDays * 8h
+    let initialTotalMinutes = 0;
+    days.forEach((day) => {
+      if (day.travelStart && day.travelEnd) {
+        const [sH, sM] = day.travelStart.split(':').map(Number);
+        const [eH, eM] = day.travelEnd.split(':').map(Number);
+        const m = (eH * 60 + eM) - (sH * 60 + sM);
+        if (m > 0) initialTotalMinutes += m;
+      }
+      if (day.workStart && day.workEnd) {
+        const [sH, sM] = day.workStart.split(':').map(Number);
+        const [eH, eM] = day.workEnd.split(':').map(Number);
+        const m = (eH * 60 + eM) - (sH * 60 + sM);
+        if (m > 0) initialTotalMinutes += m;
+      }
+      if (day.departureStart && day.departureEnd) {
+        const [sH, sM] = day.departureStart.split(':').map(Number);
+        const [eH, eM] = day.departureEnd.split(':').map(Number);
+        const m = (eH * 60 + eM) - (sH * 60 + sM);
+        if (m > 0) initialTotalMinutes += m;
+      }
+    });
+    if (initialTotalMinutes === 0) {
+      initialTotalMinutes = estimatedDays * 8 * 60;
+    }
+    const initialHours = Math.floor(initialTotalMinutes / 60);
+    const initialMinutes = initialTotalMinutes % 60;
+    const totalTimeString = `${initialHours}h ${initialMinutes}m`;
+    
     setEditData({
       customerName: job.customerName,
       customerAddress: job.customerAddress || '',
       evaticNo: job.evaticNo || '',
-      totalHours: job.totalHours?.toString() || '0h 0m',
+      totalHours: totalTimeString,
       estimatedDays: estimatedDays,
       currentDay: job.currentDay || 0,
       days: days,
@@ -311,12 +340,42 @@ const Index = () => {
       days.splice(newEstimatedDays);
     }
 
+    // Recompute totalHours based on current days or estimatedDays*8 if empty
+    let totalMinutes = 0;
+    days.forEach((day) => {
+      if (day.travelStart && day.travelEnd) {
+        const [sH, sM] = day.travelStart.split(':').map(Number);
+        const [eH, eM] = day.travelEnd.split(':').map(Number);
+        const m = (eH * 60 + eM) - (sH * 60 + sM);
+        if (m > 0) totalMinutes += m;
+      }
+      if (day.workStart && day.workEnd) {
+        const [sH, sM] = day.workStart.split(':').map(Number);
+        const [eH, eM] = day.workEnd.split(':').map(Number);
+        const m = (eH * 60 + eM) - (sH * 60 + sM);
+        if (m > 0) totalMinutes += m;
+      }
+      if (day.departureStart && day.departureEnd) {
+        const [sH, sM] = day.departureStart.split(':').map(Number);
+        const [eH, eM] = day.departureEnd.split(':').map(Number);
+        const m = (eH * 60 + eM) - (sH * 60 + sM);
+        if (m > 0) totalMinutes += m;
+      }
+    });
+    if (totalMinutes === 0) {
+      totalMinutes = newEstimatedDays * 8 * 60;
+    }
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    const totalTimeString = `${hours}h ${minutes}m`;
+
     setEditData(prevState => ({
       ...prevState,
       estimatedDays: newEstimatedDays,
       days,
       currentDay: Math.min(prevState.currentDay, newEstimatedDays - 1),
       reports: finalReports,
+      totalHours: totalTimeString,
     }));
   };
 

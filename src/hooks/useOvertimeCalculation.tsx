@@ -161,7 +161,8 @@ export const useOvertimeCalculation = () => {
     
     // Calculate per day to properly handle overtime thresholds
     if (job.days && Array.isArray(job.days) && job.days.length > 0) {
-      job.days.forEach((day: any) => {
+      console.log('[OT] Start per-day calc. days=', job.days.length);
+      job.days.forEach((day: any, idx: number) => {
         let dayTotalMinutes = 0;
         
         // Calculate total minutes for this day
@@ -185,6 +186,14 @@ export const useOvertimeCalculation = () => {
         
         const dayOfWeek = getDayOfWeek(day.date);
         const isWeekendDay = dayOfWeek === 6 || dayOfWeek === 0; // Saturday or Sunday
+        
+        console.log('[OT] Day', idx + 1, {
+          date: day.date,
+          travel: { start: day.travelStart, end: day.travelEnd },
+          work: { start: day.workStart, end: day.workEnd },
+          departure: { start: day.departureStart, end: day.departureEnd },
+          totalMin: dayTotalMinutes
+        });
         
         // Categorize minutes into regular/OT1/OT2 for this day
         const threshold1Minutes = overtimeSettings.overtimeThreshold1 * 60;

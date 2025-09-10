@@ -831,16 +831,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
         </div>
         
         <div className="flex gap-2">
-          {/* Save partial data button (only if editing and not on customer step) */}
-          {isEditingJob && currentStep !== 'customer' && (
-            <Button
-              variant="outline"
-              onClick={() => saveJobData(true)}
-              disabled={isLoading}
-            >
-              {isLoading ? t('save') : t('save')}
-            </Button>
-          )}
+          {/* Save partial data button removed - auto-save on navigation */}
           
           {/* Main action button */}
           <Button
@@ -849,10 +840,9 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                 // Save customer data (partial save)
                 saveJobData(true);
               } else if (currentStep === 'machine' && !isEditingJob) {
-                // For new jobs: save and switch to edit mode after machine step
+                // For new jobs: save and return to dashboard
                 saveJobData(true).then(() => {
-                  // After saving, we'll be in edit mode, so navigate to times tab
-                  setCurrentStep('times');
+                  onJobSaved?.();
                 });
               } else {
                 const currentIndex = steps.findIndex(s => s.id === currentStep);
@@ -867,8 +857,8 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
             disabled={isLoading || (currentStep === 'customer' && !jobData.customerName)}
           >
             {isLoading ? t('save') : 
-             currentStep === 'customer' ? t('saveCustomer') : 
-             currentStep === 'machine' && !isEditingJob ? t('completeJob') :
+             currentStep === 'customer' ? t('next') : 
+             currentStep === 'machine' && !isEditingJob ? t('dashboard') :
              currentStep === 'finish' ? t('completeJob') : 
              t('next')}
           </Button>

@@ -482,7 +482,6 @@ const resources = {
       saveCustomer: 'Save customer',
       saveAndContinue: 'Save & Continue',
       completeJob: 'Complete job',
-      next: 'Next',
       plannedDaysLabel: 'Planned duration (days)',
       now: 'Now',
       customerSavedGoMachineTitle: 'Continue to machine',

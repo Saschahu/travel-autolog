@@ -166,22 +166,28 @@ export const useOvertimeCalculation = () => {
         let dayTotalMinutes = 0;
         
         // Calculate total minutes for this day
-        if (day.travelStart && day.travelEnd) {
+        if (day.travelStart && day.travelEnd && day.travelStart !== "00:00" && day.travelEnd !== "00:00" && day.travelStart !== day.travelEnd) {
           const startMinutes = parseTime(day.travelStart);
           const endMinutes = parseTime(day.travelEnd);
-          dayTotalMinutes += endMinutes > startMinutes ? endMinutes - startMinutes : (24 * 60) - startMinutes + endMinutes;
+          const travelTime = endMinutes > startMinutes ? endMinutes - startMinutes : (24 * 60) - startMinutes + endMinutes;
+          dayTotalMinutes += travelTime;
+          console.log('[OT] Travel time calculated:', travelTime, 'minutes');
         }
         
-        if (day.workStart && day.workEnd) {
+        if (day.workStart && day.workEnd && day.workStart !== "00:00" && day.workEnd !== "00:00" && day.workStart !== day.workEnd) {
           const startMinutes = parseTime(day.workStart);
           const endMinutes = parseTime(day.workEnd);
-          dayTotalMinutes += endMinutes > startMinutes ? endMinutes - startMinutes : (24 * 60) - startMinutes + endMinutes;
+          const workTime = endMinutes > startMinutes ? endMinutes - startMinutes : (24 * 60) - startMinutes + endMinutes;
+          dayTotalMinutes += workTime;
+          console.log('[OT] Work time calculated:', workTime, 'minutes');
         }
         
-        if (day.departureStart && day.departureEnd) {
+        if (day.departureStart && day.departureEnd && day.departureStart !== "00:00" && day.departureEnd !== "00:00" && day.departureStart !== day.departureEnd) {
           const startMinutes = parseTime(day.departureStart);
           const endMinutes = parseTime(day.departureEnd);
-          dayTotalMinutes += endMinutes > startMinutes ? endMinutes - startMinutes : (24 * 60) - startMinutes + endMinutes;
+          const departureTime = endMinutes > startMinutes ? endMinutes - startMinutes : (24 * 60) - startMinutes + endMinutes;
+          dayTotalMinutes += departureTime;
+          console.log('[OT] Departure time calculated:', departureTime, 'minutes');
         }
         
         const dayOfWeek = getDayOfWeek(day.date);

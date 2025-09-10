@@ -52,6 +52,7 @@ export const OvertimeTab = ({ job }: OvertimeTabProps) => {
           variant="outline" 
           size="sm" 
           onClick={() => {
+            alert('Button wurde geklickt!'); // Direkter Test
             console.log('Neu berechnen button clicked!');
             forceRecalculation();
             toast({
@@ -60,6 +61,7 @@ export const OvertimeTab = ({ job }: OvertimeTabProps) => {
             });
           }}
           className="flex items-center gap-2"
+          style={{ background: 'red', color: 'white' }} // Mach den Button auffälliger
         >
           <RefreshCw className="h-4 w-4" />
           Neu berechnen

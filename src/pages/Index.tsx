@@ -258,6 +258,11 @@ const Index = () => {
         }
       });
       
+      // If no actual times entered, show estimated hours (estimatedDays * 8 hours)
+      if (totalMinutes === 0) {
+        totalMinutes = prev.estimatedDays * 8 * 60; // Convert to minutes
+      }
+      
       // Convert to hours and minutes format
       const hours = Math.floor(totalMinutes / 60);
       const minutes = totalMinutes % 60;

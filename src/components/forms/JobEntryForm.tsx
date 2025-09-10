@@ -142,8 +142,26 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
         if (!error && data) {
           setCurrentJobId(data.id);
           setIsEditingJob(true);
-          // Update local jobData with saved data to trigger UI refresh
-          setJobData(prev => ({ ...prev, ...jobPayload }));
+          // Update local jobData with saved data to trigger UI refresh, converting back to camelCase
+          setJobData(prev => ({ 
+            ...prev, 
+            customerName: data.customer_name,
+            customerAddress: data.customer_address,
+            contactName: data.contact_name,
+            contactPhone: data.contact_phone,
+            evaticNo: data.evatic_no,
+            manufacturer: data.manufacturer,
+            model: data.model,
+            serialNumber: data.serial_number,
+            workPerformed: data.work_performed,
+            hotelName: data.hotel_name,
+            hotelAddress: data.hotel_address,
+            hotelNights: data.hotel_nights,
+            hotelPrice: data.hotel_price,
+            kilometersOutbound: data.kilometers_outbound,
+            kilometersReturn: data.kilometers_return,
+            tollAmount: data.toll_amount,
+          }));
         }
       }
 

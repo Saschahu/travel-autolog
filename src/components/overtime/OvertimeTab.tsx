@@ -106,11 +106,6 @@ export const OvertimeTab = ({ job }: OvertimeTabProps) => {
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Regular vs Overtime Hours */}
-          <div className="flex justify-between items-center p-3 bg-secondary/30 rounded-md">
-            <div className="text-sm">{t('regularHoursUpTo8')}</div>
-            <div className="font-mono">{overtimeCalculation.regularHours.toFixed(2)}h</div>
-          </div>
-          
           <div className="flex justify-between items-center p-3 bg-orange-50 border border-orange-200 rounded-md">
             <div className="text-sm text-orange-800">{t('totalOvertime')}</div>
             <div className="font-mono text-orange-800">{overtimeCalculation.totalOvertimeHours.toFixed(2)}h</div>

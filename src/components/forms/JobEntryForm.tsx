@@ -493,12 +493,11 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
     </Card>
   );
 
-  // Dynamic steps based on whether hotel data exists
-  const hasHotel = Boolean(jobData.hotelName && jobData.hotelName.trim().length > 0);
+  // Always show all steps including hotel
   const allSteps = [
     { id: 'customer', label: t('customerData'), icon: User },
     { id: 'machine', label: t('machineData'), icon: Wrench },
-    ...(hasHotel ? [{ id: 'hotel', label: t('hotelData'), icon: Hotel }] : []),
+    { id: 'hotel', label: t('hotelData'), icon: Hotel },
     { id: 'travel', label: t('travel'), icon: Car },
   ] as const;
   

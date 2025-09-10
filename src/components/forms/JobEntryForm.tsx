@@ -59,6 +59,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [currentJobId, setCurrentJobId] = useState<string | null>(jobId || null);
   const [isEditingJob, setIsEditingJob] = useState(Boolean(jobId));
+  const [isCreatingNewJob, setIsCreatingNewJob] = useState(!Boolean(jobId)); // Track if this was originally a new job
   const { toast } = useToast();
 
   // Load existing job data when jobId is provided
@@ -298,6 +299,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
     });
     setCurrentStep('customer');
     setCurrentJobId(null);
+    setIsCreatingNewJob(true);
     setIsEditingJob(false);
     toast({
       title: t('newJob'),
@@ -819,7 +821,8 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
             {t('back')}
           </Button>
           
-          {isEditingJob && (
+          {/* Show "New Job" button only in edit mode and not when creating new job */}
+          {isEditingJob && !isCreatingNewJob && (
             <Button
               variant="secondary"
               onClick={startNewJob}
@@ -839,7 +842,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
               if (currentStep === 'customer') {
                 // Save customer data (partial save)
                 saveJobData(true);
-              } else if (currentStep === 'machine' && !isEditingJob) {
+              } else if (currentStep === 'machine' && isCreatingNewJob) {
                 // For new jobs: save and return to dashboard
                 saveJobData(true).then(() => {
                   onJobSaved?.();
@@ -856,11 +859,11 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
             }}
             disabled={isLoading || (currentStep === 'customer' && !jobData.customerName)}
           >
-            {isLoading ? t('save') : 
-             currentStep === 'customer' ? t('next') : 
-             currentStep === 'machine' && !isEditingJob ? t('dashboard') :
-             currentStep === 'finish' ? t('completeJob') : 
-             t('next')}
+             {isLoading ? t('save') : 
+              currentStep === 'customer' ? t('next') : 
+              currentStep === 'machine' && isCreatingNewJob ? t('dashboard') :
+              currentStep === 'finish' ? t('completeJob') : 
+              t('next')}
           </Button>
         </div>
       </div>

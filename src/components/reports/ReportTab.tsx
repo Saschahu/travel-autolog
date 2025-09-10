@@ -3,12 +3,16 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
 import { useToast } from '@/hooks/use-toast';
-import { ChevronLeft, ChevronRight, Save, FileText } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Save, FileText, CalendarIcon } from 'lucide-react';
 import { Job } from '@/hooks/useJobs';
 import { DayReport } from '@/types/dayReport';
 import { formatDayTitle } from '@/features/jobs/report/helpers';
 import { useTranslation } from 'react-i18next';
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 
 interface ReportTabProps {
   job: Job;
@@ -57,6 +61,37 @@ export const ReportTab = ({ job, onJobUpdate }: ReportTabProps) => {
   const handleTextChange = (text: string) => {
     setCurrentText(text);
     setIsDirty(true);
+  };
+
+  const handleDateChange = (date: Date | undefined) => {
+    if (!date) return;
+
+    const dateISO = format(date, 'yyyy-MM-dd');
+    
+    // Update reports array with new date
+    const updatedReports = [...reports];
+    const existingIndex = updatedReports.findIndex(r => r.dayIndex === currentDayIndex);
+    
+    const reportData: DayReport = {
+      dayIndex: currentDayIndex,
+      dateISO: dateISO,
+      text: currentText
+    };
+
+    if (existingIndex >= 0) {
+      updatedReports[existingIndex] = reportData;
+    } else {
+      updatedReports.push(reportData);
+    }
+
+    // Update job
+    const updatedJob = { ...job, reports: updatedReports };
+    onJobUpdate(updatedJob);
+
+    toast({
+      title: 'Datum aktualisiert',
+      description: `Datum für Tag ${currentDayIndex + 1} auf ${format(date, 'dd.MM.yyyy')} gesetzt`,
+    });
   };
 
   const handleSaveCurrentDay = async (text?: string, isAutoSave = false) => {
@@ -155,6 +190,38 @@ export const ReportTab = ({ job, onJobUpdate }: ReportTabProps) => {
                 </Button>
               );
             })}
+          </div>
+
+          {/* Date picker for current day */}
+          <div className="flex items-center gap-3 mb-4">
+            <span className="text-sm font-medium">Datum für {dayTitle}:</span>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className={cn(
+                    "w-[200px] justify-start text-left font-normal",
+                    !currentReport?.dateISO && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {currentReport?.dateISO ? (
+                    format(new Date(currentReport.dateISO), "dd.MM.yyyy")
+                  ) : (
+                    <span>Datum wählen</span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={currentReport?.dateISO ? new Date(currentReport.dateISO) : undefined}
+                  onSelect={handleDateChange}
+                  initialFocus
+                  className={cn("p-3 pointer-events-auto")}
+                />
+              </PopoverContent>
+            </Popover>
           </div>
 
           {/* Report textarea */}

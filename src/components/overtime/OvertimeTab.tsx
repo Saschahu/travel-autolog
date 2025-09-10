@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next';
 import { formatHours } from '@/lib/timeCalc';
 import { splitOvertime, generatePayableFormula, decimalHoursToMinutes } from '@/lib/overtimeCalc';
 import { useMemo } from 'react';
+import { useToast } from '@/hooks/use-toast';
 
 interface OvertimeTabProps {
   job: Job;
@@ -15,6 +16,7 @@ interface OvertimeTabProps {
 
 export const OvertimeTab = ({ job }: OvertimeTabProps) => {
   const { t } = useTranslation();
+  const { toast } = useToast();
   const { calculateOvertime, calculateTimeBreakdown, formatMinutesToHours, overtimeSettings, forceRecalculation, recalcTrigger } = useOvertimeCalculation();
   
   const timeBreakdown = useMemo(() => calculateTimeBreakdown(job), [job, calculateTimeBreakdown, recalcTrigger]);
@@ -49,7 +51,14 @@ export const OvertimeTab = ({ job }: OvertimeTabProps) => {
         <Button 
           variant="outline" 
           size="sm" 
-          onClick={forceRecalculation}
+          onClick={() => {
+            console.log('Neu berechnen button clicked!');
+            forceRecalculation();
+            toast({
+              title: "Überstunden neu berechnet",
+              description: "Die Berechnungen wurden aktualisiert.",
+            });
+          }}
           className="flex items-center gap-2"
         >
           <RefreshCw className="h-4 w-4" />

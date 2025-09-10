@@ -395,7 +395,12 @@ export const useOvertimeCalculation = () => {
   };
 
   const forceRecalculation = () => {
-    setRecalcTrigger(prev => prev + 1);
+    console.log('Force recalculation triggered!');
+    setRecalcTrigger(prev => {
+      const newValue = prev + 1;
+      console.log('Recalc trigger updated:', newValue);
+      return newValue;
+    });
   };
 
   return {

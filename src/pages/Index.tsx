@@ -538,8 +538,8 @@ const Index = () => {
     <MobileLayout>
       <AppHeader onSettingsClick={() => setSettingsOpen(true)} />
       
-      <div className="flex-1">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+      <div className="flex-1 overflow-y-auto">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full h-full flex flex-col">
           <TabsList className="grid w-full grid-cols-4 mx-4 mt-4">
             <TabsTrigger value="dashboard" className="flex items-center gap-2">
               <BarChart3 className="h-4 w-4" />
@@ -559,21 +559,23 @@ const Index = () => {
             </TabsTrigger>
           </TabsList>
           
-          <TabsContent value="dashboard" className="p-4 mt-6">
-            {renderDashboard()}
-          </TabsContent>
-          
-          <TabsContent value="new-job" className="mt-6">
-            <JobEntryForm onJobSaved={() => { setActiveTab('dashboard'); fetchJobs(); }} />
-          </TabsContent>
-          
-          <TabsContent value="location" className="mt-6">
-            <GPSPage />
-          </TabsContent>
-          
-          <TabsContent value="export" className="mt-6">
-            <ExportPage jobs={jobs} />
-          </TabsContent>
+          <div className="flex-1 overflow-y-auto">
+            <TabsContent value="dashboard" className="p-4 mt-6 h-full">
+              {renderDashboard()}
+            </TabsContent>
+            
+            <TabsContent value="new-job" className="mt-6 h-full">
+              <JobEntryForm onJobSaved={() => { setActiveTab('dashboard'); fetchJobs(); }} />
+            </TabsContent>
+            
+            <TabsContent value="location" className="mt-6 h-full">
+              <GPSPage />
+            </TabsContent>
+            
+            <TabsContent value="export" className="mt-6 h-full">
+              <ExportPage jobs={jobs} />
+            </TabsContent>
+          </div>
         </Tabs>
 
         {/* Modals */}

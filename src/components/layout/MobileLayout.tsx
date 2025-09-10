@@ -9,7 +9,7 @@ interface MobileLayoutProps {
 export const MobileLayout = ({ children, className }: MobileLayoutProps) => {
   return (
     <div className={cn(
-      "min-h-screen bg-background flex flex-col overflow-y-auto",
+      "h-screen bg-background flex flex-col",
       "max-w-md mx-auto", // Mobile-first design
       className
     )}>

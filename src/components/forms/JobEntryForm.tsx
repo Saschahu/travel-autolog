@@ -50,7 +50,7 @@ interface JobEntryFormProps {
 export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
   const { t } = useTranslation();
   const [jobData, setJobData] = useState<Partial<JobData>>({ plannedDays: 1 });
-  const [currentStep, setCurrentStep] = useState<'customer' | 'machine' | 'travel'>('customer');
+  const [currentStep, setCurrentStep] = useState<'customer' | 'machine' | 'hotel' | 'travel'>('customer');
   const [isLoading, setIsLoading] = useState(false);
   const [currentJobId, setCurrentJobId] = useState<string | null>(null);
   const [isEditingJob, setIsEditingJob] = useState(false);
@@ -334,6 +334,66 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
     </Card>
   );
 
+  const renderHotelSection = () => (
+    <Card className="border-primary/20">
+      <CardHeader className="pb-3">
+        <CardTitle className="flex items-center gap-2 text-lg">
+          <Hotel className="h-5 w-5 text-primary" />
+          {t('hotelData')}
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="space-y-3">
+          <div>
+            <Label htmlFor="hotel-name" className="text-sm font-medium">{t('customer.hotelName')}</Label>
+            <Input
+              id="hotel-name"
+              placeholder={t('customer.hotelNamePlaceholder')}
+              value={jobData.hotelName || ''}
+              onChange={(e) => updateField('hotelName', e.target.value)}
+              className="mt-1"
+            />
+          </div>
+          <div>
+            <Label htmlFor="hotel-address" className="text-sm font-medium">{t('customer.hotelAddress')}</Label>
+            <Input
+              id="hotel-address"
+              placeholder={t('customer.hotelAddressPlaceholder')}
+              value={jobData.hotelAddress || ''}
+              onChange={(e) => updateField('hotelAddress', e.target.value)}
+              className="mt-1"
+            />
+          </div>
+          <div>
+            <Label htmlFor="hotel-nights" className="text-sm font-medium">{t('customer.hotelNights')}</Label>
+            <Input
+              id="hotel-nights"
+              type="number"
+              min="0"
+              placeholder="0"
+              value={jobData.hotelNights || ''}
+              onChange={(e) => updateField('hotelNights', parseInt(e.target.value) || 0)}
+              className="mt-1"
+            />
+          </div>
+          <div>
+            <Label htmlFor="hotel-price" className="text-sm font-medium">{t('customer.hotelPrice')}</Label>
+            <Input
+              id="hotel-price"
+              type="number"
+              min="0"
+              step="0.01"
+              placeholder="0.00"
+              value={jobData.hotelPrice || ''}
+              onChange={(e) => updateField('hotelPrice', parseFloat(e.target.value) || 0)}
+              className="mt-1"
+            />
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+
   const renderTravelSection = () => (
     <Card className="border-primary/20">
       <CardHeader className="pb-3">
@@ -354,41 +414,6 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
               placeholder={t('hotelNameOptional')}
               value={jobData.hotelName || ''}
               onChange={(e) => updateField('hotelName', e.target.value)}
-              className="mt-1"
-            />
-          </div>
-          <div>
-            <Label htmlFor="hotel-address" className="text-sm font-medium">{t('hotelAddress')}</Label>
-            <Input
-              id="hotel-address"
-              placeholder={t('hotelAddress')}
-              value={jobData.hotelAddress || ''}
-              onChange={(e) => updateField('hotelAddress', e.target.value)}
-              className="mt-1"
-            />
-          </div>
-          <div>
-            <Label htmlFor="hotel-nights" className="text-sm font-medium">{t('hotelNights')}</Label>
-            <Input
-              id="hotel-nights"
-              type="number"
-              min="0"
-              placeholder="0"
-              value={jobData.hotelNights || ''}
-              onChange={(e) => updateField('hotelNights', parseInt(e.target.value) || 0)}
-              className="mt-1"
-            />
-          </div>
-          <div>
-            <Label htmlFor="hotel-price" className="text-sm font-medium">{t('hotelPrice')}</Label>
-            <Input
-              id="hotel-price"
-              type="number"
-              min="0"
-              step="0.01"
-              placeholder="0.00"
-              value={jobData.hotelPrice || ''}
-              onChange={(e) => updateField('hotelPrice', parseFloat(e.target.value) || 0)}
               className="mt-1"
             />
           </div>
@@ -440,11 +465,15 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
     </Card>
   );
 
-  const steps = [
+  // Dynamic steps based on whether hotel data exists
+  const allSteps = [
     { id: 'customer', label: t('customerData'), icon: User },
     { id: 'machine', label: t('machineData'), icon: Wrench },
+    ...(jobData.hotelName ? [{ id: 'hotel', label: t('hotelData'), icon: Hotel }] : []),
     { id: 'travel', label: t('travelAndStay'), icon: Car },
   ] as const;
+  
+  const steps = allSteps;
 
   return (
     <div className="p-4 space-y-6">
@@ -512,6 +541,7 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
       {/* Current Step Content */}
       {currentStep === 'customer' && renderCustomerSection()}
       {currentStep === 'machine' && renderMachineSection()}
+      {currentStep === 'hotel' && renderHotelSection()}
       {currentStep === 'travel' && renderTravelSection()}
 
       {/* Status Indicator */}

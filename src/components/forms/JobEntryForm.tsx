@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -516,6 +516,15 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
   ] as const;
   
   const steps = allSteps;
+
+  // Auto-navigate to Hotel tab when a hotel name is entered
+  useEffect(() => {
+    const has = Boolean(jobData.hotelName && jobData.hotelName.trim().length > 0);
+    console.info('UI: hasHotel changed', { hotelName: jobData.hotelName, has });
+    if (isEditingJob && has && currentStep !== 'hotel') {
+      setCurrentStep('hotel');
+    }
+  }, [jobData.hotelName, isEditingJob]);
 
   return (
     <div className="p-4 space-y-6">

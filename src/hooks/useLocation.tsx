@@ -178,6 +178,9 @@ export const useLocation = () => {
   const [isTracking, setIsTracking] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hasPermissions, setHasPermissions] = useState<boolean>(false);
+  // Throttle/suppress repeated IP lookups to avoid noisy DNS errors
+  const [lastIpAttemptAt, setLastIpAttemptAt] = useState<number | null>(null);
+  const [ipAttemptCount, setIpAttemptCount] = useState(0);
 
   // Calculate distance between two coordinates in meters
   const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
@@ -259,6 +262,16 @@ export const useLocation = () => {
 
 // Get current position via IP address (robust with multiple providers)
   const getLocationFromIP = useCallback(async (): Promise<LocationData | null> => {
+    // Throttle: only attempt once per session and not more often than every 10 minutes
+    if (ipAttemptCount >= 1) {
+      return null;
+    }
+    if (lastIpAttemptAt && Date.now() - lastIpAttemptAt < 10 * 60 * 1000) {
+      return null;
+    }
+    setLastIpAttemptAt(Date.now());
+    setIpAttemptCount(c => c + 1);
+
     setError('Position über IP wird abgerufen...');
 
     const withTimeout = async (url: string, ms = 5000) => {
@@ -288,7 +301,7 @@ export const useLocation = () => {
         return locationData;
       }
     } catch (e) {
-      console.error('IP provider ipwho.is failed:', e);
+      console.debug('IP provider ipwho.is failed');
     }
 
     try {
@@ -305,7 +318,7 @@ export const useLocation = () => {
         return locationData;
       }
     } catch (e) {
-      console.error('IP provider ipapi.co failed:', e);
+      console.debug('IP provider ipapi.co failed');
     }
 
     try {
@@ -322,12 +335,12 @@ export const useLocation = () => {
         return locationData;
       }
     } catch (e) {
-      console.error('IP provider geolocation-db.com failed:', e);
+      console.debug('IP provider geolocation-db.com failed');
     }
 
     setError('Fehler beim Abrufen der IP-Position.');
     return null;
-  }, []);
+  }, [ipAttemptCount, lastIpAttemptAt]);
 
   // Get current position (GPS with IP fallback)
   const getCurrentPosition = useCallback(async (useIPFallback: boolean = false) => {

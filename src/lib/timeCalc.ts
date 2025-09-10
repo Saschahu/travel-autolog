@@ -54,13 +54,20 @@ export const applyRoundingTotal = (totalMinutes: number, roundingMinutes: number
 export const extractTimeEntriesFromJob = (job: any): TimeEntry[] => {
   const entries: TimeEntry[] = [];
   
-  // Extract from days array if available
-  if (job.days && Array.isArray(job.days)) {
+  // Extract from days array if available - this takes priority
+  if (job.days && Array.isArray(job.days) && job.days.length > 0) {
     job.days.forEach((day: any, index: number) => {
       const date = day.date || new Date().toISOString().split('T')[0];
       
+      // Skip days with empty or invalid times to avoid duplicate null entries
+      const hasValidTimes = (day.travelStart && day.travelEnd && day.travelStart !== "00:00" && day.travelEnd !== "00:00") ||
+                           (day.workStart && day.workEnd && day.workStart !== "00:00" && day.workEnd !== "00:00") ||
+                           (day.departureStart && day.departureEnd && day.departureStart !== "00:00" && day.departureEnd !== "00:00");
+      
+      if (!hasValidTimes) return;
+      
       // Travel entry
-      if (day.travelStart && day.travelEnd) {
+      if (day.travelStart && day.travelEnd && day.travelStart !== "00:00" && day.travelEnd !== "00:00") {
         entries.push({
           id: `travel-${index}`,
           date,
@@ -73,7 +80,7 @@ export const extractTimeEntriesFromJob = (job: any): TimeEntry[] => {
       }
       
       // Work entry
-      if (day.workStart && day.workEnd) {
+      if (day.workStart && day.workEnd && day.workStart !== "00:00" && day.workEnd !== "00:00") {
         entries.push({
           id: `work-${index}`,
           date,
@@ -86,7 +93,7 @@ export const extractTimeEntriesFromJob = (job: any): TimeEntry[] => {
       }
       
       // Departure entry
-      if (day.departureStart && day.departureEnd) {
+      if (day.departureStart && day.departureEnd && day.departureStart !== "00:00" && day.departureEnd !== "00:00") {
         entries.push({
           id: `departure-${index}`,
           date,
@@ -99,7 +106,7 @@ export const extractTimeEntriesFromJob = (job: any): TimeEntry[] => {
       }
     });
   } else {
-    // Extract from top-level job properties
+    // Extract from top-level job properties only if no days array exists
     const baseDate = job.workStartDate || job.travelStartDate || new Date().toISOString().split('T')[0];
     
     // Travel

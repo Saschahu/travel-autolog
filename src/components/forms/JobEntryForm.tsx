@@ -6,13 +6,16 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
-import { Clock, MapPin, User, Wrench, Hotel, Car, Calendar, BarChart3, FileText, CheckCircle } from 'lucide-react';
+import { Clock, MapPin, User, Wrench, Hotel, Car, Calendar as CalendarIcon, BarChart3, FileText, CheckCircle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { OvertimeTab } from '@/components/overtime/OvertimeTab';
 import { ReportTab } from '@/components/reports/ReportTab';
 import { FinishJobTab } from '@/components/finish/FinishJobTab';
+import { cn } from '@/lib/utils';
 
 interface JobData {
   travelStart: string;
@@ -323,10 +326,10 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
       <div className="space-y-6">
         <Card className="border-primary/20">
           <CardHeader className="pb-3">
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <Calendar className="h-5 w-5 text-primary" />
-              {t('times')}
-            </CardTitle>
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <CalendarIcon className="h-5 w-5 text-primary" />
+            {t('times')}
+          </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             <div>
@@ -357,7 +360,36 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                 <Label className="text-sm font-medium text-muted-foreground mb-2 block">Anreise</Label>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <Label htmlFor={`travel-start-${dayIndex}`} className="text-xs">Start</Label>
+                    <Label htmlFor={`travel-start-date-${dayIndex}`} className="text-xs">Start Datum</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "w-full justify-start text-left font-normal mt-1",
+                            !jobData[`travelStartDate${dayIndex}`] && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {jobData[`travelStartDate${dayIndex}`] ? 
+                            new Date(jobData[`travelStartDate${dayIndex}`]).toLocaleDateString() : 
+                            <span>Datum wählen</span>
+                          }
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={jobData[`travelStartDate${dayIndex}`] ? new Date(jobData[`travelStartDate${dayIndex}`]) : undefined}
+                          onSelect={(date) => updateField(`travelStartDate${dayIndex}` as any, date?.toISOString().split('T')[0] || '')}
+                          initialFocus
+                          className={cn("p-3 pointer-events-auto")}
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                  <div>
+                    <Label htmlFor={`travel-start-${dayIndex}`} className="text-xs">Start Zeit</Label>
                     <Input
                       id={`travel-start-${dayIndex}`}
                       type="time"
@@ -367,7 +399,36 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                     />
                   </div>
                   <div>
-                    <Label htmlFor={`travel-end-${dayIndex}`} className="text-xs">Ende</Label>
+                    <Label htmlFor={`travel-end-date-${dayIndex}`} className="text-xs">Ende Datum</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "w-full justify-start text-left font-normal mt-1",
+                            !jobData[`travelEndDate${dayIndex}`] && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {jobData[`travelEndDate${dayIndex}`] ? 
+                            new Date(jobData[`travelEndDate${dayIndex}`]).toLocaleDateString() : 
+                            <span>Datum wählen</span>
+                          }
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={jobData[`travelEndDate${dayIndex}`] ? new Date(jobData[`travelEndDate${dayIndex}`]) : undefined}
+                          onSelect={(date) => updateField(`travelEndDate${dayIndex}` as any, date?.toISOString().split('T')[0] || '')}
+                          initialFocus
+                          className={cn("p-3 pointer-events-auto")}
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                  <div>
+                    <Label htmlFor={`travel-end-${dayIndex}`} className="text-xs">Ende Zeit</Label>
                     <Input
                       id={`travel-end-${dayIndex}`}
                       type="time"
@@ -384,7 +445,36 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                 <Label className="text-sm font-medium text-muted-foreground mb-2 block">Arbeit</Label>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <Label htmlFor={`work-start-${dayIndex}`} className="text-xs">Start</Label>
+                    <Label htmlFor={`work-start-date-${dayIndex}`} className="text-xs">Start Datum</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "w-full justify-start text-left font-normal mt-1",
+                            !jobData[`workStartDate${dayIndex}`] && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {jobData[`workStartDate${dayIndex}`] ? 
+                            new Date(jobData[`workStartDate${dayIndex}`]).toLocaleDateString() : 
+                            <span>Datum wählen</span>
+                          }
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={jobData[`workStartDate${dayIndex}`] ? new Date(jobData[`workStartDate${dayIndex}`]) : undefined}
+                          onSelect={(date) => updateField(`workStartDate${dayIndex}` as any, date?.toISOString().split('T')[0] || '')}
+                          initialFocus
+                          className={cn("p-3 pointer-events-auto")}
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                  <div>
+                    <Label htmlFor={`work-start-${dayIndex}`} className="text-xs">Start Zeit</Label>
                     <Input
                       id={`work-start-${dayIndex}`}
                       type="time"
@@ -394,7 +484,36 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                     />
                   </div>
                   <div>
-                    <Label htmlFor={`work-end-${dayIndex}`} className="text-xs">Ende</Label>
+                    <Label htmlFor={`work-end-date-${dayIndex}`} className="text-xs">Ende Datum</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "w-full justify-start text-left font-normal mt-1",
+                            !jobData[`workEndDate${dayIndex}`] && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {jobData[`workEndDate${dayIndex}`] ? 
+                            new Date(jobData[`workEndDate${dayIndex}`]).toLocaleDateString() : 
+                            <span>Datum wählen</span>
+                          }
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={jobData[`workEndDate${dayIndex}`] ? new Date(jobData[`workEndDate${dayIndex}`]) : undefined}
+                          onSelect={(date) => updateField(`workEndDate${dayIndex}` as any, date?.toISOString().split('T')[0] || '')}
+                          initialFocus
+                          className={cn("p-3 pointer-events-auto")}
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                  <div>
+                    <Label htmlFor={`work-end-${dayIndex}`} className="text-xs">Ende Zeit</Label>
                     <Input
                       id={`work-end-${dayIndex}`}
                       type="time"
@@ -411,7 +530,36 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                 <Label className="text-sm font-medium text-muted-foreground mb-2 block">Abreise</Label>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <Label htmlFor={`departure-start-${dayIndex}`} className="text-xs">Start</Label>
+                    <Label htmlFor={`departure-start-date-${dayIndex}`} className="text-xs">Start Datum</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "w-full justify-start text-left font-normal mt-1",
+                            !jobData[`departureStartDate${dayIndex}`] && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {jobData[`departureStartDate${dayIndex}`] ? 
+                            new Date(jobData[`departureStartDate${dayIndex}`]).toLocaleDateString() : 
+                            <span>Datum wählen</span>
+                          }
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={jobData[`departureStartDate${dayIndex}`] ? new Date(jobData[`departureStartDate${dayIndex}`]) : undefined}
+                          onSelect={(date) => updateField(`departureStartDate${dayIndex}` as any, date?.toISOString().split('T')[0] || '')}
+                          initialFocus
+                          className={cn("p-3 pointer-events-auto")}
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                  <div>
+                    <Label htmlFor={`departure-start-${dayIndex}`} className="text-xs">Start Zeit</Label>
                     <Input
                       id={`departure-start-${dayIndex}`}
                       type="time"
@@ -421,7 +569,36 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                     />
                   </div>
                   <div>
-                    <Label htmlFor={`departure-end-${dayIndex}`} className="text-xs">Ende</Label>
+                    <Label htmlFor={`departure-end-date-${dayIndex}`} className="text-xs">Ende Datum</Label>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "w-full justify-start text-left font-normal mt-1",
+                            !jobData[`departureEndDate${dayIndex}`] && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {jobData[`departureEndDate${dayIndex}`] ? 
+                            new Date(jobData[`departureEndDate${dayIndex}`]).toLocaleDateString() : 
+                            <span>Datum wählen</span>
+                          }
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={jobData[`departureEndDate${dayIndex}`] ? new Date(jobData[`departureEndDate${dayIndex}`]) : undefined}
+                          onSelect={(date) => updateField(`departureEndDate${dayIndex}` as any, date?.toISOString().split('T')[0] || '')}
+                          initialFocus
+                          className={cn("p-3 pointer-events-auto")}
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                  <div>
+                    <Label htmlFor={`departure-end-${dayIndex}`} className="text-xs">Ende Zeit</Label>
                     <Input
                       id={`departure-end-${dayIndex}`}
                       type="time"
@@ -756,7 +933,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
   const editJobStepsRow1 = [
     { id: 'customer', label: t('customerData'), icon: User },
     { id: 'machine', label: t('machineData'), icon: Wrench },
-    { id: 'times', label: t('times'), icon: Calendar },
+    { id: 'times', label: t('times'), icon: CalendarIcon },
     { id: 'hotel', label: t('hotelData'), icon: Hotel },
   ] as const;
 

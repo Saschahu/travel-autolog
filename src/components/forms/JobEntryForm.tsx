@@ -259,18 +259,6 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
       </CardHeader>
       <CardContent className="space-y-4">
         <div>
-          <Label htmlFor="estimated-days" className="text-sm font-medium">{t('estimatedDays')}</Label>
-          <Input
-            id="estimated-days"
-            type="number"
-            min="1"
-            placeholder="1"
-            value={jobData.estimatedDays || ''}
-            onChange={(e) => updateField('estimatedDays', parseInt(e.target.value) || 1)}
-            className="mt-1"
-          />
-        </div>
-        <div>
           <Label htmlFor="planned-days" className="text-sm font-medium">{t('plannedDays')}</Label>
           <Input
             id="planned-days"

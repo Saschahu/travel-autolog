@@ -373,14 +373,22 @@ export const useOvertimeCalculation = () => {
       }
     }
     
-    // Calculate guaranteed hours (per day with time entries)
+    // Calculate guaranteed hours (per day with actual time entries, excluding empty days)
     let numberOfPaidDays = 0;
     if (job.days && Array.isArray(job.days) && job.days.length > 0) {
       numberOfPaidDays = job.days.filter((day: any) => {
-        const hasTravel = !!(day.travelStart && day.travelEnd);
-        const hasWork = !!(day.workStart && day.workEnd);
-        const hasDeparture = !!(day.departureStart && day.departureEnd);
-        return hasTravel || hasWork || hasDeparture;
+        // Check if day has actual time entries (not just 00:00 placeholders)
+        const hasValidTravel = !!(day.travelStart && day.travelEnd && 
+          day.travelStart !== "00:00" && day.travelEnd !== "00:00" && 
+          day.travelStart !== day.travelEnd);
+        const hasValidWork = !!(day.workStart && day.workEnd && 
+          day.workStart !== "00:00" && day.workEnd !== "00:00" && 
+          day.workStart !== day.workEnd);
+        const hasValidDeparture = !!(day.departureStart && day.departureEnd && 
+          day.departureStart !== "00:00" && day.departureEnd !== "00:00" && 
+          day.departureStart !== day.departureEnd);
+        
+        return hasValidTravel || hasValidWork || hasValidDeparture;
       }).length;
     } else {
       const hasTravel = !!(job.travelStart && job.travelEnd);
@@ -388,6 +396,7 @@ export const useOvertimeCalculation = () => {
       const hasDeparture = !!(job.departureStart && job.departureEnd);
       numberOfPaidDays = hasTravel || hasWork || hasDeparture ? 1 : 0;
     }
+    console.log('[OT] Counted paid days:', numberOfPaidDays, 'from', job.days?.length, 'total days');
     const guaranteedHours = overtimeSettings.guaranteedHours * numberOfPaidDays;
     
     // Correct payable hours calculation

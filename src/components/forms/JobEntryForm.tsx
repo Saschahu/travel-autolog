@@ -317,123 +317,125 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
 
   const renderTimesSection = () => {
     const plannedDays = jobData.plannedDays || 1;
+    console.log('renderTimesSection - plannedDays:', plannedDays);
     
     return (
-      <Card className="border-primary/20">
-        <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-lg">
-            <Calendar className="h-5 w-5 text-primary" />
-            {t('times')}
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div>
-            <Label htmlFor="planned-days" className="text-sm font-medium">{t('plannedDays')}</Label>
-            <Input
-              id="planned-days"
-              type="number"
-              min="1"
-              placeholder="1"
-              value={jobData.plannedDays || ''}
-              onChange={(e) => updateField('plannedDays', parseInt(e.target.value) || 1)}
-              className="mt-1"
-            />
-          </div>
+      <div className="space-y-6">
+        <Card className="border-primary/20">
+          <CardHeader className="pb-3">
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <Calendar className="h-5 w-5 text-primary" />
+              {t('times')}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div>
+              <Label htmlFor="planned-days" className="text-sm font-medium">{t('plannedDays')}</Label>
+              <Input
+                id="planned-days"
+                type="number"
+                min="1"
+                max="30"
+                placeholder="1"
+                value={jobData.plannedDays || ''}
+                onChange={(e) => updateField('plannedDays', parseInt(e.target.value) || 1)}
+                className="mt-1"
+              />
+            </div>
+          </CardContent>
+        </Card>
 
-          {/* Zeit-Eingaben für jeden geplanten Tag */}
-          <div className="space-y-4">
-            {Array.from({ length: plannedDays }, (_, dayIndex) => (
-              <Card key={dayIndex} className="border-muted">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-base">Tag {dayIndex + 1}</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {/* Anreise */}
+        {/* Zeit-Eingaben für jeden geplanten Tag */}
+        {Array.from({ length: plannedDays }, (_, dayIndex) => (
+          <Card key={dayIndex} className="border-muted">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base">Tag {dayIndex + 1}</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Anreise */}
+              <div>
+                <Label className="text-sm font-medium text-muted-foreground mb-2 block">Anreise</Label>
+                <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <Label className="text-sm font-medium text-muted-foreground">Anreise</Label>
-                    <div className="grid grid-cols-2 gap-3 mt-2">
-                      <div>
-                        <Label htmlFor={`travel-start-${dayIndex}`} className="text-xs">Start</Label>
-                        <Input
-                          id={`travel-start-${dayIndex}`}
-                          type="time"
-                          value={jobData[`travelStart${dayIndex}`] || ''}
-                          onChange={(e) => updateField(`travelStart${dayIndex}` as any, e.target.value)}
-                          className="mt-1"
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor={`travel-end-${dayIndex}`} className="text-xs">Ende</Label>
-                        <Input
-                          id={`travel-end-${dayIndex}`}
-                          type="time"
-                          value={jobData[`travelEnd${dayIndex}`] || ''}
-                          onChange={(e) => updateField(`travelEnd${dayIndex}` as any, e.target.value)}
-                          className="mt-1"
-                        />
-                      </div>
-                    </div>
+                    <Label htmlFor={`travel-start-${dayIndex}`} className="text-xs">Start</Label>
+                    <Input
+                      id={`travel-start-${dayIndex}`}
+                      type="time"
+                      value=""
+                      onChange={(e) => console.log(`Travel start ${dayIndex}:`, e.target.value)}
+                      className="mt-1"
+                    />
                   </div>
+                  <div>
+                    <Label htmlFor={`travel-end-${dayIndex}`} className="text-xs">Ende</Label>
+                    <Input
+                      id={`travel-end-${dayIndex}`}
+                      type="time"
+                      value=""
+                      onChange={(e) => console.log(`Travel end ${dayIndex}:`, e.target.value)}
+                      className="mt-1"
+                    />
+                  </div>
+                </div>
+              </div>
 
-                  {/* Arbeit */}
+              {/* Arbeit */}
+              <div>
+                <Label className="text-sm font-medium text-muted-foreground mb-2 block">Arbeit</Label>
+                <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <Label className="text-sm font-medium text-muted-foreground">Arbeit</Label>
-                    <div className="grid grid-cols-2 gap-3 mt-2">
-                      <div>
-                        <Label htmlFor={`work-start-${dayIndex}`} className="text-xs">Start</Label>
-                        <Input
-                          id={`work-start-${dayIndex}`}
-                          type="time"
-                          value={jobData[`workStart${dayIndex}`] || ''}
-                          onChange={(e) => updateField(`workStart${dayIndex}` as any, e.target.value)}
-                          className="mt-1"
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor={`work-end-${dayIndex}`} className="text-xs">Ende</Label>
-                        <Input
-                          id={`work-end-${dayIndex}`}
-                          type="time"
-                          value={jobData[`workEnd${dayIndex}`] || ''}
-                          onChange={(e) => updateField(`workEnd${dayIndex}` as any, e.target.value)}
-                          className="mt-1"
-                        />
-                      </div>
-                    </div>
+                    <Label htmlFor={`work-start-${dayIndex}`} className="text-xs">Start</Label>
+                    <Input
+                      id={`work-start-${dayIndex}`}
+                      type="time"
+                      value=""
+                      onChange={(e) => console.log(`Work start ${dayIndex}:`, e.target.value)}
+                      className="mt-1"
+                    />
                   </div>
+                  <div>
+                    <Label htmlFor={`work-end-${dayIndex}`} className="text-xs">Ende</Label>
+                    <Input
+                      id={`work-end-${dayIndex}`}
+                      type="time"
+                      value=""
+                      onChange={(e) => console.log(`Work end ${dayIndex}:`, e.target.value)}
+                      className="mt-1"
+                    />
+                  </div>
+                </div>
+              </div>
 
-                  {/* Abreise */}
+              {/* Abreise */}
+              <div>
+                <Label className="text-sm font-medium text-muted-foreground mb-2 block">Abreise</Label>
+                <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <Label className="text-sm font-medium text-muted-foreground">Abreise</Label>
-                    <div className="grid grid-cols-2 gap-3 mt-2">
-                      <div>
-                        <Label htmlFor={`departure-start-${dayIndex}`} className="text-xs">Start</Label>
-                        <Input
-                          id={`departure-start-${dayIndex}`}
-                          type="time"
-                          value={jobData[`departureStart${dayIndex}`] || ''}
-                          onChange={(e) => updateField(`departureStart${dayIndex}` as any, e.target.value)}
-                          className="mt-1"
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor={`departure-end-${dayIndex}`} className="text-xs">Ende</Label>
-                        <Input
-                          id={`departure-end-${dayIndex}`}
-                          type="time"
-                          value={jobData[`departureEnd${dayIndex}`] || ''}
-                          onChange={(e) => updateField(`departureEnd${dayIndex}` as any, e.target.value)}
-                          className="mt-1"
-                        />
-                      </div>
-                    </div>
+                    <Label htmlFor={`departure-start-${dayIndex}`} className="text-xs">Start</Label>
+                    <Input
+                      id={`departure-start-${dayIndex}`}
+                      type="time"
+                      value=""
+                      onChange={(e) => console.log(`Departure start ${dayIndex}:`, e.target.value)}
+                      className="mt-1"
+                    />
                   </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+                  <div>
+                    <Label htmlFor={`departure-end-${dayIndex}`} className="text-xs">Ende</Label>
+                    <Input
+                      id={`departure-end-${dayIndex}`}
+                      type="time"
+                      value=""
+                      onChange={(e) => console.log(`Departure end ${dayIndex}:`, e.target.value)}
+                      className="mt-1"
+                    />
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
     );
   };
 

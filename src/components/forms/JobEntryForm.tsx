@@ -666,7 +666,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
     { id: 'finish', label: t('finish'), icon: CheckCircle },
   ] as const;
 
-  const steps = isEditingJob ? [...editJobStepsRow1, ...editJobStepsRow2] : newJobSteps;
+  const steps = (isEditingJob && !isCreatingNewJob) ? [...editJobStepsRow1, ...editJobStepsRow2] : newJobSteps;
 
   // Auto-navigate to Hotel tab when a hotel name is entered
   useEffect(() => {
@@ -683,12 +683,12 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
         {/* Job Title with Customer Name */}
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-semibold">
-            {isEditingJob ? t('editJob') : t('newJob')}
+            {(isEditingJob && !isCreatingNewJob) ? t('editJob') : t('newJob')}
             {isPersisted && customerName && (
               <span data-testid="job-title-customer" className="ml-2 text-muted-foreground">— {customerName}</span>
             )}
           </h2>
-          {isEditingJob && (
+          {(isEditingJob && !isCreatingNewJob) && (
             <Badge variant="secondary" className="px-3 py-1">
               <Clock className="h-3 w-3 mr-1" />
               {t('jobEditing')}
@@ -697,7 +697,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
         </div>
 
         {/* Step Navigation */}
-        {isEditingJob ? (
+        {(isEditingJob && !isCreatingNewJob) ? (
           // 2-row layout for editing mode
           <div className="space-y-2">
             {/* Row 1: Customer, Machine, Times, Hotel */}
@@ -751,7 +751,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
               const Icon = step.icon;
               const isActive = currentStep === step.id;
               const isCompleted = newJobSteps.findIndex(s => s.id === currentStep) > index;
-              const isAccessible = step.id === 'customer'; // Only customer accessible for new jobs
+              const isAccessible = step.id === 'customer' || (step.id === 'machine' && isPersisted); // Allow machine once customer saved
               
               return (
                 <Button

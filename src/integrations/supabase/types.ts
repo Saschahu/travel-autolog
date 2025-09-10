@@ -79,6 +79,7 @@ export type Database = {
           hotel_address: string | null
           hotel_name: string | null
           hotel_nights: number | null
+          hotel_price: number | null
           id: string
           kilometers_outbound: number | null
           kilometers_return: number | null
@@ -118,6 +119,7 @@ export type Database = {
           hotel_address?: string | null
           hotel_name?: string | null
           hotel_nights?: number | null
+          hotel_price?: number | null
           id?: string
           kilometers_outbound?: number | null
           kilometers_return?: number | null
@@ -157,6 +159,7 @@ export type Database = {
           hotel_address?: string | null
           hotel_name?: string | null
           hotel_nights?: number | null
+          hotel_price?: number | null
           id?: string
           kilometers_outbound?: number | null
           kilometers_return?: number | null

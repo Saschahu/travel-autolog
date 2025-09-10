@@ -36,6 +36,7 @@ interface JobData {
   hotelName: string;
   hotelAddress: string;
   hotelNights: number;
+  hotelPrice: number;
   kilometersOutbound: number;
   kilometersReturn: number;
   tollAmount: number;
@@ -97,6 +98,7 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
         hotel_name: jobData.hotelName || null,
         hotel_address: jobData.hotelAddress || null,
         hotel_nights: jobData.hotelNights || 0,
+        hotel_price: jobData.hotelPrice || 0,
         kilometers_outbound: jobData.kilometersOutbound || 0,
         kilometers_return: jobData.kilometersReturn || 0,
         toll_amount: jobData.tollAmount || 0,
@@ -189,7 +191,10 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
   };
 
   const startNewJob = () => {
-    setJobData({ plannedDays: 1 });
+    setJobData({ 
+      plannedDays: 1,
+      hotelPrice: 0
+    });
     setCurrentStep('customer');
     setCurrentJobId(null);
     setIsEditingJob(false);
@@ -372,6 +377,19 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
               placeholder="0"
               value={jobData.hotelNights || ''}
               onChange={(e) => updateField('hotelNights', parseInt(e.target.value) || 0)}
+              className="mt-1"
+            />
+          </div>
+          <div>
+            <Label htmlFor="hotel-price" className="text-sm font-medium">{t('hotelPrice')}</Label>
+            <Input
+              id="hotel-price"
+              type="number"
+              min="0"
+              step="0.01"
+              placeholder="0.00"
+              value={jobData.hotelPrice || ''}
+              onChange={(e) => updateField('hotelPrice', parseFloat(e.target.value) || 0)}
               className="mt-1"
             />
           </div>

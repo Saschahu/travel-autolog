@@ -43,6 +43,14 @@ const reportTranslations = {
     travel: 'Anreise',
     work: 'Arbeitszeit',
     departure: 'Abreise',
+    // Travel & Accommodation
+    travelAndAccommodation: 'Reise & Unterkunft',
+    hotelName: 'Hotel Name',
+    hotelNights: 'Hotelnächte',
+    hotelPrice: 'Hotel Preis',
+    kilometersOutbound: 'Kilometer Hinfahrt',
+    kilometersReturn: 'Kilometer Rückfahrt',
+    tollAmount: 'Mautgebühren',
   },
   en: {
     title: 'Work Report',
@@ -84,6 +92,14 @@ const reportTranslations = {
     travel: 'Travel',
     work: 'Work',
     departure: 'Departure',
+    // Travel & Accommodation
+    travelAndAccommodation: 'Travel & Accommodation',
+    hotelName: 'Hotel Name',
+    hotelNights: 'Hotel Nights',
+    hotelPrice: 'Hotel Price',
+    kilometersOutbound: 'Kilometers Outbound',
+    kilometersReturn: 'Kilometers Return',
+    tollAmount: 'Toll Amount',
   },
   nb: {
     title: 'Arbeidsrapport',
@@ -125,6 +141,14 @@ const reportTranslations = {
     travel: 'Reise',
     work: 'Arbeid',
     departure: 'Avreise',
+    // Travel & Accommodation
+    travelAndAccommodation: 'Reise & Innkvartering',
+    hotelName: 'Hotellnavn',
+    hotelNights: 'Hotellnetter',
+    hotelPrice: 'Hotellpris',
+    kilometersOutbound: 'Kilometer utreise',
+    kilometersReturn: 'Kilometer hjemreise',
+    tollAmount: 'Bompenger',
   },
   sv: {
     title: 'Arbetsrapport',
@@ -166,6 +190,14 @@ const reportTranslations = {
     travel: 'Resa',
     work: 'Arbete',
     departure: 'Avresa',
+    // Travel & Accommodation
+    travelAndAccommodation: 'Resa & Boende',
+    hotelName: 'Hotellnamn',
+    hotelNights: 'Hotellnätter',
+    hotelPrice: 'Hotellpris',
+    kilometersOutbound: 'Kilometer utresa',
+    kilometersReturn: 'Kilometer hemresa',
+    tollAmount: 'Vägavgifter',
   },
   da: {
     title: 'Arbejdsrapport',
@@ -207,6 +239,14 @@ const reportTranslations = {
     travel: 'Rejse',
     work: 'Arbejde',
     departure: 'Afrejse',
+    // Travel & Accommodation
+    travelAndAccommodation: 'Rejse & Indkvartering',
+    hotelName: 'Hotelnavn',
+    hotelNights: 'Hotelnætter',
+    hotelPrice: 'Hotelpris',
+    kilometersOutbound: 'Kilometer udrejse',
+    kilometersReturn: 'Kilometer hjemrejse',
+    tollAmount: 'Vejafgifter',
   },
 };
 

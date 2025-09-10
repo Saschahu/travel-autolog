@@ -39,6 +39,7 @@ export type Job = {
   hotelName?: string;
   hotelAddress?: string;
   hotelNights?: number;
+  hotelPrice?: number;
   kilometersOutbound?: number;
   kilometersReturn?: number;
   tollAmount?: number;
@@ -108,6 +109,7 @@ export const useJobs = () => {
         hotelName: job.hotel_name,
         hotelAddress: job.hotel_address,
         hotelNights: job.hotel_nights,
+        hotelPrice: job.hotel_price,
         kilometersOutbound: job.kilometers_outbound,
         kilometersReturn: job.kilometers_return,
         tollAmount: job.toll_amount,

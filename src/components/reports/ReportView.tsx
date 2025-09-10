@@ -183,6 +183,39 @@ export default function ReportView({
         </div>
       </div>
 
+      {/* Travel & Accommodation Information */}
+      {(job.hotelName || job.hotelNights || job.hotelPrice || job.kilometersOutbound || job.kilometersReturn || job.tollAmount) && (
+        <div className="section mb-6">
+          <h2 className="text-lg font-bold mb-3 text-gray-900">{t('travelAndAccommodation')}</h2>
+          <div className="border border-gray-300 p-3">
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                {job.hotelName && (
+                  <p><span className="font-semibold">{t('hotelName')}:</span> {job.hotelName}</p>
+                )}
+                {job.hotelNights && job.hotelNights > 0 && (
+                  <p><span className="font-semibold">{t('hotelNights')}:</span> {job.hotelNights}</p>
+                )}
+                {job.hotelPrice && job.hotelPrice > 0 && (
+                  <p><span className="font-semibold">{t('hotelPrice')}:</span> {job.hotelPrice.toFixed(2)} €</p>
+                )}
+              </div>
+              <div>
+                {job.kilometersOutbound && job.kilometersOutbound > 0 && (
+                  <p><span className="font-semibold">{t('kilometersOutbound')}:</span> {job.kilometersOutbound} km</p>
+                )}
+                {job.kilometersReturn && job.kilometersReturn > 0 && (
+                  <p><span className="font-semibold">{t('kilometersReturn')}:</span> {job.kilometersReturn} km</p>
+                )}
+                {job.tollAmount && job.tollAmount > 0 && (
+                  <p><span className="font-semibold">{t('tollAmount')}:</span> {job.tollAmount.toFixed(2)} €</p>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Signature Section */}
       <div className="section mt-8">
         <h2 className="text-lg font-bold mb-4 text-gray-900">{t('signatures')}</h2>

@@ -81,7 +81,7 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
       console.log('User data:', user);
       
       if (!user) {
-        throw new Error('Benutzer nicht angemeldet - bitte melde dich an');
+        throw new Error(t('userNotLoggedIn'));
       }
 
       const jobPayload = {
@@ -150,12 +150,11 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
       console.log('Save result:', { data, error });
       if (error) throw error;
 
-      const actionText = isPartialSave ? 'gespeichert' : 'abgeschlossen';
       toast({
-        title: `Erfolgreich ${actionText}`,
+        title: t('successfullySaved'),
         description: isPartialSave 
-          ? `Job-Daten wurden gespeichert. Du kannst weitere Daten hinzufügen.`
-          : `Job wurde vollständig ${actionText}!`
+          ? t('jobDataSaved')
+          : t('jobCompleted')
       });
 
       // After saving customer data, automatically go to next step
@@ -181,8 +180,8 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
       console.error('Error message:', error.message);
       console.error('Error details:', JSON.stringify(error, null, 2));
       toast({
-        title: 'Fehler',
-        description: 'Fehler beim Speichern der Daten',
+        title: t('error'),
+        description: t('errorSaving'),
         variant: 'destructive'
       });
     } finally {
@@ -200,7 +199,7 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
     setIsEditingJob(false);
     toast({
       title: t('newJob'),
-      description: 'Neues Job-Formular gestartet'
+      description: t('newJobStarted')
     });
   };
 
@@ -483,8 +482,8 @@ export const JobEntryForm = ({ onJobSaved }: JobEntryFormProps) => {
                   setCurrentStep(step.id as any);
                 } else {
                   toast({
-                    title: 'Erst Kunde speichern',
-                    description: 'Bitte speichere zuerst die Kundendaten',
+                    title: t('saveCustomerFirst'),
+                    description: t('saveCustomerFirstDesc'),
                     variant: 'destructive'
                   });
                 }

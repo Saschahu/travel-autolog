@@ -439,6 +439,16 @@ const resources = {
       machineData: 'Machine data',
       manufacturer: 'Manufacturer',
       model: 'Model',
+      
+      // Job Entry Form Messages
+      userNotLoggedIn: 'User not logged in - please log in',
+      successfullySaved: 'Successfully saved',
+      jobDataSaved: 'Job data was saved. You can add more data.',
+      jobCompleted: 'Job was completed successfully!',
+      errorSaving: 'Error saving the data',
+      newJobStarted: 'New job form started',
+      saveCustomerFirst: 'Save customer first',
+      saveCustomerFirstDesc: 'Please save the customer data first',
       serialNumber: 'Serial number',
       workPerformed: 'Work performed',
       workPerformedPlaceholder: 'Describe the work that was performed',
@@ -835,6 +845,16 @@ const resources = {
       machineData: 'Maschinendaten',
       manufacturer: 'Hersteller',
       model: 'Modell',
+      
+      // Job Entry Form Messages
+      userNotLoggedIn: 'Benutzer nicht angemeldet - bitte melde dich an',
+      successfullySaved: 'Erfolgreich gespeichert',
+      jobDataSaved: 'Job-Daten wurden gespeichert. Du kannst weitere Daten hinzufügen.',
+      jobCompleted: 'Job wurde vollständig abgeschlossen!',
+      errorSaving: 'Fehler beim Speichern der Daten',
+      newJobStarted: 'Neues Job-Formular gestartet',
+      saveCustomerFirst: 'Erst Kunde speichern',
+      saveCustomerFirstDesc: 'Bitte speichere zuerst die Kundendaten',
       serialNumber: 'Seriennummer',
       workPerformed: 'Durchgeführte Arbeit',
       workPerformedPlaceholder: 'Beschreibe die durchgeführte Arbeit',

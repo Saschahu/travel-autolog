@@ -402,7 +402,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
         {Array.from({ length: plannedDays }, (_, dayIndex) => (
           <Card key={dayIndex} className="border-muted">
             <CardHeader className="pb-2">
-              <CardTitle className="text-base">Tag {dayIndex + 1}</CardTitle>
+              <CardTitle className="text-base">{t('jobs:report.day', { n: dayIndex + 1 })}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               {/* Datum für den ganzen Tag */}

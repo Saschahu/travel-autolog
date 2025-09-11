@@ -71,9 +71,11 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
   // Load existing job data when jobId is provided
   useEffect(() => {
     // Fix duplicate September 10th entry on component mount
-    removeDuplicateSeptember10th().then(() => {
-      console.log('Duplicate entry cleanup completed');
-    });
+    if (jobId) {
+      removeDuplicateSeptember10th(jobId).then(() => {
+        console.log('Duplicate entry cleanup completed');
+      });
+    }
     
     const loadJobData = async () => {
       if (jobId) {

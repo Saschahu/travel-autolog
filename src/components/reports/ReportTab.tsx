@@ -28,6 +28,10 @@ export const ReportTab = ({ job, onJobUpdate }: ReportTabProps) => {
   
   const reports = job.reports || [];
   const totalDays = job.estimatedDays || 1;
+  
+  // Get only reports that have actual dates (working days)
+  const workingDayReports = reports.filter(report => report.dateISO);
+  const hasWorkingDays = workingDayReports.length > 0;
 
   // Load current day's text when day changes
   useEffect(() => {
@@ -168,29 +172,56 @@ export const ReportTab = ({ job, onJobUpdate }: ReportTabProps) => {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {/* Day tabs */}
-          <div className="flex gap-2 mb-3 overflow-x-auto" style={{ scrollbarWidth: 'thin' }}>
-            {Array.from({ length: totalDays }, (_, i) => {
-              const report = reports.find(r => r.dayIndex === i);
-              const isActive = i === currentDayIndex;
-              const dayTitle = formatDayTitle(report || { dayIndex: i, text: '' }, i);
-              
-              return (
-                <Button
-                  key={i}
-                  data-testid={`report-tab-${i}`}
-                  variant={isActive ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => handleDayClick(i)}
-                  className={`rounded-xl px-3 py-1 whitespace-nowrap ${
-                    isActive ? 'bg-slate-900 text-white' : ''
-                  }`}
-                >
-                  {dayTitle}
-                </Button>
-              );
-            })}
-          </div>
+          {/* Day tabs - Show working days with actual dates */}
+          {hasWorkingDays && (
+            <div className="flex gap-2 mb-3 overflow-x-auto" style={{ scrollbarWidth: 'thin' }}>
+              {workingDayReports.map((report) => {
+                const isActive = report.dayIndex === currentDayIndex;
+                const dateDisplay = report.dateISO ? format(new Date(report.dateISO), 'dd.MM.yyyy') : `Tag ${report.dayIndex + 1}`;
+                
+                return (
+                  <Button
+                    key={report.dayIndex}
+                    data-testid={`report-tab-${report.dayIndex}`}
+                    variant={isActive ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => handleDayClick(report.dayIndex)}
+                    className={`rounded-xl px-3 py-1 whitespace-nowrap ${
+                      isActive ? 'bg-slate-900 text-white' : ''
+                    }`}
+                  >
+                    {dateDisplay}
+                  </Button>
+                );
+              })}
+            </div>
+          )}
+          
+          {/* Fallback tabs for all days if no working days with dates exist */}
+          {!hasWorkingDays && (
+            <div className="flex gap-2 mb-3 overflow-x-auto" style={{ scrollbarWidth: 'thin' }}>
+              {Array.from({ length: totalDays }, (_, i) => {
+                const report = reports.find(r => r.dayIndex === i);
+                const isActive = i === currentDayIndex;
+                const dayTitle = formatDayTitle(report || { dayIndex: i, text: '' }, i);
+                
+                return (
+                  <Button
+                    key={i}
+                    data-testid={`report-tab-${i}`}
+                    variant={isActive ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => handleDayClick(i)}
+                    className={`rounded-xl px-3 py-1 whitespace-nowrap ${
+                      isActive ? 'bg-slate-900 text-white' : ''
+                    }`}
+                  >
+                    {dayTitle}
+                  </Button>
+                );
+              })}
+            </div>
+          )}
 
           {/* Date picker for current day */}
           <div className="flex items-center gap-3 mb-4">

@@ -11,7 +11,13 @@ const config: CapacitorConfig = {
     },
     EmailSender: {
       class: 'EmailSenderPlugin'
+    },
+    Geolocation: {
+      permissions: ['location', 'coarseLocation']
     }
+  },
+  android: {
+    allowMixedContent: true
   }
 };
 

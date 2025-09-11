@@ -235,10 +235,10 @@ export const ReportTab = ({ job, onJobUpdate }: ReportTabProps) => {
           <div>
             <Textarea
               data-testid="report-textarea"
-              placeholder={t('job.report.placeholder', { 
+              placeholder={t('report.placeholder', { 
                 label: currentReport?.dateISO 
-                  ? t('job.report.dayWithDate', { date: dayTitle }) 
-                  : t('job.report.dayCounter', { current: currentDayIndex + 1, total: totalDays })
+                  ? t('report.dayWithDate', { date: dayTitle }) 
+                  : t('report.dayCounter', { current: currentDayIndex + 1, total: totalDays })
               })}
               value={currentText}
               onChange={(e) => handleTextChange(e.target.value)}

@@ -127,7 +127,7 @@ export const ReportTab = ({ job, onJobUpdate }: ReportTabProps) => {
 
     if (!isAutoSave) {
       toast({
-        title: t('job.report.saved'),
+        title: t('report.saved'),
         description: `Report für ${formatDayTitle(reportData, currentDayIndex)} gespeichert`,
       });
     }
@@ -171,7 +171,7 @@ export const ReportTab = ({ job, onJobUpdate }: ReportTabProps) => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <FileText className="h-5 w-5" />
-            {t('job.report.tab')}
+            {t('report.tab')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -261,7 +261,7 @@ export const ReportTab = ({ job, onJobUpdate }: ReportTabProps) => {
                     <ChevronLeft className="h-4 w-4" />
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent>{t('job.report.prev')}</TooltipContent>
+                <TooltipContent>{t('report.prev')}</TooltipContent>
               </Tooltip>
 
               <Button
@@ -272,7 +272,7 @@ export const ReportTab = ({ job, onJobUpdate }: ReportTabProps) => {
                 className="flex items-center gap-2"
               >
                 <Save className="h-4 w-4" />
-                {t('job.report.save')}
+                {t('report.save')}
                 {isDirty && <span className="text-xs">(•)</span>}
               </Button>
 
@@ -288,7 +288,7 @@ export const ReportTab = ({ job, onJobUpdate }: ReportTabProps) => {
                     <ChevronRight className="h-4 w-4" />
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent>{t('job.report.next')}</TooltipContent>
+                <TooltipContent>{t('report.next')}</TooltipContent>
               </Tooltip>
             </div>
           </TooltipProvider>

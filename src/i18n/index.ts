@@ -56,6 +56,7 @@ const jobTranslationsEn = {
   report: {
     tab: 'Report',
     day: 'Day {{n}}',
+    dayCounter: 'Day {{current}}/{{total}}',
     dayWithDate: '{{date}}',
     placeholder: 'Report for {{label}}',
     save: 'Save',

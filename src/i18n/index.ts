@@ -191,6 +191,9 @@ const resources = {
       travel: 'Travel',
       report: 'Report',
       
+      // GPS Tracking
+      gpsTracking: 'GPS Tracking',
+      
       // Dashboard and Quick Actions
       quickActions: 'Quick Actions',
       
@@ -604,6 +607,9 @@ const resources = {
       travel: 'Reise',
       finish: 'Abschluss',
       
+      // GPS Tracking
+      gpsTracking: 'GPS-Verfolgung',
+      
       // Dashboard and Quick Actions
       quickActions: 'Schnellaktionen',
       
@@ -977,6 +983,52 @@ const resources = {
       newJobDescription: 'Du kannst jetzt einen neuen Job erfassen',
       privateTrip: 'Private Reise',
       privateTripDescription: 'Viel Spaß bei deinen privaten Aktivitäten!',
+      
+      // GPS tracking specific translations
+      gpsTracking: {
+        tracking: {
+          title: 'GPS-Strecken-Aufzeichnung',
+          description: 'GPS-Punkte aufzeichnen um tägliche Strecken mit Entfernungsberechnung zu erstellen.',
+          toggle: 'Aufzeichnung aktivieren',
+          toggleDescription: 'GPS-Punkte während Aktivität aufzeichnen',
+          active: 'Aktiv',
+          starting: 'Startet...',
+          stopped: 'Gestoppt',
+          error: 'Fehler'
+        },
+        stats: {
+          pointsToday: 'Punkte heute',
+          distanceToday: 'Strecke heute'
+        },
+        export: {
+          title: 'Heutige Strecke exportieren',
+          gpx: 'GPX exportieren',
+          geojson: 'GeoJSON exportieren',
+          success: 'Export erfolgreich',
+          error: 'Export fehlgeschlagen',
+          gpxDownloaded: 'GPX-Datei heruntergeladen',
+          geojsonDownloaded: 'GeoJSON-Datei heruntergeladen',
+          failed: 'Strecken-Export fehlgeschlagen',
+          noDataToExport: 'Keine GPS-Daten für heute aufgezeichnet'
+        },
+        cleanup: {
+          button: 'Alte Strecken löschen',
+          confirmTitle: 'Alte Strecken löschen?',
+          confirmDescription: 'Dies löscht alle GPS-Strecken älter als 60 Tage. Diese Aktion kann nicht rückgängig gemacht werden.',
+          confirm: 'Löschen',
+          success: 'Aufräumen erfolgreich',
+          error: 'Aufräumen fehlgeschlagen',
+          failed: 'Alte Strecken konnten nicht gelöscht werden',
+          deletedCount: '{{count}} alte Strecken gelöscht',
+          description: 'Entfernt automatisch Strecken älter als 60 Tage'
+        },
+        maintenance: {
+          title: 'Wartung'
+        },
+        backgroundMode: {
+          info: 'Hintergrund-Tracking benötigt zusätzliche Berechtigungen auf Android-Geräten.'
+        }
+      },
       
       // Overtime Rules
       overtimeRules: 'Überstundenregeln:',

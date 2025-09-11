@@ -1043,7 +1043,7 @@ const resources = {
       // Tabs / Navigation
       customer: "Kunde",
       machine: "Maskin", 
-      times: "Tider",
+      timesTabs: "Tider",
       overtime: "Overtid",
       finish: "Ferdig",
       reports: "Rapporter",
@@ -1078,11 +1078,39 @@ const resources = {
       report_concat_heading: "Arbeidsrapport",
       report_concat_no_entries: "Ingen rapporter er lagret.",
 
+      // Standardized component keys
+      report: {
+        tab: "Rapport",
+        day: "Dag {{n}}",
+        dayCounter: "Dag {{current}}/{{total}}",
+        dayWithDate: "{{date}}",
+        placeholder: "Rapport for {{label}}",
+        save: "Lagre",
+        prev: "Forrige dag",
+        next: "Neste dag",
+        saved: "Rapport lagret",
+        trimTitle: "Reduser dager?",
+        trimBody: "Rapporter for dagene {{from}}–{{to}} blir slettet. Fortsette?",
+        cancel: "Avbryt",
+        confirm: "Fortsett"
+      },
+
       // Navigation and Basic UI
       newJob: "Ny jobb",
       editJob: "Rediger jobb",
       location: "GPS", 
       export: "Eksport",
+
+      // Times
+      times: {
+        arrival: "Reise",
+        work: "Arbeid", 
+        departure: "Avreise",
+        startTime: "Start",
+        endTime: "Slutt",
+        date: "Dato",
+        selectDate: "Velg dato"
+      },
 
       // Job Entry Form - Customer Data
       customerData: "Kundedata",

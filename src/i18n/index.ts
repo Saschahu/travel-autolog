@@ -186,13 +186,9 @@ const resources = {
       machine: 'Machine',
       times: 'Times',
       overtime: 'Overtime',
-      finish: 'Finish',
       hotelData: 'Hotel Data',
       travel: 'Travel',
       report: 'Report',
-      
-      // GPS Tracking
-      gpsTracking: 'GPS Tracking',
       
       // Dashboard and Quick Actions
       quickActions: 'Quick Actions',
@@ -602,13 +598,9 @@ const resources = {
       machine: 'Maschine',
       times: 'Zeiten',
       overtime: 'Überstunden',
-      report: 'Report',
       hotelData: 'Hotel-Daten',
       travel: 'Reise',
       finish: 'Abschluss',
-      
-      // GPS Tracking
-      gpsTracking: 'GPS-Verfolgung',
       
       // Dashboard and Quick Actions
       quickActions: 'Schnellaktionen',

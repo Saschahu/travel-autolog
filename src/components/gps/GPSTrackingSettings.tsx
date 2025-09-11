@@ -56,13 +56,13 @@ export const GPSTrackingSettings: React.FC = () => {
     try {
       const deletedCount = await cleanupOldTracks(60);
       toast({
-        title: t('gps.cleanup.success'),
-        description: t('gps.cleanup.deletedCount', { count: deletedCount }),
+        title: 'Cleanup Successful',
+        description: `Deleted ${deletedCount} old tracks`,
       });
     } catch (error) {
       toast({
-        title: t('gps.cleanup.error'),
-        description: t('gps.cleanup.failed'),
+        title: 'Cleanup Failed',
+        description: 'Failed to cleanup old tracks',
         variant: 'destructive',
       });
     } finally {
@@ -74,13 +74,13 @@ export const GPSTrackingSettings: React.FC = () => {
     try {
       await exportGPX();
       toast({
-        title: t('gps.export.success'),
-        description: t('gps.export.gpxDownloaded'),
+        title: 'Export Successful',
+        description: 'GPX file downloaded',
       });
     } catch (error) {
       toast({
-        title: t('gps.export.error'),
-        description: t('gps.export.failed'),
+        title: 'Export Failed',
+        description: 'Failed to export track',
         variant: 'destructive',
       });
     }
@@ -90,13 +90,13 @@ export const GPSTrackingSettings: React.FC = () => {
     try {
       await exportGeoJSON();
       toast({
-        title: t('gps.export.success'),
-        description: t('gps.export.geojsonDownloaded'),
+        title: 'Export Successful',
+        description: 'GeoJSON file downloaded',
       });
     } catch (error) {
       toast({
-        title: t('gps.export.error'),
-        description: t('gps.export.failed'),
+        title: 'Export Failed',
+        description: 'Failed to export track',
         variant: 'destructive',
       });
     }
@@ -108,28 +108,28 @@ export const GPSTrackingSettings: React.FC = () => {
         return (
           <Badge variant="default" className="bg-green-500">
             <Activity className="mr-1 h-3 w-3" />
-            {t('gps.tracking.active')}
+            Active
           </Badge>
         );
       case 'starting':
         return (
           <Badge variant="secondary">
             <Loader2 className="mr-1 h-3 w-3 animate-spin" />
-            {t('gps.tracking.starting')}
+            Starting...
           </Badge>
         );
       case 'error':
         return (
           <Badge variant="destructive">
             <AlertCircle className="mr-1 h-3 w-3" />
-            {t('gps.tracking.error')}
+            Error
           </Badge>
         );
       default:
         return (
           <Badge variant="outline">
             <CheckCircle className="mr-1 h-3 w-3" />
-            {t('gps.tracking.stopped')}
+            Stopped
           </Badge>
         );
     }
@@ -166,9 +166,9 @@ export const GPSTrackingSettings: React.FC = () => {
           <div className="flex items-center justify-between p-4 border rounded-lg">
             <div className="flex items-center gap-3">
               <div>
-                <div className="font-medium">{t('gps.tracking.toggle')}</div>
+                <div className="font-medium">Enable Tracking</div>
                 <div className="text-sm text-muted-foreground">
-                  {t('gps.tracking.toggleDescription')}
+                  Record GPS points while active
                 </div>
               </div>
             </div>
@@ -187,14 +187,14 @@ export const GPSTrackingSettings: React.FC = () => {
             <div className="text-center">
               <div className="flex items-center justify-center gap-1 text-sm text-muted-foreground">
                 <MapPin className="h-4 w-4" />
-                {t('gps.stats.pointsToday')}
+                Points Today
               </div>
               <div className="text-2xl font-bold">{pointCount}</div>
             </div>
             <div className="text-center">
               <div className="flex items-center justify-center gap-1 text-sm text-muted-foreground">
                 <Navigation className="h-4 w-4" />
-                {t('gps.stats.distanceToday')}
+                Distance Today
               </div>
               <div className="text-2xl font-bold">{distance}</div>
             </div>
@@ -204,7 +204,7 @@ export const GPSTrackingSettings: React.FC = () => {
 
           {/* Export Options */}
           <div className="space-y-3">
-            <h4 className="font-medium">{t('gps.export.title')}</h4>
+            <h4 className="font-medium">Export Today's Track</h4>
             <div className="flex gap-2">
               <Button
                 variant="outline"
@@ -214,7 +214,7 @@ export const GPSTrackingSettings: React.FC = () => {
                 className="flex-1"
               >
                 <Download className="mr-2 h-4 w-4" />
-                {t('gps.export.gpx')}
+                Export GPX
               </Button>
               <Button
                 variant="outline"
@@ -224,12 +224,12 @@ export const GPSTrackingSettings: React.FC = () => {
                 className="flex-1"
               >
                 <Download className="mr-2 h-4 w-4" />
-                {t('gps.export.geojson')}
+                Export GeoJSON
               </Button>
             </div>
             {pointCount === 0 && (
               <p className="text-xs text-muted-foreground">
-                {t('gps.export.noDataToExport')}
+                No GPS data recorded today
               </p>
             )}
           </div>
@@ -238,7 +238,7 @@ export const GPSTrackingSettings: React.FC = () => {
 
           {/* Maintenance */}
           <div className="space-y-3">
-            <h4 className="font-medium">{t('gps.maintenance.title')}</h4>
+            <h4 className="font-medium">Maintenance</h4>
             <AlertDialog>
               <AlertDialogTrigger asChild>
                 <Button
@@ -251,26 +251,26 @@ export const GPSTrackingSettings: React.FC = () => {
                   ) : (
                     <Trash2 className="mr-2 h-4 w-4" />
                   )}
-                  {t('gps.cleanup.button')}
+                  Cleanup Old Tracks
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <AlertDialogTitle>{t('gps.cleanup.confirmTitle')}</AlertDialogTitle>
+                  <AlertDialogTitle>Delete Old Tracks?</AlertDialogTitle>
                   <AlertDialogDescription>
-                    {t('gps.cleanup.confirmDescription')}
+                    This will delete all GPS tracks older than 60 days. This action cannot be undone.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel>{t('common.cancel')}</AlertDialogCancel>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
                   <AlertDialogAction onClick={handleCleanup}>
-                    {t('gps.cleanup.confirm')}
+                    Delete
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
             <p className="text-xs text-muted-foreground">
-              {t('gps.cleanup.description')}
+              Automatically removes tracks older than 60 days
             </p>
           </div>
 
@@ -278,7 +278,7 @@ export const GPSTrackingSettings: React.FC = () => {
           <Alert>
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
-              {t('gps.backgroundMode.info')}
+              Background tracking requires additional permissions on Android devices.
             </AlertDescription>
           </Alert>
         </CardContent>

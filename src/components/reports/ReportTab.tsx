@@ -113,9 +113,10 @@ export const ReportTab = ({ job, onJobUpdate }: ReportTabProps) => {
     const updatedReports = [...reports];
     const existingIndex = updatedReports.findIndex(r => r.dayIndex === currentDayIndex);
     
+    const existing = reports.find(r => r.dayIndex === currentDayIndex);
     const reportData: DayReport = {
       dayIndex: currentDayIndex,
-      dateISO: job.days?.[currentDayIndex]?.date,
+      dateISO: existing?.dateISO ?? job.days?.[currentDayIndex]?.date,
       text: textToSave
     };
 

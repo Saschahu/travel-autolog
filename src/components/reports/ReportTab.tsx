@@ -27,7 +27,8 @@ export const ReportTab = ({ job, onJobUpdate }: ReportTabProps) => {
   const [isDirty, setIsDirty] = useState(false);
   
   const reports = job.reports || [];
-  const totalDays = job.estimatedDays || 1;
+  const estimated = job.estimatedDays || 1;
+  const totalDays = Math.max(job.days?.length || 0, reports.length || 0, estimated);
 
   console.log('ReportTab - totalDays:', totalDays, 'reports:', reports.length, 'job.days:', job.days?.length);
 
@@ -243,7 +244,7 @@ export const ReportTab = ({ job, onJobUpdate }: ReportTabProps) => {
               placeholder={t('report.placeholder', { 
                 label: currentReport?.dateISO 
                   ? t('report.dayWithDate', { date: dayTitle }) 
-                  : t('report.dayCounter', { current: currentDayIndex + 1, total: totalDays })
+                  : t('report.day', { n: `${currentDayIndex + 1}/${totalDays}` })
               })}
               value={currentText}
               onChange={(e) => handleTextChange(e.target.value)}

@@ -421,12 +421,12 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
         {Array.from({ length: plannedDays }, (_, dayIndex) => (
           <Card key={dayIndex} className="border-muted">
             <CardHeader className="pb-2">
-              <CardTitle className="text-base">{t('report.day', { n: `${dayIndex + 1}/${plannedDays}` })}</CardTitle>
+              <CardTitle className="text-base">{`${t('report.tab')} ${dayIndex + 1}/${plannedDays}`}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">{/* Reduced spacing */}
               {/* Datum für den ganzen Tag */}
               <div className="mb-3">
-                <Label htmlFor={`day-date-${dayIndex}`} className="text-xs font-medium text-muted-foreground mb-1 block">{t('times.date')}</Label>
+                <Label htmlFor={`day-date-${dayIndex}`} className="text-xs font-medium text-muted-foreground mb-1 block">{t('date')}</Label>
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button

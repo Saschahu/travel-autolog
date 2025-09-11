@@ -186,7 +186,7 @@ export const ReportTab = ({ job, onJobUpdate }: ReportTabProps) => {
             {Array.from({ length: totalDays }, (_, i) => {
               const isActive = i === currentDayIndex;
               const dateStr = dayDates[i];
-              const label = dateStr ? format(new Date(dateStr), 'dd.MM.yyyy') : formatDayTitle(reports.find(r => r.dayIndex === i) || { dayIndex: i, text: '' }, i);
+              const label = `Tag ${i + 1}`;
               
               return (
                 <Button

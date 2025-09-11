@@ -28,10 +28,13 @@ export const ReportTab = ({ job, onJobUpdate }: ReportTabProps) => {
   
   const reports = job.reports || [];
   const totalDays = job.estimatedDays || 1;
-  
-  // Get only reports that have actual dates (working days)
-  const workingDayReports = reports.filter(report => report.dateISO);
-  const hasWorkingDays = workingDayReports.length > 0;
+
+  // Prefer dates from time entries (days), fallback to report dates
+  const dayDates: (string | undefined)[] = Array.from({ length: totalDays }, (_, i) => {
+    const dayDate = job.days?.[i]?.date as string | undefined;
+    const reportDate = reports.find(r => r.dayIndex === i)?.dateISO;
+    return dayDate ?? reportDate;
+  });
 
   // Load current day's text when day changes
   useEffect(() => {
@@ -172,56 +175,29 @@ export const ReportTab = ({ job, onJobUpdate }: ReportTabProps) => {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {/* Day tabs - Show working days with actual dates */}
-          {hasWorkingDays && (
-            <div className="flex gap-2 mb-3 overflow-x-auto" style={{ scrollbarWidth: 'thin' }}>
-              {workingDayReports.map((report) => {
-                const isActive = report.dayIndex === currentDayIndex;
-                const dateDisplay = report.dateISO ? format(new Date(report.dateISO), 'dd.MM.yyyy') : `Tag ${report.dayIndex + 1}`;
-                
-                return (
-                  <Button
-                    key={report.dayIndex}
-                    data-testid={`report-tab-${report.dayIndex}`}
-                    variant={isActive ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => handleDayClick(report.dayIndex)}
-                    className={`rounded-xl px-3 py-1 whitespace-nowrap ${
-                      isActive ? 'bg-slate-900 text-white' : ''
-                    }`}
-                  >
-                    {dateDisplay}
-                  </Button>
-                );
-              })}
-            </div>
-          )}
-          
-          {/* Fallback tabs for all days if no working days with dates exist */}
-          {!hasWorkingDays && (
-            <div className="flex gap-2 mb-3 overflow-x-auto" style={{ scrollbarWidth: 'thin' }}>
-              {Array.from({ length: totalDays }, (_, i) => {
-                const report = reports.find(r => r.dayIndex === i);
-                const isActive = i === currentDayIndex;
-                const dayTitle = formatDayTitle(report || { dayIndex: i, text: '' }, i);
-                
-                return (
-                  <Button
-                    key={i}
-                    data-testid={`report-tab-${i}`}
-                    variant={isActive ? "default" : "outline"}
-                    size="sm"
-                    onClick={() => handleDayClick(i)}
-                    className={`rounded-xl px-3 py-1 whitespace-nowrap ${
-                      isActive ? 'bg-slate-900 text-white' : ''
-                    }`}
-                  >
-                    {dayTitle}
-                  </Button>
-                );
-              })}
-            </div>
-          )}
+          {/* Day tabs derived from days (time entries) with fallback to reports */}
+          <div className="flex gap-2 mb-3 overflow-x-auto" style={{ scrollbarWidth: 'thin' }}>
+            {Array.from({ length: totalDays }, (_, i) => {
+              const isActive = i === currentDayIndex;
+              const dateStr = dayDates[i];
+              const label = dateStr ? format(new Date(dateStr), 'dd.MM.yyyy') : formatDayTitle(reports.find(r => r.dayIndex === i) || { dayIndex: i, text: '' }, i);
+              
+              return (
+                <Button
+                  key={i}
+                  data-testid={`report-tab-${i}`}
+                  variant={isActive ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => handleDayClick(i)}
+                  className={`rounded-xl px-3 py-1 whitespace-nowrap ${
+                    isActive ? 'bg-slate-900 text-white' : ''
+                  }`}
+                >
+                  {label}
+                </Button>
+              );
+            })}
+          </div>
 
           {/* Date picker for current day */}
           <div className="flex items-center gap-3 mb-4">
@@ -232,12 +208,12 @@ export const ReportTab = ({ job, onJobUpdate }: ReportTabProps) => {
                   variant="outline"
                   className={cn(
                     "w-[200px] justify-start text-left font-normal",
-                    !currentReport?.dateISO && "text-muted-foreground"
+                    !dayDates[currentDayIndex] && "text-muted-foreground"
                   )}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
-                  {currentReport?.dateISO ? (
-                    format(new Date(currentReport.dateISO), "dd.MM.yyyy")
+                  {dayDates[currentDayIndex] ? (
+                    format(new Date(dayDates[currentDayIndex] as string), "dd.MM.yyyy")
                   ) : (
                     <span>Datum wählen</span>
                   )}
@@ -246,7 +222,7 @@ export const ReportTab = ({ job, onJobUpdate }: ReportTabProps) => {
               <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
                   mode="single"
-                  selected={currentReport?.dateISO ? new Date(currentReport.dateISO) : undefined}
+                  selected={dayDates[currentDayIndex] ? new Date(dayDates[currentDayIndex] as string) : undefined}
                   onSelect={handleDateChange}
                   initialFocus
                   className={cn("p-3 pointer-events-auto")}

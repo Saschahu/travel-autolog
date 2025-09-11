@@ -193,6 +193,18 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
 
   const handleJobUpdate = (updatedJob: any) => {
     setCurrentJob(updatedJob);
+    // Persist only the reports field to Supabase to keep DB in sync
+    if (updatedJob?.id) {
+      supabase
+        .from('jobs')
+        .update({ reports: updatedJob.reports })
+        .eq('id', updatedJob.id)
+        .then(({ error }) => {
+          if (error) {
+            console.error('Error updating reports:', error);
+          }
+        });
+    }
   };
 
   const saveJobData = async (isPartialSave = false) => {
@@ -203,6 +215,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
       
       const { data: { user } } = await supabase.auth.getUser();
       console.log('User data:', user);
+    
       
       if (!user) {
         throw new Error(t('userNotLoggedIn'));

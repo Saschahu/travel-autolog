@@ -238,7 +238,7 @@ export const ReportTab = ({ job, onJobUpdate }: ReportTabProps) => {
               placeholder={t('job.report.placeholder', { 
                 label: currentReport?.dateISO 
                   ? t('job.report.dayWithDate', { date: dayTitle }) 
-                  : t('job.report.day', { n: currentDayIndex + 1 })
+                  : t('job.report.dayCounter', { current: currentDayIndex + 1, total: totalDays })
               })}
               value={currentText}
               onChange={(e) => handleTextChange(e.target.value)}

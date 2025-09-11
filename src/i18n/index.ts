@@ -134,6 +134,7 @@ const jobTranslationsDe = {
   report: {
     tab: 'Report',
     day: 'Tag {{n}}',
+    dayCounter: 'Tag {{current}}/{{total}}',
     dayWithDate: '{{date}}',
     placeholder: 'Report für {{label}}',
     save: 'Speichern',

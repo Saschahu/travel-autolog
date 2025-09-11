@@ -404,24 +404,27 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
             <CardHeader className="pb-2">
               <CardTitle className="text-base">{t('jobs:report.day', { n: dayIndex + 1 })}</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-3">{/* Reduced spacing */}
               {/* Datum für den ganzen Tag */}
-              <div>
-                <Label htmlFor={`day-date-${dayIndex}`} className="text-sm font-medium">{t('jobs:times.date')}</Label>
+              <div className="mb-3">
+                <Label htmlFor={`day-date-${dayIndex}`} className="text-xs font-medium text-muted-foreground mb-1 block">{t('jobs:times.date')}</Label>
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button
                         variant="outline"
+                        size="sm"
                         className={cn(
-                          "w-full justify-start text-left font-normal mt-1",
+                          "w-full justify-start text-left font-normal h-8",
                           !jobData[`dayDate${dayIndex}` as keyof JobData] && "text-muted-foreground"
                         )}
                       >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {jobData[`dayDate${dayIndex}` as keyof JobData]
-                          ? parseYmdToLocalDate(jobData[`dayDate${dayIndex}` as keyof JobData] as string)?.toLocaleDateString('de-DE')
-                          : <span>{t('jobs:times.selectDate')}</span>
-                        }
+                        <CalendarIcon className="mr-2 h-3 w-3" />
+                        <span className="text-xs">
+                          {jobData[`dayDate${dayIndex}` as keyof JobData]
+                            ? parseYmdToLocalDate(jobData[`dayDate${dayIndex}` as keyof JobData] as string)?.toLocaleDateString('de-DE')
+                            : t('jobs:times.selectDate')
+                          }
+                        </span>
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0" align="start">
@@ -441,83 +444,86 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                   </Popover>
               </div>
 
-              {/* Anreise */}
-              <div>
-                <Label className="text-sm font-medium text-muted-foreground mb-2 block">{t('jobs:times.arrival')}</Label>
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <Label htmlFor={`travel-start-${dayIndex}`} className="text-xs">{t('jobs:times.startTime')}</Label>
-                    <Input
-                      id={`travel-start-${dayIndex}`}
-                      type="time"
-                      value={jobData[`travelStart${dayIndex}`] || ''}
-                      onChange={(e) => updateField(`travelStart${dayIndex}` as any, e.target.value)}
-                      className="mt-1"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor={`travel-end-${dayIndex}`} className="text-xs">{t('jobs:times.endTime')}</Label>
-                    <Input
-                      id={`travel-end-${dayIndex}`}
-                      type="time"
-                      value={jobData[`travelEnd${dayIndex}`] || ''}
-                      onChange={(e) => updateField(`travelEnd${dayIndex}` as any, e.target.value)}
-                      className="mt-1"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Arbeit */}
-              <div>
-                <Label className="text-sm font-medium text-muted-foreground mb-2 block">{t('jobs:times.work')}</Label>
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <Label htmlFor={`work-start-${dayIndex}`} className="text-xs">{t('jobs:times.startTime')}</Label>
-                    <Input
-                      id={`work-start-${dayIndex}`}
-                      type="time"
-                      value={jobData[`workStart${dayIndex}`] || ''}
-                      onChange={(e) => updateField(`workStart${dayIndex}` as any, e.target.value)}
-                      className="mt-1"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor={`work-end-${dayIndex}`} className="text-xs">{t('jobs:times.endTime')}</Label>
-                    <Input
-                      id={`work-end-${dayIndex}`}
-                      type="time"
-                      value={jobData[`workEnd${dayIndex}`] || ''}
-                      onChange={(e) => updateField(`workEnd${dayIndex}` as any, e.target.value)}
-                      className="mt-1"
-                    />
+              {/* Kompakte Zeit-Eingaben */}
+              <div className="space-y-3">
+                {/* Anreise */}
+                <div className="bg-muted/20 rounded-lg p-3">
+                  <Label className="text-xs font-medium text-muted-foreground mb-2 block">{t('jobs:times.arrival')}</Label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <Label htmlFor={`travel-start-${dayIndex}`} className="text-xs text-muted-foreground">{t('jobs:times.startTime')}</Label>
+                      <Input
+                        id={`travel-start-${dayIndex}`}
+                        type="time"
+                        value={jobData[`travelStart${dayIndex}`] || ''}
+                        onChange={(e) => updateField(`travelStart${dayIndex}` as any, e.target.value)}
+                        className="h-8 text-xs"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor={`travel-end-${dayIndex}`} className="text-xs text-muted-foreground">{t('jobs:times.endTime')}</Label>
+                      <Input
+                        id={`travel-end-${dayIndex}`}
+                        type="time"
+                        value={jobData[`travelEnd${dayIndex}`] || ''}
+                        onChange={(e) => updateField(`travelEnd${dayIndex}` as any, e.target.value)}
+                        className="h-8 text-xs"
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Abreise */}
-              <div>
-                <Label className="text-sm font-medium text-muted-foreground mb-2 block">{t('jobs:times.departure')}</Label>
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <Label htmlFor={`departure-start-${dayIndex}`} className="text-xs">{t('jobs:times.startTime')}</Label>
-                    <Input
-                      id={`departure-start-${dayIndex}`}
-                      type="time"
-                      value={jobData[`departureStart${dayIndex}`] || ''}
-                      onChange={(e) => updateField(`departureStart${dayIndex}` as any, e.target.value)}
-                      className="mt-1"
-                    />
+                {/* Arbeit */}
+                <div className="bg-primary/5 rounded-lg p-3">
+                  <Label className="text-xs font-medium text-muted-foreground mb-2 block">{t('jobs:times.work')}</Label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <Label htmlFor={`work-start-${dayIndex}`} className="text-xs text-muted-foreground">{t('jobs:times.startTime')}</Label>
+                      <Input
+                        id={`work-start-${dayIndex}`}
+                        type="time"
+                        value={jobData[`workStart${dayIndex}`] || ''}
+                        onChange={(e) => updateField(`workStart${dayIndex}` as any, e.target.value)}
+                        className="h-8 text-xs"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor={`work-end-${dayIndex}`} className="text-xs text-muted-foreground">{t('jobs:times.endTime')}</Label>
+                      <Input
+                        id={`work-end-${dayIndex}`}
+                        type="time"
+                        value={jobData[`workEnd${dayIndex}`] || ''}
+                        onChange={(e) => updateField(`workEnd${dayIndex}` as any, e.target.value)}
+                        className="h-8 text-xs"
+                      />
+                    </div>
                   </div>
-                  <div>
-                    <Label htmlFor={`departure-end-${dayIndex}`} className="text-xs">{t('jobs:times.endTime')}</Label>
-                    <Input
-                      id={`departure-end-${dayIndex}`}
-                      type="time"
-                      value={jobData[`departureEnd${dayIndex}`] || ''}
-                      onChange={(e) => updateField(`departureEnd${dayIndex}` as any, e.target.value)}
-                      className="mt-1"
-                    />
+                </div>
+
+                {/* Abreise */}
+                <div className="bg-muted/20 rounded-lg p-3">
+                  <Label className="text-xs font-medium text-muted-foreground mb-2 block">{t('jobs:times.departure')}</Label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <Label htmlFor={`departure-start-${dayIndex}`} className="text-xs text-muted-foreground">{t('jobs:times.startTime')}</Label>
+                      <Input
+                        id={`departure-start-${dayIndex}`}
+                        type="time"
+                        value={jobData[`departureStart${dayIndex}`] || ''}
+                        onChange={(e) => updateField(`departureStart${dayIndex}` as any, e.target.value)}
+                        className="h-8 text-xs"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor={`departure-end-${dayIndex}`} className="text-xs text-muted-foreground">{t('jobs:times.endTime')}</Label>
+                      <Input
+                        id={`departure-end-${dayIndex}`}
+                        type="time"
+                        value={jobData[`departureEnd${dayIndex}`] || ''}
+                        onChange={(e) => updateField(`departureEnd${dayIndex}` as any, e.target.value)}
+                        className="h-8 text-xs"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>

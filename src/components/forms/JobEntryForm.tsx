@@ -1015,67 +1015,69 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
 
       {/* Fixed Navigation Buttons */}
       <div className="p-4 border-t bg-background">
-        <div className="flex justify-between gap-2">
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              onClick={() => {
-                const currentIndex = steps.findIndex(s => s.id === currentStep);
-                if (currentIndex > 0) {
-                  setCurrentStep(steps[currentIndex - 1].id as any);
-                }
-              }}
-              disabled={currentStep === 'customer'}
-            >
-              {t('back')}
-            </Button>
-            
-            {/* "Neuer Job" button entfernt - nur im Dashboard verfügbar */}
-          </div>
+        <div className="flex justify-between items-center gap-2">
+          {/* Left: Back button */}
+          <Button
+            variant="outline"
+            onClick={() => {
+              const currentIndex = steps.findIndex(s => s.id === currentStep);
+              if (currentIndex > 0) {
+                setCurrentStep(steps[currentIndex - 1].id as any);
+              }
+            }}
+            disabled={currentStep === 'customer'}
+          >
+            {t('back')}
+          </Button>
           
-          <div className="flex gap-2">
-            {/* Save partial data button removed - auto-save on navigation */}
-            
-            {/* Main action button */}
-            <Button
-              onClick={async () => {
-                if (currentStep === 'customer') {
-                  // Save customer data (partial save)
-                  await saveJobData(true);
-                } else if (currentStep === 'machine' && isCreatingNewJob) {
-                  // For new jobs: save and return to dashboard
-                  console.log('Machine step for new job - attempting to save and return to dashboard');
-                  try {
-                    const success = await saveJobData(true);
-                    console.log('Save result:', success);
-                    if (success) {
-                      console.log('Save successful, calling onJobSaved');
-                      onJobSaved?.();
-                    } else {
-                      console.error('Save failed, not returning to dashboard');
-                    }
-                  } catch (error) {
-                    console.error('Error in machine step save:', error);
+          {/* Center: Dashboard button */}
+          <Button
+            variant="outline"
+            onClick={() => onJobSaved?.()}
+            disabled={isLoading}
+          >
+            Dashboard
+          </Button>
+          
+          {/* Right: Next/Action button */}
+          <Button
+            onClick={async () => {
+              if (currentStep === 'customer') {
+                // Save customer data (partial save)
+                await saveJobData(true);
+              } else if (currentStep === 'machine' && isCreatingNewJob) {
+                // For new jobs: save and return to dashboard
+                console.log('Machine step for new job - attempting to save and return to dashboard');
+                try {
+                  const success = await saveJobData(true);
+                  console.log('Save result:', success);
+                  if (success) {
+                    console.log('Save successful, calling onJobSaved');
+                    onJobSaved?.();
+                  } else {
+                    console.error('Save failed, not returning to dashboard');
                   }
-                } else {
-                  const currentIndex = steps.findIndex(s => s.id === currentStep);
-                  if (currentIndex < steps.length - 1) {
-                    setCurrentStep(steps[currentIndex + 1].id as any);
-                  } else if (currentStep === 'finish') {
-                    // Complete the job
-                    await saveJobData(false);
-                  }
+                } catch (error) {
+                  console.error('Error in machine step save:', error);
                 }
-              }}
-              disabled={isLoading || (currentStep === 'customer' && !jobData.customerName)}
-            >
-              {isLoading ? t('save') : 
-               currentStep === 'customer' ? t('next') : 
-               currentStep === 'machine' && isCreatingNewJob ? t('dashboard') :
-               currentStep === 'finish' ? t('completeJob') : 
-               t('next')}
-            </Button>
-          </div>
+              } else {
+                const currentIndex = steps.findIndex(s => s.id === currentStep);
+                if (currentIndex < steps.length - 1) {
+                  setCurrentStep(steps[currentIndex + 1].id as any);
+                } else if (currentStep === 'finish') {
+                  // Complete the job
+                  await saveJobData(false);
+                }
+              }
+            }}
+            disabled={isLoading || (currentStep === 'customer' && !jobData.customerName)}
+          >
+            {isLoading ? t('save') : 
+             currentStep === 'customer' ? t('next') : 
+             currentStep === 'machine' && isCreatingNewJob ? t('dashboard') :
+             currentStep === 'finish' ? t('completeJob') : 
+             t('next')}
+          </Button>
         </div>
       </div>
     </div>

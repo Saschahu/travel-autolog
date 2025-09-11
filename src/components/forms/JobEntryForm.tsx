@@ -408,32 +408,36 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
               {/* Datum für den ganzen Tag */}
               <div>
                 <Label htmlFor={`day-date-${dayIndex}`} className="text-sm font-medium">{t('jobs:times.date')}</Label>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className={cn(
-                        "w-full justify-start text-left font-normal mt-1",
-                        !jobData[`dayDate${dayIndex}`] && "text-muted-foreground"
-                      )}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {jobData[`dayDate${dayIndex}`]
-                        ? parseYmdToLocalDate(jobData[`dayDate${dayIndex}`])?.toLocaleDateString()
-                        : <span>{t('jobs:times.selectDate')}</span>
-                      }
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={parseYmdToLocalDate(jobData[`dayDate${dayIndex}`])}
-                      onSelect={(date) => updateField(`dayDate${dayIndex}` as any, formatLocalToYmd(date))}
-                      initialFocus
-                      className="p-3 pointer-events-auto"
-                    />
-                  </PopoverContent>
-                </Popover>
+                 <Popover>
+                   <PopoverTrigger asChild>
+                     <Button
+                       variant="outline"
+                       className={cn(
+                         "w-full justify-start text-left font-normal mt-1",
+                         !jobData[`dayDate${dayIndex}`] && "text-muted-foreground"
+                       )}
+                     >
+                       <CalendarIcon className="mr-2 h-4 w-4" />
+                       {jobData[`dayDate${dayIndex}`]
+                         ? parseYmdToLocalDate(jobData[`dayDate${dayIndex}`])?.toLocaleDateString('de-DE')
+                         : <span>{t('jobs:times.selectDate')}</span>
+                       }
+                     </Button>
+                   </PopoverTrigger>
+                   <PopoverContent className="w-auto p-0" align="start">
+                     <Calendar
+                       mode="single"
+                       selected={parseYmdToLocalDate(jobData[`dayDate${dayIndex}`])}
+                       onSelect={(date) => {
+                         if (date) {
+                           updateField(`dayDate${dayIndex}` as any, formatLocalToYmd(date));
+                         }
+                       }}
+                       initialFocus
+                       className="p-3 pointer-events-auto"
+                     />
+                   </PopoverContent>
+                 </Popover>
               </div>
 
               {/* Anreise */}

@@ -407,7 +407,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
             <CardContent className="space-y-4">
               {/* Datum für den ganzen Tag */}
               <div>
-                <Label htmlFor={`day-date-${dayIndex}`} className="text-sm font-medium">Datum</Label>
+                <Label htmlFor={`day-date-${dayIndex}`} className="text-sm font-medium">{t('jobs:times.date')}</Label>
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button
@@ -420,7 +420,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                       <CalendarIcon className="mr-2 h-4 w-4" />
                       {jobData[`dayDate${dayIndex}`]
                         ? parseYmdToLocalDate(jobData[`dayDate${dayIndex}`])?.toLocaleDateString()
-                        : <span>Datum wählen</span>
+                        : <span>{t('jobs:times.selectDate')}</span>
                       }
                     </Button>
                   </PopoverTrigger>
@@ -438,10 +438,10 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
 
               {/* Anreise */}
               <div>
-                <Label className="text-sm font-medium text-muted-foreground mb-2 block">{t('times.arrival')}</Label>
+                <Label className="text-sm font-medium text-muted-foreground mb-2 block">{t('jobs:times.arrival')}</Label>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <Label htmlFor={`travel-start-${dayIndex}`} className="text-xs">{t('times.startTime')}</Label>
+                    <Label htmlFor={`travel-start-${dayIndex}`} className="text-xs">{t('jobs:times.startTime')}</Label>
                     <Input
                       id={`travel-start-${dayIndex}`}
                       type="time"
@@ -451,7 +451,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                     />
                   </div>
                   <div>
-                    <Label htmlFor={`travel-end-${dayIndex}`} className="text-xs">{t('times.endTime')}</Label>
+                    <Label htmlFor={`travel-end-${dayIndex}`} className="text-xs">{t('jobs:times.endTime')}</Label>
                     <Input
                       id={`travel-end-${dayIndex}`}
                       type="time"
@@ -465,10 +465,10 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
 
               {/* Arbeit */}
               <div>
-                <Label className="text-sm font-medium text-muted-foreground mb-2 block">{t('times.work')}</Label>
+                <Label className="text-sm font-medium text-muted-foreground mb-2 block">{t('jobs:times.work')}</Label>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <Label htmlFor={`work-start-${dayIndex}`} className="text-xs">{t('times.startTime')}</Label>
+                    <Label htmlFor={`work-start-${dayIndex}`} className="text-xs">{t('jobs:times.startTime')}</Label>
                     <Input
                       id={`work-start-${dayIndex}`}
                       type="time"
@@ -478,7 +478,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                     />
                   </div>
                   <div>
-                    <Label htmlFor={`work-end-${dayIndex}`} className="text-xs">{t('times.endTime')}</Label>
+                    <Label htmlFor={`work-end-${dayIndex}`} className="text-xs">{t('jobs:times.endTime')}</Label>
                     <Input
                       id={`work-end-${dayIndex}`}
                       type="time"
@@ -492,10 +492,10 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
 
               {/* Abreise */}
               <div>
-                <Label className="text-sm font-medium text-muted-foreground mb-2 block">{t('times.departure')}</Label>
+                <Label className="text-sm font-medium text-muted-foreground mb-2 block">{t('jobs:times.departure')}</Label>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <Label htmlFor={`departure-start-${dayIndex}`} className="text-xs">{t('times.startTime')}</Label>
+                    <Label htmlFor={`departure-start-${dayIndex}`} className="text-xs">{t('jobs:times.startTime')}</Label>
                     <Input
                       id={`departure-start-${dayIndex}`}
                       type="time"
@@ -505,7 +505,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                     />
                   </div>
                   <div>
-                    <Label htmlFor={`departure-end-${dayIndex}`} className="text-xs">{t('times.endTime')}</Label>
+                    <Label htmlFor={`departure-end-${dayIndex}`} className="text-xs">{t('jobs:times.endTime')}</Label>
                     <Input
                       id={`departure-end-${dayIndex}`}
                       type="time"

@@ -39,7 +39,9 @@ const jobTranslationsEn = {
     work: 'Work',
     departure: 'Departure', 
     startTime: 'Start Time',
-    endTime: 'End Time'
+    endTime: 'End Time',
+    date: 'Date',
+    selectDate: 'Select date'
   },
   machine: {
     manufacturer: 'Manufacturer',
@@ -115,7 +117,9 @@ const jobTranslationsDe = {
     work: 'Arbeit', 
     departure: 'Abreise',
     startTime: 'Start Zeit',
-    endTime: 'Ende Zeit'
+    endTime: 'Ende Zeit',
+    date: 'Datum',
+    selectDate: 'Datum wählen'
   },
   machine: {
     manufacturer: 'Hersteller',

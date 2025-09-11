@@ -77,6 +77,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
   const [currentJobId, setCurrentJobId] = useState<string | null>(jobId || null);
   const [isEditingJob, setIsEditingJob] = useState(Boolean(jobId));
   const [isCreatingNewJob, setIsCreatingNewJob] = useState(!Boolean(jobId)); // Track if this was originally a new job
+  const [currentJob, setCurrentJob] = useState<any>(null);
   const { toast } = useToast();
 
   // Load existing job data when jobId is provided
@@ -154,6 +155,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
 
             setJobData(newJobData);
             setCurrentJobId(job.id);
+            setCurrentJob(job);
             setIsEditingJob(true);
             setCurrentStep('customer'); // Start at customer tab for consistency
           }
@@ -187,6 +189,10 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
 
   const getCurrentDate = () => {
     return new Date().toISOString().split('T')[0];
+  };
+
+  const handleJobUpdate = (updatedJob: any) => {
+    setCurrentJob(updatedJob);
   };
 
   const saveJobData = async (isPartialSave = false) => {
@@ -568,7 +574,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
   };
 
   const renderReportSection = () => {
-    if (!isEditingJob || !currentJobId) {
+    if (!isEditingJob || !currentJobId || !currentJob) {
       return (
         <Card className="border-primary/20">
           <CardContent className="pt-6">
@@ -578,13 +584,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
       );
     }
 
-    const mockJob = {
-      id: currentJobId,
-      customer_name: jobData.customerName || '',
-      // Add other required fields for the ReportTab
-    };
-
-    return <ReportTab job={mockJob as any} onJobUpdate={() => {}} />;
+    return <ReportTab job={currentJob} onJobUpdate={handleJobUpdate} />;
   };
 
   const renderFinishSection = () => {

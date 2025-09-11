@@ -1043,7 +1043,7 @@ const resources = {
       // Tabs / Navigation
       customer: "Kunde",
       machine: "Maskin", 
-      timesTabs: "Tider",
+      timesTab: "Tider",
       overtime: "Overtid",
       finish: "Ferdig",
       reports: "Rapporter",
@@ -1236,7 +1236,7 @@ const resources = {
         tabs: {
           customer: "Kunde",
           machine: "Maskin",
-          times: "Tider",
+          timesTab: "Tider",
           overtime: "Overtid",
           report: "Rapport",
           finish: "Ferdig"

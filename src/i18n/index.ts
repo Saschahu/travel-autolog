@@ -604,6 +604,7 @@ const resources = {
       overtime: 'Überstunden',
       hotelData: 'Hotel-Daten',
       travel: 'Reise',
+      report: 'Bericht',
       finish: 'Abschluss',
       
       // Dashboard and Quick Actions

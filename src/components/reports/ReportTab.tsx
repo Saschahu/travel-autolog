@@ -29,12 +29,16 @@ export const ReportTab = ({ job, onJobUpdate }: ReportTabProps) => {
   const reports = job.reports || [];
   const totalDays = job.estimatedDays || 1;
 
+  console.log('ReportTab - totalDays:', totalDays, 'reports:', reports.length, 'job.days:', job.days?.length);
+
   // Prefer dates from time entries (days), fallback to report dates
   const dayDates: (string | undefined)[] = Array.from({ length: totalDays }, (_, i) => {
     const dayDate = job.days?.[i]?.date as string | undefined;
     const reportDate = reports.find(r => r.dayIndex === i)?.dateISO;
     return dayDate ?? reportDate;
   });
+
+  console.log('ReportTab - dayDates:', dayDates);
 
   // Load current day's text when day changes
   useEffect(() => {
@@ -176,7 +180,8 @@ export const ReportTab = ({ job, onJobUpdate }: ReportTabProps) => {
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Day tabs derived from days (time entries) with fallback to reports */}
-          <div className="flex gap-2 mb-3 overflow-x-auto" style={{ scrollbarWidth: 'thin' }}>
+          <div className="flex gap-2 mb-3 overflow-x-auto border border-muted-foreground/20 p-2 rounded-lg" style={{ scrollbarWidth: 'thin' }}>
+            <div className="text-xs text-muted-foreground mb-2">Arbeitstage ({totalDays}):</div>
             {Array.from({ length: totalDays }, (_, i) => {
               const isActive = i === currentDayIndex;
               const dateStr = dayDates[i];

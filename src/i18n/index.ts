@@ -1245,6 +1245,7 @@ const resources = {
         report: {
           tab: "Rapport",
           day: "Dag {{n}}",
+          dayCounter: "Dag {{current}}/{{total}}",
           dayWithDate: "{{date}}",
           placeholder: "Rapport for {{label}}",
           save: "Lagre",

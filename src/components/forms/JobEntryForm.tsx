@@ -12,6 +12,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { removeDuplicateSeptember10th } from '@/utils/fixDuplicateEntry';
 import { OvertimeTab } from '@/components/overtime/OvertimeTab';
 import { ReportTab } from '@/components/reports/ReportTab';
 import { FinishJobTab } from '@/components/finish/FinishJobTab';
@@ -69,6 +70,11 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
 
   // Load existing job data when jobId is provided
   useEffect(() => {
+    // Fix duplicate September 10th entry on component mount
+    removeDuplicateSeptember10th().then(() => {
+      console.log('Duplicate entry cleanup completed');
+    });
+    
     const loadJobData = async () => {
       if (jobId) {
         try {

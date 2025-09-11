@@ -91,7 +91,7 @@ const jobTranslationsDe = {
     machine: 'Maschine',
     times: 'Zeiten', 
     overtime: 'Überstunden',
-    report: 'Report',
+    report: 'Arbeitsbericht',
     finish: 'Abschluss'
   },
   customer: {

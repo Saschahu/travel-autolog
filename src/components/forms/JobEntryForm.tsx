@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -180,40 +180,6 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
   const updateField = (field: keyof JobData, value: string | number) => {
     setJobData(prev => ({ ...prev, [field]: value }));
   };
-
-  // Debounced autosave function
-  const autosaveTimeoutRef = useRef<NodeJS.Timeout>();
-  const autoSaveData = useCallback(async () => {
-    if (currentJobId && customerName) {
-      try {
-        await saveJobData(true); // true = isPartialSave
-        console.log('Autosave completed');
-      } catch (error) {
-        console.error('Autosave failed:', error);
-      }
-    }
-  }, [currentJobId, customerName]);
-
-  const handleTimeFieldBlur = useCallback(() => {
-    // Clear existing timeout
-    if (autosaveTimeoutRef.current) {
-      clearTimeout(autosaveTimeoutRef.current);
-    }
-    
-    // Set new timeout for autosave (500ms delay)
-    autosaveTimeoutRef.current = setTimeout(() => {
-      autoSaveData();
-    }, 500);
-  }, [autoSaveData]);
-
-  // Cleanup timeout on unmount
-  useEffect(() => {
-    return () => {
-      if (autosaveTimeoutRef.current) {
-        clearTimeout(autosaveTimeoutRef.current);
-      }
-    };
-  }, []);
 
   const getCurrentTime = () => {
     return new Date().toTimeString().slice(0, 5);
@@ -481,7 +447,6 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                       type="time"
                       value={jobData[`travelStart${dayIndex}`] || ''}
                       onChange={(e) => updateField(`travelStart${dayIndex}` as any, e.target.value)}
-                      onBlur={handleTimeFieldBlur}
                       className="mt-1"
                     />
                   </div>
@@ -492,7 +457,6 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                       type="time"
                       value={jobData[`travelEnd${dayIndex}`] || ''}
                       onChange={(e) => updateField(`travelEnd${dayIndex}` as any, e.target.value)}
-                      onBlur={handleTimeFieldBlur}
                       className="mt-1"
                     />
                   </div>
@@ -510,7 +474,6 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                       type="time"
                       value={jobData[`workStart${dayIndex}`] || ''}
                       onChange={(e) => updateField(`workStart${dayIndex}` as any, e.target.value)}
-                      onBlur={handleTimeFieldBlur}
                       className="mt-1"
                     />
                   </div>
@@ -521,7 +484,6 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                       type="time"
                       value={jobData[`workEnd${dayIndex}`] || ''}
                       onChange={(e) => updateField(`workEnd${dayIndex}` as any, e.target.value)}
-                      onBlur={handleTimeFieldBlur}
                       className="mt-1"
                     />
                   </div>
@@ -539,7 +501,6 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                       type="time"
                       value={jobData[`departureStart${dayIndex}`] || ''}
                       onChange={(e) => updateField(`departureStart${dayIndex}` as any, e.target.value)}
-                      onBlur={handleTimeFieldBlur}
                       className="mt-1"
                     />
                   </div>
@@ -550,11 +511,23 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                       type="time"
                       value={jobData[`departureEnd${dayIndex}`] || ''}
                       onChange={(e) => updateField(`departureEnd${dayIndex}` as any, e.target.value)}
-                      onBlur={handleTimeFieldBlur}
                       className="mt-1"
                     />
                   </div>
                 </div>
+              </div>
+              
+              {/* Speichern Button für diesen Tag */}
+              <div className="pt-4 border-t">
+                <Button 
+                  onClick={() => saveJobData(true)}
+                  disabled={isLoading || !customerName}
+                  variant="outline"
+                  size="sm"
+                  className="w-full"
+                >
+                  {isLoading ? t('saving') : `Zeiten für Tag ${dayIndex + 1} speichern`}
+                </Button>
               </div>
             </CardContent>
           </Card>

@@ -85,8 +85,8 @@ export const useJobs = () => {
         totalHours: '0h 0m', // Calculated later
         days: Array.isArray(job.days_data) ? job.days_data : [],
         customerAddress: job.customer_address,
-        contactName: undefined, // Will be added when database is updated
-        contactPhone: undefined, // Will be added when database is updated
+        contactName: job.contact_name,
+        contactPhone: job.contact_phone,
         evaticNo: job.evatic_no,
         // Add all time fields from database
         travelStart: job.travel_start_time,

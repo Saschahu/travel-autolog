@@ -83,7 +83,10 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
 
           if (job) {
             // Convert database fields to camelCase for the form
-            setJobData({
+            const daysData = Array.isArray(job.days_data) ? job.days_data : [];
+            
+            // Initialize job data
+            const newJobData: Partial<JobData> = {
               customerName: job.customer_name || '',
               customerAddress: job.customer_address || '',
               contactName: job.contact_name || '',
@@ -100,9 +103,37 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
               kilometersOutbound: job.kilometers_outbound || 0,
               kilometersReturn: job.kilometers_return || 0,
               tollAmount: job.toll_amount || 0,
-              plannedDays: Array.isArray(job.days_data) ? job.days_data.length : 1,
+              plannedDays: daysData.length || 1,
               estimatedDays: job.estimated_days || 1,
+            };
+
+            // Load time data from days_data into form fields
+            daysData.forEach((dayData, dayIndex) => {
+              const day = dayData as any; // Type assertion for JSON data
+              if (day.date) {
+                newJobData[`dayDate${dayIndex}`] = day.date;
+              }
+              if (day.travelStart) {
+                newJobData[`travelStart${dayIndex}`] = day.travelStart;
+              }
+              if (day.travelEnd) {
+                newJobData[`travelEnd${dayIndex}`] = day.travelEnd;
+              }
+              if (day.workStart) {
+                newJobData[`workStart${dayIndex}`] = day.workStart;
+              }
+              if (day.workEnd) {
+                newJobData[`workEnd${dayIndex}`] = day.workEnd;
+              }
+              if (day.departureStart) {
+                newJobData[`departureStart${dayIndex}`] = day.departureStart;
+              }
+              if (day.departureEnd) {
+                newJobData[`departureEnd${dayIndex}`] = day.departureEnd;
+              }
             });
+
+            setJobData(newJobData);
             setCurrentJobId(job.id);
             setIsEditingJob(true);
             setCurrentStep('customer'); // Start at customer tab for consistency

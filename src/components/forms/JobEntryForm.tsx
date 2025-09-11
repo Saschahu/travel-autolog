@@ -17,6 +17,17 @@ import { OvertimeTab } from '@/components/overtime/OvertimeTab';
 import { ReportTab } from '@/components/reports/ReportTab';
 import { FinishJobTab } from '@/components/finish/FinishJobTab';
 import { cn } from '@/lib/utils';
+import { format } from 'date-fns';
+
+// Utils to handle date-only (YYYY-MM-DD) values without timezone shifts
+const parseYmdToLocalDate = (s?: string): Date | undefined => {
+  if (!s) return undefined;
+  const [y, m, d] = s.split('-').map(Number);
+  if (!y || !m || !d) return undefined;
+  return new Date(y, m - 1, d);
+};
+
+const formatLocalToYmd = (date?: Date): string => (date ? format(date, 'yyyy-MM-dd') : '');
 
 interface JobData {
   travelStart: string;
@@ -407,17 +418,17 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                       )}
                     >
                       <CalendarIcon className="mr-2 h-4 w-4" />
-                      {jobData[`dayDate${dayIndex}`] ? 
-                        new Date(jobData[`dayDate${dayIndex}`]).toLocaleDateString() : 
-                        <span>Datum wählen</span>
+                      {jobData[`dayDate${dayIndex}`]
+                        ? parseYmdToLocalDate(jobData[`dayDate${dayIndex}`])?.toLocaleDateString()
+                        : <span>Datum wählen</span>
                       }
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0" align="start">
                     <Calendar
                       mode="single"
-                      selected={jobData[`dayDate${dayIndex}`] ? new Date(jobData[`dayDate${dayIndex}`]) : undefined}
-                      onSelect={(date) => updateField(`dayDate${dayIndex}` as any, date?.toISOString().split('T')[0] || '')}
+                      selected={parseYmdToLocalDate(jobData[`dayDate${dayIndex}`])}
+                      onSelect={(date) => updateField(`dayDate${dayIndex}` as any, formatLocalToYmd(date))}
                       initialFocus
                       className="p-3 pointer-events-auto"
                     />

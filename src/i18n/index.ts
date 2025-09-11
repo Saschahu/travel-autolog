@@ -188,6 +188,8 @@ const resources = {
       overtime: 'Overtime',
       finish: 'Finish',
       hotelData: 'Hotel Data',
+      travel: 'Travel',
+      report: 'Report',
       
       // Dashboard and Quick Actions
       quickActions: 'Quick Actions',
@@ -475,10 +477,6 @@ const resources = {
       departureStart: 'Return start',
       departureEnd: 'Return end',
       travelAndStay: 'Travel & accommodation',
-      travel: 'Travel',
-      timeEntries: 'Time entries',
-      day: 'Day',
-      date: 'Date',
       time: 'Time',
       hotelNameOptional: 'Hotel name (optional)',
       hotelAddress: 'Hotel address',
@@ -601,7 +599,10 @@ const resources = {
       machine: 'Maschine',
       times: 'Zeiten',
       overtime: 'Überstunden',
-      reports: 'Report',
+      report: 'Report',
+      hotelData: 'Hotel-Daten',
+      travel: 'Reise',
+      finish: 'Abschluss',
       
       // Dashboard and Quick Actions
       quickActions: 'Schnellaktionen',
@@ -891,10 +892,6 @@ const resources = {
       departureStart: 'Heimreise Start',
       departureEnd: 'Heimreise Ende',
       travelAndStay: 'Reise & Unterkunft',
-      travel: 'Reise',
-      timeEntries: 'Zeiteingaben',
-      day: 'Tag',
-      date: 'Datum',
       time: 'Zeit',
       hotelNameOptional: 'Hotel Name (optional)',
       hotelAddress: 'Hotel Adresse',

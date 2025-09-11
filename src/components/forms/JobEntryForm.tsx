@@ -388,10 +388,10 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
 
               {/* Anreise */}
               <div>
-                <Label className="text-sm font-medium text-muted-foreground mb-2 block">Anreise</Label>
+                <Label className="text-sm font-medium text-muted-foreground mb-2 block">{t('times.arrival')}</Label>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <Label htmlFor={`travel-start-${dayIndex}`} className="text-xs">Start Zeit</Label>
+                    <Label htmlFor={`travel-start-${dayIndex}`} className="text-xs">{t('times.startTime')}</Label>
                     <Input
                       id={`travel-start-${dayIndex}`}
                       type="time"
@@ -401,7 +401,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                     />
                   </div>
                   <div>
-                    <Label htmlFor={`travel-end-${dayIndex}`} className="text-xs">Ende Zeit</Label>
+                    <Label htmlFor={`travel-end-${dayIndex}`} className="text-xs">{t('times.endTime')}</Label>
                     <Input
                       id={`travel-end-${dayIndex}`}
                       type="time"
@@ -415,10 +415,10 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
 
               {/* Arbeit */}
               <div>
-                <Label className="text-sm font-medium text-muted-foreground mb-2 block">Arbeit</Label>
+                <Label className="text-sm font-medium text-muted-foreground mb-2 block">{t('times.work')}</Label>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <Label htmlFor={`work-start-${dayIndex}`} className="text-xs">Start Zeit</Label>
+                    <Label htmlFor={`work-start-${dayIndex}`} className="text-xs">{t('times.startTime')}</Label>
                     <Input
                       id={`work-start-${dayIndex}`}
                       type="time"
@@ -428,7 +428,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                     />
                   </div>
                   <div>
-                    <Label htmlFor={`work-end-${dayIndex}`} className="text-xs">Ende Zeit</Label>
+                    <Label htmlFor={`work-end-${dayIndex}`} className="text-xs">{t('times.endTime')}</Label>
                     <Input
                       id={`work-end-${dayIndex}`}
                       type="time"
@@ -442,10 +442,10 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
 
               {/* Abreise */}
               <div>
-                <Label className="text-sm font-medium text-muted-foreground mb-2 block">Abreise</Label>
+                <Label className="text-sm font-medium text-muted-foreground mb-2 block">{t('times.departure')}</Label>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <Label htmlFor={`departure-start-${dayIndex}`} className="text-xs">Start Zeit</Label>
+                    <Label htmlFor={`departure-start-${dayIndex}`} className="text-xs">{t('times.startTime')}</Label>
                     <Input
                       id={`departure-start-${dayIndex}`}
                       type="time"
@@ -455,7 +455,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                     />
                   </div>
                   <div>
-                    <Label htmlFor={`departure-end-${dayIndex}`} className="text-xs">Ende Zeit</Label>
+                    <Label htmlFor={`departure-end-${dayIndex}`} className="text-xs">{t('times.endTime')}</Label>
                     <Input
                       id={`departure-end-${dayIndex}`}
                       type="time"

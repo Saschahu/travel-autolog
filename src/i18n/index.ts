@@ -34,6 +34,13 @@ const jobTranslationsEn = {
     kmInbound: 'Kilometers Return',
     tollFees: 'Toll Fees (€)'
   },
+  times: {
+    arrival: 'Arrival',
+    work: 'Work',
+    departure: 'Departure', 
+    startTime: 'Start Time',
+    endTime: 'End Time'
+  },
   machine: {
     manufacturer: 'Manufacturer',
     manufacturerPlaceholder: 'e.g. Siemens, ABB, Schneider',
@@ -102,6 +109,13 @@ const jobTranslationsDe = {
     kmOutbound: 'Kilometer Hinfahrt',
     kmInbound: 'Kilometer Rückfahrt',
     tollFees: 'Mautgebühren (€)'
+  },
+  times: {
+    arrival: 'Anreise',
+    work: 'Arbeit', 
+    departure: 'Abreise',
+    startTime: 'Start Zeit',
+    endTime: 'Ende Zeit'
   },
   machine: {
     manufacturer: 'Hersteller',
@@ -173,6 +187,7 @@ const resources = {
       times: 'Times',
       overtime: 'Overtime',
       finish: 'Finish',
+      hotelData: 'Hotel Data',
       
       // Dashboard and Quick Actions
       quickActions: 'Quick Actions',
@@ -465,7 +480,6 @@ const resources = {
       day: 'Day',
       date: 'Date',
       time: 'Time',
-      hotelData: 'Hotel Data',
       hotelNameOptional: 'Hotel name (optional)',
       hotelAddress: 'Hotel address',
       hotelNights: 'Hotel nights',
@@ -882,7 +896,6 @@ const resources = {
       day: 'Tag',
       date: 'Datum',
       time: 'Zeit',
-      hotelData: 'Hotel-Daten',
       hotelNameOptional: 'Hotel Name (optional)',
       hotelAddress: 'Hotel Adresse',
       hotelNights: 'Hotelnächte',

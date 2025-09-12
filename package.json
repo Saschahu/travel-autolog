@@ -8,6 +8,8 @@
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
+    "lint:report": "mkdir -p reports && eslint -f json -o reports/eslint.json \"src/**/*.{ts,tsx,js,jsx}\"",
+    "typecheck": "tsc --noEmit",
     "preview": "vite preview"
   },
   "dependencies": {

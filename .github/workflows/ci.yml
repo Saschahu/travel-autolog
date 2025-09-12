@@ -30,13 +30,9 @@ jobs:
       - name: Test (optional)
         run: npm test --if-present
 
-      - name: Save ESLint report (optional)
+      - name: Save ESLint report
         if: always()
-        run: |
-          mkdir -p reports
-          # Falls ein Lint-Formatter bereits existiert, hier den Report hinein schreiben lassen.
-          # Beispiel: npm run lint -- --format junit --output-file reports/eslint.xml || true
-          echo "No explicit report configured" > reports/notes.txt
+        run: npm run lint:report || true
       - name: Upload reports
         if: always()
         uses: actions/upload-artifact@v4

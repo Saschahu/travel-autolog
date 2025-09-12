@@ -375,6 +375,15 @@ export const useOvertimeCalculation = () => {
     
     // Calculate guaranteed hours (per day with actual time entries, excluding empty days)
     let numberOfPaidDays = 0;
+    
+    console.log('[OT] Job structure:', { 
+      hasDays: !!job.days, 
+      isArray: Array.isArray(job.days), 
+      length: job.days?.length,
+      estimatedDays: job.estimatedDays,
+      hasJobLevelTimes: !!(job.travelStart || job.workStart || job.departureStart)
+    });
+    
     if (job.days && Array.isArray(job.days) && job.days.length > 0) {
       numberOfPaidDays = job.days.filter((day: any) => {
         // Check if day has actual time entries (not just 00:00 placeholders)
@@ -391,12 +400,22 @@ export const useOvertimeCalculation = () => {
         return hasValidTravel || hasValidWork || hasValidDeparture;
       }).length;
     } else {
-      const hasTravel = !!(job.travelStart && job.travelEnd);
-      const hasWork = !!(job.workStart && job.workEnd);
-      const hasDeparture = !!(job.departureStart && job.departureEnd);
-      numberOfPaidDays = hasTravel || hasWork || hasDeparture ? 1 : 0;
+      // Fallback: Check job-level times or use estimated days
+      const hasTravel = !!(job.travelStart && job.travelEnd && job.travelStart !== "00:00" && job.travelEnd !== "00:00");
+      const hasWork = !!(job.workStart && job.workEnd && job.workStart !== "00:00" && job.workEnd !== "00:00");
+      const hasDeparture = !!(job.departureStart && job.departureEnd && job.departureStart !== "00:00" && job.departureEnd !== "00:00");
+      
+      if (hasTravel || hasWork || hasDeparture) {
+        numberOfPaidDays = 1;
+      } else if (job.estimatedDays && job.estimatedDays > 0) {
+        // If no times but estimated days, use estimated days
+        numberOfPaidDays = job.estimatedDays;
+      } else {
+        numberOfPaidDays = 1; // Minimum 1 day if job exists
+      }
     }
-    console.log('[OT] Counted paid days:', numberOfPaidDays, 'from', job.days?.length, 'total days');
+    
+    console.log('[OT] Counted paid days:', numberOfPaidDays, 'from', job.days?.length || 'no days', 'total days');
     const guaranteedHours = overtimeSettings.guaranteedHours * numberOfPaidDays;
     
     // Correct payable hours calculation

@@ -1,0 +1,45 @@
+name: CI
+on:
+  push:
+    branches: [ "**" ]
+  pull_request:
+    branches: [ "**" ]
+
+jobs:
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+        continue-on-error: false
+
+      - name: Typecheck (optional)
+        run: npm run typecheck --if-present
+
+      - name: Test (optional)
+        run: npm test --if-present
+
+      - name: Save ESLint report (optional)
+        if: always()
+        run: |
+          mkdir -p reports
+          # Falls ein Lint-Formatter bereits existiert, hier den Report hinein schreiben lassen.
+          # Beispiel: npm run lint -- --format junit --output-file reports/eslint.xml || true
+          echo "No explicit report configured" > reports/notes.txt
+      - name: Upload reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-reports
+          path: reports

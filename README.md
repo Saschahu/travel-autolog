@@ -1,3 +1,5 @@
+![CI](https://github.com/lovable-bits/travel-autolog-mobile/actions/workflows/ci.yml/badge.svg)
+
 # Travel AutoLog
 
 ServiceTracker automatische Dokumentation von Reise- und Arbeitszeiten für Servicetechniker.

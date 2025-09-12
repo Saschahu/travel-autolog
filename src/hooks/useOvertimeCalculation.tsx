@@ -31,6 +31,25 @@ export const useOvertimeCalculation = () => {
     return Math.round((minutes / 60) * 100) / 100;
   };
 
+  // Helpers to read different possible field names in days
+  const getDayField = (day: any, base: string): string | undefined => {
+    return (
+      day?.[base] ??
+      day?.[`${base}Time`] ??
+      day?.[`${base}_time`] ??
+      undefined
+    );
+  };
+
+  const getDayDate = (day: any): string | undefined => {
+    return (
+      day?.date ??
+      day?.dateISO ??
+      day?.dayDate ??
+      day?.date_iso ??
+      undefined
+    );
+  };
   const calculateTimeBreakdown = (job: Job): { 
     travelTime: number, 
     workTime: number, 
@@ -47,9 +66,11 @@ export const useOvertimeCalculation = () => {
       travelTime = endMinutes > startMinutes ? endMinutes - startMinutes : (24 * 60) - startMinutes + endMinutes;
     } else if (job.days && Array.isArray(job.days)) {
       job.days.forEach((day: any) => {
-        if (day.travelStart && day.travelEnd) {
-          const startMinutes = parseTime(day.travelStart);
-          const endMinutes = parseTime(day.travelEnd);
+        const startStr = getDayField(day, 'travelStart');
+        const endStr = getDayField(day, 'travelEnd');
+        if (startStr && endStr) {
+          const startMinutes = parseTime(startStr);
+          const endMinutes = parseTime(endStr);
           travelTime += endMinutes > startMinutes ? endMinutes - startMinutes : (24 * 60) - startMinutes + endMinutes;
         }
       });
@@ -62,9 +83,11 @@ export const useOvertimeCalculation = () => {
       workTime = endMinutes > startMinutes ? endMinutes - startMinutes : (24 * 60) - startMinutes + endMinutes;
     } else if (job.days && Array.isArray(job.days)) {
       job.days.forEach((day: any) => {
-        if (day.workStart && day.workEnd) {
-          const startMinutes = parseTime(day.workStart);
-          const endMinutes = parseTime(day.workEnd);
+        const startStr = getDayField(day, 'workStart');
+        const endStr = getDayField(day, 'workEnd');
+        if (startStr && endStr) {
+          const startMinutes = parseTime(startStr);
+          const endMinutes = parseTime(endStr);
           workTime += endMinutes > startMinutes ? endMinutes - startMinutes : (24 * 60) - startMinutes + endMinutes;
         }
       });
@@ -77,9 +100,11 @@ export const useOvertimeCalculation = () => {
       departureTime = endMinutes > startMinutes ? endMinutes - startMinutes : (24 * 60) - startMinutes + endMinutes;
     } else if (job.days && Array.isArray(job.days)) {
       job.days.forEach((day: any) => {
-        if (day.departureStart && day.departureEnd) {
-          const startMinutes = parseTime(day.departureStart);
-          const endMinutes = parseTime(day.departureEnd);
+        const startStr = getDayField(day, 'departureStart');
+        const endStr = getDayField(day, 'departureEnd');
+        if (startStr && endStr) {
+          const startMinutes = parseTime(startStr);
+          const endMinutes = parseTime(endStr);
           departureTime += endMinutes > startMinutes ? endMinutes - startMinutes : (24 * 60) - startMinutes + endMinutes;
         }
       });
@@ -166,38 +191,44 @@ export const useOvertimeCalculation = () => {
         let dayTotalMinutes = 0;
         
         // Calculate total minutes for this day
-        if (day.travelStart && day.travelEnd && day.travelStart !== "00:00" && day.travelEnd !== "00:00" && day.travelStart !== day.travelEnd) {
-          const startMinutes = parseTime(day.travelStart);
-          const endMinutes = parseTime(day.travelEnd);
+        const tStart = getDayField(day, 'travelStart');
+        const tEnd = getDayField(day, 'travelEnd');
+        if (tStart && tEnd && tStart !== "00:00" && tEnd !== "00:00" && tStart !== tEnd) {
+          const startMinutes = parseTime(tStart);
+          const endMinutes = parseTime(tEnd);
           const travelTime = endMinutes > startMinutes ? endMinutes - startMinutes : (24 * 60) - startMinutes + endMinutes;
           dayTotalMinutes += travelTime;
           console.log('[OT] Travel time calculated:', travelTime, 'minutes');
         }
         
-        if (day.workStart && day.workEnd && day.workStart !== "00:00" && day.workEnd !== "00:00" && day.workStart !== day.workEnd) {
-          const startMinutes = parseTime(day.workStart);
-          const endMinutes = parseTime(day.workEnd);
+        const wStart = getDayField(day, 'workStart');
+        const wEnd = getDayField(day, 'workEnd');
+        if (wStart && wEnd && wStart !== "00:00" && wEnd !== "00:00" && wStart !== wEnd) {
+          const startMinutes = parseTime(wStart);
+          const endMinutes = parseTime(wEnd);
           const workTime = endMinutes > startMinutes ? endMinutes - startMinutes : (24 * 60) - startMinutes + endMinutes;
           dayTotalMinutes += workTime;
           console.log('[OT] Work time calculated:', workTime, 'minutes');
         }
         
-        if (day.departureStart && day.departureEnd && day.departureStart !== "00:00" && day.departureEnd !== "00:00" && day.departureStart !== day.departureEnd) {
-          const startMinutes = parseTime(day.departureStart);
-          const endMinutes = parseTime(day.departureEnd);
+        const dStart = getDayField(day, 'departureStart');
+        const dEnd = getDayField(day, 'departureEnd');
+        if (dStart && dEnd && dStart !== "00:00" && dEnd !== "00:00" && dStart !== dEnd) {
+          const startMinutes = parseTime(dStart);
+          const endMinutes = parseTime(dEnd);
           const departureTime = endMinutes > startMinutes ? endMinutes - startMinutes : (24 * 60) - startMinutes + endMinutes;
           dayTotalMinutes += departureTime;
           console.log('[OT] Departure time calculated:', departureTime, 'minutes');
         }
         
-        const dayOfWeek = getDayOfWeek(day.date);
+        const dayOfWeek = getDayOfWeek(getDayDate(day));
         const isWeekendDay = dayOfWeek === 6 || dayOfWeek === 0; // Saturday or Sunday
         
         console.log('[OT] Day', idx + 1, {
-          date: day.date,
-          travel: { start: day.travelStart, end: day.travelEnd },
-          work: { start: day.workStart, end: day.workEnd },
-          departure: { start: day.departureStart, end: day.departureEnd },
+          date: getDayDate(day),
+          travel: { start: tStart, end: tEnd },
+          work: { start: wStart, end: wEnd },
+          departure: { start: dStart, end: dEnd },
           totalMin: dayTotalMinutes
         });
         
@@ -386,16 +417,16 @@ export const useOvertimeCalculation = () => {
     
     if (job.days && Array.isArray(job.days) && job.days.length > 0) {
       numberOfPaidDays = job.days.filter((day: any) => {
-        // Check if day has actual time entries (not just 00:00 placeholders)
-        const hasValidTravel = !!(day.travelStart && day.travelEnd && 
-          day.travelStart !== "00:00" && day.travelEnd !== "00:00" && 
-          day.travelStart !== day.travelEnd);
-        const hasValidWork = !!(day.workStart && day.workEnd && 
-          day.workStart !== "00:00" && day.workEnd !== "00:00" && 
-          day.workStart !== day.workEnd);
-        const hasValidDeparture = !!(day.departureStart && day.departureEnd && 
-          day.departureStart !== "00:00" && day.departureEnd !== "00:00" && 
-          day.departureStart !== day.departureEnd);
+        const tStart = getDayField(day, 'travelStart');
+        const tEnd = getDayField(day, 'travelEnd');
+        const wStart = getDayField(day, 'workStart');
+        const wEnd = getDayField(day, 'workEnd');
+        const dStart = getDayField(day, 'departureStart');
+        const dEnd = getDayField(day, 'departureEnd');
+        
+        const hasValidTravel = !!(tStart && tEnd && tStart !== "00:00" && tEnd !== "00:00" && tStart !== tEnd);
+        const hasValidWork = !!(wStart && wEnd && wStart !== "00:00" && wEnd !== "00:00" && wStart !== wEnd);
+        const hasValidDeparture = !!(dStart && dEnd && dStart !== "00:00" && dEnd !== "00:00" && dStart !== dEnd);
         
         return hasValidTravel || hasValidWork || hasValidDeparture;
       }).length;

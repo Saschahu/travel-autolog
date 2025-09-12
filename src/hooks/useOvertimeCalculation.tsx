@@ -418,8 +418,9 @@ export const useOvertimeCalculation = () => {
     console.log('[OT] Counted paid days:', numberOfPaidDays, 'from', job.days?.length || 'no days', 'total days');
     const guaranteedHours = overtimeSettings.guaranteedHours * numberOfPaidDays;
     
-    // Correct payable hours calculation
-    const totalPayableHours = Math.max(guaranteedHours, actualWorkedHours + totalPremiumHours);
+    // Correct payable hours calculation: premiums are added ON TOP of the higher base (guarantee vs actual)
+    const baseHours = Math.max(guaranteedHours, actualWorkedHours);
+    const totalPayableHours = baseHours + totalPremiumHours;
     const totalOvertimeHours = totalOvertime1Hours + totalOvertime2Hours;
 
     return {

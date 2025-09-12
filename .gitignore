@@ -26,5 +26,8 @@ dist-ssr
 # Local Android platform (nicht versionieren)
 android/
 
+# Test coverage
+coverage/
+
 # Lokale Secrets
 .env

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { OvertimeSettings, OvertimeCalculation, TimeSlot, DEFAULT_OVERTIME_SETTINGS } from '@/types/overtime';
 import { Job } from '@/hooks/useJobs';
+import { minutesBetweenAcrossMidnight, isSundayUTC } from '@/lib/timeMath';
 
 export const useOvertimeCalculation = () => {
   const [overtimeSettings, setOvertimeSettings] = useState<OvertimeSettings>(DEFAULT_OVERTIME_SETTINGS);
@@ -21,12 +22,7 @@ export const useOvertimeCalculation = () => {
     localStorage.setItem('overtimeSettings', JSON.stringify(settings));
   };
 
-  const parseTime = (timeStr: string): number => {
-    const [hours, minutes] = timeStr.split(':').map(Number);
-    return hours * 60 + minutes;
-  };
-
-  const formatMinutesToHours = (minutes: number): number => {
+  const formatMinutesToDecimalHours = (minutes: number): number => {
     return Math.round((minutes / 60) * 100) / 100;
   };
 
@@ -41,45 +37,33 @@ export const useOvertimeCalculation = () => {
 
     // Travel time: prefer top-level, otherwise sum from days
     if (job.travelStart && job.travelEnd) {
-      const startMinutes = parseTime(job.travelStart);
-      const endMinutes = parseTime(job.travelEnd);
-      travelTime = endMinutes > startMinutes ? endMinutes - startMinutes : (24 * 60) - startMinutes + endMinutes;
+      travelTime = minutesBetweenAcrossMidnight(job.travelStart, job.travelEnd);
     } else if (job.days && Array.isArray(job.days)) {
       job.days.forEach((day: any) => {
         if (day.travelStart && day.travelEnd) {
-          const startMinutes = parseTime(day.travelStart);
-          const endMinutes = parseTime(day.travelEnd);
-          travelTime += endMinutes > startMinutes ? endMinutes - startMinutes : (24 * 60) - startMinutes + endMinutes;
+          travelTime += minutesBetweenAcrossMidnight(day.travelStart, day.travelEnd);
         }
       });
     }
 
     // Work time: prefer top-level, otherwise sum from days
     if (job.workStart && job.workEnd) {
-      const startMinutes = parseTime(job.workStart);
-      const endMinutes = parseTime(job.workEnd);
-      workTime = endMinutes > startMinutes ? endMinutes - startMinutes : (24 * 60) - startMinutes + endMinutes;
+      workTime = minutesBetweenAcrossMidnight(job.workStart, job.workEnd);
     } else if (job.days && Array.isArray(job.days)) {
       job.days.forEach((day: any) => {
         if (day.workStart && day.workEnd) {
-          const startMinutes = parseTime(day.workStart);
-          const endMinutes = parseTime(day.workEnd);
-          workTime += endMinutes > startMinutes ? endMinutes - startMinutes : (24 * 60) - startMinutes + endMinutes;
+          workTime += minutesBetweenAcrossMidnight(day.workStart, day.workEnd);
         }
       });
     }
 
     // Departure time: prefer top-level, otherwise sum from days
     if (job.departureStart && job.departureEnd) {
-      const startMinutes = parseTime(job.departureStart);
-      const endMinutes = parseTime(job.departureEnd);
-      departureTime = endMinutes > startMinutes ? endMinutes - startMinutes : (24 * 60) - startMinutes + endMinutes;
+      departureTime = minutesBetweenAcrossMidnight(job.departureStart, job.departureEnd);
     } else if (job.days && Array.isArray(job.days)) {
       job.days.forEach((day: any) => {
         if (day.departureStart && day.departureEnd) {
-          const startMinutes = parseTime(day.departureStart);
-          const endMinutes = parseTime(day.departureEnd);
-          departureTime += endMinutes > startMinutes ? endMinutes - startMinutes : (24 * 60) - startMinutes + endMinutes;
+          departureTime += minutesBetweenAcrossMidnight(day.departureStart, day.departureEnd);
         }
       });
     }
@@ -87,60 +71,9 @@ export const useOvertimeCalculation = () => {
     return { travelTime, workTime, departureTime };
   };
 
-  const isWeekend = (dateString?: string): boolean => {
-    if (!dateString) return false;
-    const date = new Date(dateString);
-    const dayOfWeek = date.getDay(); // 0 = Sunday, 6 = Saturday
-    return dayOfWeek === 0 || dayOfWeek === 6; // Sunday or Saturday
-  };
-
-  const isWeekendTime = (startDate?: string, endDate?: string, startTime?: string, endTime?: string): boolean => {
-    if (!overtimeSettings.weekendEnabled) return false;
-    
-    // Check if any part of the time period falls on weekend
-    if (startDate && isWeekend(startDate)) return true;
-    if (endDate && isWeekend(endDate)) return true;
-    
-    // Special case: Friday evening to Monday morning
-    if (startDate && endDate) {
-      const start = new Date(startDate);
-      const end = new Date(endDate);
-      const startDay = start.getDay();
-      const endDay = end.getDay();
-      
-      // Friday (5) to Sunday/Monday (0/1) or Saturday (6) to Monday (1)
-      if ((startDay === 5 && (endDay === 0 || endDay === 1)) || 
-          (startDay === 6 && endDay === 1)) {
-        return true;
-      }
-    }
-    
-    return false;
-  };
-
   const getDayOfWeek = (dateString?: string): number => {
-    if (!dateString) return new Date().getDay();
-    return new Date(dateString).getDay();
-  };
-
-  const calculateWeekendHours = (timeSlots: TimeSlot[]): { saturdayHours: number, sundayHours: number } => {
-    let saturdayMinutes = 0;
-    let sundayMinutes = 0;
-    
-    timeSlots.forEach(slot => {
-      const dayOfWeek = getDayOfWeek(slot.startDate);
-      
-      if (dayOfWeek === 6) { // Saturday
-        saturdayMinutes += slot.duration;
-      } else if (dayOfWeek === 0) { // Sunday
-        sundayMinutes += slot.duration;
-      }
-    });
-    
-    return {
-      saturdayHours: formatMinutesToHours(saturdayMinutes),
-      sundayHours: formatMinutesToHours(sundayMinutes)
-    };
+    if (!dateString) return new Date().getUTCDay(); // Use UTC for consistency
+    return new Date(`${dateString}T00:00:00Z`).getUTCDay();
   };
 
   const calculateOvertime = (job: Job): OvertimeCalculation => {
@@ -157,28 +90,11 @@ export const useOvertimeCalculation = () => {
     if (job.days && Array.isArray(job.days) && job.days.length > 0) {
       job.days.forEach((day: any) => {
         let dayTotalMinutes = 0;
-        
-        // Calculate total minutes for this day
-        if (day.travelStart && day.travelEnd) {
-          const startMinutes = parseTime(day.travelStart);
-          const endMinutes = parseTime(day.travelEnd);
-          dayTotalMinutes += endMinutes > startMinutes ? endMinutes - startMinutes : (24 * 60) - startMinutes + endMinutes;
-        }
-        
-        if (day.workStart && day.workEnd) {
-          const startMinutes = parseTime(day.workStart);
-          const endMinutes = parseTime(day.workEnd);
-          dayTotalMinutes += endMinutes > startMinutes ? endMinutes - startMinutes : (24 * 60) - startMinutes + endMinutes;
-        }
-        
-        if (day.departureStart && day.departureEnd) {
-          const startMinutes = parseTime(day.departureStart);
-          const endMinutes = parseTime(day.departureEnd);
-          dayTotalMinutes += endMinutes > startMinutes ? endMinutes - startMinutes : (24 * 60) - startMinutes + endMinutes;
-        }
+        if (day.travelStart && day.travelEnd) dayTotalMinutes += minutesBetweenAcrossMidnight(day.travelStart, day.travelEnd);
+        if (day.workStart && day.workEnd) dayTotalMinutes += minutesBetweenAcrossMidnight(day.workStart, day.workEnd);
+        if (day.departureStart && day.departureEnd) dayTotalMinutes += minutesBetweenAcrossMidnight(day.departureStart, day.departureEnd);
         
         const dayHours = formatMinutesToHours(dayTotalMinutes);
-        const dayOfWeek = getDayOfWeek(day.date);
         
         // Calculate regular vs overtime for this day
         const dayRegularHours = Math.min(dayHours, overtimeSettings.overtimeThreshold1);
@@ -190,9 +106,10 @@ export const useOvertimeCalculation = () => {
         totalOvertime2Hours += dayOvertime2Hours;
         
         // Weekend hours
+        const dayOfWeek = getDayOfWeek(day.date);
         if (dayOfWeek === 6) { // Saturday
           totalSaturdayHours += dayHours;
-        } else if (dayOfWeek === 0) { // Sunday
+        } else if (isSundayUTC(day.date)) { // Sunday
           totalSundayHours += dayHours;
         }
       });
@@ -209,7 +126,7 @@ export const useOvertimeCalculation = () => {
       const dayOfWeek = getDayOfWeek(job.travelStartDate || job.workStartDate || job.departureStartDate);
       if (dayOfWeek === 6) {
         totalSaturdayHours = totalHours;
-      } else if (dayOfWeek === 0) {
+      } else if (isSundayUTC(job.travelStartDate || job.workStartDate || job.departureStartDate || new Date())) {
         totalSundayHours = totalHours;
       }
     }

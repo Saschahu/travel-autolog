@@ -20,17 +20,18 @@ This document lists prioritized tasks to improve the health, maintainability, an
 
 ---
 
-### **Task 2: Establish a Testing Framework and Test Critical Logic**
+### **Task 2: Establish a Testing Framework and Test Critical Logic (IN PROGRESS)**
 
 -   **Title**: Configure Test Runner and Add Tests for Overtime Calculation
 -   **Location**: `package.json`, `src/hooks/useOvertimeCalculation.tsx`
--   **Solution Idea**: Add a testing framework like `vitest`. Configure `package.json` with a `test` script. Create a new test file (`useOvertimeCalculation.test.tsx`) and write unit tests covering the core logic and critical edge cases (overnight, weekends, zero hours, etc.).
+-   **Solution Idea**: Add a testing framework like `vitest`. Configure `package.json` with a `test` script. Create a new test file (`useOvertimeCalculation.test.tsx`) and write unit tests covering the core logic and critical edge cases (overnight, weekends, zero hours, etc.). The pure time helper functions have been extracted to `src/lib/timeMath.ts` and are now fully tested.
 -   **Effort**: **M** (Medium)
 -   **Acceptance Criteria**:
     -   `npm test` command successfully runs the test suite.
     -   `useOvertimeCalculation.tsx` has at least 80% test coverage.
     -   Tests for overnight work, Sunday surcharges, and zero-hour days pass.
     -   The `formatMinutesToHours` rounding issue is tested and addressed.
+    -   **DONE**: `src/lib/timeMath.ts` has 100% test coverage.
 
 ---
 

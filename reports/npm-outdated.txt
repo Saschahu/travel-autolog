@@ -1,0 +1,26 @@
+Package                   Current   Wanted   Latest  Location                               Depended by
+@hookform/resolvers        3.10.0   3.10.0    5.2.1  node_modules/@hookform/resolvers       app
+@tanstack/react-query      5.87.1   5.87.4   5.87.4  node_modules/@tanstack/react-query     app
+@types/node               22.18.1  22.18.3   24.3.3  node_modules/@types/node               app
+@types/react              18.3.24  18.3.24  19.1.13  node_modules/@types/react              app
+@types/react-dom           18.3.7   18.3.7   19.1.9  node_modules/@types/react-dom          app
+@vitejs/plugin-react-swc   3.11.0   3.11.0    4.0.1  node_modules/@vitejs/plugin-react-swc  app
+date-fns                    3.6.0    3.6.0    4.1.0  node_modules/date-fns                  app
+date-holidays              3.25.2   3.26.1   3.26.1  node_modules/date-holidays             app
+globals                   15.15.0  15.15.0   16.4.0  node_modules/globals                   app
+lucide-react              0.462.0  0.462.0  0.544.0  node_modules/lucide-react              app
+mapbox-gl                  2.15.0   2.15.0   3.15.0  node_modules/mapbox-gl                 app
+next-themes                 0.3.0    0.3.0    0.4.6  node_modules/next-themes               app
+react                      18.3.1   18.3.1   19.1.1  node_modules/react                     app
+react-day-picker           8.10.1   8.10.1    9.9.0  node_modules/react-day-picker          app
+react-dom                  18.3.1   18.3.1   19.1.1  node_modules/react-dom                 app
+react-map-gl                7.1.9    7.1.9    8.0.4  node_modules/react-map-gl              app
+react-resizable-panels      2.1.9    2.1.9    3.0.6  node_modules/react-resizable-panels    app
+react-router-dom           6.30.1   6.30.1    7.9.1  node_modules/react-router-dom          app
+recharts                   2.15.4   2.15.4    3.2.0  node_modules/recharts                  app
+sonner                      1.7.4    1.7.4    2.0.7  node_modules/sonner                    app
+tailwind-merge              2.6.0    2.6.0    3.3.1  node_modules/tailwind-merge            app
+tailwindcss                3.4.17   3.4.17   4.1.13  node_modules/tailwindcss               app
+vaul                        0.9.9    0.9.9    1.1.2  node_modules/vaul                      app
+vite                       5.4.20   5.4.20    7.1.5  node_modules/vite                      app
+zod                       3.25.76  3.25.76    4.1.8  node_modules/zod                       app

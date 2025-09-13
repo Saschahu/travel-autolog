@@ -89,7 +89,7 @@ This document lists prioritized tasks to improve the health, maintainability, an
 
 ---
 
-### **Task 6: Address Security Vulnerabilities**
+### **Task 6: Address Security Vulnerabilities (IN PROGRESS)**
 
 -   **Title**: Mitigate Dependency Vulnerabilities
 -   **Location**: `package.json`, `package-lock.json`
@@ -98,6 +98,7 @@ This document lists prioritized tasks to improve the health, maintainability, an
 -   **Acceptance Criteria**:
     -   `npm audit` reports 0 high-severity vulnerabilities.
     -   The application builds and runs correctly after dependency updates.
+-   **Status**: `vite` updated, which resolved 3 moderate vulnerabilities. The high-severity vulnerability in `xlsx` remains as the patched version is not on public npm.
 
 ---
 

@@ -149,10 +149,26 @@ Out of 143 issues, the following categories are most critical.
 
 ## 6. Dependencies
 
--   **Security**: `npm audit` reported **4 vulnerabilities (1 high, 3 moderate)**.
-    -   **High**: `xlsx` is vulnerable to Prototype Pollution and ReDoS. This is critical if the app handles untrusted Excel files.
-    -   **Moderate**: `vite` (via `esbuild`) has a vulnerability that could allow a malicious website to make requests to the dev server.
--   **Outdated Packages**: No check was performed for outdated packages, but the vulnerabilities suggest that dependencies are not being kept up-to-date.
+-   **Security**:
+    -   **Before**: `npm audit` reported **4 vulnerabilities (1 high, 3 moderate)**. See `reports/npm-audit-before.json`.
+    -   **After**: After updating `vite`, the audit now reports **1 vulnerability (1 high, 0 moderate)**. The `esbuild` vulnerability was resolved by updating `vite`. The remaining high-severity vulnerability is in `xlsx`, which cannot be updated from the public npm registry. See `reports/npm-audit-after.json`.
+    -   **Updates Applied**:
+        -   `xlsx`: `0.18.5` → `0.20.2` (Attempted, but latest public version is still `0.18.5`. Reverted.)
+        -   `vite`: `5.4.19` → `5.4.20`
+-   **Outdated Packages**: Many packages are significantly outdated, with multiple major versions behind `latest`. This increases the risk of security issues and makes future updates more difficult. A full report is available in `reports/npm-outdated.txt`.
+    -   **Top 10 Outdated Packages Summary**:
+| Package | Current | Wanted | Latest |
+| :--- | :--- | :--- | :--- |
+| `react` | 18.3.1 | 18.3.1 | 19.1.1 |
+| `vite` | 5.4.20 | 5.4.20 | 7.1.5 |
+| `tailwindcss` | 3.4.17 | 3.4.17 | 4.1.13 |
+| `recharts` | 2.15.4 | 2.15.4 | 3.2.0 |
+| `mapbox-gl` | 2.15.0 | 2.15.0 | 3.15.0 |
+| `react-router-dom` | 6.30.1 | 6.30.1 | 7.9.1 |
+| `react-map-gl` | 7.1.9 | 7.1.9 | 8.0.4 |
+| `@vitejs/plugin-react-swc` | 3.11.0 | 3.11.0 | 4.0.1 |
+| `react-resizable-panels` | 2.1.9 | 2.1.9 | 3.0.6 |
+| `zod` | 3.25.76 | 3.25.76 | 4.1.8 |
 
 ## 7. Known Hotspots
 

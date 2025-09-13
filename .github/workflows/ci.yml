@@ -39,3 +39,12 @@ jobs:
         with:
           name: ci-reports
           path: reports
+      - name: Audit (report only)
+        if: always()
+        run: npm audit --production --json > reports/npm-audit-after.json || true
+      - name: Upload audit & outdated
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: deps-audit-and-outdated
+          path: reports

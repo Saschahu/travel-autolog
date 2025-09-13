@@ -59,8 +59,8 @@
     "dependencies": {
       "prod": 530,
       "dev": 249,
-      "optional": 93,
-      "peer": 0,
+      "optional": 150,
+      "peer": 57,
       "peerOptional": 0,
       "total": 791
     }

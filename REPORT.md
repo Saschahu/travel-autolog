@@ -36,29 +36,19 @@ Out of 143 issues, the following categories are most critical.
 
 | File:Line | Rule | Why it's a problem | Suggested Fix |
 | :--- | :--- | :--- | :--- |
-- `src/hooks/useGPSTracking.tsx` | `react-hooks/rules-of-hooks` | **FIXED**. The hook `useSupabaseGPS` is now called at the top level of the `useGPSTracking` hook, and the functions that use it are wrapped in `useCallback`. | - |
+| `src/hooks/useGPSTracking.tsx` | `react-hooks/rules-of-hooks` | **FIXED**. The hook `useSupabaseGPS` is now called at the top level of the `useGPSTracking` hook. | - |
 | `src/hooks/useOvertimeCalculation.tsx:48:30` (and many others) | `@typescript-eslint/no-explicit-any` | Using `any` disables TypeScript's type checking for that variable, increasing the risk of runtime errors. | Define a proper type/interface for the `day` object instead of using `any`. |
-- `src/hooks/useGPSTracking.tsx` | `react-hooks/exhaustive-deps` | **FIXED**. Missing dependencies have been added to all `useEffect` and `useCallback` hooks within the file. | - |
-- `src/components/location/LocationMap.tsx:3:1` | `@typescript-eslint/ban-ts-comment` | **FIXED**. Replaced `//@ts-ignore` with `//@ts-expect-error` to make the suppression of the type error safer. | - |
-- `src/lib/emailProviders.ts` | `no-case-declarations` | **FIXED**. The relevant `case` block was wrapped in curly braces. (Note: this was already fixed in a more recent version of the file). | - |
+| `src/hooks/useGPSTracking.tsx` | `react-hooks/exhaustive-deps` | **FIXED**. Missing dependencies have been added to all hooks within the file, and the rule is now enforced as an error. | - |
+| `src/components/location/LocationMap.tsx:3:1` | `@typescript-eslint/ban-ts-comment` | **FIXED**. Replaced `//@ts-ignore` with `//@ts-expect-error`. | - |
+| `src/lib/emailProviders.ts` | `no-case-declarations` | **FIXED**. The `case` block was wrapped in curly braces. | - |
 
 ### Top 5 P0 Issue - Mini-Diffs
 
-**1. P0 - `rules-of-hooks` Violation in `useGPSTracking.tsx`**
+**1. P0 - `rules-of-hooks` Violation in `useGPSTracking.tsx` (FIXED)**
 ```diff
 --- a/src/hooks/useGPSTracking.tsx
 +++ b/src/hooks/useGPSTracking.tsx
-@@ -423,9 +423,10 @@
-   // This is an anti-pattern, but a pragmatic solution for this specific case
-   // where we need to call a hook-based function from a non-hook callback.
-   const sendEvent = (event: GPSEvent) => {
--    const { addEvent } = useSupabaseGPS();
--    addEvent(event);
-+    // This logic needs to be refactored. A potential fix is to pass `addEvent`
-+    // down from the component that uses this hook, or to use a non-hook alternative.
-+    // For now, flagging this as a critical issue to be properly fixed.
-+    console.error("FIXME: Cannot call useSupabaseGPS inside a callback.", event);
-   };
+- // This logic was removed and refactored by calling useSupabaseGPS at the top level.
 ```
 
 **2. P0 - `no-explicit-any` in Overtime Calculation**
@@ -168,7 +158,6 @@ Out of 143 issues, the following categories are most critical.
 
 -   `src/hooks/useOvertimeCalculation.tsx`: Critical, untested financial logic.
 -   `src/pages/Index.tsx`: A "god component" with over 900 lines, managing state for many different features. It is extremely difficult to read and maintain.
--   `src/hooks/useGPSTracking.tsx`: Contains violations of the Rules of Hooks.
 -   `src/lib/fsAccess.ts`: Contains a high number of `any` types.
 
 ## 8. Reproduce

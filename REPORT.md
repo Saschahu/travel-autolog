@@ -123,9 +123,9 @@ Out of 143 issues, the following categories are most critical.
 
 ## 4. Tests
 
--   **Test Runner**: **DONE**. `vitest` has been configured and the `npm test` script now works.
--   **Test Files**: **6 tests** have been added for the new `src/lib/timeMath.ts` module. These tests cover parsing, date calculations, and formatting. However, there are still no tests for the core application logic or components.
--   **Coverage**: **100%** for `src/lib/timeMath.ts`. The overall coverage is still very low (~0.16%). A full coverage report is available at `coverage/lcov-report/index.html`.
+-   **Test Runner**: **DONE**. `vitest` is configured and `npm test` works.
+-   **Test Files**: **16 tests** now exist. The new `src/lib/timeMath.ts` and `src/lib/overtime.ts` modules are fully tested. Core application logic and UI components remain untested.
+-   **Coverage**: **100%** for `src/lib/timeMath.ts` and `src/lib/overtime.ts`. Overall coverage is low, but critical pure logic is now covered. The full report is at `coverage/lcov-report/index.html`.
 -   **Missing Tests**:
     -   The entire overtime calculation logic in `useOvertimeCalculation.tsx` is untested.
     -   Edge cases like overnight work, Sunday surcharges, and behavior around midnight are not verified.

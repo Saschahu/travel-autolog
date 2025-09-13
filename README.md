@@ -117,6 +117,28 @@ Nach `npm run build:android:debug` liegt die APK unter:
 
 ## Troubleshooting
 
+### Android Location Permissions
+To use GPS features, the app must request permissions at runtime. The following code snippet shows how to do this using the Capacitor Geolocation API:
+
+```ts
+import { Geolocation } from '@capacitor/geolocation';
+
+const requestPermissions = async () => {
+  // This will prompt the user on Android/iOS.
+  const permissions = await Geolocation.requestPermissions();
+  return permissions.location === 'granted';
+};
+
+const getLocation = async () => {
+  const hasPermission = await requestPermissions();
+  if (hasPermission) {
+    const pos = await Geolocation.getCurrentPosition();
+    console.log('Current position:', pos);
+  }
+};
+```
+> **Note:** For continuous background tracking, a more robust permission flow and user interface should be implemented to explain why the permission is needed.
+
 ### Duplicate Kotlin Class Errors
 Die Android Gradle Konfiguration pinnt automatisch alle Kotlin Dependencies auf Version 1.8.22.
 

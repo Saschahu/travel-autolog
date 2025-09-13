@@ -51,7 +51,7 @@ export interface UseGPSTrackingResult {
 
 export const useGPSTracking = (): UseGPSTrackingResult => {
   const { toast } = useToast();
-  const { saveSession, loadSession } = useSupabaseGPS();
+  const { saveSession, loadSession, linkSessionToJob } = useSupabaseGPS();
   
   // State
   const [currentLocation, setCurrentLocation] = useState<LocationData | null>(null);
@@ -93,7 +93,7 @@ export const useGPSTracking = (): UseGPSTrackingResult => {
     
     // Load today's session
     loadTodaysSession();
-  }, []);
+  }, [loadTodaysSession]);
   
   // Initialize services when settings change
   useEffect(() => {
@@ -153,7 +153,7 @@ export const useGPSTracking = (): UseGPSTrackingResult => {
     
     // Check initial permissions
     checkPermissions();
-  }, [settings, toast]);
+  }, [settings, toast, addEventToSession, checkPermissions]);
   
   const checkPermissions = useCallback(async () => {
     if (geolocationService.current) {
@@ -229,7 +229,7 @@ export const useGPSTracking = (): UseGPSTrackingResult => {
         }
       });
     }
-  }, []);
+  }, [loadSession]);
   
   const addEventToSession = useCallback((event: GPSEvent) => {
     setTodaysEvents(prev => {
@@ -259,7 +259,7 @@ export const useGPSTracking = (): UseGPSTrackingResult => {
       
       return updated;
     });
-  }, [currentSession]);
+  }, [currentSession, currentJobId, saveSession]);
   
   const updateSettings = useCallback((newSettings: GPSSettings) => {
     setSettings(newSettings);
@@ -423,7 +423,6 @@ export const useGPSTracking = (): UseGPSTrackingResult => {
   const linkToJob = useCallback(async (jobId: string): Promise<boolean> => {
     if (!currentSession) return false;
     
-    const { linkSessionToJob } = useSupabaseGPS();
     const success = await linkSessionToJob(currentSession.id, jobId);
     
     if (success) {
@@ -434,12 +433,11 @@ export const useGPSTracking = (): UseGPSTrackingResult => {
     }
     
     return success;
-  }, [currentSession, saveSession]);
+  }, [currentSession, saveSession, linkSessionToJob]);
 
   const unlinkFromJob = useCallback(async (): Promise<boolean> => {
     if (!currentSession || !currentJobId) return false;
     
-    const { linkSessionToJob } = useSupabaseGPS();
     const success = await linkSessionToJob(currentSession.id, '');
     
     if (success) {
@@ -450,7 +448,7 @@ export const useGPSTracking = (): UseGPSTrackingResult => {
     }
     
     return success;
-  }, [currentSession, currentJobId, saveSession]);
+  }, [currentSession, currentJobId, saveSession, linkSessionToJob]);
   
   return {
     // State

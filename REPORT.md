@@ -36,11 +36,11 @@ Out of 143 issues, the following categories are most critical.
 
 | File:Line | Rule | Why it's a problem | Suggested Fix |
 | :--- | :--- | :--- | :--- |
-| `src/hooks/useGPSTracking.tsx:426:34` | `react-hooks/rules-of-hooks` | Calling a React Hook inside a callback (`sendEvent`) violates the Rules of Hooks, leading to unpredictable behavior. | Refactor the logic to call the hook at the top level of the component or create a custom hook that encapsulates this behavior. |
+- `src/hooks/useGPSTracking.tsx` | `react-hooks/rules-of-hooks` | **FIXED**. The hook `useSupabaseGPS` is now called at the top level of the `useGPSTracking` hook, and the functions that use it are wrapped in `useCallback`. | - |
 | `src/hooks/useOvertimeCalculation.tsx:48:30` (and many others) | `@typescript-eslint/no-explicit-any` | Using `any` disables TypeScript's type checking for that variable, increasing the risk of runtime errors. | Define a proper type/interface for the `day` object instead of using `any`. |
-| `src/hooks/useGPSTracking.tsx:96:6` (and many others) | `react-hooks/exhaustive-deps` | Missing dependencies in `useEffect` arrays can cause stale closures, where the hook uses outdated state or props. | Add the missing dependency (`loadTodaysSession`) to the dependency array. |
-| `src/location/LocationMap.tsx:3:1` | `@typescript-eslint/ban-ts-comment` | `@ts-ignore` is risky because it can hide actual compilation errors. `@ts-expect-error` is safer as it errors if the line *doesn't* have an error. | Replace `@ts-ignore` with `@ts-expect-error` and confirm an error is actually present. |
-| `src/lib/emailProviders.ts:95:7` | `no-case-declarations` | Declaring variables inside a `case` block without enclosing them in `{}` can lead to scope-related bugs. | Wrap the code inside the `case` block with curly braces `{}`. |
+- `src/hooks/useGPSTracking.tsx` | `react-hooks/exhaustive-deps` | **FIXED**. Missing dependencies have been added to all `useEffect` and `useCallback` hooks within the file. | - |
+- `src/components/location/LocationMap.tsx:3:1` | `@typescript-eslint/ban-ts-comment` | **FIXED**. Replaced `//@ts-ignore` with `//@ts-expect-error` to make the suppression of the type error safer. | - |
+- `src/lib/emailProviders.ts` | `no-case-declarations` | **FIXED**. The relevant `case` block was wrapped in curly braces. (Note: this was already fixed in a more recent version of the file). | - |
 
 ### Top 5 P0 Issue - Mini-Diffs
 
@@ -144,8 +144,11 @@ Out of 143 issues, the following categories are most critical.
 ## 5. Permissions / i18n Spot-Check
 
 -   **Android Permissions**:
-    -   **Finding**: The native `android` directory is missing from the repository.
-    -   **Impact**: The project cannot be built for Android. It is impossible to check `AndroidManifest.xml` for permissions like `ACCESS_FINE_LOCATION` because the file does not exist in the repository. This is a P0 issue blocking an entire platform.
+-   **Finding**: **FIXED**. The native `android` directory has been generated using `npx cap add android`.
+-   **Impact**: The project can now be opened and built for the Android platform.
+-   **Permissions**: The following permissions have been added to `android/app/src/main/AndroidManifest.xml`:
+    -   `<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />`
+    -   `<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />`
 -   **i18n Hardcoded Strings**:
     -   **Finding**: Numerous UI strings are hardcoded in both English and German directly in `.tsx` files.
     -   **Impact**: This makes the application difficult to translate and maintain. It leads to an inconsistent user experience if the app language is changed.

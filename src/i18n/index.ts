@@ -382,6 +382,8 @@ const resources = {
       selectExcelFile: 'Select Excel file',
       uploading: 'Uploading...',
       pleaseSelectExcelFile: 'Please select an Excel file (.xlsx or .xls)',
+      xlsxImportDisabled: 'XLSX import is currently disabled',
+      xlsxImportDisabledHint: 'XLSX import has been disabled for security reasons. Contact your administrator to enable this feature.',
       
       // Export Settings Messages - Toast Messages
       exportPathSet: 'Export path set:',
@@ -797,6 +799,8 @@ const resources = {
       selectExcelFile: 'Excel-Datei auswählen',
       uploading: 'Wird hochgeladen...',
       pleaseSelectExcelFile: 'Bitte wählen Sie eine Excel-Datei (.xlsx oder .xls)',
+      xlsxImportDisabled: 'XLSX-Import ist derzeit deaktiviert',
+      xlsxImportDisabledHint: 'Der XLSX-Import wurde aus Sicherheitsgründen deaktiviert. Wenden Sie sich an Ihren Administrator, um diese Funktion zu aktivieren.',
       
       // Export Settings Messages - Toast Messages
       exportPathSet: 'Exportpfad gesetzt:',

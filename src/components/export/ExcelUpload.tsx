@@ -2,13 +2,15 @@ import React, { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Upload, FileSpreadsheet, Loader2 } from 'lucide-react';
+import { Upload, FileSpreadsheet, Loader2, AlertTriangle } from 'lucide-react';
 import { useExcelUpload } from '@/hooks/useExcelUpload';
+import { isXlsxEnabled } from '@/lib/flags';
 
 export const ExcelUpload = () => {
   const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { uploadExcelFile, isUploading } = useExcelUpload();
+  const xlsxEnabled = isXlsxEnabled();
 
   const handleFileSelect = () => {
     fileInputRef.current?.click();
@@ -53,13 +55,14 @@ export const ExcelUpload = () => {
           type="file"
           ref={fileInputRef}
           onChange={handleFileChange}
-          accept=".xlsx,.xls"
+          accept={xlsxEnabled ? ".xlsx,.xls" : ""}
+          disabled={!xlsxEnabled}
           className="hidden"
         />
         
         <Button 
           onClick={handleFileSelect}
-          disabled={isUploading}
+          disabled={isUploading || !xlsxEnabled}
           className="w-full"
           variant="outline"
         >
@@ -70,6 +73,16 @@ export const ExcelUpload = () => {
           )}
           {isUploading ? t('uploading') : t('selectExcelFile')}
         </Button>
+
+        {!xlsxEnabled && (
+          <div className="flex items-start gap-2 p-3 bg-amber-50 border border-amber-200 rounded-md">
+            <AlertTriangle className="h-4 w-4 text-amber-600 mt-0.5 flex-shrink-0" />
+            <div className="text-sm text-amber-800">
+              <p className="font-medium">{t('xlsxImportDisabled')}</p>
+              <p className="mt-1">{t('xlsxImportDisabledHint')}</p>
+            </div>
+          </div>
+        )}
 
         <div className="text-sm text-muted-foreground">
           <p>{t('supportedFormats')}</p>

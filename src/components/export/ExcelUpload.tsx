@@ -2,8 +2,9 @@ import React, { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Upload, FileSpreadsheet, Loader2 } from 'lucide-react';
+import { Upload, FileSpreadsheet, Loader2, AlertTriangle } from 'lucide-react';
 import { useExcelUpload } from '@/hooks/useExcelUpload';
+import { ENABLE_XLSX } from '@/lib/flags';
 
 export const ExcelUpload = () => {
   const { t } = useTranslation();
@@ -53,13 +54,14 @@ export const ExcelUpload = () => {
           type="file"
           ref={fileInputRef}
           onChange={handleFileChange}
-          accept=".xlsx,.xls"
+          accept={ENABLE_XLSX ? ".xlsx,.xls" : ""}
           className="hidden"
+          disabled={!ENABLE_XLSX}
         />
         
         <Button 
           onClick={handleFileSelect}
-          disabled={isUploading}
+          disabled={isUploading || !ENABLE_XLSX}
           className="w-full"
           variant="outline"
         >
@@ -70,6 +72,13 @@ export const ExcelUpload = () => {
           )}
           {isUploading ? t('uploading') : t('selectExcelFile')}
         </Button>
+
+        {!ENABLE_XLSX && (
+          <div className="flex items-center gap-2 p-3 bg-yellow-50 border border-yellow-200 rounded-md text-sm text-yellow-800">
+            <AlertTriangle className="h-4 w-4" />
+            <span>XLSX import is currently disabled for security reasons.</span>
+          </div>
+        )}
 
         <div className="text-sm text-muted-foreground">
           <p>{t('supportedFormats')}</p>

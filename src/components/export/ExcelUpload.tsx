@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Upload, FileSpreadsheet, Loader2 } from 'lucide-react';
 import { useExcelUpload } from '@/hooks/useExcelUpload';
+import { ENABLE_XLSX } from '@/lib/flags';
 
 export const ExcelUpload = () => {
   const { t } = useTranslation();
@@ -53,13 +54,20 @@ export const ExcelUpload = () => {
           type="file"
           ref={fileInputRef}
           onChange={handleFileChange}
-          accept=".xlsx,.xls"
           className="hidden"
+          disabled={!ENABLE_XLSX}
+          aria-disabled={!ENABLE_XLSX}
+          accept={ENABLE_XLSX ? '.xlsx,.xls' : ''}
         />
+        {!ENABLE_XLSX && (
+          <p className="text-sm text-muted-foreground">
+            Excel-Import vorübergehend deaktiviert (Sicherheitsmaßnahme).
+          </p>
+        )}
         
         <Button 
           onClick={handleFileSelect}
-          disabled={isUploading}
+          disabled={isUploading || !ENABLE_XLSX}
           className="w-full"
           variant="outline"
         >

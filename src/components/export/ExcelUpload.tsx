@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Upload, FileSpreadsheet, Loader2 } from 'lucide-react';
 import { useExcelUpload } from '@/hooks/useExcelUpload';
-import { ENABLE_XLSX } from '@/config/app';
+import { ENABLE_XLSX } from '@/lib/flags';
 
 export const ExcelUpload = () => {
   const { t } = useTranslation();

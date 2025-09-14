@@ -2,12 +2,16 @@ import * as XLSX from 'xlsx';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
+import { ENABLE_XLSX } from '@/lib/flags';
 
 export const useExcelUpload = () => {
   const [isUploading, setIsUploading] = useState(false);
   const { toast } = useToast();
 
   const uploadExcelFile = async (file: File) => {
+    if (!ENABLE_XLSX) {
+      throw new Error('XLSX import is disabled by feature flag');
+    }
     setIsUploading(true);
     try {
       // Parse Excel file

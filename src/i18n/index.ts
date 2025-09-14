@@ -382,6 +382,7 @@ const resources = {
       selectExcelFile: 'Select Excel file',
       uploading: 'Uploading...',
       pleaseSelectExcelFile: 'Please select an Excel file (.xlsx or .xls)',
+      excelImportDeactivated: 'Excel import temporarily disabled (security measure).',
       
       // Export Settings Messages - Toast Messages
       exportPathSet: 'Export path set:',
@@ -797,6 +798,7 @@ const resources = {
       selectExcelFile: 'Excel-Datei auswählen',
       uploading: 'Wird hochgeladen...',
       pleaseSelectExcelFile: 'Bitte wählen Sie eine Excel-Datei (.xlsx oder .xls)',
+      excelImportDeactivated: 'Excel-Import vorübergehend deaktiviert (Sicherheitsmaßnahme).',
       
       // Export Settings Messages - Toast Messages
       exportPathSet: 'Exportpfad gesetzt:',

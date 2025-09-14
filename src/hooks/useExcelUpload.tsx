@@ -2,12 +2,27 @@ import * as XLSX from 'xlsx';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
+import { ENABLE_XLSX } from '@/lib/flags';
+
+// Define a concrete type for the parsed Excel data
+interface ParsedExcelData {
+  sheets: {
+    name: string;
+    data: Record<string, unknown>[];
+    rowCount: number;
+  }[];
+  totalSheets: number;
+  totalRows: number;
+}
 
 export const useExcelUpload = () => {
   const [isUploading, setIsUploading] = useState(false);
   const { toast } = useToast();
 
   const uploadExcelFile = async (file: File) => {
+    if (!ENABLE_XLSX) {
+      throw new Error('XLSX import is disabled by feature flag');
+    }
     setIsUploading(true);
     try {
       // Parse Excel file
@@ -42,7 +57,7 @@ export const useExcelUpload = () => {
     }
   };
 
-  const parseExcelFile = (file: File): Promise<any> => {
+  const parseExcelFile = (file: File): Promise<ParsedExcelData> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       
@@ -53,7 +68,7 @@ export const useExcelUpload = () => {
           
           const sheets = workbook.SheetNames.map(name => {
             const worksheet = workbook.Sheets[name];
-            const jsonData = XLSX.utils.sheet_to_json(worksheet);
+            const jsonData = XLSX.utils.sheet_to_json<Record<string, unknown>>(worksheet, { defval: null });
             return {
               name,
               data: jsonData,

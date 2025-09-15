@@ -9,6 +9,9 @@ export const ExcelUpload = () => {
   const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { uploadExcelFile, isUploading } = useExcelUpload();
+  
+  // Check if XLSX is enabled via environment variable
+  const ENABLE_XLSX = import.meta.env.VITE_ENABLE_XLSX !== 'false';
 
   const handleFileSelect = () => {
     fileInputRef.current?.click();
@@ -18,15 +21,25 @@ export const ExcelUpload = () => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Check if it's an Excel file
-    const allowedTypes = [
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      'application/vnd.ms-excel'
-    ];
+    if (ENABLE_XLSX) {
+      // Check if it's an Excel file
+      const allowedTypes = [
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'application/vnd.ms-excel'
+      ];
 
-    if (!allowedTypes.includes(file.type)) {
-      alert(t('pleaseSelectExcelFile'));
-      return;
+      if (!allowedTypes.includes(file.type)) {
+        alert(t('pleaseSelectExcelFile'));
+        return;
+      }
+    } else {
+      // Check if it's a CSV file when XLSX is disabled
+      const allowedTypes = ['text/csv', 'application/csv'];
+      
+      if (!allowedTypes.includes(file.type) && !file.name.toLowerCase().endsWith('.csv')) {
+        alert(t('csvInvalid'));
+        return;
+      }
     }
 
     await uploadExcelFile(file);
@@ -45,7 +58,7 @@ export const ExcelUpload = () => {
           {t('excelImport')}
         </CardTitle>
         <CardDescription>
-          {t('excelImportDescription')}
+          {ENABLE_XLSX ? t('excelImportDescription') : t('excelImportDisabledCsvFallback')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -53,7 +66,7 @@ export const ExcelUpload = () => {
           type="file"
           ref={fileInputRef}
           onChange={handleFileChange}
-          accept=".xlsx,.xls"
+          accept={ENABLE_XLSX ? ".xlsx,.xls" : ".csv"}
           className="hidden"
         />
         
@@ -68,11 +81,11 @@ export const ExcelUpload = () => {
           ) : (
             <Upload className="h-4 w-4 mr-2" />
           )}
-          {isUploading ? t('uploading') : t('selectExcelFile')}
+          {isUploading ? t('uploading') : (ENABLE_XLSX ? t('selectExcelFile') : t('selectCsvFile'))}
         </Button>
 
         <div className="text-sm text-muted-foreground">
-          <p>{t('supportedFormats')}</p>
+          <p>{ENABLE_XLSX ? t('supportedFormats') : t('supportedCsvFormats')}</p>
           <p>{t('maxFileSize')}</p>
         </div>
       </CardContent>

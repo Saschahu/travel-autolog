@@ -376,12 +376,21 @@ const resources = {
       
       // Export
       supportedFormats: 'Supported formats: .xlsx, .xls',
+      csvOnlyFormat: 'Supported format: .csv',  
       maxFileSize: 'Maximum file size: 10 MB',
       excelImport: 'Excel Import',
       excelImportDescription: 'Upload Excel files to import job data',
       selectExcelFile: 'Select Excel file',
       uploading: 'Uploading...',
       pleaseSelectExcelFile: 'Please select an Excel file (.xlsx or .xls)',
+      xlsxDisabled: 'Excel import is disabled by policy. Please use CSV.',
+      xlsxDisabledWarning: 'Excel import is disabled by policy. CSV import remains available.',
+      
+      // Upload error messages
+      upload: {
+        tooLarge: 'File is too large. Maximum size is {{limitMB}} MB.',
+        tooManyRows: 'Too many rows ({{rows}}). Maximum allowed is {{limit}}.'
+      },
       
       // Export Settings Messages - Toast Messages
       exportPathSet: 'Export path set:',
@@ -791,12 +800,21 @@ const resources = {
       
       // Export
       supportedFormats: 'Unterstützte Formate: .xlsx, .xls',
+      csvOnlyFormat: 'Unterstütztes Format: .csv',
       maxFileSize: 'Maximale Dateigröße: 10 MB',
       excelImport: 'Excel Import',
       excelImportDescription: 'Laden Sie Excel-Dateien hoch um Auftragsdaten zu importieren',
       selectExcelFile: 'Excel-Datei auswählen',
       uploading: 'Wird hochgeladen...',
       pleaseSelectExcelFile: 'Bitte wählen Sie eine Excel-Datei (.xlsx oder .xls)',
+      xlsxDisabled: 'Excel-Import ist durch eine Richtlinie deaktiviert. Bitte verwenden Sie CSV.',
+      xlsxDisabledWarning: 'Excel-Import ist durch eine Richtlinie deaktiviert. CSV-Import bleibt verfügbar.',
+      
+      // Upload error messages
+      upload: {
+        tooLarge: 'Datei ist zu groß. Maximalgröße: {{limitMB}} MB.',
+        tooManyRows: 'Zu viele Zeilen ({{rows}}). Maximal erlaubt: {{limit}}.'
+      },
       
       // Export Settings Messages - Toast Messages
       exportPathSet: 'Exportpfad gesetzt:',

@@ -4,8 +4,14 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Upload, FileSpreadsheet, Loader2 } from 'lucide-react';
 import { useExcelUpload } from '@/hooks/useExcelUpload';
+import { isXlsxEnabled } from '@/lib/flags';
 
 export const ExcelUpload = () => {
+  // Feature flag check - return null if XLSX import is disabled
+  if (!isXlsxEnabled()) {
+    return null;
+  }
+
   const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { uploadExcelFile, isUploading } = useExcelUpload();

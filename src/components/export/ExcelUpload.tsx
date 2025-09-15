@@ -4,11 +4,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Upload, FileSpreadsheet, Loader2 } from 'lucide-react';
 import { useExcelUpload } from '@/hooks/useExcelUpload';
+import { isXlsxEnabled } from '@/lib/flags';
 
 export const ExcelUpload = () => {
   const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { uploadExcelFile, isUploading } = useExcelUpload();
+  const XLSX_ON = isXlsxEnabled();
 
   const handleFileSelect = () => {
     fileInputRef.current?.click();
@@ -18,14 +20,10 @@ export const ExcelUpload = () => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Check if it's an Excel file
-    const allowedTypes = [
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      'application/vnd.ms-excel'
-    ];
-
-    if (!allowedTypes.includes(file.type)) {
-      alert(t('pleaseSelectExcelFile'));
+    const ext = file.name.toLowerCase().split('.').pop();
+    if (!XLSX_ON && (ext === 'xlsx' || ext === 'xls')) {
+      // Show hint instead of processing XLSX when flag is off
+      alert(t('xlsxDisabledCsvAvailable'));
       return;
     }
 
@@ -53,7 +51,7 @@ export const ExcelUpload = () => {
           type="file"
           ref={fileInputRef}
           onChange={handleFileChange}
-          accept=".xlsx,.xls"
+          accept={XLSX_ON ? '.xlsx,.xls,.csv' : '.csv'}
           className="hidden"
         />
         
@@ -71,8 +69,14 @@ export const ExcelUpload = () => {
           {isUploading ? t('uploading') : t('selectExcelFile')}
         </Button>
 
+        {!XLSX_ON && (
+          <p className="text-sm text-muted-foreground">
+            {t('xlsxDisabledCsvAvailable')}
+          </p>
+        )}
+
         <div className="text-sm text-muted-foreground">
-          <p>{t('supportedFormats')}</p>
+          <p>{t('supportedFormats')}: {XLSX_ON ? '.xlsx, .xls, .csv' : '.csv'}</p>
           <p>{t('maxFileSize')}</p>
         </div>
       </CardContent>

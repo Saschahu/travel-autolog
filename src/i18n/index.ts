@@ -382,6 +382,7 @@ const resources = {
       selectExcelFile: 'Select Excel file',
       uploading: 'Uploading...',
       pleaseSelectExcelFile: 'Please select an Excel file (.xlsx or .xls)',
+      xlsxDisabledCsvAvailable: 'XLSX import is disabled. CSV files are still supported.',
       
       // Export Settings Messages - Toast Messages
       exportPathSet: 'Export path set:',
@@ -797,6 +798,7 @@ const resources = {
       selectExcelFile: 'Excel-Datei auswählen',
       uploading: 'Wird hochgeladen...',
       pleaseSelectExcelFile: 'Bitte wählen Sie eine Excel-Datei (.xlsx oder .xls)',
+      xlsxDisabledCsvAvailable: 'XLSX-Import ist deaktiviert. CSV-Dateien werden weiterhin unterstützt.',
       
       // Export Settings Messages - Toast Messages
       exportPathSet: 'Exportpfad gesetzt:',

@@ -376,12 +376,17 @@ const resources = {
       
       // Export
       supportedFormats: 'Supported formats: .xlsx, .xls',
+      supportedFormatsAll: 'Supported formats: .xlsx, .xls, .csv',
+      supportedFormatsCSV: 'Supported formats: .csv',
       maxFileSize: 'Maximum file size: 10 MB',
       excelImport: 'Excel Import',
       excelImportDescription: 'Upload Excel files to import job data',
       selectExcelFile: 'Select Excel file',
+      selectFile: 'Select file',
       uploading: 'Uploading...',
       pleaseSelectExcelFile: 'Please select an Excel file (.xlsx or .xls)',
+      pleaseSelectValidFile: 'Please select a valid file (.xlsx, .xls, or .csv)',
+      xlsxDisabledCsvAvailable: 'Excel import is disabled by policy. CSV import remains available.',
       
       // Export Settings Messages - Toast Messages
       exportPathSet: 'Export path set:',
@@ -791,12 +796,17 @@ const resources = {
       
       // Export
       supportedFormats: 'Unterstützte Formate: .xlsx, .xls',
+      supportedFormatsAll: 'Unterstützte Formate: .xlsx, .xls, .csv',
+      supportedFormatsCSV: 'Unterstützte Formate: .csv',
       maxFileSize: 'Maximale Dateigröße: 10 MB',
       excelImport: 'Excel Import',
       excelImportDescription: 'Laden Sie Excel-Dateien hoch um Auftragsdaten zu importieren',
       selectExcelFile: 'Excel-Datei auswählen',
+      selectFile: 'Datei auswählen',
       uploading: 'Wird hochgeladen...',
       pleaseSelectExcelFile: 'Bitte wählen Sie eine Excel-Datei (.xlsx oder .xls)',
+      pleaseSelectValidFile: 'Bitte wählen Sie eine gültige Datei (.xlsx, .xls oder .csv)',
+      xlsxDisabledCsvAvailable: 'Excel-Import ist aus Sicherheitsgründen deaktiviert. CSV-Import ist weiterhin verfügbar.',
       
       // Export Settings Messages - Toast Messages
       exportPathSet: 'Exportpfad gesetzt:',

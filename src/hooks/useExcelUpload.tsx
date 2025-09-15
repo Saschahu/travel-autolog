@@ -2,6 +2,19 @@ import * as XLSX from 'xlsx';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
+import { ENABLE_XLSX } from '@/lib/flags';
+import { parseCsv } from '@/lib/csv';
+
+// Common interface for tabular data from both XLSX and CSV
+interface TabularDataResult {
+  sheets: Array<{
+    name: string;
+    data: Record<string, string>[];
+    rowCount: number;
+  }>;
+  totalSheets: number;
+  totalRows: number;
+}
 
 export const useExcelUpload = () => {
   const [isUploading, setIsUploading] = useState(false);
@@ -10,8 +23,8 @@ export const useExcelUpload = () => {
   const uploadExcelFile = async (file: File) => {
     setIsUploading(true);
     try {
-      // Parse Excel file
-      const data = await parseExcelFile(file);
+      // Parse file based on type and feature flags
+      const data = await parseFile(file);
       
       // Upload to Supabase Storage
       const fileName = `${Date.now()}_${file.name}`;
@@ -23,17 +36,22 @@ export const useExcelUpload = () => {
         throw uploadError;
       }
 
+      const isExcel = file.name.endsWith('.xlsx') || file.name.endsWith('.xls');
+      const description = isExcel 
+        ? `Excel-Datei wurde hochgeladen: ${data.sheets.length} Arbeitsblätter gefunden`
+        : `CSV-Datei wurde hochgeladen: ${data.totalRows} Zeilen gefunden`;
+
       toast({
         title: 'Upload erfolgreich',
-        description: `Excel-Datei wurde hochgeladen: ${data.sheets.length} Arbeitsblätter gefunden`,
+        description,
       });
 
       return { success: true, data, fileName };
     } catch (error) {
-      console.error('Excel upload error:', error);
+      console.error('File upload error:', error);
       toast({
         title: 'Upload Fehler',
-        description: 'Die Excel-Datei konnte nicht verarbeitet werden',
+        description: error instanceof Error ? error.message : 'Die Datei konnte nicht verarbeitet werden',
         variant: 'destructive',
       });
       return { success: false, error };
@@ -42,7 +60,37 @@ export const useExcelUpload = () => {
     }
   };
 
-  const parseExcelFile = (file: File): Promise<any> => {
+  const parseFile = async (file: File): Promise<TabularDataResult> => {
+    const isCsv = file.name.endsWith('.csv');
+    
+    if (isCsv) {
+      // CSV files are always supported
+      return await parseCsvFile(file);
+    } else {
+      // XLSX/XLS files require feature flag
+      if (!ENABLE_XLSX) {
+        throw new Error('XLSX import is disabled by feature flag');
+      }
+      return await parseExcelFile(file);
+    }
+  };
+
+  const parseCsvFile = async (file: File): Promise<TabularDataResult> => {
+    const csvResult = await parseCsv(file);
+    
+    // Convert to same format as Excel parser
+    return {
+      sheets: [{
+        name: 'Sheet1',
+        data: csvResult.rows,
+        rowCount: csvResult.rowCount
+      }],
+      totalSheets: 1,
+      totalRows: csvResult.rowCount
+    };
+  };
+
+  const parseExcelFile = (file: File): Promise<TabularDataResult> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       
@@ -53,7 +101,7 @@ export const useExcelUpload = () => {
           
           const sheets = workbook.SheetNames.map(name => {
             const worksheet = workbook.Sheets[name];
-            const jsonData = XLSX.utils.sheet_to_json(worksheet);
+            const jsonData = XLSX.utils.sheet_to_json(worksheet) as Record<string, string>[];
             return {
               name,
               data: jsonData,
@@ -94,6 +142,7 @@ export const useExcelUpload = () => {
   return {
     uploadExcelFile,
     parseExcelFile,
+    parseFile,
     getUploadedFiles,
     isUploading
   };

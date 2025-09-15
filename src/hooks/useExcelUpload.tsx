@@ -2,6 +2,8 @@ import * as XLSX from 'xlsx';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
+import { ENABLE_XLSX } from '@/lib/flags';
+import { parseCsv, CsvParseResult } from '@/lib/csv';
 
 export const useExcelUpload = () => {
   const [isUploading, setIsUploading] = useState(false);
@@ -25,7 +27,7 @@ export const useExcelUpload = () => {
 
       toast({
         title: 'Upload erfolgreich',
-        description: `Excel-Datei wurde hochgeladen: ${data.sheets.length} Arbeitsblätter gefunden`,
+        description: `Datei wurde hochgeladen: ${data.sheets.length} Arbeitsblätter gefunden`,
       });
 
       return { success: true, data, fileName };
@@ -33,7 +35,7 @@ export const useExcelUpload = () => {
       console.error('Excel upload error:', error);
       toast({
         title: 'Upload Fehler',
-        description: 'Die Excel-Datei konnte nicht verarbeitet werden',
+        description: 'Die Datei konnte nicht verarbeitet werden',
         variant: 'destructive',
       });
       return { success: false, error };
@@ -42,7 +44,16 @@ export const useExcelUpload = () => {
     }
   };
 
-  const parseExcelFile = (file: File): Promise<any> => {
+  const parseExcelFile = (file: File): Promise<CsvParseResult> => {
+    // Check if XLSX is disabled and file is CSV
+    const isCsvFile = file.type.includes('text/csv') || file.name.endsWith('.csv');
+    
+    if (!ENABLE_XLSX && isCsvFile) {
+      // Use CSV parser for CSV files when XLSX is disabled
+      return parseCsv(file);
+    }
+    
+    // Default XLSX behavior for Excel files or when XLSX is enabled
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       

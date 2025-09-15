@@ -6,10 +6,26 @@ import { useState } from 'react';
 export const useExcelUpload = () => {
   const [isUploading, setIsUploading] = useState(false);
   const { toast } = useToast();
+  
+  // Check if XLSX import is enabled via environment variable
+  const isXlsxEnabled = import.meta.env.VITE_ENABLE_XLSX_IMPORT === 'true';
 
   const uploadExcelFile = async (file: File) => {
     setIsUploading(true);
     try {
+      // Guard: Check if it's an XLSX/XLS file and if XLSX is disabled
+      const isExcelFile = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || 
+                         file.type === 'application/vnd.ms-excel';
+      
+      if (isExcelFile && !isXlsxEnabled) {
+        toast({
+          title: 'Excel-Import deaktiviert',
+          description: 'Excel-Import ist derzeit deaktiviert. Nur CSV-Import ist verfügbar.',
+          variant: 'destructive',
+        });
+        return { success: false, error: 'XLSX import disabled' };
+      }
+
       // Parse Excel file
       const data = await parseExcelFile(file);
       
@@ -95,6 +111,7 @@ export const useExcelUpload = () => {
     uploadExcelFile,
     parseExcelFile,
     getUploadedFiles,
-    isUploading
+    isUploading,
+    isXlsxEnabled
   };
 };

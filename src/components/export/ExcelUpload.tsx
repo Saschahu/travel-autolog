@@ -2,13 +2,13 @@ import React, { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Upload, FileSpreadsheet, Loader2 } from 'lucide-react';
+import { Upload, FileSpreadsheet, Loader2, AlertCircle } from 'lucide-react';
 import { useExcelUpload } from '@/hooks/useExcelUpload';
 
 export const ExcelUpload = () => {
   const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { uploadExcelFile, isUploading } = useExcelUpload();
+  const { uploadExcelFile, isUploading, isXlsxEnabled } = useExcelUpload();
 
   const handleFileSelect = () => {
     fileInputRef.current?.click();
@@ -18,15 +18,25 @@ export const ExcelUpload = () => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Check if it's an Excel file
-    const allowedTypes = [
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      'application/vnd.ms-excel'
-    ];
-
-    if (!allowedTypes.includes(file.type)) {
-      alert(t('pleaseSelectExcelFile'));
-      return;
+    // Check file type based on flag status
+    if (isXlsxEnabled) {
+      // When XLSX is enabled, allow Excel files
+      const allowedTypes = [
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'application/vnd.ms-excel',
+        'text/csv'
+      ];
+      
+      if (!allowedTypes.includes(file.type)) {
+        alert(t('pleaseSelectExcelFile'));
+        return;
+      }
+    } else {
+      // When XLSX is disabled, only allow CSV
+      if (file.type !== 'text/csv') {
+        alert(t('pleaseSelectCSVFile'));
+        return;
+      }
     }
 
     await uploadExcelFile(file);
@@ -36,6 +46,9 @@ export const ExcelUpload = () => {
       fileInputRef.current.value = '';
     }
   };
+
+  // Dynamic file accept attribute based on flag
+  const acceptedFiles = isXlsxEnabled ? '.xlsx,.xls,.csv' : '.csv';
 
   return (
     <Card>
@@ -49,11 +62,20 @@ export const ExcelUpload = () => {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
+        {!isXlsxEnabled && (
+          <div className="flex items-center gap-2 p-3 bg-yellow-50 border border-yellow-200 rounded-md">
+            <AlertCircle className="h-4 w-4 text-yellow-600" />
+            <p className="text-sm text-yellow-700">
+              {t('excelImportDisabled')}
+            </p>
+          </div>
+        )}
+        
         <input
           type="file"
           ref={fileInputRef}
           onChange={handleFileChange}
-          accept=".xlsx,.xls"
+          accept={acceptedFiles}
           className="hidden"
         />
         
@@ -72,7 +94,7 @@ export const ExcelUpload = () => {
         </Button>
 
         <div className="text-sm text-muted-foreground">
-          <p>{t('supportedFormats')}</p>
+          <p>{isXlsxEnabled ? t('supportedFormats') : t('supportedFormatsCSVOnly')}</p>
           <p>{t('maxFileSize')}</p>
         </div>
       </CardContent>

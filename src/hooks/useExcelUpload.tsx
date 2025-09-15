@@ -2,16 +2,34 @@ import * as XLSX from 'xlsx';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
+import { parseCsv } from '@/lib/csv';
+
+interface ParsedSheet {
+  name: string;
+  data: unknown[];
+  rowCount: number;
+}
+
+interface ParsedFileData {
+  sheets: ParsedSheet[];
+  totalSheets: number;
+  totalRows: number;
+}
 
 export const useExcelUpload = () => {
   const [isUploading, setIsUploading] = useState(false);
   const { toast } = useToast();
 
+  const ENABLE_XLSX = import.meta.env.VITE_ENABLE_XLSX !== 'false';
+
   const uploadExcelFile = async (file: File) => {
     setIsUploading(true);
     try {
-      // Parse Excel file
-      const data = await parseExcelFile(file);
+      // Determine if we should use CSV or XLSX parsing
+      const shouldUseCsv = file.name.endsWith('.csv') || !ENABLE_XLSX;
+      
+      // Parse file
+      const data = shouldUseCsv ? await parseCsvFile(file) : await parseExcelFile(file);
       
       // Upload to Supabase Storage
       const fileName = `${Date.now()}_${file.name}`;
@@ -23,9 +41,10 @@ export const useExcelUpload = () => {
         throw uploadError;
       }
 
+      const fileType = shouldUseCsv ? 'CSV' : 'Excel';
       toast({
         title: 'Upload erfolgreich',
-        description: `Excel-Datei wurde hochgeladen: ${data.sheets.length} Arbeitsblätter gefunden`,
+        description: `${fileType}-Datei wurde hochgeladen: ${data.sheets.length} Arbeitsblätter gefunden`,
       });
 
       return { success: true, data, fileName };
@@ -42,7 +61,29 @@ export const useExcelUpload = () => {
     }
   };
 
-  const parseExcelFile = (file: File): Promise<any> => {
+  const parseCsvFile = async (file: File): Promise<ParsedFileData> => {
+    try {
+      const csvResult = await parseCsv(file);
+      
+      // Map CSV data to match XLSX schema expected by the rest of the app
+      // TODO: This is a basic mapping - may need refinement based on actual CSV structure
+      const sheets: ParsedSheet[] = [{
+        name: 'Sheet1', // CSV files don't have sheet names, so use default
+        data: csvResult.rows, // CSV rows are already in the right format
+        rowCount: csvResult.rows.length
+      }];
+
+      return {
+        sheets,
+        totalSheets: sheets.length,
+        totalRows: sheets.reduce((sum, sheet) => sum + sheet.rowCount, 0)
+      };
+    } catch (error) {
+      throw new Error(`CSV-Parsing Fehler: ${error instanceof Error ? error.message : 'Unbekannter Fehler'}`);
+    }
+  };
+
+  const parseExcelFile = (file: File): Promise<ParsedFileData> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       
@@ -51,7 +92,7 @@ export const useExcelUpload = () => {
           const data = new Uint8Array(e.target?.result as ArrayBuffer);
           const workbook = XLSX.read(data, { type: 'array' });
           
-          const sheets = workbook.SheetNames.map(name => {
+          const sheets: ParsedSheet[] = workbook.SheetNames.map(name => {
             const worksheet = workbook.Sheets[name];
             const jsonData = XLSX.utils.sheet_to_json(worksheet);
             return {
@@ -95,6 +136,7 @@ export const useExcelUpload = () => {
     uploadExcelFile,
     parseExcelFile,
     getUploadedFiles,
-    isUploading
+    isUploading,
+    ENABLE_XLSX
   };
 };

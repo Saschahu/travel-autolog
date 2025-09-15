@@ -8,7 +8,7 @@ import { useExcelUpload } from '@/hooks/useExcelUpload';
 export const ExcelUpload = () => {
   const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { uploadExcelFile, isUploading } = useExcelUpload();
+  const { uploadExcelFile, isUploading, ENABLE_XLSX } = useExcelUpload();
 
   const handleFileSelect = () => {
     fileInputRef.current?.click();
@@ -18,15 +18,31 @@ export const ExcelUpload = () => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Check if it's an Excel file
-    const allowedTypes = [
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      'application/vnd.ms-excel'
-    ];
-
-    if (!allowedTypes.includes(file.type)) {
-      alert(t('pleaseSelectExcelFile'));
-      return;
+    // Check file type based on ENABLE_XLSX flag
+    if (ENABLE_XLSX) {
+      // XLSX enabled: accept both Excel and CSV files
+      const allowedTypes = [
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'application/vnd.ms-excel',
+        'text/csv'
+      ];
+      const allowedExtensions = ['.xlsx', '.xls', '.csv'];
+      
+      const hasValidType = allowedTypes.includes(file.type) || 
+                          allowedExtensions.some(ext => file.name.toLowerCase().endsWith(ext));
+      
+      if (!hasValidType) {
+        alert(t('pleaseSelectExcelFile'));
+        return;
+      }
+    } else {
+      // XLSX disabled: only accept CSV files
+      const isCsv = file.type === 'text/csv' || file.name.toLowerCase().endsWith('.csv');
+      
+      if (!isCsv) {
+        alert('Bitte wählen Sie eine CSV-Datei aus.');
+        return;
+      }
     }
 
     await uploadExcelFile(file);
@@ -53,7 +69,7 @@ export const ExcelUpload = () => {
           type="file"
           ref={fileInputRef}
           onChange={handleFileChange}
-          accept=".xlsx,.xls"
+          accept={ENABLE_XLSX ? '.xlsx,.xls,.csv' : '.csv'}
           className="hidden"
         />
         
@@ -72,6 +88,11 @@ export const ExcelUpload = () => {
         </Button>
 
         <div className="text-sm text-muted-foreground">
+          {!ENABLE_XLSX && (
+            <p className="text-amber-600 mb-2">
+              Excel-Import deaktiviert, CSV-Import verfügbar.
+            </p>
+          )}
           <p>{t('supportedFormats')}</p>
           <p>{t('maxFileSize')}</p>
         </div>

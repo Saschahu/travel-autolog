@@ -82,6 +82,46 @@ npm run build
 - `npm run verify:local` - Lokale Asset-Konsistenz prüfen
 - `npm run build:native` - Native Build mit BUILD_TARGET=native
 
+## Data Import (CSV & XLSX)
+
+### XLSX Feature Flag
+- **Default**: **OFF** (CSV nur)
+- **Aktivierung**: `.env` → `VITE_ENABLE_XLSX_IMPORT=true`
+- **CSV ist immer verfügbar** (unabhängig vom XLSX-Flag)
+
+### Upload-Limits
+Standard-Limits (überschreibbar via Environment-Variablen):
+```
+VITE_UPLOAD_MAX_BYTES=5242880   # 5MB
+VITE_UPLOAD_MAX_ROWS=50000      # 50.000 Zeilen
+```
+
+### Sicherheit
+**Formula-Injection-Mitigation**: Führende Sonderzeichen (`= + - @`) werden automatisch mit einem `'` escaped, um Excel-Formel-Injection zu verhindern.
+
+### Manueller Testplan
+1. **Flag=false** (Standard):
+   - Nur `.csv` Dateien werden akzeptiert
+   - `.xlsx/.xls` Dateien werden blockiert mit Hinweis
+   - "Excel-Import ist durch eine Richtlinie deaktiviert. CSV-Import bleibt verfügbar."
+
+2. **Flag=true**:
+   - `.xlsx`, `.xls` und `.csv` Dateien werden akzeptiert
+   - Kein Einschränkungs-Hinweis wird angezeigt
+
+3. **Upload-Limits**:
+   - Datei zu groß → "Datei ist zu groß. Maximalgröße: X MB" Toast
+   - Zu viele Zeilen → "Zu viele Zeilen (X). Maximal erlaubt: Y" Toast
+
+4. **Formula-Injection-Test**:
+   - CSV mit `=SUM(1,2)` → Wird angezeigt/verarbeitet als `'=SUM(1,2)`
+
+### Troubleshooting
+- **Encoding**: UTF-8 mit/ohne BOM unterstützt
+- **Zeilenendezeichen**: CRLF und LF unterstützt  
+- **Delimiter**: Komma (`,`) und Semikolon (`;`) automatisch erkannt
+- **Quotes**: Doppelte und einfache Anführungszeichen unterstützt
+
 ## Technologien
 
 - **Frontend**: Vite, TypeScript, React, shadcn-ui, Tailwind CSS

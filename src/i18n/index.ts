@@ -383,6 +383,15 @@ const resources = {
       uploading: 'Uploading...',
       pleaseSelectExcelFile: 'Please select an Excel file (.xlsx or .xls)',
       
+      // Import Messages
+      xlsxDisabledCsvAvailable: 'Excel import is disabled by policy. CSV import remains available.',
+      supportedFormatsCsvOnly: 'Supported: .csv',
+      supportedFormatsAll: 'Supported: .xlsx, .xls, .csv',
+      
+      // Upload Limit Messages
+      tooLarge: 'File is too large. Maximum size is {{limitMB}} MB.',
+      tooManyRows: 'Too many rows ({{rows}}). Maximum allowed is {{limit}}.',
+      
       // Export Settings Messages - Toast Messages
       exportPathSet: 'Export path set:',
       clickButtonDirectly: 'Please click the button directly (no automatic actions).',
@@ -797,6 +806,15 @@ const resources = {
       selectExcelFile: 'Excel-Datei auswählen',
       uploading: 'Wird hochgeladen...',
       pleaseSelectExcelFile: 'Bitte wählen Sie eine Excel-Datei (.xlsx oder .xls)',
+      
+      // Import Messages
+      xlsxDisabledCsvAvailable: 'Excel-Import ist durch eine Richtlinie deaktiviert. CSV-Import bleibt verfügbar.',
+      supportedFormatsCsvOnly: 'Unterstützt: .csv',
+      supportedFormatsAll: 'Unterstützt: .xlsx, .xls, .csv',
+      
+      // Upload Limit Messages
+      tooLarge: 'Datei ist zu groß. Maximalgröße: {{limitMB}} MB.',
+      tooManyRows: 'Zu viele Zeilen ({{rows}}). Maximal erlaubt: {{limit}}.',
       
       // Export Settings Messages - Toast Messages
       exportPathSet: 'Exportpfad gesetzt:',

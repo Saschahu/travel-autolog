@@ -4,14 +4,14 @@ import { set, get, del } from 'idb-keyval';
 const KEY_EXPORT_HANDLE = 'exportDirHandle';
 const KEY_EXPORT_META = 'exportDirMeta';
 
-export async function saveExportHandle(handle: any, meta?: { displayName?: string; createdByApp?: boolean }): Promise<void> {
+export async function saveExportHandle(handle: FileSystemDirectoryHandle, meta?: { displayName?: string; createdByApp?: boolean }): Promise<void> {
   await set(KEY_EXPORT_HANDLE, handle);
   if (meta) {
     await set(KEY_EXPORT_META, meta);
   }
 }
 
-export async function loadExportHandle(): Promise<any | null> {
+export async function loadExportHandle(): Promise<FileSystemDirectoryHandle | null> {
   try {
     return await get(KEY_EXPORT_HANDLE);
   } catch (error) {

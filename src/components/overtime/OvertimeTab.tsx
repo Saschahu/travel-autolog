@@ -19,8 +19,8 @@ export const OvertimeTab = ({ job }: OvertimeTabProps) => {
   const { toast } = useToast();
   const { calculateOvertime, calculateTimeBreakdown, formatMinutesToHours, overtimeSettings, forceRecalculation, recalcTrigger } = useOvertimeCalculation();
   
-  const timeBreakdown = useMemo(() => calculateTimeBreakdown(job), [job, calculateTimeBreakdown, recalcTrigger]);
-  const overtimeCalculation = useMemo(() => calculateOvertime(job), [job, calculateOvertime, recalcTrigger]);
+  const timeBreakdown = useMemo(() => calculateTimeBreakdown(job), [job, calculateTimeBreakdown]);
+  const overtimeCalculation = useMemo(() => calculateOvertime(job), [job, calculateOvertime]);
   
   // Calculate splits for display
   const ot50Minutes = decimalHoursToMinutes(overtimeCalculation.overtime1Hours);

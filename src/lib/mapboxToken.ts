@@ -8,7 +8,7 @@ export function getMapboxToken(): string | undefined {
     if (ui) return ui;
 
     // Native → mobiler Token; Web → Web-Token
-    const env = (import.meta as any).env;
+    const env = import.meta.env as Record<string, string | undefined>;
     const token = Capacitor.isNativePlatform()
       ? (env?.VITE_MAPBOX_TOKEN_MOBILE as string | undefined)
       : (env?.VITE_MAPBOX_TOKEN_WEB as string | undefined);

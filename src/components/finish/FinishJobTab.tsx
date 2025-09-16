@@ -73,7 +73,7 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
   );
   
   // Calculate overtime
-  const overtimeCalculation = useMemo(() => calculateOvertime(job), [job, calculateOvertime, recalcTrigger]);
+  const overtimeCalculation = useMemo(() => calculateOvertime(job), [job, calculateOvertime]);
 
   // Prepare PDF in the background when tab is opened
   useEffect(() => {

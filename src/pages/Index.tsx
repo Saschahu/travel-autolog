@@ -209,7 +209,7 @@ const Index = () => {
           toll_amount: editData.tollAmount,
           work_report: editData.workReport,
           reports: editData.reports,
-        } as any)
+        })
         .eq('id', selectedJob.id);
 
       if (error) throw error;

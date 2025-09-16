@@ -50,7 +50,7 @@ export class GPSTrackingService {
     });
   }
 
-  private handleLocationError(error: any): void {
+  private handleLocationError(error: unknown): void {
     console.error('GPS tracking error:', error);
     this.setStatus('error');
     this.handleError('GPS location error');

@@ -27,4 +27,4 @@ dist-ssr
 android/
 
 # Lokale Secrets
-.env
+.env.env

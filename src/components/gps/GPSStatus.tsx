@@ -200,7 +200,7 @@ export const GPSStatus: React.FC<GPSStatusProps> = ({ gpsTracking }) => {
                 Arbeit fertig
               </Button>
               <Button variant="outline" size="sm" onClick={denyWorkDone}>
-                Weiter arbeiten
+                {t('continueWorking')}
               </Button>
             </>
           )}

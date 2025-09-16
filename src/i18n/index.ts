@@ -307,6 +307,7 @@ const resources = {
       startTracking: 'Start Tracking',
       stopTracking: 'Stop Tracking',
       trackingCouldNotStart: 'Tracking could not be started:',
+      continueWorking: 'Continue working',
       
       // Export
       excelExport: 'Excel Export',
@@ -720,6 +721,7 @@ const resources = {
       startTracking: 'Tracking starten',
       stopTracking: 'Tracking stoppen',
       trackingCouldNotStart: 'Tracking konnte nicht gestartet werden:',
+      continueWorking: 'Weiter arbeiten',
       
       // Export
       excelExport: 'Excel Export',
@@ -1228,6 +1230,12 @@ const resources = {
       ruleOver12: "• Over 12 timer: 100% tillegg på overtid", 
       weekendRules: "Helgeregler:",
       payment: "• Betaling: Minst garanterte timer + overtidstillegg",
+
+      // GPS Tracking
+      startTracking: "Start sporing",
+      stopTracking: "Stopp sporing", 
+      trackingCouldNotStart: "Sporing kunne ikke startes:",
+      continueWorking: "Fortsett å arbeide",
 
       // Job (Auftrag bearbeiten / Report Tab)
       job: {

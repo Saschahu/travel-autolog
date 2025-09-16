@@ -36,7 +36,7 @@ export type WatchHandle = { stop: () => Promise<void> | void };
 
 export async function startWatch(
   onFix: (fix: Fix) => void,
-  onError?: (err: any) => void
+  onError?: (err: Error) => void
 ): Promise<WatchHandle> {
   if (Capacitor.isNativePlatform()) {
     const id = await Geolocation.watchPosition(OPTS, (pos, err) => {

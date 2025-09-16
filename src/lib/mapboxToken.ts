@@ -19,5 +19,5 @@ export function getMapboxToken(): string | undefined {
 }
 
 export function looksLikePublicToken(t?: string) {
-  return !!t && /^pk\.[A-Za-z0-9._\-]{10,}$/.test(t);
+  return !!t && /^pk\.[A-Za-z0-9._-]{10,}$/.test(t);
 }

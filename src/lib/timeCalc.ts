@@ -1,3 +1,5 @@
+import { Job } from '@/hooks/useJobs';
+
 export interface TimeEntry {
   id: string;
   date: string; // YYYY-MM-DD
@@ -51,12 +53,12 @@ export const applyRoundingTotal = (totalMinutes: number, roundingMinutes: number
   return Math.round(totalMinutes / roundingMinutes) * roundingMinutes;
 };
 
-export const extractTimeEntriesFromJob = (job: any): TimeEntry[] => {
+export const extractTimeEntriesFromJob = (job: Job): TimeEntry[] => {
   const entries: TimeEntry[] = [];
   
   // Extract from days array if available - this takes priority
   if (job.days && Array.isArray(job.days) && job.days.length > 0) {
-    job.days.forEach((day: any, index: number) => {
+    job.days.forEach((day: { date?: string; travelStart?: string; travelEnd?: string; workStart?: string; workEnd?: string; departureStart?: string; departureEnd?: string; travelBreak?: number; workBreak?: number; departureBreak?: number; note?: string }, index: number) => {
       const date = day.date || new Date().toISOString().split('T')[0];
       
       // Skip days with empty or invalid times to avoid duplicate null entries

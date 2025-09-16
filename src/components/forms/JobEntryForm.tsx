@@ -76,7 +76,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [currentJobId, setCurrentJobId] = useState<string | null>(jobId || null);
   const [isEditingJob, setIsEditingJob] = useState(Boolean(jobId));
-  const [isCreatingNewJob, setIsCreatingNewJob] = useState(!Boolean(jobId)); // Track if this was originally a new job
+  const [isCreatingNewJob, setIsCreatingNewJob] = useState(!jobId); // Track if this was originally a new job
   const [currentJob, setCurrentJob] = useState<any>(null);
   const { toast } = useToast();
 

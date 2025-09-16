@@ -8,7 +8,11 @@ if (!Capacitor.isNativePlatform()) {
   // Web fallback - use browser geolocation
 } else {
   try {
-    CapacitorGeolocation = require('@capacitor/geolocation').Geolocation;
+    import('@capacitor/geolocation').then(module => {
+      CapacitorGeolocation = module.Geolocation;
+    }).catch(e => {
+      console.warn('Capacitor Geolocation not available, using web fallback');
+    });
   } catch (e) {
     console.warn('Capacitor Geolocation not available, using web fallback');
   }

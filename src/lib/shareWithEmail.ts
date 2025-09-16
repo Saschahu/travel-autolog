@@ -20,7 +20,7 @@ interface ReportData {
 }
 
 export function canShareFiles(): boolean {
-  // @ts-ignore - Web Share API Level 2 types may not be available
+  // @ts-expect-error - Web Share API Level 2 types may not be available
   return !!(navigator as any).canShare && !!(navigator as any).share;
 }
 
@@ -34,9 +34,9 @@ export async function shareReportWithAttachment(data: ReportData, profile?: User
     const title = `ServiceTracker – Arbeitsbericht`;
     const text = `Arbeitsbericht ${data.job.evaticNo ? `(EVATIC ${data.job.evaticNo}) ` : ''}Job ${data.job.id}`;
 
-    // @ts-ignore
+    // @ts-expect-error - Web Share API Level 2 types may not be available
     if ((navigator as any).canShare?.({ files: [file] })) {
-      // @ts-ignore
+      // @ts-expect-error - Web Share API Level 2 types may not be available
       await (navigator as any).share({ 
         files: [file], 
         title, 

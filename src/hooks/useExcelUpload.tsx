@@ -2,12 +2,23 @@ import * as XLSX from 'xlsx';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
+import { isXlsxEnabled } from '@/lib/flags';
 
 export const useExcelUpload = () => {
   const [isUploading, setIsUploading] = useState(false);
   const { toast } = useToast();
 
   const uploadExcelFile = async (file: File) => {
+    // Check if XLSX functionality is enabled
+    if (!isXlsxEnabled()) {
+      toast({
+        title: 'Feature nicht verfügbar',
+        description: 'XLSX Import ist derzeit deaktiviert',
+        variant: 'destructive',
+      });
+      return { success: false, error: 'XLSX feature disabled' };
+    }
+
     setIsUploading(true);
     try {
       // Parse Excel file
@@ -43,6 +54,11 @@ export const useExcelUpload = () => {
   };
 
   const parseExcelFile = (file: File): Promise<any> => {
+    // Check if XLSX functionality is enabled
+    if (!isXlsxEnabled()) {
+      return Promise.reject(new Error('XLSX feature disabled'));
+    }
+
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       

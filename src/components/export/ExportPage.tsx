@@ -10,6 +10,7 @@ import { JobFilterDropdown, type JobFilter } from '@/components/dashboard/JobFil
 import { ExcelUpload } from './ExcelUpload';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useExportSettings } from '@/hooks/useExportSettings';
+import { isXlsxEnabled } from '@/lib/flags';
 
 interface ExportPageProps {
   jobs: any[];
@@ -124,7 +125,7 @@ export const ExportPage = ({ jobs }: ExportPageProps) => {
       </Card>
 
       {/* Excel Upload */}
-      <ExcelUpload />
+      {isXlsxEnabled() && <ExcelUpload />}
 
       {/* Export History */}
       <Card>

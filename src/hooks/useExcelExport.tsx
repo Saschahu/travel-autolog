@@ -11,12 +11,23 @@ import { generateSingleJobTemplateBuffer } from '@/templates/ExcelTemplateExcelJ
 import { DirectoryPicker } from '@/plugins/directoryPicker';
 import { isNativeAndroid } from '@/lib/platform';
 import { toBase64 } from '@/lib/files';
+import { isXlsxEnabled } from '@/lib/flags';
 
 export const useExcelExport = () => {
   const { profile } = useUserProfile();
   const { toast } = useToast();
 
   const generateJobExcel = (jobs: any[], reportType: 'single' | 'all' = 'all') => {
+    // Check if XLSX functionality is enabled
+    if (!isXlsxEnabled()) {
+      toast({
+        title: 'Feature nicht verfügbar',
+        description: 'Excel-Export ist derzeit deaktiviert',
+        variant: 'destructive',
+      });
+      return null;
+    }
+
     const workbook = XLSX.utils.book_new();
     
     if (reportType === 'single' && jobs.length === 1) {
@@ -89,6 +100,16 @@ export const useExcelExport = () => {
   };
 
   const exportToExcel = async (jobs: any[], filename?: string, exportDirUri?: string) => {
+    // Check if XLSX functionality is enabled
+    if (!isXlsxEnabled()) {
+      toast({
+        title: 'Feature nicht verfügbar',
+        description: 'Excel-Export ist derzeit deaktiviert',
+        variant: 'destructive',
+      });
+      return false;
+    }
+
     // Plattform unterscheiden
     const platform = Capacitor.getPlatform();
 
@@ -219,6 +240,16 @@ export const useExcelExport = () => {
   };
 
   const sendJobReportByEmail = async (job: any) => {
+    // Check if XLSX functionality is enabled
+    if (!isXlsxEnabled()) {
+      toast({
+        title: 'Feature nicht verfügbar',
+        description: 'Excel-Export ist derzeit deaktiviert',
+        variant: 'destructive',
+      });
+      return false;
+    }
+
     // Get email recipients from profile with fallback
     const emailData = {
       to: profile.reportTo || profile.email,

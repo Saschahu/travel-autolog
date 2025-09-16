@@ -2,14 +2,45 @@ import * as XLSX from 'xlsx';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { isXlsxEnabled } from '@/lib/flags';
 
 export const useExcelUpload = () => {
   const [isUploading, setIsUploading] = useState(false);
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const uploadExcelFile = async (file: File) => {
     setIsUploading(true);
     try {
+      // Check file type and XLSX flag
+      const isXlsxFile = file.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || 
+                        file.type === 'application/vnd.ms-excel' ||
+                        file.name.toLowerCase().endsWith('.xlsx') ||
+                        file.name.toLowerCase().endsWith('.xls');
+      
+      const isCsvFile = file.type === 'text/csv' || file.name.toLowerCase().endsWith('.csv');
+
+      // Block XLSX/XLS files when flag is OFF
+      if (isXlsxFile && !isXlsxEnabled()) {
+        toast({
+          title: t('xlsxBlocked'),
+          description: t('xlsxDisabledCsvAvailable'),
+          variant: 'destructive',
+        });
+        return { success: false, error: 'XLSX blocked by feature flag' };
+      }
+
+      // Allow CSV files always
+      if (!isCsvFile && !isXlsxFile) {
+        toast({
+          title: t('error'),
+          description: t('pleaseSelectExcelFile'),
+          variant: 'destructive',
+        });
+        return { success: false, error: 'Invalid file type' };
+      }
+
       // Parse Excel file
       const data = await parseExcelFile(file);
       
@@ -24,16 +55,16 @@ export const useExcelUpload = () => {
       }
 
       toast({
-        title: 'Upload erfolgreich',
-        description: `Excel-Datei wurde hochgeladen: ${data.sheets.length} Arbeitsblätter gefunden`,
+        title: t('success'),
+        description: `${t('excelImport')}: ${data.sheets.length} ${t('sheetsFound')}`,
       });
 
       return { success: true, data, fileName };
     } catch (error) {
       console.error('Excel upload error:', error);
       toast({
-        title: 'Upload Fehler',
-        description: 'Die Excel-Datei konnte nicht verarbeitet werden',
+        title: t('error'),
+        description: t('uploadError'),
         variant: 'destructive',
       });
       return { success: false, error };
@@ -42,7 +73,15 @@ export const useExcelUpload = () => {
     }
   };
 
-  const parseExcelFile = (file: File): Promise<any> => {
+  const parseExcelFile = (file: File): Promise<{
+    sheets: Array<{
+      name: string;
+      data: unknown[];
+      rowCount: number;
+    }>;
+    totalSheets: number;
+    totalRows: number;
+  }> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       
@@ -71,7 +110,7 @@ export const useExcelUpload = () => {
         }
       };
 
-      reader.onerror = () => reject(new Error('Datei konnte nicht gelesen werden'));
+      reader.onerror = () => reject(new Error(t('fileReadError')));
       reader.readAsArrayBuffer(file);
     });
   };

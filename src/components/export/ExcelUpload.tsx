@@ -2,13 +2,16 @@ import React, { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Upload, FileSpreadsheet, Loader2 } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Upload, FileSpreadsheet, Loader2, AlertTriangle } from 'lucide-react';
 import { useExcelUpload } from '@/hooks/useExcelUpload';
+import { isXlsxEnabled } from '@/lib/flags';
 
 export const ExcelUpload = () => {
   const { t } = useTranslation();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { uploadExcelFile, isUploading } = useExcelUpload();
+  const xlsxEnabled = isXlsxEnabled();
 
   const handleFileSelect = () => {
     fileInputRef.current?.click();
@@ -17,17 +20,6 @@ export const ExcelUpload = () => {
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
-
-    // Check if it's an Excel file
-    const allowedTypes = [
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      'application/vnd.ms-excel'
-    ];
-
-    if (!allowedTypes.includes(file.type)) {
-      alert(t('pleaseSelectExcelFile'));
-      return;
-    }
 
     await uploadExcelFile(file);
     
@@ -49,11 +41,20 @@ export const ExcelUpload = () => {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
+        {!xlsxEnabled && (
+          <Alert>
+            <AlertTriangle className="h-4 w-4" />
+            <AlertDescription>
+              {t('xlsxDisabledCsvAvailable')}
+            </AlertDescription>
+          </Alert>
+        )}
+        
         <input
           type="file"
           ref={fileInputRef}
           onChange={handleFileChange}
-          accept=".xlsx,.xls"
+          accept={xlsxEnabled ? ".xlsx,.xls,.csv" : ".csv"}
           className="hidden"
         />
         
@@ -72,7 +73,7 @@ export const ExcelUpload = () => {
         </Button>
 
         <div className="text-sm text-muted-foreground">
-          <p>{t('supportedFormats')}</p>
+          <p>{xlsxEnabled ? t('supportedFormatsAll') : t('supportedFormatsCsvOnly')}</p>
           <p>{t('maxFileSize')}</p>
         </div>
       </CardContent>

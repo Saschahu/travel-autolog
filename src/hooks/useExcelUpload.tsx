@@ -2,15 +2,41 @@ import * as XLSX from 'xlsx';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { isXlsxEnabled } from '@/lib/flags';
+
+interface ParsedSheet {
+  name: string;
+  data: unknown[];
+  rowCount: number;
+}
+
+interface ParsedData {
+  sheets: ParsedSheet[];
+  totalSheets: number;
+  totalRows: number;
+}
 
 export const useExcelUpload = () => {
   const [isUploading, setIsUploading] = useState(false);
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const uploadExcelFile = async (file: File) => {
     setIsUploading(true);
     try {
-      // Parse Excel file
+      // Check if XLSX files are blocked by feature flag
+      const isXlsxFile = file.name.toLowerCase().endsWith('.xlsx') || file.name.toLowerCase().endsWith('.xls');
+      if (isXlsxFile && !isXlsxEnabled()) {
+        toast({
+          title: 'XLSX Upload blockiert',
+          description: t('xlsxBlocked'),
+          variant: 'destructive',
+        });
+        return { success: false, error: 'XLSX files not allowed' };
+      }
+
+      // Parse Excel/CSV file
       const data = await parseExcelFile(file);
       
       // Upload to Supabase Storage
@@ -42,14 +68,25 @@ export const useExcelUpload = () => {
     }
   };
 
-  const parseExcelFile = (file: File): Promise<any> => {
+  const parseExcelFile = (file: File): Promise<ParsedData> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       
       reader.onload = (e) => {
         try {
-          const data = new Uint8Array(e.target?.result as ArrayBuffer);
-          const workbook = XLSX.read(data, { type: 'array' });
+          const isCSV = file.name.toLowerCase().endsWith('.csv');
+          const data = e.target?.result;
+          
+          let workbook: XLSX.WorkBook;
+          
+          if (isCSV) {
+            // Parse CSV file
+            workbook = XLSX.read(data, { type: 'string' });
+          } else {
+            // Parse XLSX/XLS file
+            const arrayBuffer = new Uint8Array(data as ArrayBuffer);
+            workbook = XLSX.read(arrayBuffer, { type: 'array' });
+          }
           
           const sheets = workbook.SheetNames.map(name => {
             const worksheet = workbook.Sheets[name];
@@ -72,7 +109,13 @@ export const useExcelUpload = () => {
       };
 
       reader.onerror = () => reject(new Error('Datei konnte nicht gelesen werden'));
-      reader.readAsArrayBuffer(file);
+      
+      // Read file based on type
+      if (file.name.toLowerCase().endsWith('.csv')) {
+        reader.readAsText(file);
+      } else {
+        reader.readAsArrayBuffer(file);
+      }
     });
   };
 

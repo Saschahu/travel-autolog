@@ -6,6 +6,9 @@ import MapView from '@/components/MapView';
 import { requestPermission, getCurrent, startWatch, type Fix, type WatchHandle } from '@/services/geolocation';
 import { Capacitor } from '@capacitor/core';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { isSmartGpsEnabled } from '@/lib/flags';
+import { GPSStatus } from './GPSStatus';
+import { useGPSTracking } from '@/hooks/useGPSTracking';
 
 export const GPSPage: React.FC = () => {
   const { t } = useTranslation();
@@ -14,6 +17,9 @@ export const GPSPage: React.FC = () => {
   const [isTracking, setIsTracking] = useState(false);
   const [isGettingLocation, setIsGettingLocation] = useState(false);
   const watchRef = useRef<WatchHandle | null>(null);
+  
+  // Initialize GPS tracking hook only if smart GPS is enabled
+  const gpsTracking = isSmartGpsEnabled() ? useGPSTracking() : null;
 
   useEffect(() => {
     (async () => {
@@ -47,7 +53,10 @@ export const GPSPage: React.FC = () => {
       watchRef.current?.stop();
       watchRef.current = await startWatch((fix: Fix) => {
         setCenter([fix.lng, fix.lat]);
-        // TODO: FSM hier füttern (depart/arrive usw.)
+        // TODO: FSM hier füttern (depart/arrive usw.) - only if smart GPS enabled
+        if (isSmartGpsEnabled() && gpsTracking) {
+          // Smart GPS tracking will be handled by the GPSStatus component
+        }
       }, (err) => {
         setMsg('GPS-Fehler: ' + (err?.message ?? String(err)));
         setIsTracking(false);
@@ -63,8 +72,35 @@ export const GPSPage: React.FC = () => {
     setIsTracking(false);
   };
 
+  // If smart GPS is enabled, show the advanced GPS interface
+  if (isSmartGpsEnabled() && gpsTracking) {
+    return (
+      <div className="p-4 space-y-4">
+        {/* Optional banner for Smart GPS Beta */}
+        <Alert className="border-blue-200 bg-blue-50">
+          <AlertDescription className="text-blue-700">
+            Smart GPS Tracking (Beta) ist aktiviert.
+          </AlertDescription>
+        </Alert>
+        
+        <GPSStatus gpsTracking={gpsTracking} />
+        
+        <MapView center={center} />
+      </div>
+    );
+  }
+
+  // Original GPS interface (legacy/fallback)
   return (
     <div className="p-4 space-y-4">
+      {!isSmartGpsEnabled() && (
+        <Alert className="border-gray-200 bg-gray-50">
+          <AlertDescription className="text-gray-700">
+            Smart GPS Tracking (Beta) ist deaktiviert.
+          </AlertDescription>
+        </Alert>
+      )}
+      
       <div className="flex justify-between items-center">
         <h1 className="text-xl font-semibold">GPS Tracking</h1>
         <div className="flex gap-2">

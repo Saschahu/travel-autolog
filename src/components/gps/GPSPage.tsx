@@ -15,17 +15,20 @@ export const GPSPage: React.FC = () => {
   const [isGettingLocation, setIsGettingLocation] = useState(false);
   const watchRef = useRef<WatchHandle | null>(null);
 
+  // Check Smart GPS feature flag
+  const isSmartGPSEnabled = import.meta.env.VITE_ENABLE_SMART_GPS === 'true';
+
   useEffect(() => {
     (async () => {
       const p = await requestPermission();
-      if (p === 'denied') setMsg('Standortberechtigung abgelehnt. Bitte in den Systemeinstellungen erlauben.');
+      if (p === 'denied') setMsg(t('smartGPS.errors.permissionDenied'));
     })();
     return () => {
       if (watchRef.current) {
         watchRef.current.stop();
       }
     };
-  }, []);
+  }, [t]);
 
   const getCurrentLocation = async () => {
     setIsGettingLocation(true);
@@ -35,7 +38,7 @@ export const GPSPage: React.FC = () => {
       setCenter([fix.lng, fix.lat]); // Mapbox: [lng, lat]
       setMsg(undefined);
     } catch (error: any) {
-      setMsg('Standort konnte nicht ermittelt werden. ' + (error?.message ?? ''));
+      setMsg(t('smartGPS.errors.noFix') + ' ' + (error?.message ?? ''));
     } finally {
       setIsGettingLocation(false);
     }
@@ -66,7 +69,7 @@ export const GPSPage: React.FC = () => {
   return (
     <div className="p-4 space-y-4">
       <div className="flex justify-between items-center">
-        <h1 className="text-xl font-semibold">GPS Tracking</h1>
+        <h1 className="text-xl font-semibold">{t('smartGPS.betaTitle')}</h1>
         <div className="flex gap-2">
           <Button 
             onClick={getCurrentLocation}
@@ -76,7 +79,7 @@ export const GPSPage: React.FC = () => {
             className="flex items-center gap-2"
           >
             <MapPin className="h-4 w-4" />
-            {isGettingLocation ? 'Wird abgerufen...' : 'Position'}
+            {isGettingLocation ? t('gettingLocation') : 'Position'}
           </Button>
           
           {!isTracking ? (
@@ -101,6 +104,21 @@ export const GPSPage: React.FC = () => {
           )}
         </div>
       </div>
+
+      {/* Smart GPS Feature Banner */}
+      {!isSmartGPSEnabled ? (
+        <Alert className="border-yellow-200 bg-yellow-50">
+          <AlertDescription className="text-yellow-700">
+            {t('smartGPS.betaDisabled')}
+          </AlertDescription>
+        </Alert>
+      ) : (
+        <Alert className="border-blue-200 bg-blue-50">
+          <AlertDescription className="text-blue-700">
+            {t('smartGPS.betaEnabled')}
+          </AlertDescription>
+        </Alert>
+      )}
 
       {msg && (
         <Alert className={msg.includes('Fehler') || msg.includes('abgelehnt') ? 'border-red-200 bg-red-50' : 'border-blue-200 bg-blue-50'}>

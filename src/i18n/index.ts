@@ -308,6 +308,21 @@ const resources = {
       stopTracking: 'Stop Tracking',
       trackingCouldNotStart: 'Tracking could not be started:',
       
+      // Smart GPS (Beta)
+      smartGPS: {
+        betaTitle: "Smart GPS Tracking (Beta)",
+        betaDisabled: "Smart GPS Tracking (Beta) is disabled.",
+        betaEnabled: "Smart GPS Tracking (Beta) is enabled.",
+        supported: {
+          basic: "Basic GPS tracking is active.",
+          smart: "Smart GPS tracking with state machine is active."
+        },
+        errors: {
+          permissionDenied: "Location permission denied.",
+          noFix: "No GPS fix available."
+        }
+      },
+      
       // Export
       excelExport: 'Excel Export',
       exportAll: 'All',
@@ -720,6 +735,21 @@ const resources = {
       startTracking: 'Tracking starten',
       stopTracking: 'Tracking stoppen',
       trackingCouldNotStart: 'Tracking konnte nicht gestartet werden:',
+      
+      // Smart GPS (Beta)
+      smartGPS: {
+        betaTitle: "Smartes GPS-Tracking (Beta)",
+        betaDisabled: "Smartes GPS-Tracking (Beta) ist deaktiviert.",
+        betaEnabled: "Smartes GPS-Tracking (Beta) ist aktiviert.",
+        supported: {
+          basic: "Einfaches GPS-Tracking ist aktiv.",
+          smart: "Smartes GPS-Tracking mit Zustandsmaschine ist aktiv."
+        },
+        errors: {
+          permissionDenied: "Standortberechtigung verweigert.",
+          noFix: "Kein GPS-Fix verfügbar."
+        }
+      },
       
       // Export
       excelExport: 'Excel Export',

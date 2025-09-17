@@ -46,6 +46,10 @@ export type Job = {
   // Report system
   reports?: DayReport[];     // NEW: daily reports
   workReport?: string;       // @deprecated - will be migrated to reports
+  // New rich-text report system
+  reportMode?: 'daily' | 'aggregate';
+  aggregateDoc?: any; // ProseMirror JSON for aggregate mode
+  dailyDocs?: Record<string, any>; // ProseMirror JSON keyed by ISO date
 };
 
 export const useJobs = () => {

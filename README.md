@@ -82,6 +82,27 @@ npm run build
 - `npm run verify:local` - Lokale Asset-Konsistenz prüfen
 - `npm run build:native` - Native Build mit BUILD_TARGET=native
 
+## Feature Flags & Import/GPS
+
+**Security-first defaults**: Alle erweiterten Features sind standardmäßig deaktiviert und müssen explizit über Umgebungsvariablen aktiviert werden.
+
+| Name | Env Var | Default | Wirkung | Wie aktivieren |
+|------|---------|---------|---------|---------------|
+| XLSX Import | `VITE_ENABLE_XLSX_IMPORT` | `false` | Excel-Upload UI & Pfad | `.env.local` setzen + Dev neu starten |
+| Smart GPS (FSM) | `VITE_ENABLE_SMART_GPS` | `false` | FSM-UI/Logik sichtbar & aktiv | `.env.local` setzen + Dev neu starten |
+
+### Manual Testplan
+
+- **XLSX OFF** → Button/Input disabled/CSV-only, Hook wirft auf XLSX
+- **XLSX ON** → .xlsx/.xls/.csv ok
+- **Smart GPS OFF** → Basic-Banner, keine FSM-UI/-Start
+- **Smart GPS ON** → FSM-UI sichtbar, States/Ticker aktiv
+
+### Troubleshooting
+
+- **Env greift nicht?** → Dev neu starten, Vite-Prefix `VITE_…`, `.env.local` statt `.env`
+- **CI rot wegen Lint (Legacy)** → „incremental lint" läuft nur auf geänderten Dateien
+
 ## Technologien
 
 - **Frontend**: Vite, TypeScript, React, shadcn-ui, Tailwind CSS

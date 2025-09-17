@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
+import { RichTextEditor } from '@/components/ui/rich-text-editor';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
@@ -25,6 +26,9 @@ export const ReportTab = ({ job, onJobUpdate }: ReportTabProps) => {
   const [currentDayIndex, setCurrentDayIndex] = useState(0);
   const [currentText, setCurrentText] = useState('');
   const [isDirty, setIsDirty] = useState(false);
+  
+  // Check if rich text editor with images is enabled
+  const richTextEnabled = import.meta.env.VITE_ENABLE_REPORT_IMAGES === 'true';
   
   const reports = job.reports || [];
   const estimated = job.estimatedDays || 1;
@@ -238,17 +242,34 @@ export const ReportTab = ({ job, onJobUpdate }: ReportTabProps) => {
             </Popover>
           </div>
 
-          {/* Report textarea */}
+          {/* Report editor - Rich text or simple textarea based on flag */}
           <div>
-            <Textarea
-              data-testid="report-textarea"
-              placeholder={`Bericht für ${currentReport?.dateISO 
-                ? dayTitle 
-                : `Tag ${currentDayIndex + 1}/${totalDays}`}...`}
-              value={currentText}
-              onChange={(e) => handleTextChange(e.target.value)}
-              className="w-full min-h-[40vh] resize-vertical rounded-xl border p-3"
-            />
+            {richTextEnabled ? (
+              <RichTextEditor
+                content={currentText}
+                onChange={handleTextChange}
+                placeholder={`Bericht für ${currentReport?.dateISO 
+                  ? dayTitle 
+                  : `Tag ${currentDayIndex + 1}/${totalDays}`}...`}
+                className="w-full min-h-[40vh]"
+              />
+            ) : (
+              <Textarea
+                data-testid="report-textarea"
+                placeholder={`Bericht für ${currentReport?.dateISO 
+                  ? dayTitle 
+                  : `Tag ${currentDayIndex + 1}/${totalDays}`}...`}
+                value={currentText}
+                onChange={(e) => handleTextChange(e.target.value)}
+                className="w-full min-h-[40vh] resize-vertical rounded-xl border p-3"
+              />
+            )}
+            
+            {!richTextEnabled && (
+              <div className="mt-2 text-sm text-muted-foreground">
+                {t('report.imagesNotEnabled')}
+              </div>
+            )}
           </div>
 
           {/* Footer controls */}

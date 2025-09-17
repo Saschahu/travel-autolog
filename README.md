@@ -89,6 +89,27 @@ npm run build
 - **Maps**: Mapbox GL JS
 - **Backend**: Supabase
 
+## Report-Editor & Bilder
+
+### Feature Flag
+```bash
+VITE_ENABLE_REPORT_IMAGES=true  # Aktiviert Rich-Text-Editor mit Bildupload
+VITE_ENABLE_REPORT_IMAGES=false # Standard: Nur einfacher Textbereich
+```
+
+### Limits & Datenschutz
+- **Dateigröße**: Max 8 MB pro Bild
+- **Formate**: JPEG, PNG, WebP, HEIC/HEIF
+- **Verarbeitung**: Auto-Resize auf max 1600px, JPEG 85%, EXIF-Strip
+- **Sicherheit**: Magic-Byte-Prüfung, RLS-Policies, signierte URLs (7 Tage TTL)
+- **Speicher**: Supabase Storage Bucket `reports` mit Path `userId/yyyy/mm/dd/uuid.jpg`
+
+### Troubleshooting
+- **Bucket fehlt**: In dev → Stub-URL; in prod → Fehler
+- **Upload-Fehler**: Prüfe Authentifizierung und Bucket-Policies
+- **Bilder verschwinden**: Signierte URLs nach 7 Tagen abgelaufen
+- **Magic-Byte-Fehler**: Datei manipuliert oder falsches Format
+
 ## Konfiguration
 
 ### Mapbox Tokens

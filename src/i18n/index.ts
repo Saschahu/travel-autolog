@@ -66,7 +66,21 @@ const jobTranslationsEn = {
     trimTitle: 'Reduce days?',
     trimBody: 'Reports for days {{from}}–{{to}} will be deleted. Continue?',
     cancel: 'Cancel',
-    confirm: 'Continue'
+    confirm: 'Continue',
+    // Image support
+    addImage: 'Add Image',
+    altText: 'Alt text (required)',
+    altTextPlaceholder: 'Describe the image...',
+    selectImage: 'Select Image',
+    imageRequirements: 'Max 8MB. JPEG, PNG, WebP, HEIC supported.',
+    imageUploadSuccess: 'Image uploaded successfully',
+    imageProcessed: 'Image has been resized and optimized',
+    uploadFailed: 'Upload failed',
+    uploadError: 'Upload Error',
+    imageTooLarge: 'Image too large (max 8MB)',
+    invalidFormat: 'Invalid file format',
+    imagesDisabled: 'Images disabled',
+    imagesNotEnabled: 'Image uploads are disabled. Set VITE_ENABLE_REPORT_IMAGES=true to enable.'
   },
   finish: {
     title: 'Finish service case',
@@ -145,7 +159,21 @@ const jobTranslationsDe = {
     trimTitle: 'Tage reduzieren?',
     trimBody: 'Es werden Reports für die Tage {{from}}–{{to}} dauerhaft gelöscht. Fortfahren?',
     cancel: 'Abbrechen',
-    confirm: 'Fortfahren'
+    confirm: 'Fortfahren',
+    // Image support
+    addImage: 'Bild hinzufügen',
+    altText: 'Alt-Text (erforderlich)',
+    altTextPlaceholder: 'Beschreiben Sie das Bild...',
+    selectImage: 'Bild auswählen',
+    imageRequirements: 'Max 8MB. JPEG, PNG, WebP, HEIC unterstützt.',
+    imageUploadSuccess: 'Bild erfolgreich hochgeladen',
+    imageProcessed: 'Bild wurde verkleinert und optimiert',
+    uploadFailed: 'Upload fehlgeschlagen',
+    uploadError: 'Upload-Fehler',
+    imageTooLarge: 'Bild zu groß (max 8MB)',
+    invalidFormat: 'Ungültiges Dateiformat',
+    imagesDisabled: 'Bilder deaktiviert',
+    imagesNotEnabled: 'Bild-Uploads sind deaktiviert. Setzen Sie VITE_ENABLE_REPORT_IMAGES=true zum Aktivieren.'
   },
   finish: {
     title: 'Auftrag abschließen',

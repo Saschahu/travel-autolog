@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies -- vitest is a dev dependency used only in tests */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { createGpsFsm, type FsmConfig, type TimeSource, type Emitter } from '../core';
 

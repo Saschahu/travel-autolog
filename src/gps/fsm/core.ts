@@ -39,7 +39,7 @@ export function createGpsFsm(
   config: FsmConfig, 
   deps: { time: TimeSource; emit?: Emitter }
 ): Fsm {
-  let currentState: GpsState = 'idle_at_home';
+  const currentState: GpsState = 'idle_at_home';
   
   return {
     getState(): GpsState {

@@ -1446,7 +1446,7 @@ const resources = {
 };
 
 // Support both 'no' and 'nb' by aliasing 'nb' to the Norwegian resources
-const resourcesExtended: any = { ...resources, nb: (resources as any).no };
+const resourcesExtended = { ...resources, nb: resources.no };
 
 i18n
   .use(initReactI18next)

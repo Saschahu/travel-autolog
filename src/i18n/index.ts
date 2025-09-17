@@ -66,7 +66,12 @@ const jobTranslationsEn = {
     trimTitle: 'Reduce days?',
     trimBody: 'Reports for days {{from}}–{{to}} will be deleted. Continue?',
     cancel: 'Cancel',
-    confirm: 'Continue'
+    confirm: 'Continue',
+    insertImage: 'Insert Image',
+    error: {
+      tooLarge: 'File too large. Maximum size: 8MB',
+      uploadFailed: 'Image upload failed. Please try again.'
+    }
   },
   finish: {
     title: 'Finish service case',
@@ -145,7 +150,12 @@ const jobTranslationsDe = {
     trimTitle: 'Tage reduzieren?',
     trimBody: 'Es werden Reports für die Tage {{from}}–{{to}} dauerhaft gelöscht. Fortfahren?',
     cancel: 'Abbrechen',
-    confirm: 'Fortfahren'
+    confirm: 'Fortfahren',
+    insertImage: 'Bild einfügen',
+    error: {
+      tooLarge: 'Datei zu groß. Maximale Größe: 8MB',
+      uploadFailed: 'Bild-Upload fehlgeschlagen. Bitte versuchen Sie es erneut.'
+    }
   },
   finish: {
     title: 'Auftrag abschließen',
@@ -1446,7 +1456,7 @@ const resources = {
 };
 
 // Support both 'no' and 'nb' by aliasing 'nb' to the Norwegian resources
-const resourcesExtended: any = { ...resources, nb: (resources as any).no };
+const resourcesExtended = { ...resources, nb: resources.no };
 
 i18n
   .use(initReactI18next)

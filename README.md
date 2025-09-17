@@ -104,6 +104,30 @@ Das BuildInfo-Badge zeigt:
 - Build Target (web/native)
 - Build Timestamp
 
+## Report-Editor (Stage 1)
+
+### Modi
+Der Report-Editor unterstützt zwei Modi:
+- **Tagesberichte (Daily)**: Separate Berichte für jeden Arbeitstag
+- **Gesamtbericht (Aggregate)**: Ein zusammengefasster Bericht für den gesamten Auftrag
+
+### Speichern
+- **Speicherformat**: ProseMirror-JSON für Rich-Text-Inhalte
+- **Inhaltserhalt**: Beim Wechsel zwischen Modi bleiben Inhalte erhalten
+- **Kompatibilität**: Keine Breaking Changes für bestehende Plain-Text-Nutzung
+
+### Image-Funktionalität (Stage 2)
+- **Bild einfügen**: Upload von Bildern aus Fotogalerie/Datei
+- **Automatische Größenanpassung**: Bilder werden vor Upload auf max. 1600px verkleinert (85% JPEG-Qualität)
+- **Upload**: Bilder werden in Supabase Storage gespeichert
+- **Limits**: Maximale Dateigröße 8MB vor Verarbeitung
+- **Formate**: Alle gängigen Bildformate werden unterstützt (JPEG, PNG, WebP, etc.)
+
+### Limitierungen
+- Rich-Text-Editor benötigt moderne Browser
+- Bild-Upload erfordert Internetverbindung
+- Mobile Geräte: Toolbar passt sich automatisch an
+
 ## Deployment
 
 ### Web (PWA)

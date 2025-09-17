@@ -308,6 +308,46 @@ const resources = {
       stopTracking: 'Stop Tracking',
       trackingCouldNotStart: 'Tracking could not be started:',
       
+      // GPS Status Buttons
+      gpsWork: 'Work',
+      gpsPrivate: 'Private',
+      gpsAtCustomer: 'At Customer',
+      gpsNotAtCustomer: 'Not at Customer', 
+      gpsWorkDone: 'Work Done',
+      gpsContinueWorking: 'Continue Working',
+      gpsHomeArrived: 'Journey Home Ended',
+      
+      // GPS Status UI
+      gpsCurrentState: 'Current State',
+      gpsTimer: 'Timer',
+      gpsControl: 'Control',
+      gpsLocationInfo: 'Location Info',
+      gpsTrackingActive: 'Tracking active',
+      gpsTrackingStopped: 'Tracking stopped',
+      gpsAuthorized: 'GPS authorized',
+      gpsPermissionMissing: 'GPS permission missing',
+      gpsPermission: 'GPS Permission',
+      gpsGetPosition: 'Get Position',
+      gpsTravel: 'Travel',
+      gpsWorkTime: 'Work Time',
+      gpsReturnTrip: 'Return Trip',
+      gpsLastPosition: 'Last Position',
+      gpsNoPositionAvailable: 'No position available',
+      gpsSpeed: 'Speed',
+      gpsAccuracy: 'Accuracy',
+      gpsTimestamp: 'Timestamp',
+      
+      // GPS States
+      gpsIdleAtHome: 'At Home (Ready)',
+      gpsDeparting: 'Leaving Home',
+      gpsEnRouteToCustomer: 'En Route to Customer',
+      gpsStationaryCheck: 'Stationary Check',
+      gpsAtCustomerState: 'At Customer',
+      gpsLeavingCustomer: 'Leaving Customer',
+      gpsEnRouteHome: 'En Route Home',
+      gpsStationaryHomeCheck: 'Home Check',
+      gpsDone: 'Completed',
+      
       // Export
       excelExport: 'Excel Export',
       exportAll: 'All',
@@ -1026,6 +1066,46 @@ const resources = {
         },
         backgroundMode: {
           info: 'Hintergrund-Tracking benötigt zusätzliche Berechtigungen auf Android-Geräten.'
+        },
+        buttons: {
+          work: 'Arbeit',
+          private: 'Privat',
+          atCustomer: 'Beim Kunden',
+          notAtCustomer: 'Nicht beim Kunden',
+          workDone: 'Arbeit fertig',
+          continueWorking: 'Weiter arbeiten',
+          homeArrived: 'Heimreise beendet'
+        },
+        states: {
+          idle_at_home: 'Zuhause (Bereit)',
+          departing: 'Verlässt Zuhause',
+          en_route_to_customer: 'Anreise zum Kunden',
+          stationary_check: 'Stationär-Prüfung',
+          at_customer: 'Beim Kunden',
+          leaving_customer: 'Verlässt Kunde',
+          en_route_home: 'Heimreise',
+          stationary_home_check: 'Zuhause-Prüfung',
+          done: 'Abgeschlossen'
+        },
+        ui: {
+          currentState: 'Aktueller Zustand',
+          timer: 'Timer',
+          control: 'Kontrolle',
+          locationInfo: 'Standort-Info',
+          trackingActive: 'Tracking aktiv',
+          trackingStopped: 'Tracking gestoppt',
+          gpsAuthorized: 'GPS berechtigt',
+          gpsPermissionMissing: 'GPS Berechtigung fehlt',
+          gpsPermission: 'GPS Berechtigung',
+          getPosition: 'Position abrufen',
+          travel: 'Anreise',
+          workTime: 'Arbeitszeit',
+          returnTrip: 'Heimreise',
+          lastPosition: 'Letzte Position',
+          noPositionAvailable: 'Keine Position verfügbar',
+          speed: 'Geschwindigkeit',
+          accuracy: 'Genauigkeit',
+          timestamp: 'Zeitstempel'
         }
       },
       

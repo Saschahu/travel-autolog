@@ -3,6 +3,16 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
 
+export interface ExcelParseResult {
+  sheets: Array<{
+    name: string;
+    data: unknown[];
+    rowCount: number;
+  }>;
+  totalSheets: number;
+  totalRows: number;
+}
+
 export const useExcelUpload = () => {
   const [isUploading, setIsUploading] = useState(false);
   const { toast } = useToast();
@@ -42,7 +52,7 @@ export const useExcelUpload = () => {
     }
   };
 
-  const parseExcelFile = (file: File): Promise<any> => {
+  const parseExcelFile = (file: File): Promise<ExcelParseResult> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       

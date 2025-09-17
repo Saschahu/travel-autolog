@@ -1,4 +1,16 @@
 import * as XLSX from 'xlsx';
+import type { Database } from '@/integrations/supabase/types';
+
+type Job = Database['public']['Tables']['jobs']['Row'];
+
+export interface JobSummary {
+  totalJobs: number;
+  activeJobs: number;
+  openJobs: number;
+  completedJobs: number;
+  totalHours: string;
+  avgDaysPerJob: string;
+}
 
 export class ExcelFormatter {
   static createFormattedWorkbook(worksheets: { name: string; data: XLSX.WorkSheet }[]): XLSX.WorkBook {
@@ -74,7 +86,7 @@ export class ExcelFormatter {
     return `${hours}h ${minutes}m`;
   }
 
-  static generateJobSummary(jobs: any[]): any {
+  static generateJobSummary(jobs: Job[]): JobSummary {
     return {
       totalJobs: jobs.length,
       activeJobs: jobs.filter(j => j.status === 'active').length,
@@ -82,7 +94,7 @@ export class ExcelFormatter {
       completedJobs: jobs.filter(j => j.status === 'completed' || j.status === 'completed-sent').length,
       totalHours: this.calculateTotalHours(jobs),
       avgDaysPerJob: jobs.length > 0 ? 
-        (jobs.reduce((sum, job) => sum + (job.estimatedDays || 0), 0) / jobs.length).toFixed(1) : '0'
+        (jobs.reduce((sum, job) => sum + (job.estimated_days || 0), 0) / jobs.length).toFixed(1) : '0'
     };
   }
 }

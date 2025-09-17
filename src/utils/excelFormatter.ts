@@ -1,4 +1,20 @@
 import * as XLSX from 'xlsx';
+import type { Database } from '@/integrations/supabase/types';
+
+type Job = Database['public']['Tables']['jobs']['Row'] & {
+  // Additional computed properties that might be added to jobs
+  totalHours?: string;
+  estimatedDays?: number;
+};
+
+interface JobSummary {
+  totalJobs: number;
+  activeJobs: number;
+  openJobs: number;
+  completedJobs: number;
+  totalHours: string;
+  avgDaysPerJob: string;
+}
 
 export class ExcelFormatter {
   static createFormattedWorkbook(worksheets: { name: string; data: XLSX.WorkSheet }[]): XLSX.WorkBook {
@@ -74,7 +90,7 @@ export class ExcelFormatter {
     return `${hours}h ${minutes}m`;
   }
 
-  static generateJobSummary(jobs: any[]): any {
+  static generateJobSummary(jobs: Job[]): JobSummary {
     return {
       totalJobs: jobs.length,
       activeJobs: jobs.filter(j => j.status === 'active').length,

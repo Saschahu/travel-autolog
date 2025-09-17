@@ -11,12 +11,31 @@ import { generateSingleJobTemplateBuffer } from '@/templates/ExcelTemplateExcelJ
 import { DirectoryPicker } from '@/plugins/directoryPicker';
 import { isNativeAndroid } from '@/lib/platform';
 import { toBase64 } from '@/lib/files';
+import type { Database } from '@/integrations/supabase/types';
+
+type Job = Database['public']['Tables']['jobs']['Row'] & {
+  // Additional computed properties that might be added to jobs
+  totalHours?: string;
+  workStartTime?: string;
+  workEndTime?: string;
+  dailyData?: Array<{
+    travelStartTime?: string;
+    travelEndTime?: string;
+    workStartTime?: string;
+    workEndTime?: string;
+    departureStartTime?: string;
+    departureEndTime?: string;
+    breakTime?: string;
+    totalHours?: string;
+    description?: string;
+  }>;
+};
 
 export const useExcelExport = () => {
   const { profile } = useUserProfile();
   const { toast } = useToast();
 
-  const generateJobExcel = (jobs: any[], reportType: 'single' | 'all' = 'all') => {
+  const generateJobExcel = (jobs: Job[], reportType: 'single' | 'all' = 'all') => {
     const workbook = XLSX.utils.book_new();
     
     if (reportType === 'single' && jobs.length === 1) {
@@ -88,7 +107,7 @@ export const useExcelExport = () => {
     return workbook;
   };
 
-  const exportToExcel = async (jobs: any[], filename?: string, exportDirUri?: string) => {
+  const exportToExcel = async (jobs: Job[], filename?: string, exportDirUri?: string) => {
     // Plattform unterscheiden
     const platform = Capacitor.getPlatform();
 
@@ -218,7 +237,7 @@ export const useExcelExport = () => {
     }
   };
 
-  const sendJobReportByEmail = async (job: any) => {
+  const sendJobReportByEmail = async (job: Job) => {
     // Get email recipients from profile with fallback
     const emailData = {
       to: profile.reportTo || profile.email,
@@ -366,7 +385,7 @@ ${profile.name || 'ServiceTracker'}`;
     return buildComposeUrl(preferredApp, options);
   };
 
-  const generateDailyEntries = (job: any) => {
+  const generateDailyEntries = (job: Job) => {
     const entries = [];
     const startDate = new Date(job.startDate || new Date());
     

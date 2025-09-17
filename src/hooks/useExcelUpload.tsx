@@ -42,7 +42,15 @@ export const useExcelUpload = () => {
     }
   };
 
-  const parseExcelFile = (file: File): Promise<any> => {
+  const parseExcelFile = (file: File): Promise<{
+    sheets: Array<{
+      name: string;
+      data: unknown[];
+      rowCount: number;
+    }>;
+    totalSheets: number;
+    totalRows: number;
+  }> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       

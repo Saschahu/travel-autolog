@@ -74,7 +74,12 @@ export class ExcelFormatter {
     return `${hours}h ${minutes}m`;
   }
 
-  static generateJobSummary(jobs: any[]): any {
+  static generateJobSummary(jobs: Array<{ status: string }>): {
+    totalJobs: number;
+    activeJobs: number;
+    openJobs: number;
+    completedJobs: number;
+  } {
     return {
       totalJobs: jobs.length,
       activeJobs: jobs.filter(j => j.status === 'active').length,

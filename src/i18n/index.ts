@@ -383,6 +383,12 @@ const resources = {
       uploading: 'Uploading...',
       pleaseSelectExcelFile: 'Please select an Excel file (.xlsx or .xls)',
       
+      // CSV Security Messages
+      tooLarge: 'File is too large. Maximum size is {{limitMB}} MB.',
+      tooManyRows: 'File contains too many rows. Maximum is {{limit}}.',
+      sanitizedNotice: '{{count}} formula-like entries were sanitized for security.',
+      xlsxDisabledCsvAvailable: 'XLSX import is disabled. CSV import remains available.',
+      
       // Export Settings Messages - Toast Messages
       exportPathSet: 'Export path set:',
       clickButtonDirectly: 'Please click the button directly (no automatic actions).',

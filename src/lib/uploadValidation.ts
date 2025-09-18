@@ -15,7 +15,7 @@ interface ValidationSuccess {
 interface ValidationError {
   ok: false;
   code: string;
-  details: Record<string, any>;
+  details: Record<string, number>;
 }
 
 type ValidationResult = ValidationSuccess | ValidationError;

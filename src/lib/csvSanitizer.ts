@@ -29,7 +29,7 @@ export function sanitizeCell(input: string): string {
  * @returns A new sanitized record object
  */
 export function sanitizeRecord<T extends Record<string, unknown>>(row: T): T {
-  const sanitized = { ...row };
+  const sanitized = { ...row } as Record<string, unknown>;
   
   for (const [key, value] of Object.entries(sanitized)) {
     if (typeof value === 'string') {
@@ -37,5 +37,5 @@ export function sanitizeRecord<T extends Record<string, unknown>>(row: T): T {
     }
   }
   
-  return sanitized;
+  return sanitized as T;
 }

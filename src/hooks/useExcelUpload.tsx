@@ -7,6 +7,18 @@ import { getUploadLimits } from '@/lib/uploadLimits';
 import { preValidateFile, postValidateRows } from '@/lib/uploadValidation';
 import { sanitizeRecord } from '@/lib/csvSanitizer';
 
+interface ExcelSheet {
+  name: string;
+  data: Record<string, unknown>[];
+  rowCount: number;
+}
+
+interface ExcelData {
+  sheets: ExcelSheet[];
+  totalSheets: number;
+  totalRows: number;
+}
+
 export const useExcelUpload = () => {
   const [isUploading, setIsUploading] = useState(false);
   const { toast } = useToast();
@@ -105,7 +117,7 @@ export const useExcelUpload = () => {
     }
   };
 
-  const parseExcelFile = (file: File): Promise<any> => {
+  const parseExcelFile = (file: File): Promise<ExcelData> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       
@@ -114,9 +126,9 @@ export const useExcelUpload = () => {
           const data = new Uint8Array(e.target?.result as ArrayBuffer);
           const workbook = XLSX.read(data, { type: 'array' });
           
-          const sheets = workbook.SheetNames.map(name => {
+          const sheets: ExcelSheet[] = workbook.SheetNames.map(name => {
             const worksheet = workbook.Sheets[name];
-            const jsonData = XLSX.utils.sheet_to_json(worksheet);
+            const jsonData = XLSX.utils.sheet_to_json(worksheet) as Record<string, unknown>[];
             return {
               name,
               data: jsonData,

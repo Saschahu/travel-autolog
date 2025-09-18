@@ -2,6 +2,39 @@
 
 ServiceTracker automatische Dokumentation von Reise- und Arbeitszeiten für Servicetechniker.
 
+## Data Import (CSV & XLSX)
+
+Die Anwendung unterstützt den Import von Auftragsdaten über CSV- und Excel-Dateien mit erweiterten Sicherheitsfeatures:
+
+### Unterstützte Formate
+- **CSV**: Immer verfügbar, mit automatischer Formel-Sanitization
+- **XLSX/XLS**: Optional aktivierbar über `VITE_ENABLE_XLSX=true`
+
+### Sicherheitsfeatures
+- **CSV Formel-Sanitizer**: Gefährliche Präfixe (`=`, `+`, `-`, `@`) werden automatisch mit `'` entschärft
+- **Upload-Limits**: Konfigurierbare Größen- und Zeilenlimits
+- **Validierung**: Dateien werden vor und nach dem Parsen validiert
+
+### Konfiguration
+
+Environment Variables in `.env`:
+
+```env
+# XLSX Feature aktivieren (CSV ist immer verfügbar)
+VITE_ENABLE_XLSX=true
+
+# Upload-Limits
+VITE_MAX_UPLOAD_SIZE_MB=5      # Standard: 5 MB
+VITE_MAX_UPLOAD_ROWS=50000     # Standard: 50.000 Zeilen
+```
+
+### Test-Szenarien
+
+1. **Große Datei (>5MB)**: Fehler "Datei ist zu groß"
+2. **Zu viele Zeilen (>50.000)**: Fehler "Zu viele Zeilen"
+3. **CSV mit Formeln**: `=SUM(1,2)` → `'=SUM(1,2)` + Sicherheitshinweis
+4. **XLSX bei deaktiviertem Flag**: Blockiert mit Hinweis auf CSV
+
 ## Project info
 
 **URL**: https://lovable.dev/projects/7203a855-7cd4-4e82-992d-2cef8e48eef7

@@ -375,13 +375,19 @@ const resources = {
       geofenceWarning: 'Geofence monitoring is only active in foreground and serves as demonstration. True background geofencing is not possible in web.',
       
       // Export
-      supportedFormats: 'Supported formats: .xlsx, .xls',
-      maxFileSize: 'Maximum file size: 10 MB',
-      excelImport: 'Excel Import',
-      excelImportDescription: 'Upload Excel files to import job data',
-      selectExcelFile: 'Select Excel file',
+      supportedFormats: 'Supported formats: .xlsx, .xls, .csv',
+      maxFileSize: 'Maximum file size: 5 MB',
+      excelImport: 'Data Import (CSV & XLSX)',
+      excelImportDescription: 'Upload CSV or Excel files to import job data',
+      selectExcelFile: 'Select file',
       uploading: 'Uploading...',
-      pleaseSelectExcelFile: 'Please select an Excel file (.xlsx or .xls)',
+      pleaseSelectExcelFile: 'Please select a CSV or Excel file (.csv, .xlsx, .xls)',
+      
+      // Upload validation errors
+      tooLarge: 'File is too large. Maximum size is {maxSize} MB.',
+      tooManyRows: 'File contains too many rows. Maximum is {maxRows} rows.',
+      sanitizedNotice: 'Some formula-like entries were sanitized for security (prefixed with single quote).',
+      xlsxDisabledCsvAvailable: 'XLSX files are disabled. Please use CSV format instead.',
       
       // Export Settings Messages - Toast Messages
       exportPathSet: 'Export path set:',
@@ -790,13 +796,19 @@ const resources = {
       geofenceWarning: 'Das Geofence-Monitoring ist nur im Vordergrund aktiv und dient zur Demonstration. Echter Hintergrund-Geofence ist im Web nicht möglich.',
       
       // Export
-      supportedFormats: 'Unterstützte Formate: .xlsx, .xls',
-      maxFileSize: 'Maximale Dateigröße: 10 MB',
-      excelImport: 'Excel Import',
-      excelImportDescription: 'Laden Sie Excel-Dateien hoch um Auftragsdaten zu importieren',
-      selectExcelFile: 'Excel-Datei auswählen',
+      supportedFormats: 'Unterstützte Formate: .xlsx, .xls, .csv',
+      maxFileSize: 'Maximale Dateigröße: 5 MB',
+      excelImport: 'Datenimport (CSV & XLSX)',
+      excelImportDescription: 'Laden Sie CSV- oder Excel-Dateien hoch um Auftragsdaten zu importieren',
+      selectExcelFile: 'Datei auswählen',
       uploading: 'Wird hochgeladen...',
-      pleaseSelectExcelFile: 'Bitte wählen Sie eine Excel-Datei (.xlsx oder .xls)',
+      pleaseSelectExcelFile: 'Bitte wählen Sie eine CSV- oder Excel-Datei (.csv, .xlsx, .xls)',
+      
+      // Upload validation errors
+      tooLarge: 'Datei ist zu groß. Maximale Größe: {maxSize} MB.',
+      tooManyRows: 'Datei enthält zu viele Zeilen. Maximum: {maxRows} Zeilen.',
+      sanitizedNotice: 'Einige formelähnliche Einträge wurden aus Sicherheitsgründen entschärft (mit Anführungszeichen versehen).',
+      xlsxDisabledCsvAvailable: 'XLSX-Dateien sind deaktiviert. Bitte verwenden Sie das CSV-Format.',
       
       // Export Settings Messages - Toast Messages
       exportPathSet: 'Exportpfad gesetzt:',

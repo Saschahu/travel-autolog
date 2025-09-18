@@ -18,13 +18,19 @@ export const ExcelUpload = () => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Check if it's an Excel file
+    // Check if it's a supported file type
     const allowedTypes = [
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      'application/vnd.ms-excel'
+      'application/vnd.ms-excel',
+      'text/csv'
     ];
+    
+    const isSupportedType = allowedTypes.includes(file.type) || 
+      file.name.toLowerCase().endsWith('.xlsx') ||
+      file.name.toLowerCase().endsWith('.xls') ||
+      file.name.toLowerCase().endsWith('.csv');
 
-    if (!allowedTypes.includes(file.type)) {
+    if (!isSupportedType) {
       alert(t('pleaseSelectExcelFile'));
       return;
     }
@@ -53,7 +59,7 @@ export const ExcelUpload = () => {
           type="file"
           ref={fileInputRef}
           onChange={handleFileChange}
-          accept=".xlsx,.xls"
+          accept=".xlsx,.xls,.csv"
           className="hidden"
         />
         

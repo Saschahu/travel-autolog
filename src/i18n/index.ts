@@ -221,7 +221,7 @@ const resources = {
       
       // Settings
       profile: 'Profile',
-      gps: 'GPS',  
+      gpsTab: 'GPS',  
       settings: 'Settings',
       holidays: 'Holidays',
       advanced: 'Advanced',
@@ -307,6 +307,53 @@ const resources = {
       startTracking: 'Start Tracking',
       stopTracking: 'Stop Tracking',
       trackingCouldNotStart: 'Tracking could not be started:',
+      
+      // GPS Component Keys
+      gps: {
+        // Current State section
+        currentState: 'Current State',
+        idleAtHome: 'At Home (Ready)',
+        departing: 'Leaving Home',
+        enRouteToCustomer: 'En Route to Customer',
+        stationaryCheck: 'Stationary Check',
+        atCustomer: 'At Customer',
+        leavingCustomer: 'Leaving Customer',
+        enRouteHome: 'En Route Home',
+        stationaryHomeCheck: 'Home Check',
+        done: 'Completed',
+        
+        // Tracking status badges
+        trackingActive: 'Tracking Active',
+        trackingStopped: 'Tracking Stopped',
+        gpsPermitted: 'GPS Permitted',
+        gpsPermissionMissing: 'GPS Permission Missing',
+        
+        // Timer section
+        timers: 'Timers',
+        travel: 'Travel',
+        workTime: 'Work Time',
+        returnTrip: 'Return Trip',
+        
+        // Controls section
+        controls: 'Controls',
+        gpsPermission: 'GPS Permission',
+        getPosition: 'Get Position',
+        work: 'Work',
+        private: 'Private',
+        atCustomerBtn: 'At Customer',
+        notAtCustomer: 'Not at Customer',
+        workFinished: 'Work Finished',
+        continueWorking: 'Continue Working',
+        returnTripFinished: 'Return Trip Finished',
+        
+        // Location Info section
+        locationInfo: 'Location Info',
+        lastPosition: 'Last Position',
+        speed: 'Speed',
+        accuracy: 'Accuracy',
+        timestamp: 'Timestamp',
+        noPositionAvailable: 'No position available'
+      },
       
       // Export
       excelExport: 'Excel Export',
@@ -634,7 +681,7 @@ const resources = {
       
       // Settings
       profile: 'Profil',
-      gps: 'GPS',
+      gpsTab: 'GPS',
       settings: 'Einstellungen',
       holidays: 'Feiertage',
       advanced: 'Erweitert',
@@ -720,6 +767,53 @@ const resources = {
       startTracking: 'Tracking starten',
       stopTracking: 'Tracking stoppen',
       trackingCouldNotStart: 'Tracking konnte nicht gestartet werden:',
+      
+      // GPS Component Keys
+      gps: {
+        // Current State section
+        currentState: 'Aktueller Zustand',
+        idleAtHome: 'Zuhause (Bereit)',
+        departing: 'Verlässt Zuhause',
+        enRouteToCustomer: 'Anreise zum Kunden',
+        stationaryCheck: 'Stationär-Prüfung',
+        atCustomer: 'Beim Kunden',
+        leavingCustomer: 'Verlässt Kunde',
+        enRouteHome: 'Heimreise',
+        stationaryHomeCheck: 'Zuhause-Prüfung',
+        done: 'Abgeschlossen',
+        
+        // Tracking status badges
+        trackingActive: 'Tracking aktiv',
+        trackingStopped: 'Tracking gestoppt',
+        gpsPermitted: 'GPS berechtigt',
+        gpsPermissionMissing: 'GPS Berechtigung fehlt',
+        
+        // Timer section
+        timers: 'Timer',
+        travel: 'Anreise',
+        workTime: 'Arbeitszeit',
+        returnTrip: 'Heimreise',
+        
+        // Controls section
+        controls: 'Kontrolle',
+        gpsPermission: 'GPS Berechtigung',
+        getPosition: 'Position abrufen',
+        work: 'Arbeit',
+        private: 'Privat',
+        atCustomerBtn: 'Beim Kunden',
+        notAtCustomer: 'Nicht beim Kunden',
+        workFinished: 'Arbeit fertig',
+        continueWorking: 'Weiter arbeiten',
+        returnTripFinished: 'Heimreise beendet',
+        
+        // Location Info section
+        locationInfo: 'Standort-Info',
+        lastPosition: 'Letzte Position',
+        speed: 'Geschwindigkeit',
+        accuracy: 'Genauigkeit',
+        timestamp: 'Zeitstempel',
+        noPositionAvailable: 'Keine Position verfügbar'
+      },
       
       // Export
       excelExport: 'Excel Export',
@@ -1426,7 +1520,7 @@ const resources = {
 
       
       // General Settings
-      gps: "GPS",
+      gpsTab: "GPS",
       holidays: "Ferier", 
       advanced: "Avansert",
       name: "Navn",
@@ -1446,7 +1540,10 @@ const resources = {
 };
 
 // Support both 'no' and 'nb' by aliasing 'nb' to the Norwegian resources
-const resourcesExtended: any = { ...resources, nb: (resources as any).no };
+const resourcesExtended: typeof resources & { nb: typeof resources.no } = { 
+  ...resources, 
+  nb: resources.no 
+};
 
 i18n
   .use(initReactI18next)

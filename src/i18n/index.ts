@@ -566,6 +566,52 @@ const resources = {
       privateTrip: 'Private Trip',
       privateTripDescription: 'Have fun with your private activities!',
       
+      // GPS tracking specific translations
+      gpsTracking: {
+        tracking: {
+          title: 'GPS Route Recording',
+          description: 'Record GPS points to create daily routes with distance calculation.',
+          toggle: 'Enable Recording',
+          toggleDescription: 'Record GPS points during activity',
+          active: 'Active',
+          starting: 'Starting...',
+          stopped: 'Stopped',
+          error: 'Error'
+        },
+        stats: {
+          pointsToday: 'Points Today',
+          distanceToday: 'Distance Today'
+        },
+        export: {
+          title: 'Export Today\'s Route',
+          gpx: 'Export GPX',
+          geojson: 'Export GeoJSON',
+          success: 'Export Successful',
+          error: 'Export Failed',
+          gpxDownloaded: 'GPX file downloaded',
+          geojsonDownloaded: 'GeoJSON file downloaded',
+          failed: 'Route export failed',
+          noDataToExport: 'No GPS data recorded for today'
+        },
+        cleanup: {
+          button: 'Delete Old Routes',
+          confirmTitle: 'Delete Old Routes?',
+          confirmDescription: 'This will delete all GPS routes older than 60 days. This action cannot be undone.',
+          confirm: 'Delete',
+          success: 'Cleanup Successful',
+          error: 'Cleanup Failed',
+          failed: 'Old routes could not be deleted',
+          deletedCount: '{{count}} old routes deleted',
+          description: 'Automatically removes routes older than 60 days'
+        },
+        maintenance: {
+          title: 'Maintenance'
+        },
+        backgroundMode: {
+          info: 'Background tracking requires additional permissions on Android devices.'
+        }
+      },
+      
       // Overtime Rules
       overtimeRules: 'Overtime Rules:',
       rule8to12: '• 8-12 hours: 50% surcharge on overtime',
@@ -1479,5 +1525,8 @@ useSettingsStore.subscribe((state) => {
     i18n.changeLanguage(state.locale || 'de');
   }
 });
+
+// Export resources for testing
+export { resources };
 
 export default i18n;

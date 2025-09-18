@@ -125,3 +125,32 @@ Die Android Gradle Konfiguration pinnt automatisch alle Kotlin Dependencies auf 
 
 ### App-Daten zurücksetzen
 In der App: Einstellungen → Erweitert → "App-Daten löschen"
+
+## Internationalization (i18n)
+
+Diese App unterstützt mehrere Sprachen mit `react-i18next`. Übersetzungen befinden sich in `src/i18n/index.ts`.
+
+### GPS i18n Fallback-Strategie
+
+**Wichtig**: Neue GPS-Keys immer in EN+DE gleichzeitig anlegen!
+
+GPS-Funktionen verwenden einen strukturierten `gpsTracking` Namespace. Wenn Übersetzungskeys fehlen, wird auf den Key-Namen zurückgegriffen, was zu technischen Bezeichnungen in der UI führt.
+
+### Verfügbare i18n Scripts
+
+```sh
+# GPS Key-Parität zwischen EN/DE prüfen
+npm run check:i18n-gps
+
+# Tests für i18n Vollständigkeit ausführen
+npm test -- i18n.test.ts
+```
+
+### CI Integration
+
+Das Script `check:i18n-gps` kann in CI/CD Pipelines integriert werden, um sicherzustellen, dass keine GPS-Keys divergieren:
+
+```yaml
+- name: Check GPS i18n Parity
+  run: npm run check:i18n-gps
+```

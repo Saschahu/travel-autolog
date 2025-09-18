@@ -19,4 +19,8 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  test: {
+    globals: false, // Use explicit imports as requested
+    environment: 'node', // Changed from jsdom to node for i18n tests
+  },
 }));

@@ -798,6 +798,12 @@ const resources = {
       uploading: 'Wird hochgeladen...',
       pleaseSelectExcelFile: 'Bitte wählen Sie eine Excel-Datei (.xlsx oder .xls)',
       
+      // CSV Security Messages
+      tooLarge: 'Datei ist zu groß. Maximal {{limitMB}} MB erlaubt.',
+      tooManyRows: 'Datei enthält zu viele Zeilen. Maximum ist {{limit}}.',
+      sanitizedNotice: '{{count}} Formeleinträge wurden aus Sicherheitsgründen gesichert.',
+      xlsxDisabledCsvAvailable: 'XLSX-Import ist deaktiviert. CSV-Import bleibt verfügbar.',
+      
       // Export Settings Messages - Toast Messages
       exportPathSet: 'Exportpfad gesetzt:',
       clickButtonDirectly: 'Bitte klicken Sie den Button direkt an (keine automatischen Aktionen).',

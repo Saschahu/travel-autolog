@@ -2,6 +2,7 @@ import * as XLSX from 'xlsx';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { getUploadLimits } from '@/lib/uploadLimits';
 import { preValidateFile, postValidateRows } from '@/lib/uploadValidation';
 import { sanitizeRecord } from '@/lib/csvSanitizer';
@@ -9,6 +10,7 @@ import { sanitizeRecord } from '@/lib/csvSanitizer';
 export const useExcelUpload = () => {
   const [isUploading, setIsUploading] = useState(false);
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const uploadExcelFile = async (file: File) => {
     setIsUploading(true);
@@ -21,7 +23,7 @@ export const useExcelUpload = () => {
       if (!isCSV && !isXlsxEnabled) {
         toast({
           title: 'XLSX Import deaktiviert',
-          description: 'XLSX-Import ist deaktiviert. CSV-Import bleibt verfügbar.',
+          description: t('xlsxDisabledCsvAvailable'),
           variant: 'destructive',
         });
         return { success: false, error: 'XLSX_DISABLED' };
@@ -32,7 +34,7 @@ export const useExcelUpload = () => {
       if (!sizeValidation.ok) {
         toast({
           title: 'Datei zu groß',
-          description: `Datei ist zu groß. Maximal ${sizeValidation.details.maxMB} MB erlaubt.`,
+          description: t('tooLarge', { limitMB: sizeValidation.details.maxMB }),
           variant: 'destructive',
         });
         return { success: false, error: sizeValidation.code };
@@ -46,7 +48,7 @@ export const useExcelUpload = () => {
       if (!rowValidation.ok) {
         toast({
           title: 'Zu viele Zeilen',
-          description: `Datei enthält zu viele Zeilen. Maximum ist ${rowValidation.details.maxRows}.`,
+          description: t('tooManyRows', { limit: rowValidation.details.maxRows }),
           variant: 'destructive',
         });
         return { success: false, error: rowValidation.code };
@@ -69,7 +71,7 @@ export const useExcelUpload = () => {
         if (sanitizedCount > 0) {
           toast({
             title: 'Sicherheitshinweis',
-            description: `${sanitizedCount} Formeleinträge wurden aus Sicherheitsgründen gesichert.`,
+            description: t('sanitizedNotice', { count: sanitizedCount }),
           });
         }
       }

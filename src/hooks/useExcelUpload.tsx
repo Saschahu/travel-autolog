@@ -2,18 +2,93 @@ import * as XLSX from 'xlsx';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
+import { validateFileSize, validateRowCount } from '@/lib/uploadValidation';
+import { sanitizeRecord } from '@/lib/csvSanitizer';
+import { getXlsxImportEnabled } from '@/lib/uploadLimits';
+
+interface ParsedFileData {
+  sheets: Array<{
+    name: string;
+    data: Record<string, unknown>[];
+    rowCount: number;
+  }>;
+  totalSheets: number;
+  totalRows: number;
+  isCsv?: boolean;
+  sanitizedRowCount?: number;
+}
 
 export const useExcelUpload = () => {
   const [isUploading, setIsUploading] = useState(false);
   const { toast } = useToast();
 
+  // Helper function to detect CSV files
+  const isCsvFile = (file: File): boolean => {
+    return file.type === 'text/csv' || 
+           file.name.toLowerCase().endsWith('.csv');
+  };
+
+  // Helper function to detect XLSX/XLS files
+  const isExcelFile = (file: File): boolean => {
+    const xlsxTypes = [
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      'application/vnd.ms-excel'
+    ];
+    return xlsxTypes.includes(file.type) || 
+           file.name.toLowerCase().match(/\.(xlsx?|xls)$/);
+  };
+
   const uploadExcelFile = async (file: File) => {
     setIsUploading(true);
     try {
-      // Parse Excel file
+      // Step 1: File size validation (applies to all files)
+      const sizeValidation = validateFileSize(file);
+      if (!sizeValidation.ok) {
+        toast({
+          title: 'Upload Fehler',
+          description: `Die Datei ist zu groß. Maximal zulässig sind ${sizeValidation.limitMB} MB.`,
+          variant: 'destructive',
+        });
+        return { success: false, error: 'File too large' };
+      }
+
+      // Step 2: Check file type and feature flags
+      const isXlsx = isExcelFile(file);
+      const isCsv = isCsvFile(file);
+      
+      if (isXlsx && !getXlsxImportEnabled()) {
+        toast({
+          title: 'XLSX Import deaktiviert',
+          description: 'Excel-Import ist deaktiviert. CSV-Import bleibt verfügbar.',
+          variant: 'destructive',
+        });
+        return { success: false, error: 'XLSX import disabled' };
+      }
+
+      if (!isXlsx && !isCsv) {
+        toast({
+          title: 'Nicht unterstütztes Format',
+          description: 'Bitte wählen Sie eine CSV- oder Excel-Datei (.csv, .xlsx, .xls)',
+          variant: 'destructive',
+        });
+        return { success: false, error: 'Unsupported file format' };
+      }
+
+      // Step 3: Parse file (different handling for CSV vs XLSX)
       const data = await parseExcelFile(file);
       
-      // Upload to Supabase Storage
+      // Step 4: Row count validation
+      const rowValidation = validateRowCount(data.totalRows);
+      if (!rowValidation.ok) {
+        toast({
+          title: 'Zu viele Zeilen',
+          description: `Die Datei enthält ${data.totalRows} Zeilen. Maximal zulässig sind ${rowValidation.limit} Zeilen.`,
+          variant: 'destructive',
+        });
+        return { success: false, error: 'Too many rows' };
+      }
+
+      // Step 5: Upload to Supabase Storage
       const fileName = `${Date.now()}_${file.name}`;
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('excel-files')
@@ -23,17 +98,26 @@ export const useExcelUpload = () => {
         throw uploadError;
       }
 
+      // Show success message
+      const fileTypeLabel = isCsv ? 'CSV' : 'Excel';
+      let description = `${fileTypeLabel}-Datei wurde hochgeladen: ${data.sheets.length} Arbeitsblätter gefunden`;
+      
+      // Add sanitization notice for CSV files
+      if (isCsv && data.sanitizedRowCount > 0) {
+        description += '. Einige Zellen wurden zur Vermeidung von Formelausführung entschärft.';
+      }
+      
       toast({
         title: 'Upload erfolgreich',
-        description: `Excel-Datei wurde hochgeladen: ${data.sheets.length} Arbeitsblätter gefunden`,
+        description,
       });
 
       return { success: true, data, fileName };
     } catch (error) {
-      console.error('Excel upload error:', error);
+      console.error('File upload error:', error);
       toast({
         title: 'Upload Fehler',
-        description: 'Die Excel-Datei konnte nicht verarbeitet werden',
+        description: 'Die Datei konnte nicht verarbeitet werden',
         variant: 'destructive',
       });
       return { success: false, error };
@@ -42,7 +126,7 @@ export const useExcelUpload = () => {
     }
   };
 
-  const parseExcelFile = (file: File): Promise<any> => {
+  const parseExcelFile = (file: File): Promise<ParsedFileData> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       
@@ -51,9 +135,29 @@ export const useExcelUpload = () => {
           const data = new Uint8Array(e.target?.result as ArrayBuffer);
           const workbook = XLSX.read(data, { type: 'array' });
           
+          const isCsv = isCsvFile(file);
+          let sanitizedRowCount = 0;
+          
           const sheets = workbook.SheetNames.map(name => {
             const worksheet = workbook.Sheets[name];
-            const jsonData = XLSX.utils.sheet_to_json(worksheet);
+            let jsonData = XLSX.utils.sheet_to_json(worksheet);
+            
+            // Apply CSV sanitization only for CSV files
+            if (isCsv && jsonData.length > 0) {
+              const originalData = [...jsonData];
+              jsonData = jsonData.map(row => sanitizeRecord(row));
+              
+              // Check if any cells were sanitized (for notification)
+              const wasSanitized = originalData.some((original, index) => {
+                const sanitized = jsonData[index];
+                return Object.keys(original).some(key => original[key] !== sanitized[key]);
+              });
+              
+              if (wasSanitized) {
+                sanitizedRowCount++;
+              }
+            }
+            
             return {
               name,
               data: jsonData,
@@ -61,10 +165,17 @@ export const useExcelUpload = () => {
             };
           });
 
+          // Show sanitization notice for CSV files if cells were sanitized
+          if (isCsv && sanitizedRowCount > 0) {
+            // Note: We'll show this after upload success, not here to avoid multiple toasts
+          }
+
           resolve({
             sheets,
             totalSheets: sheets.length,
-            totalRows: sheets.reduce((sum, sheet) => sum + sheet.rowCount, 0)
+            totalRows: sheets.reduce((sum, sheet) => sum + sheet.rowCount, 0),
+            isCsv,
+            sanitizedRowCount
           });
         } catch (error) {
           reject(error);

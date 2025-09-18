@@ -308,6 +308,46 @@ const resources = {
       stopTracking: 'Stop Tracking',
       trackingCouldNotStart: 'Tracking could not be started:',
       
+      // GPS Status
+      currentState: 'Current State',
+      timers: 'Timers',
+      controls: 'Controls',
+      locationInfo: 'Location Info',
+      gpsTravel: 'Travel',
+      gpsWork: 'Work Time',
+      gpsReturn: 'Return',
+      gpsPermission: 'GPS Permission',
+      getPosition: 'Get Position',
+      trackingActive: 'Tracking Active',
+      trackingStopped: 'Tracking Stopped',
+      gpsAuthorized: 'GPS Authorized',
+      gpsPermissionMissing: 'GPS Permission Missing',
+      lastPosition: 'Last Position',
+      noPositionAvailable: 'No position available',
+      speed: 'Speed',
+      accuracy: 'Accuracy',
+      timestamp: 'Timestamp',
+      
+      // GPS State Labels
+      idleAtHome: 'At Home (Ready)',
+      departing: 'Leaving Home',
+      enRouteToCustomer: 'En Route to Customer',
+      stationaryCheck: 'Stationary Check',
+      atCustomer: 'At Customer',
+      leavingCustomer: 'Leaving Customer',
+      enRouteHome: 'En Route Home',
+      stationaryHomeCheck: 'Home Check',
+      done: 'Completed',
+      
+      // GPS Action Buttons
+      work: 'Work',
+      private: 'Private',
+      atCustomerBtn: 'At Customer',
+      notAtCustomer: 'Not at Customer',
+      workFinished: 'Work Finished',
+      continueWorking: 'Continue Working',
+      returnJourneyEnded: 'Return Journey Ended',
+      
       // Export
       excelExport: 'Excel Export',
       exportAll: 'All',
@@ -720,6 +760,46 @@ const resources = {
       startTracking: 'Tracking starten',
       stopTracking: 'Tracking stoppen',
       trackingCouldNotStart: 'Tracking konnte nicht gestartet werden:',
+      
+      // GPS Status
+      currentState: 'Aktueller Zustand',
+      timers: 'Timer',
+      controls: 'Kontrolle',
+      locationInfo: 'Standort-Info',
+      gpsTravel: 'Anreise',
+      gpsWork: 'Arbeitszeit',
+      gpsReturn: 'Heimreise',
+      gpsPermission: 'GPS Berechtigung',
+      getPosition: 'Position abrufen',
+      trackingActive: 'Tracking aktiv',
+      trackingStopped: 'Tracking gestoppt',
+      gpsAuthorized: 'GPS berechtigt',
+      gpsPermissionMissing: 'GPS Berechtigung fehlt',
+      lastPosition: 'Letzte Position',
+      noPositionAvailable: 'Keine Position verfügbar',
+      speed: 'Geschwindigkeit',
+      accuracy: 'Genauigkeit',
+      timestamp: 'Zeitstempel',
+      
+      // GPS State Labels
+      idleAtHome: 'Zuhause (Bereit)',
+      departing: 'Verlässt Zuhause',
+      enRouteToCustomer: 'Anreise zum Kunden',
+      stationaryCheck: 'Stationär-Prüfung',
+      atCustomer: 'Beim Kunden',
+      leavingCustomer: 'Verlässt Kunde',
+      enRouteHome: 'Heimreise',
+      stationaryHomeCheck: 'Zuhause-Prüfung',
+      done: 'Abgeschlossen',
+      
+      // GPS Action Buttons
+      work: 'Arbeit',
+      private: 'Privat',
+      atCustomerBtn: 'Beim Kunden',
+      notAtCustomer: 'Nicht beim Kunden',
+      workFinished: 'Arbeit fertig',
+      continueWorking: 'Weiter arbeiten',
+      returnJourneyEnded: 'Heimreise beendet',
       
       // Export
       excelExport: 'Excel Export',

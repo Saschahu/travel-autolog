@@ -571,7 +571,91 @@ const resources = {
       rule8to12: '• 8-12 hours: 50% surcharge on overtime',
       ruleOver12: '• Over 12 hours: 100% surcharge on overtime',
       weekendRules: 'Weekend Rules:',
-      payment: '• Payment: At least guaranteed hours + overtime surcharges'
+      payment: '• Payment: At least guaranteed hours + overtime surcharges',
+      
+      // GPS tracking specific translations
+      gpsTracking: {
+        tracking: {
+          title: 'GPS Route Recording',
+          description: 'Record GPS points to create daily routes with distance calculation.',
+          toggle: 'Enable recording',
+          toggleDescription: 'Record GPS points during activity',
+          active: 'Active',
+          starting: 'Starting...',
+          stopped: 'Stopped',
+          error: 'Error'
+        },
+        stats: {
+          pointsToday: 'Points today',
+          distanceToday: 'Distance today'
+        },
+        export: {
+          title: 'Export today\'s route',
+          gpx: 'Export GPX',
+          geojson: 'Export GeoJSON',
+          success: 'Export successful',
+          error: 'Export failed',
+          gpxDownloaded: 'GPX file downloaded',
+          geojsonDownloaded: 'GeoJSON file downloaded',
+          failed: 'Route export failed',
+          noDataToExport: 'No GPS data recorded for today'
+        },
+        cleanup: {
+          button: 'Delete old routes',
+          confirmTitle: 'Delete old routes?',
+          confirmDescription: 'This deletes all GPS routes older than 60 days. This action cannot be undone.',
+          confirm: 'Delete',
+          success: 'Cleanup successful',
+          error: 'Cleanup failed',
+          failed: 'Old routes could not be deleted',
+          deletedCount: '{{count}} old routes deleted',
+          description: 'Automatically removes routes older than 60 days'
+        },
+        maintenance: {
+          title: 'Maintenance'
+        },
+        backgroundMode: {
+          info: 'Background tracking requires additional permissions on Android devices.'
+        },
+        ui: {
+          currentState: 'Current State',
+          timer: 'Timer',
+          control: 'Control',
+          locationInfo: 'Location Info',
+          travelTime: 'Travel',
+          workTime: 'Work',
+          returnTime: 'Return',
+          trackingActive: 'Tracking active',
+          trackingStopped: 'Tracking stopped',
+          gpsPermissionGranted: 'GPS authorized',
+          gpsPermissionMissing: 'GPS permission missing',
+          requestGpsPermission: 'GPS Permission',
+          getCurrentPosition: 'Get Position',
+          lastPosition: 'Last Position:',
+          noPositionAvailable: 'No position available',
+          speed: 'Speed:',
+          accuracy: 'Accuracy:',
+          timestamp: 'Timestamp:',
+          work: 'Work',
+          private: 'Private',
+          atCustomer: 'At Customer',
+          notAtCustomer: 'Not at Customer',
+          workFinished: 'Work Finished',
+          continueWorking: 'Continue Working',
+          tripHomeFinished: 'Trip Home Finished',
+          states: {
+            idle_at_home: 'At Home (Ready)',
+            departing: 'Leaving Home',
+            en_route_to_customer: 'En Route to Customer',
+            stationary_check: 'Stationary Check',
+            at_customer: 'At Customer',
+            leaving_customer: 'Leaving Customer',
+            en_route_home: 'Returning Home',
+            stationary_home_check: 'Home Check',
+            done: 'Completed'
+          }
+        }
+      }
     },
     job: jobTranslationsEn
   },
@@ -1026,6 +1110,44 @@ const resources = {
         },
         backgroundMode: {
           info: 'Hintergrund-Tracking benötigt zusätzliche Berechtigungen auf Android-Geräten.'
+        },
+        ui: {
+          currentState: 'Aktueller Zustand',
+          timer: 'Timer',
+          control: 'Kontrolle',
+          locationInfo: 'Standort-Info',
+          travelTime: 'Anreise',
+          workTime: 'Arbeitszeit',
+          returnTime: 'Heimreise',
+          trackingActive: 'Tracking aktiv',
+          trackingStopped: 'Tracking gestoppt',
+          gpsPermissionGranted: 'GPS berechtigt',
+          gpsPermissionMissing: 'GPS Berechtigung fehlt',
+          requestGpsPermission: 'GPS Berechtigung',
+          getCurrentPosition: 'Position abrufen',
+          lastPosition: 'Letzte Position:',
+          noPositionAvailable: 'Keine Position verfügbar',
+          speed: 'Geschwindigkeit:',
+          accuracy: 'Genauigkeit:',
+          timestamp: 'Zeitstempel:',
+          work: 'Arbeit',
+          private: 'Privat',
+          atCustomer: 'Beim Kunden',
+          notAtCustomer: 'Nicht beim Kunden',
+          workFinished: 'Arbeit fertig',
+          continueWorking: 'Weiter arbeiten',
+          tripHomeFinished: 'Heimreise beendet',
+          states: {
+            idle_at_home: 'Zuhause (Bereit)',
+            departing: 'Verlässt Zuhause',
+            en_route_to_customer: 'Anreise zum Kunden',
+            stationary_check: 'Stationär-Prüfung',
+            at_customer: 'Beim Kunden',
+            leaving_customer: 'Verlässt Kunde',
+            en_route_home: 'Heimreise',
+            stationary_home_check: 'Zuhause-Prüfung',
+            done: 'Abgeschlossen'
+          }
         }
       },
       

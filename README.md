@@ -74,6 +74,7 @@ npm run build
 
 ## Verfügbare Scripts
 
+### Core Development
 - `npm run android:run` - **Hauptbefehl**: Build → Sync → Install → Start
 - `npm run android:prep` - Web build + Capacitor sync
 - `npm run android:install` - APK auf Gerät installieren
@@ -81,6 +82,34 @@ npm run build
 - `npm run android:clean` - Android Ordner neu erstellen
 - `npm run verify:local` - Lokale Asset-Konsistenz prüfen
 - `npm run build:native` - Native Build mit BUILD_TARGET=native
+
+### Testing & Quality Assurance
+- `npm run test` - Run all tests (interactive mode)
+- `npm run test:run` - Run all tests once (CI mode)
+- `npm run test:ui` - Open Vitest UI for debugging tests
+- `npm run check:i18n-gps` - Check i18n parity between EN/DE for GPS namespace
+- `npm run lint` - Run ESLint
+
+### Internationalization (i18n)
+
+The app supports multiple languages with full EN/DE parity for GPS tracking features.
+
+#### i18n Guard System
+- **Parity Check**: `npm run check:i18n-gps` ensures EN/DE translations are synchronized
+- **CI Integration**: The parity check runs automatically to prevent translation regressions
+- **Namespace Support**: Currently validates the `gpsTracking` namespace, extensible to other namespaces
+
+#### Fallback Strategy
+If translations are missing, the app uses a safe fallback system:
+- Primary: Requested translation key
+- Secondary: English fallback
+- Fallback: Human-readable text instead of raw keys
+
+#### Adding New Translations
+1. Add keys to both EN and DE sections in `src/i18n/index.ts`
+2. Use translation keys in components: `t('gpsTracking.ui.newKey')`
+3. Run `npm run check:i18n-gps` to verify parity
+4. Add tests for new UI elements in component test files
 
 ## Technologien
 

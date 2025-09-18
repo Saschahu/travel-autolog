@@ -571,7 +571,16 @@ const resources = {
       rule8to12: '• 8-12 hours: 50% surcharge on overtime',
       ruleOver12: '• Over 12 hours: 100% surcharge on overtime',
       weekendRules: 'Weekend Rules:',
-      payment: '• Payment: At least guaranteed hours + overtime surcharges'
+      payment: '• Payment: At least guaranteed hours + overtime surcharges',
+      
+      // CSV Security - Stage 2
+      tooLarge: 'File too large',
+      tooManyRows: 'Too many rows',
+      sanitizedNotice: 'Formula detected and secured',
+      xlsxDisabledCsvAvailable: 'XLSX uploads disabled. CSV is still available.',
+      unsupportedFileType: 'Unsupported file type',
+      invalidCsvContent: 'Invalid CSV content',
+      fileReadError: 'Error reading file'
     },
     job: jobTranslationsEn
   },
@@ -1034,7 +1043,16 @@ const resources = {
       rule8to12: '• 8-12 Stunden: 50% Zuschlag auf Überstunden',
       ruleOver12: '• Über 12 Stunden: 100% Zuschlag auf Überstunden',
       weekendRules: 'Wochenendregeln:',
-      payment: '• Bezahlung: Mindestens garantierte Stunden + Überstundenzuschläge'
+      payment: '• Bezahlung: Mindestens garantierte Stunden + Überstundenzuschläge',
+      
+      // CSV Security - Stage 2
+      tooLarge: 'Datei zu groß',
+      tooManyRows: 'Zu viele Zeilen',
+      sanitizedNotice: 'Formel erkannt und gesichert',
+      xlsxDisabledCsvAvailable: 'XLSX-Upload deaktiviert. CSV ist weiterhin verfügbar.',
+      unsupportedFileType: 'Nicht unterstützter Dateityp',
+      invalidCsvContent: 'Ungültiger CSV-Inhalt',
+      fileReadError: 'Fehler beim Lesen der Datei'
     },
     job: jobTranslationsDe
   },

@@ -125,3 +125,38 @@ Die Android Gradle Konfiguration pinnt automatisch alle Kotlin Dependencies auf 
 
 ### App-Daten zurücksetzen
 In der App: Einstellungen → Erweitert → "App-Daten löschen"
+
+## Data Import (CSV & XLSX)
+
+### CSV Security (Stage 2)
+
+Die Anwendung unterstützt den sicheren Import von CSV- und XLSX-Dateien mit mehreren Sicherheitsebenen:
+
+#### Upload-Limits
+- **Maximale Dateigröße**: 5.2 MB (konfigurierbar über `VITE_MAX_UPLOAD_SIZE_MB`)
+- **Maximale Zeilenzahl**: 50.000 Zeilen (konfigurierbar über `VITE_MAX_UPLOAD_ROWS`)
+
+#### CSV Formula Sanitization
+Automatische Erkennung und Sicherung gefährlicher Formeln:
+- Zellen die mit `=`, `+`, `-`, `@` beginnen werden automatisch mit `'` escaped
+- Benachrichtigung über sanitisierte Inhalte im Upload-Dialog
+
+#### XLSX Feature Flag
+- XLSX-Upload kann über `VITE_ENABLE_XLSX=true` aktiviert werden
+- Standardmäßig deaktiviert (nur CSV erlaubt)
+- CSV-Import ist immer verfügbar
+
+#### Beispiel-Konfiguration (.env)
+```bash
+# Upload-Limits
+VITE_MAX_UPLOAD_SIZE_MB=5.2
+VITE_MAX_UPLOAD_ROWS=50000
+
+# XLSX Support (optional)
+VITE_ENABLE_XLSX=true
+```
+
+#### Sicherheitshinweise
+- CSV-Dateien werden zur Formel-Injektion-Prävention sanitisiert
+- Upload-Limits verhindern DoS-Attacken durch große Dateien
+- XLSX-Support nur bei expliziter Aktivierung verfügbar

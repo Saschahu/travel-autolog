@@ -89,6 +89,27 @@ npm run build
 - **Maps**: Mapbox GL JS
 - **Backend**: Supabase
 
+## Data Import (CSV & XLSX)
+
+### Feature Flags
+- `VITE_ENABLE_XLSX` (default=false): Controls whether XLSX file import is enabled
+- When disabled, only CSV import is available for security reasons
+
+### Upload Limits
+- `VITE_MAX_UPLOAD_SIZE_MB` (default=5): Maximum file size in MB
+- `VITE_MAX_UPLOAD_ROWS` (default=50000): Maximum number of rows allowed
+
+### Security Features
+- **CSV Formula Sanitization**: Cells starting with =, +, -, @ are automatically prefixed with ' to prevent formula injection
+- **File Size Protection**: Files exceeding the size limit are rejected
+- **Row Count Protection**: Files with too many rows are rejected
+
+### Manual Test Cases
+1. **File too large**: Upload a file >5MB (should be rejected)
+2. **Too many rows**: Upload CSV with >50000 rows (should be rejected)  
+3. **Formula sanitization**: CSV with cells starting with =SUM() (should be sanitized with ' prefix)
+4. **XLSX disabled**: With VITE_ENABLE_XLSX=false, XLSX uploads should show error message
+
 ## Konfiguration
 
 ### Mapbox Tokens

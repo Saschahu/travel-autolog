@@ -1,6 +1,7 @@
 import * as XLSX from 'xlsx';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import { validateFileSize, validateRowCount } from '@/lib/uploadValidation';
 import { sanitizeRecord } from '@/lib/csvSanitizer';
@@ -21,6 +22,7 @@ interface ParsedFileData {
 export const useExcelUpload = () => {
   const [isUploading, setIsUploading] = useState(false);
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   // Helper function to detect CSV files
   const isCsvFile = (file: File): boolean => {
@@ -46,7 +48,7 @@ export const useExcelUpload = () => {
       if (!sizeValidation.ok) {
         toast({
           title: 'Upload Fehler',
-          description: `Die Datei ist zu groß. Maximal zulässig sind ${sizeValidation.limitMB} MB.`,
+          description: t('upload.tooLarge', { limitMB: sizeValidation.limitMB }),
           variant: 'destructive',
         });
         return { success: false, error: 'File too large' };
@@ -59,7 +61,7 @@ export const useExcelUpload = () => {
       if (isXlsx && !getXlsxImportEnabled()) {
         toast({
           title: 'XLSX Import deaktiviert',
-          description: 'Excel-Import ist deaktiviert. CSV-Import bleibt verfügbar.',
+          description: t('upload.xlsxDisabledCsvAvailable'),
           variant: 'destructive',
         });
         return { success: false, error: 'XLSX import disabled' };
@@ -68,7 +70,7 @@ export const useExcelUpload = () => {
       if (!isXlsx && !isCsv) {
         toast({
           title: 'Nicht unterstütztes Format',
-          description: 'Bitte wählen Sie eine CSV- oder Excel-Datei (.csv, .xlsx, .xls)',
+          description: t('pleaseSelectExcelFile'),
           variant: 'destructive',
         });
         return { success: false, error: 'Unsupported file format' };
@@ -82,7 +84,7 @@ export const useExcelUpload = () => {
       if (!rowValidation.ok) {
         toast({
           title: 'Zu viele Zeilen',
-          description: `Die Datei enthält ${data.totalRows} Zeilen. Maximal zulässig sind ${rowValidation.limit} Zeilen.`,
+          description: t('upload.tooManyRows', { rows: data.totalRows, limit: rowValidation.limit }),
           variant: 'destructive',
         });
         return { success: false, error: 'Too many rows' };
@@ -104,7 +106,7 @@ export const useExcelUpload = () => {
       
       // Add sanitization notice for CSV files
       if (isCsv && data.sanitizedRowCount > 0) {
-        description += '. Einige Zellen wurden zur Vermeidung von Formelausführung entschärft.';
+        description += `. ${t('upload.sanitizedNotice')}`;
       }
       
       toast({

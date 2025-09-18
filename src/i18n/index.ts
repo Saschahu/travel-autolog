@@ -375,13 +375,22 @@ const resources = {
       geofenceWarning: 'Geofence monitoring is only active in foreground and serves as demonstration. True background geofencing is not possible in web.',
       
       // Export
-      supportedFormats: 'Supported formats: .xlsx, .xls',
-      maxFileSize: 'Maximum file size: 10 MB',
-      excelImport: 'Excel Import',
-      excelImportDescription: 'Upload Excel files to import job data',
-      selectExcelFile: 'Select Excel file',
+      supportedFormats: 'Supported formats: .xlsx, .xls, .csv',
+      maxFileSize: 'Maximum file size: 5 MB',
+      excelImport: 'Data Import',
+      excelImportDescription: 'Upload CSV or Excel files to import job data',
+      selectExcelFile: 'Select file',
       uploading: 'Uploading...',
-      pleaseSelectExcelFile: 'Please select an Excel file (.xlsx or .xls)',
+      pleaseSelectExcelFile: 'Please select a file (.csv, .xlsx, or .xls)',
+      
+      // Upload validation and security
+      upload: {
+        xlsxDisabledCsvAvailable: "Excel import is disabled. CSV import remains available.",
+        tooLarge: "The file is too large. Maximum size is {{limitMB}} MB.",
+        tooManyRows: "The file contains {{rows}} rows. Maximum allowed is {{limit}} rows.",
+        sanitizedNotice: "Some cells were escaped to prevent formula execution.",
+        blockedXlsx: "Excel files are blocked by policy."
+      },
       
       // Export Settings Messages - Toast Messages
       exportPathSet: 'Export path set:',
@@ -790,13 +799,22 @@ const resources = {
       geofenceWarning: 'Das Geofence-Monitoring ist nur im Vordergrund aktiv und dient zur Demonstration. Echter Hintergrund-Geofence ist im Web nicht möglich.',
       
       // Export
-      supportedFormats: 'Unterstützte Formate: .xlsx, .xls',
-      maxFileSize: 'Maximale Dateigröße: 10 MB',
-      excelImport: 'Excel Import',
-      excelImportDescription: 'Laden Sie Excel-Dateien hoch um Auftragsdaten zu importieren',
-      selectExcelFile: 'Excel-Datei auswählen',
+      supportedFormats: 'Unterstützte Formate: .xlsx, .xls, .csv',
+      maxFileSize: 'Maximale Dateigröße: 5 MB',
+      excelImport: 'Daten Import',
+      excelImportDescription: 'Laden Sie CSV- oder Excel-Dateien hoch um Auftragsdaten zu importieren',
+      selectExcelFile: 'Datei auswählen',
       uploading: 'Wird hochgeladen...',
-      pleaseSelectExcelFile: 'Bitte wählen Sie eine Excel-Datei (.xlsx oder .xls)',
+      pleaseSelectExcelFile: 'Bitte wählen Sie eine Datei (.csv, .xlsx oder .xls)',
+      
+      // Upload validation and security
+      upload: {
+        xlsxDisabledCsvAvailable: "Excel-Import ist deaktiviert. CSV-Import bleibt verfügbar.",
+        tooLarge: "Die Datei ist zu groß. Maximal zulässig sind {{limitMB}} MB.",
+        tooManyRows: "Die Datei enthält {{rows}} Zeilen. Maximal zulässig sind {{limit}} Zeilen.",
+        sanitizedNotice: "Einige Zellen wurden zur Vermeidung von Formelausführung entschärft.",
+        blockedXlsx: "Excel-Dateien sind aus Sicherheitsgründen gesperrt."
+      },
       
       // Export Settings Messages - Toast Messages
       exportPathSet: 'Exportpfad gesetzt:',
@@ -1446,7 +1464,7 @@ const resources = {
 };
 
 // Support both 'no' and 'nb' by aliasing 'nb' to the Norwegian resources
-const resourcesExtended: any = { ...resources, nb: (resources as any).no };
+const resourcesExtended = { ...resources, nb: resources.no };
 
 i18n
   .use(initReactI18next)

@@ -308,6 +308,59 @@ const resources = {
       stopTracking: 'Stop Tracking',
       trackingCouldNotStart: 'Tracking could not be started:',
       
+      // GPS Status Component
+      gpsStatus: {
+        states: {
+          idle_at_home: 'At Home (Ready)',
+          departing: 'Leaving Home',
+          en_route_to_customer: 'En Route to Customer',
+          stationary_check: 'Stationary Check',
+          at_customer: 'At Customer',
+          leaving_customer: 'Leaving Customer',
+          en_route_home: 'Returning Home',
+          stationary_home_check: 'Home Check',
+          done: 'Completed'
+        },
+        ui: {
+          currentState: 'Current State',
+          timer: 'Timer',
+          control: 'Control',
+          locationInfo: 'Location Info',
+          travelTime: 'Travel',
+          workTime: 'Work Time',
+          returnTime: 'Return',
+          trackingActive: 'Tracking Active',
+          trackingStopped: 'Tracking Stopped',
+          gpsAuthorized: 'GPS Authorized',
+          gpsPermissionMissing: 'GPS Permission Missing',
+          gpsPermission: 'GPS Permission',
+          getPosition: 'Get Position',
+          lastPosition: 'Last Position:',
+          noPositionAvailable: 'No position available',
+          speed: 'Speed:',
+          accuracy: 'Accuracy:',
+          timestamp: 'Timestamp:'
+        },
+        buttons: {
+          work: 'Work',
+          private: 'Private',
+          atCustomer: 'At Customer',
+          notAtCustomer: 'Not at Customer',
+          workDone: 'Work Done',
+          continueWorking: 'Continue Working',
+          homeArrival: 'Home Arrival Complete'
+        },
+        aria: {
+          currentStateLabel: 'Current GPS tracking state',
+          trackingStatusLabel: 'GPS tracking status',
+          permissionStatusLabel: 'GPS permission status',
+          timerLabel: 'Time tracker for {{type}}',
+          controlButton: 'GPS control button',
+          stateConfirmButton: 'Confirm current state',
+          locationInfoRegion: 'Current location information'
+        }
+      },
+      
       // Export
       excelExport: 'Excel Export',
       exportAll: 'All',
@@ -720,6 +773,59 @@ const resources = {
       startTracking: 'Tracking starten',
       stopTracking: 'Tracking stoppen',
       trackingCouldNotStart: 'Tracking konnte nicht gestartet werden:',
+      
+      // GPS Status Component
+      gpsStatus: {
+        states: {
+          idle_at_home: 'Zuhause (Bereit)',
+          departing: 'Verlässt Zuhause',
+          en_route_to_customer: 'Anreise zum Kunden',
+          stationary_check: 'Stationär-Prüfung',
+          at_customer: 'Beim Kunden',
+          leaving_customer: 'Verlässt Kunde',
+          en_route_home: 'Heimreise',
+          stationary_home_check: 'Zuhause-Prüfung',
+          done: 'Abgeschlossen'
+        },
+        ui: {
+          currentState: 'Aktueller Zustand',
+          timer: 'Timer',
+          control: 'Kontrolle',
+          locationInfo: 'Standort-Info',
+          travelTime: 'Anreise',
+          workTime: 'Arbeitszeit',
+          returnTime: 'Heimreise',
+          trackingActive: 'Tracking aktiv',
+          trackingStopped: 'Tracking gestoppt',
+          gpsAuthorized: 'GPS berechtigt',
+          gpsPermissionMissing: 'GPS Berechtigung fehlt',
+          gpsPermission: 'GPS Berechtigung',
+          getPosition: 'Position abrufen',
+          lastPosition: 'Letzte Position:',
+          noPositionAvailable: 'Keine Position verfügbar',
+          speed: 'Geschwindigkeit:',
+          accuracy: 'Genauigkeit:',
+          timestamp: 'Zeitstempel:'
+        },
+        buttons: {
+          work: 'Arbeit',
+          private: 'Privat',
+          atCustomer: 'Beim Kunden',
+          notAtCustomer: 'Nicht beim Kunden',
+          workDone: 'Arbeit fertig',
+          continueWorking: 'Weiter arbeiten',
+          homeArrival: 'Heimreise beendet'
+        },
+        aria: {
+          currentStateLabel: 'Aktueller GPS-Tracking-Status',
+          trackingStatusLabel: 'GPS-Tracking-Status',
+          permissionStatusLabel: 'GPS-Berechtigungsstatus',
+          timerLabel: 'Zeitmesser für {{type}}',
+          controlButton: 'GPS-Steuerungsschaltfläche',
+          stateConfirmButton: 'Aktuellen Status bestätigen',
+          locationInfoRegion: 'Aktuelle Standortinformationen'
+        }
+      },
       
       // Export
       excelExport: 'Excel Export',

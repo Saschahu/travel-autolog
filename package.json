@@ -8,7 +8,10 @@
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "check:i18n-gps": "node scripts/check-i18n-gps.mjs && node src/components/gps/__tests__/gps-i18n-validation.mjs",
+    "verify:local": "node scripts/verify-local.mjs",
+    "test:gps-i18n": "node src/components/gps/__tests__/gps-i18n-validation.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^7.4.2",

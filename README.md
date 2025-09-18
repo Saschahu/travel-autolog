@@ -89,6 +89,96 @@ npm run build
 - **Maps**: Mapbox GL JS
 - **Backend**: Supabase
 
+## Data Import (CSV & XLSX)
+
+### Funktionen
+
+Die Anwendung unterstützt den Import von Auftragsdaten über CSV- und Excel-Dateien mit integrierten Sicherheitsmaßnahmen.
+
+#### CSV Import
+- **Immer verfügbar**: CSV-Import ist standardmäßig aktiviert
+- **Formel-Schutz**: Automatische Entschärfung gefährlicher Zellinhalte (=, +, -, @)
+- **Upload-Limits**: Konfigurierbare Größen- und Zeilenbeschränkungen
+
+#### XLSX Import
+- **Feature-Flag-gesteuert**: Hinter `VITE_ENABLE_XLSX_IMPORT` Feature-Flag (Standard: deaktiviert)
+- **Keine Sanitization**: XLSX-Dateien werden unverändert verarbeitet
+- **Opt-in aktivierung**: Muss explizit über Umgebungsvariable eingeschaltet werden
+
+### Umgebungsvariablen
+
+```bash
+# CSV/XLSX Upload Limits (Defaults gezeigt)
+VITE_UPLOAD_MAX_BYTES=5242880     # 5 MB maximale Dateigröße
+VITE_UPLOAD_MAX_ROWS=50000        # 50k Zeilen maximum
+VITE_ENABLE_XLSX_IMPORT=false     # XLSX import feature flag (default: aus)
+```
+
+### Sicherheitsmaßnahmen
+
+#### CSV Formula Injection Schutz
+Die Anwendung schützt automatisch vor CSV Formula Injection Attacken:
+
+- **Gefährliche Präfixe**: `=`, `+`, `-`, `@` am Zellenanfang
+- **Automatische Entschärfung**: Gefährliche Zellen erhalten ein vorangestelltes `'`
+- **Benutzerbenachrichtigung**: Nutzer werden über Sanitization informiert
+
+#### Upload-Limits
+- **Dateigröße**: Standard 5MB, über `VITE_UPLOAD_MAX_BYTES` konfigurierbar
+- **Zeilenanzahl**: Standard 50.000 Zeilen, über `VITE_UPLOAD_MAX_ROWS` konfigurierbar
+- **Echtzeit-Validierung**: Prüfung vor und nach dem Parsing
+
+#### Feature-Flag-Guards
+- **XLSX-Schutz**: Excel-Import muss explizit aktiviert werden
+- **CSV-Verfügbarkeit**: CSV bleibt auch bei deaktiviertem XLSX verfügbar
+- **UI-Integration**: Benutzerfreundliche Fehlermeldungen
+
+### Manueller Testplan
+
+#### Feature Flag Tests
+```bash
+# 1. XLSX deaktiviert (Standard)
+VITE_ENABLE_XLSX_IMPORT=false
+# Erwartung: .xlsx/.xls Dateien werden abgelehnt, CSV funktioniert
+
+# 2. XLSX aktiviert
+VITE_ENABLE_XLSX_IMPORT=true
+# Erwartung: Alle Formate funktionieren
+```
+
+#### Limit Tests
+```bash
+# 1. Große Datei testen (>5 MB)
+# Erwartung: Fehlermeldung "Datei zu groß"
+
+# 2. Viele Zeilen testen (>50k)
+# Erwartung: Fehlermeldung "Zu viele Zeilen"
+
+# 3. Custom Limits
+VITE_UPLOAD_MAX_BYTES=1048576  # 1 MB
+VITE_UPLOAD_MAX_ROWS=1000      # 1k Zeilen
+# Erwartung: Neue Limits werden angewendet
+```
+
+#### Formula Injection Tests
+```csv
+# Erstelle test.csv mit gefährlichen Inhalten:
+name,formula,command,link
+"John Doe","=SUM(A1:A10)","+CMD","@HYPERLINK(""http://evil.com"",""Click me"")"
+```
+
+**Erwartung**: Alle gefährlichen Formeln werden mit `'` escaped:
+- `=SUM(A1:A10)` → `'=SUM(A1:A10)`
+- `+CMD` → `'+CMD`
+- `@HYPERLINK(...)` → `'@HYPERLINK(...)`
+
+### Bekannte Grenzen
+
+- **CSV-Encoding**: Nur UTF-8 vollständig unterstützt
+- **CSV-Separator**: Standardmäßig Komma (`,`), andere Separatoren können Probleme verursachen  
+- **XLSX-Komplexität**: Sehr komplexe Excel-Dateien können Performance-Probleme verursachen
+- **Formel-Schutz**: Nur für CSV-Dateien, XLSX-Formeln bleiben unverändert
+
 ## Konfiguration
 
 ### Mapbox Tokens

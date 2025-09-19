@@ -9,11 +9,29 @@ import Index from "./pages/Index";
 import { Auth } from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import { DirectoryPickerBridge } from "./pages/DirectoryPickerBridge";
+import { migrateFromLocalStorage } from "@/security/tokenStorage";
+import { useEffect } from "react";
 
 const queryClient = new QueryClient();
 
 function AppContent() {
   const { user, loading } = useAuth();
+
+  // One-time migration from localStorage to IndexedDB on app start
+  useEffect(() => {
+    const performMigration = async () => {
+      try {
+        const result = await migrateFromLocalStorage();
+        if (import.meta.env.DEV && result.migrated) {
+          console.info('Token migration completed:', result);
+        }
+      } catch (error) {
+        console.error('Migration failed:', error);
+      }
+    };
+    
+    performMigration();
+  }, []);
 
   console.log('AppContent render:', { user: !!user, loading });
 

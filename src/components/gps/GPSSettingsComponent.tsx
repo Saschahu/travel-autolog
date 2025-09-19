@@ -16,6 +16,7 @@ import {
   formatDistance,
   getCurrentPosition 
 } from '@/lib/geo';
+import { getToken, setToken, migrateFromLocalStorage } from '@/security/tokenStorage';
 
 interface GPSSettingsData {
   styleId: string;
@@ -38,9 +39,7 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
   const { t } = useTranslation();
   const { toast } = useToast();
   const [isGettingLocation, setIsGettingLocation] = useState(false);
-  const [mapboxToken, setMapboxToken] = useState(() => {
-    return localStorage.getItem('mapbox_token') || '';
-  });
+  const [mapboxToken, setMapboxToken] = useState('');
   const [geofenceMonitor] = useState(() => new GeofenceMonitor());
   const [geofenceStatus, setGeofenceStatus] = useState<{
     isAtHome: boolean;
@@ -63,6 +62,29 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
       });
       geofenceMonitor.setHome(savedHome);
     }
+  }, []);
+
+  // Load mapbox token on mount
+  useEffect(() => {
+    const loadToken = async () => {
+      try {
+        // Migrate from localStorage if needed
+        const migrationResult = await migrateFromLocalStorage();
+        if (migrationResult.migrated) {
+          console.log('Token migrated from localStorage to IndexedDB');
+        }
+        
+        // Get token from secure storage
+        const stored = await getToken();
+        if (stored) {
+          setMapboxToken(stored);
+        }
+      } catch (error) {
+        console.error('Failed to load token:', error);
+      }
+    };
+    
+    loadToken();
   }, []);
 
   // Set up geofence status listener
@@ -183,12 +205,21 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
     }
   };
 
-  const handleTokenSave = () => {
-    localStorage.setItem('mapbox_token', mapboxToken);
-    toast({
-      title: t('mapboxTokenSaved'),
-      description: 'Token wurde erfolgreich gespeichert'
-    });
+  const handleTokenSave = async () => {
+    try {
+      await setToken(mapboxToken);
+      toast({
+        title: t('mapboxTokenSaved'),
+        description: 'Token wurde erfolgreich gespeichert'
+      });
+    } catch (error) {
+      console.error('Failed to save token:', error);
+      toast({
+        title: 'Fehler',
+        description: 'Token konnte nicht gespeichert werden. Bitte überprüfen Sie das Format.',
+        variant: 'destructive'
+      });
+    }
   };
 
   return (

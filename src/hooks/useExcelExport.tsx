@@ -1,6 +1,6 @@
 import { buildComposeUrl } from '@/lib/emailProviders';
 import { splitEmails, validateEmails } from '@/lib/email';
-import * as XLSX from 'xlsx';
+import { writeWorkbook } from '@/lib/excelAdapter';
 import { useUserProfile } from '@/contexts/UserProfileContext';
 import { Share } from '@capacitor/share';
 import { Capacitor } from '@capacitor/core';
@@ -16,8 +16,8 @@ export const useExcelExport = () => {
   const { profile } = useUserProfile();
   const { toast } = useToast();
 
-  const generateJobExcel = (jobs: any[], reportType: 'single' | 'all' = 'all') => {
-    const workbook = XLSX.utils.book_new();
+  const generateJobExcel = async (jobs: any[], reportType: 'single' | 'all' = 'all') => {
+    const sheets: Array<{ name: string; rows: (string | number | null | undefined)[][] }> = [];
     
     if (reportType === 'single' && jobs.length === 1) {
       // Einzelner Auftrag - verwende das professionelle Template
@@ -37,39 +37,53 @@ export const useExcelExport = () => {
         currentDay: job.currentDay || 0
       };
       
-      const worksheet = template.fillJobData(templateData);
-      ExcelFormatter.applyPrintSettings(worksheet);
-      
-      XLSX.utils.book_append_sheet(workbook, worksheet, 'Arbeitszeit-Nachweis');
+      const worksheetData = template.fillJobData(templateData);
+      sheets.push({
+        name: 'Arbeitszeit-Nachweis',
+        rows: worksheetData
+      });
     } else {
       // Mehrere Aufträge - verwende die ursprüngliche Tabellen-Ansicht
-      const excelData = jobs.map(job => ({
-        'Auftragsnummer': job.id,
-        'Kundenname': job.customerName,
-        'Status': getStatusText(job.status),
-        'Startdatum': formatDate(job.startDate),
-        'Geschätzte Tage': job.estimatedDays || 0,
-        'Aktueller Tag': job.currentDay || 0,
-        'Gesamtstunden': job.totalHours || '0h 0m',
-        'Arbeitsbeginn': job.workStartTime || '',
-        'Arbeitsende': job.workEndTime || '',
-        'Fortschritt (%)': job.estimatedDays ? Math.round((job.currentDay / job.estimatedDays) * 100) : 0
-      }));
+      const excelData = jobs.map(job => [
+        job.id || '',
+        job.customerName || '',
+        getStatusText(job.status) || '',
+        formatDate(job.startDate) || '',
+        formatDate(job.endDate) || '',
+        job.totalHours || '',
+        job.estimatedDays || 0,
+        job.currentDay || 0,
+        job.workStartTime || '',
+        job.workEndTime || '',
+        job.estimatedDays ? Math.round((job.currentDay / job.estimatedDays) * 100) : 0
+      ]);
 
-      const worksheet = XLSX.utils.json_to_sheet(excelData);
-      
-      const columnWidths = [
-        { wch: 15 }, { wch: 25 }, { wch: 15 }, { wch: 12 }, { wch: 15 },
-        { wch: 15 }, { wch: 15 }, { wch: 12 }, { wch: 12 }, { wch: 15 }
+      // Add headers
+      const headers = [
+        'Auftragsnummer',
+        'Kundenname',
+        'Status',
+        'Startdatum',
+        'Enddatum',
+        'Gesamtstunden',
+        'Geschätzte Tage',
+        'Aktueller Tag',
+        'Arbeitsbeginn',
+        'Arbeitsende',
+        'Fortschritt (%)'
       ];
-      worksheet['!cols'] = columnWidths;
 
-      XLSX.utils.book_append_sheet(workbook, worksheet, 'Aufträge');
+      const worksheetData = [headers, ...excelData];
+      sheets.push({
+        name: 'Aufträge',
+        rows: worksheetData
+      });
 
-      // Zusammenfassung für mehrere Aufträge
+      // Add summary sheet if there are multiple jobs
       if (jobs.length > 1) {
         const summary = ExcelFormatter.generateJobSummary(jobs);
         const summaryData = [
+          ['Kategorie', 'Wert'],
           ['Gesamtanzahl Aufträge', summary.totalJobs],
           ['Aktive Aufträge', summary.activeJobs],
           ['Offene Aufträge', summary.openJobs],
@@ -79,13 +93,14 @@ export const useExcelExport = () => {
           ['Durchschnittliche Tage pro Auftrag', summary.avgDaysPerJob]
         ];
 
-        const summaryWorksheet = XLSX.utils.aoa_to_sheet(summaryData);
-        summaryWorksheet['!cols'] = [{ wch: 25 }, { wch: 15 }];
-        XLSX.utils.book_append_sheet(workbook, summaryWorksheet, 'Zusammenfassung');
+        sheets.push({
+          name: 'Zusammenfassung',
+          rows: summaryData
+        });
       }
     }
 
-    return workbook;
+    return writeWorkbook(sheets);
   };
 
   const exportToExcel = async (jobs: any[], filename?: string, exportDirUri?: string) => {
@@ -159,9 +174,7 @@ export const useExcelExport = () => {
     }
 
     // Mehrere Aufträge oder Fallback → ursprüngliche Tabellen-Ansicht
-    const workbook = generateJobExcel(jobs);
-    const excelBuffer = XLSX.write(workbook, { type: 'array', bookType: 'xlsx' });
-    const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const blob = await generateJobExcel(jobs);
     const url = URL.createObjectURL(blob);
     const defaultFilename = filename || `Auftraege_${new Date().toISOString().split('T')[0]}.xlsx`;
 

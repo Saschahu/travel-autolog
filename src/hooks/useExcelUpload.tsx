@@ -1,4 +1,4 @@
-import * as XLSX from 'xlsx';
+import { readWorkbook } from '@/lib/excelAdapter';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
@@ -42,38 +42,31 @@ export const useExcelUpload = () => {
     }
   };
 
-  const parseExcelFile = (file: File): Promise<any> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
+  const parseExcelFile = async (file: File): Promise<any> => {
+    try {
+      const workbook = await readWorkbook(file);
       
-      reader.onload = (e) => {
-        try {
-          const data = new Uint8Array(e.target?.result as ArrayBuffer);
-          const workbook = XLSX.read(data, { type: 'array' });
-          
-          const sheets = workbook.SheetNames.map(name => {
-            const worksheet = workbook.Sheets[name];
-            const jsonData = XLSX.utils.sheet_to_json(worksheet);
-            return {
-              name,
-              data: jsonData,
-              rowCount: jsonData.length
-            };
+      const sheets = workbook.sheets.map(sheet => ({
+        name: sheet.name,
+        data: sheet.rows.map(row => {
+          // Convert rows to object format for backward compatibility
+          const obj: any = {};
+          row.forEach((cell, index) => {
+            obj[`col_${index}`] = cell;
           });
+          return obj;
+        }),
+        rowCount: sheet.rows.length
+      }));
 
-          resolve({
-            sheets,
-            totalSheets: sheets.length,
-            totalRows: sheets.reduce((sum, sheet) => sum + sheet.rowCount, 0)
-          });
-        } catch (error) {
-          reject(error);
-        }
+      return {
+        sheets,
+        totalSheets: sheets.length,
+        totalRows: sheets.reduce((sum, sheet) => sum + sheet.rowCount, 0)
       };
-
-      reader.onerror = () => reject(new Error('Datei konnte nicht gelesen werden'));
-      reader.readAsArrayBuffer(file);
-    });
+    } catch (error) {
+      throw new Error(`Failed to parse Excel file: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
   };
 
   const getUploadedFiles = async () => {

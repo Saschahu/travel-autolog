@@ -1,11 +1,11 @@
 import { Capacitor } from '@capacitor/core';
+import { getToken } from '@/security/tokenStorage';
 
-export function getMapboxToken(): string | undefined {
+export async function getMapboxToken(): Promise<string | undefined> {
   try {
-    const ui = typeof window !== 'undefined'
-      ? (localStorage.getItem('mapbox_token') || '').trim()
-      : '';
-    if (ui) return ui;
+    // First try to get token from secure storage
+    const storedToken = await getToken();
+    if (storedToken) return storedToken;
 
     // Native → mobiler Token; Web → Web-Token
     const env = (import.meta as any).env;

@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertTriangle } from 'lucide-react';
 import { LocationData, GPSEvent } from '@/types/gps-events';
 import { useTranslation } from 'react-i18next';
+import { getToken, setToken, migrateFromLocalStorage } from '@/security/tokenStorage';
 
 interface GPSMapProps {
   currentLocation: LocationData | null;
@@ -29,18 +30,42 @@ export const GPSMap: React.FC<GPSMapProps> = ({ currentLocation, homeLocation, t
 
   // Check for Mapbox token
   useEffect(() => {
-    const envToken = import.meta.env.VITE_MAPBOX_TOKEN as string;
+    const loadToken = async () => {
+      const envToken = import.meta.env.VITE_MAPBOX_TOKEN as string;
+      
+      if (envToken && envToken !== 'pk.XXXXXXXXXXXXXXXXXXXX') {
+        setMapboxToken(envToken);
+        setShowTokenInput(false);
+        setError('');
+      } else {
+        try {
+          // Migrate from localStorage if needed
+          const migrationResult = await migrateFromLocalStorage();
+          if (migrationResult.migrated) {
+            console.log('Token migrated from localStorage to IndexedDB');
+          }
+          
+          // Get token from secure storage
+          const stored = await getToken();
+          if (stored) {
+            setMapboxToken(stored);
+            setShowTokenInput(false);
+            setError('');
+          } else {
+            console.warn('Mapbox Token fehlt. Bitte .env-Datei konfigurieren.');
+            setShowTokenInput(true);
+            setError(t('mapboxEnvTokenMissing'));
+          }
+        } catch (error) {
+          console.error('Failed to load token:', error);
+          setShowTokenInput(true);
+          setError(t('mapboxEnvTokenMissing'));
+        }
+      }
+    };
     
-    if (envToken && envToken !== 'pk.XXXXXXXXXXXXXXXXXXXX') {
-      setMapboxToken(envToken);
-      setShowTokenInput(false);
-      setError('');
-    } else {
-      console.warn('Mapbox Token fehlt. Bitte .env-Datei konfigurieren.');
-      setShowTokenInput(true);
-      setError(t('mapboxEnvTokenMissing'));
-    }
-  }, []);
+    loadToken();
+  }, [t]);
 
   // Initialize map when token is available
   useEffect(() => {
@@ -85,14 +110,20 @@ export const GPSMap: React.FC<GPSMapProps> = ({ currentLocation, homeLocation, t
     };
   }, [mapboxToken]);
 
-  const handleTokenSave = () => {
+  const handleTokenSave = async () => {
     if (mapboxToken.trim()) {
-      localStorage.setItem('mapbox_token', mapboxToken.trim());
-      setShowTokenInput(false);
-      // Force re-initialization
-      if (map.current) {
-        map.current.remove();
-        map.current = null;
+      try {
+        await setToken(mapboxToken.trim());
+        setShowTokenInput(false);
+        // Force re-initialization
+        if (map.current) {
+          map.current.remove();
+          map.current = null;
+        }
+        setError('');
+      } catch (error) {
+        console.error('Failed to save token:', error);
+        setError('Token konnte nicht gespeichert werden. Bitte überprüfen Sie das Format.');
       }
     }
   };

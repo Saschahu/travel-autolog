@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { getToken, setToken, migrateFromLocalStorage } from '@/security/tokenStorage';
 
 interface LocationData {
   latitude: number;
@@ -46,29 +47,50 @@ export const LocationMap: React.FC<LocationMapProps> = ({
   const [localToken, setLocalToken] = React.useState<string>('');
   const [showTokenInput, setShowTokenInput] = React.useState(false);
   
-  // Check for token from environment or localStorage
+  // Check for token from environment or secure storage
   React.useEffect(() => {
-    if (MAPBOX_TOKEN && MAPBOX_TOKEN !== 'pk.XXXXXXXXXXXXXXXXXXXX') {
-      setLocalToken(MAPBOX_TOKEN);
-      setShowTokenInput(false);
-    } else {
-      const stored = localStorage.getItem('mapbox_token');
-      console.log('Gespeichertes Token gefunden:', stored ? stored.substring(0, 10) + '...' : 'keins');
-      if (stored) {
-        setLocalToken(stored);
+    const loadToken = async () => {
+      if (MAPBOX_TOKEN && MAPBOX_TOKEN !== 'pk.XXXXXXXXXXXXXXXXXXXX') {
+        setLocalToken(MAPBOX_TOKEN);
         setShowTokenInput(false);
       } else {
-        console.warn('Mapbox Token fehlt. Bitte .env-Datei konfigurieren.');
-        setShowTokenInput(true);
+        try {
+          // First try migration from localStorage
+          const migrationResult = await migrateFromLocalStorage();
+          if (migrationResult.migrated) {
+            console.log('Token migrated from localStorage to IndexedDB');
+          }
+          
+          // Get token from secure storage
+          const stored = await getToken();
+          console.log('Gespeichertes Token gefunden:', stored ? stored.substring(0, 10) + '...' : 'keins');
+          if (stored) {
+            setLocalToken(stored);
+            setShowTokenInput(false);
+          } else {
+            console.warn('Mapbox Token fehlt. Bitte .env-Datei konfigurieren.');
+            setShowTokenInput(true);
+          }
+        } catch (error) {
+          console.error('Failed to load token:', error);
+          setShowTokenInput(true);
+        }
       }
-    }
+    };
+    
+    loadToken();
   }, []);
   
-  const handleTokenSave = () => {
+  const handleTokenSave = async () => {
     if (localToken.trim()) {
-      localStorage.setItem('mapbox_token', localToken.trim());
-      setShowTokenInput(false);
-      console.log('Token gespeichert:', localToken.substring(0, 10) + '...');
+      try {
+        await setToken(localToken.trim());
+        setShowTokenInput(false);
+        console.log('Token gespeichert:', localToken.substring(0, 10) + '...');
+      } catch (error) {
+        console.error('Failed to save token:', error);
+        alert('Token konnte nicht gespeichert werden. Bitte überprüfen Sie das Format.');
+      }
     }
   };
   

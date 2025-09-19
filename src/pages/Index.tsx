@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense, lazy } from 'react';
 import { useTranslation } from 'react-i18next';
 import { tt } from '@/lib/i18nSafe';
 import { MobileLayout } from '@/components/layout/MobileLayout';
@@ -7,7 +7,6 @@ import { JobEntryForm } from '@/components/forms/JobEntryForm';
 import { JobStatusCard } from '@/components/dashboard/JobStatusCard';
 import { JobFilterDropdown, type JobFilter } from '@/components/dashboard/JobFilterDropdown';
 import { useEmailService } from '@/hooks/useEmailService';
-import { ExportPage } from '@/components/export/ExportPage';
 import { SettingsDialog } from '@/components/settings/SettingsDialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -18,16 +17,26 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { LeavingHomeDialog } from '@/components/location/LeavingHomeDialog';
-import { GPSPage } from '@/components/gps/GPSPage';
 import { useLocation } from '@/hooks/useLocation';
 import { useUserProfile } from '@/contexts/UserProfileContext';
 import { useToast } from '@/hooks/use-toast';
 import { useJobs, type Job } from '@/hooks/useJobs';
 import { supabase } from '@/integrations/supabase/client';
-import { OvertimeTab } from '@/components/overtime/OvertimeTab';
-import { FinishJobTab } from '@/components/finish/FinishJobTab';
-import { ReportTab } from '@/components/reports/ReportTab';
 import { BuildInfo } from '@/components/ui/build-info';
+
+// Lazy load heavy tab components for better performance
+const GPSPage = lazy(() => import('@/components/gps/GPSPage').then(module => ({ default: module.GPSPage })));
+const ExportPage = lazy(() => import('@/components/export/ExportPage').then(module => ({ default: module.ExportPage })));
+const OvertimeTab = lazy(() => import('@/components/overtime/OvertimeTab').then(module => ({ default: module.OvertimeTab })));
+const FinishJobTab = lazy(() => import('@/components/finish/FinishJobTab').then(module => ({ default: module.FinishJobTab })));
+const ReportTab = lazy(() => import('@/components/reports/ReportTab').then(module => ({ default: module.ReportTab })));
+
+// Loading component for lazy loaded tabs
+const TabLoader = () => (
+  <div className="flex items-center justify-center h-64">
+    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+  </div>
+);
 import React from 'react';
 import { DayReport } from '@/types/dayReport';
 import { initializeReports, adjustReportsToEstimatedDays } from '@/features/jobs/report/helpers';
@@ -562,11 +571,15 @@ const Index = () => {
             </TabsContent>
             
             <TabsContent value="location" className="mt-6 h-full">
-              <GPSPage />
+              <Suspense fallback={<TabLoader />}>
+                <GPSPage />
+              </Suspense>
             </TabsContent>
             
             <TabsContent value="export" className="mt-6 h-full">
-              <ExportPage jobs={jobs} />
+              <Suspense fallback={<TabLoader />}>
+                <ExportPage jobs={jobs} />
+              </Suspense>
             </TabsContent>
           </div>
         </Tabs>

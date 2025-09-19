@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import mapboxgl from 'mapbox-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
+import { loadMapbox } from '@/lib/loaders/loadMapbox';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -22,10 +21,21 @@ interface GPSMapProps {
 export const GPSMap: React.FC<GPSMapProps> = ({ currentLocation, homeLocation, todaysEvents }) => {
   const { t } = useTranslation();
   const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<mapboxgl.Map | null>(null);
+  const map = useRef<any | null>(null);
   const [mapboxToken, setMapboxToken] = useState<string>('');
   const [showTokenInput, setShowTokenInput] = useState(false);
   const [error, setError] = useState<string>('');
+  const [mapboxgl, setMapboxgl] = useState<any>(null);
+
+  // Load Mapbox dynamically
+  useEffect(() => {
+    loadMapbox().then((mapboxModule) => {
+      setMapboxgl(mapboxModule.default);
+    }).catch((error) => {
+      console.error('Failed to load Mapbox:', error);
+      setError('Failed to load map library');
+    });
+  }, []);
 
   // Check for Mapbox token
   useEffect(() => {
@@ -40,11 +50,11 @@ export const GPSMap: React.FC<GPSMapProps> = ({ currentLocation, homeLocation, t
       setShowTokenInput(true);
       setError(t('mapboxEnvTokenMissing'));
     }
-  }, []);
+  }, [t]);
 
-  // Initialize map when token is available
+  // Initialize map when token and mapboxgl are available
   useEffect(() => {
-    if (!mapContainer.current || !mapboxToken) return;
+    if (!mapContainer.current || !mapboxToken || !mapboxgl) return;
 
     try {
       mapboxgl.accessToken = mapboxToken;
@@ -83,7 +93,7 @@ export const GPSMap: React.FC<GPSMapProps> = ({ currentLocation, homeLocation, t
     return () => {
       map.current?.remove();
     };
-  }, [mapboxToken]);
+  }, [mapboxToken, mapboxgl]); // Add mapboxgl to dependencies
 
   const handleTokenSave = () => {
     if (mapboxToken.trim()) {

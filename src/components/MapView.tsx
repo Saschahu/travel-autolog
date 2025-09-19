@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import mapboxgl from 'mapbox-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
+import { loadMapbox } from '@/lib/loaders/loadMapbox';
 import { getMapboxToken, looksLikePublicToken } from '@/lib/mapboxToken';
 import { useTranslation } from 'react-i18next';
 
@@ -9,14 +8,25 @@ type Props = { center?: [number, number]; zoom?: number };
 export default function MapView({ center, zoom = 14 }: Props) {
   const { t } = useTranslation();
   const hostRef = useRef<HTMLDivElement | null>(null);
-  const mapRef = useRef<mapboxgl.Map | null>(null);
-  const markerRef = useRef<mapboxgl.Marker | null>(null);
+  const mapRef = useRef<any | null>(null);
+  const markerRef = useRef<any | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [mapboxgl, setMapboxgl] = useState<any>(null);
 
   const token = getMapboxToken();
 
+  // Load Mapbox dynamically
   useEffect(() => {
-    if (!hostRef.current || mapRef.current) return;
+    loadMapbox().then((mapboxModule) => {
+      setMapboxgl(mapboxModule.default);
+    }).catch((error) => {
+      console.error('Failed to load Mapbox:', error);
+      setError('Failed to load map library');
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!hostRef.current || mapRef.current || !mapboxgl) return;
 
     if (!token) {
       setError(t('mapboxTokenMissing'));
@@ -50,19 +60,22 @@ export default function MapView({ center, zoom = 14 }: Props) {
     } catch (e: any) {
       setError(`${t('mapboxInitError')}: ${e?.message ?? String(e)}`);
     }
-  }, []); // init once
+  }, [token, mapboxgl, t]); // Dependencies include dynamically loaded mapboxgl
 
   useEffect(() => {
-    if (!mapRef.current || !center) return;
+    if (!mapRef.current || !center || !mapboxgl) return;
     const [lng, lat] = center;
     if (!Number.isFinite(lng) || !Number.isFinite(lat)) return;
 
     mapRef.current.easeTo({ center, zoom: Math.max(mapRef.current.getZoom(), zoom), duration: 400 });
     if (!markerRef.current) markerRef.current = new mapboxgl.Marker({ color: '#1d4ed8' });
     markerRef.current.setLngLat(center).addTo(mapRef.current);
-  }, [center, zoom]);
+  }, [center, zoom, mapboxgl]);
 
   if (error) return <div className="p-3 rounded bg-red-50 text-red-700 text-sm">{error}</div>;
   if (!token) return <div className="p-3 rounded bg-yellow-50 text-yellow-900 text-sm">{t('mapboxTokenMissingShort')}</div>;
+  if (!mapboxgl) return <div className="w-full h-[420px] rounded bg-gray-100 flex items-center justify-center">
+    <div className="text-gray-500">Loading map...</div>
+  </div>;
   return <div ref={hostRef} className="w-full h-[420px] rounded" />;
 }

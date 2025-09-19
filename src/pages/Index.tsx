@@ -23,7 +23,6 @@ import { useLocation } from '@/hooks/useLocation';
 import { useUserProfile } from '@/contexts/UserProfileContext';
 import { useToast } from '@/hooks/use-toast';
 import { useJobs, type Job } from '@/hooks/useJobs';
-import { supabase } from '@/integrations/supabase/client';
 import { OvertimeTab } from '@/components/overtime/OvertimeTab';
 import { FinishJobTab } from '@/components/finish/FinishJobTab';
 import { ReportTab } from '@/components/reports/ReportTab';
@@ -31,6 +30,15 @@ import { BuildInfo } from '@/components/ui/build-info';
 import React from 'react';
 import { DayReport } from '@/types/dayReport';
 import { initializeReports, adjustReportsToEstimatedDays } from '@/features/jobs/report/helpers';
+
+// Lazy load Supabase client
+let supabasePromise: Promise<any> | null = null;
+const getSupabaseClient = () => {
+  if (!supabasePromise) {
+    supabasePromise = import('@/integrations/supabase/client').then(module => module.supabase);
+  }
+  return supabasePromise;
+};
 
 type DayData = {
   day: number;
@@ -181,6 +189,7 @@ const Index = () => {
     
     try {
       // Save to database
+      const supabase = await getSupabaseClient();
       const { error } = await supabase
         .from('jobs')
         .update({
@@ -396,6 +405,7 @@ const Index = () => {
 
   const handleStatusChange = async (jobId: string, newStatus: 'open' | 'active') => {
     try {
+      const supabase = await getSupabaseClient();
       const { error } = await supabase
         .from('jobs')
         .update({ status: newStatus })
@@ -428,6 +438,7 @@ const Index = () => {
     if (!confirmDelete) return;
     
     try {
+      const supabase = await getSupabaseClient();
       const { error } = await supabase
         .from('jobs')
         .delete()

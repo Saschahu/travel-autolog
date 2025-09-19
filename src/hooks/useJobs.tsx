@@ -1,6 +1,15 @@
 import { useState, useCallback } from 'react';
-import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { DayReport } from '@/types/dayReport';
+
+// Lazy load Supabase client
+let supabasePromise: Promise<any> | null = null;
+const getSupabaseClient = () => {
+  if (!supabasePromise) {
+    supabasePromise = import('@/integrations/supabase/client').then(module => module.supabase);
+  }
+  return supabasePromise;
+};
 import { DayReport } from '@/types/dayReport';
 
 export type Job = {
@@ -56,6 +65,7 @@ export const useJobs = () => {
   const fetchJobs = useCallback(async () => {
     setIsLoading(true);
     try {
+      const supabase = await getSupabaseClient();
       const { data: { user } } = await supabase.auth.getUser();
       console.log('Fetching jobs for user:', user?.id || 'no user');
       

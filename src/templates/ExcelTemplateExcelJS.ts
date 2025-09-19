@@ -1,7 +1,8 @@
-import ExcelJS from 'exceljs';
+import { getExcelJS } from '@/lib/loadExcel';
 import { JobTemplateData } from './ExcelTemplate';
 
 export async function generateSingleJobTemplateBuffer(data: JobTemplateData): Promise<ArrayBuffer> {
+  const ExcelJS = await getExcelJS();
   const workbook = new ExcelJS.Workbook();
   const ws = workbook.addWorksheet('Arbeitszeit-Nachweis', {
     pageSetup: { paperSize: 9, orientation: 'portrait', fitToPage: true, fitToWidth: 1 },

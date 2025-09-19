@@ -1,6 +1,6 @@
 import { buildComposeUrl } from '@/lib/emailProviders';
 import { splitEmails, validateEmails } from '@/lib/email';
-import * as XLSX from 'xlsx';
+import { getXLSX } from '@/lib/loadXlsx';
 import { useUserProfile } from '@/contexts/UserProfileContext';
 import { Share } from '@capacitor/share';
 import { Capacitor } from '@capacitor/core';
@@ -16,7 +16,8 @@ export const useExcelExport = () => {
   const { profile } = useUserProfile();
   const { toast } = useToast();
 
-  const generateJobExcel = (jobs: any[], reportType: 'single' | 'all' = 'all') => {
+  const generateJobExcel = async (jobs: any[], reportType: 'single' | 'all' = 'all') => {
+    const XLSX = await getXLSX();
     const workbook = XLSX.utils.book_new();
     
     if (reportType === 'single' && jobs.length === 1) {

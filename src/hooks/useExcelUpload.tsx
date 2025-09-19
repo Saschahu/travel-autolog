@@ -1,4 +1,4 @@
-import * as XLSX from 'xlsx';
+import { getXLSX } from '@/lib/loadXlsx';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
@@ -43,11 +43,12 @@ export const useExcelUpload = () => {
   };
 
   const parseExcelFile = (file: File): Promise<any> => {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       const reader = new FileReader();
       
-      reader.onload = (e) => {
+      reader.onload = async (e) => {
         try {
+          const XLSX = await getXLSX();
           const data = new Uint8Array(e.target?.result as ArrayBuffer);
           const workbook = XLSX.read(data, { type: 'array' });
           

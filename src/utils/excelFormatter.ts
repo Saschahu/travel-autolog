@@ -1,7 +1,8 @@
-import * as XLSX from 'xlsx';
+import { getXLSX } from '@/lib/loadXlsx';
 
 export class ExcelFormatter {
-  static createFormattedWorkbook(worksheets: { name: string; data: XLSX.WorkSheet }[]): XLSX.WorkBook {
+  static async createFormattedWorkbook(worksheets: { name: string; data: any }[]): Promise<any> {
+    const XLSX = await getXLSX();
     const workbook = XLSX.utils.book_new();
     
     worksheets.forEach(sheet => {
@@ -11,7 +12,7 @@ export class ExcelFormatter {
     return workbook;
   }
 
-  static applyPrintSettings(worksheet: XLSX.WorkSheet) {
+  static applyPrintSettings(worksheet: any) {
     // Druckeinstellungen
     worksheet['!margins'] = {
       left: 0.7,

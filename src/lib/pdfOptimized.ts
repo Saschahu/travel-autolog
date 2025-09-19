@@ -1,5 +1,5 @@
 import html2canvas from 'html2canvas';
-import { jsPDF } from 'jspdf';
+import { getJsPDF } from '@/lib/loadPdf';
 
 /** Erzeugt ein A4-PDF aus einem DOM-Element, stark komprimiert */
 export async function makeReportPdf(
@@ -19,6 +19,7 @@ export async function makeReportPdf(
   // JPEG statt PNG spart massiv Speicherplatz
   const imgData = canvas.toDataURL('image/jpeg', quality);
 
+  const jsPDF = await getJsPDF();
   const pdf = new jsPDF({ 
     orientation: 'portrait', 
     unit: 'mm', 

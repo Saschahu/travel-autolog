@@ -1,5 +1,4 @@
 import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
 import { Job } from '@/hooks/useJobs';
 import { TimeEntry } from '@/lib/timeCalc';
 import { OvertimeCalculation } from '@/types/overtime';
@@ -9,6 +8,7 @@ import { useSettingsStore } from '@/state/settingsStore';
 import { createRoot } from 'react-dom/client';
 import { getReportFileName } from '@/lib/reportFileName';
 import { makeReportPdf } from './pdfOptimized';
+import { getJsPDFDefault } from '@/lib/loadPdf';
 
 let lastJobId: string | null = null;
 let lastBlob: Blob | null = null;

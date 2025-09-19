@@ -1,4 +1,4 @@
-import * as XLSX from 'xlsx';
+import { getXLSX } from '@/lib/loadXlsx';
 
 export interface JobTemplateData {
   customerName: string;

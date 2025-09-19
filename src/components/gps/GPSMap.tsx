@@ -1,6 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import mapboxgl from 'mapbox-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -8,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertTriangle } from 'lucide-react';
 import { LocationData, GPSEvent } from '@/types/gps-events';
 import { useTranslation } from 'react-i18next';
+import { getMapboxGL } from '@/lib/loadMapbox';
 
 interface GPSMapProps {
   currentLocation: LocationData | null;
@@ -22,7 +21,7 @@ interface GPSMapProps {
 export const GPSMap: React.FC<GPSMapProps> = ({ currentLocation, homeLocation, todaysEvents }) => {
   const { t } = useTranslation();
   const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<mapboxgl.Map | null>(null);
+  const map = useRef<any | null>(null); // Changed from mapboxgl.Map to any
   const [mapboxToken, setMapboxToken] = useState<string>('');
   const [showTokenInput, setShowTokenInput] = useState(false);
   const [error, setError] = useState<string>('');
@@ -46,39 +45,44 @@ export const GPSMap: React.FC<GPSMapProps> = ({ currentLocation, homeLocation, t
   useEffect(() => {
     if (!mapContainer.current || !mapboxToken) return;
 
-    try {
-      mapboxgl.accessToken = mapboxToken;
-      
-      map.current = new mapboxgl.Map({
-        container: mapContainer.current,
-        style: 'mapbox://styles/mapbox/streets-v12',
-        center: [8.5417, 47.3769], // Switzerland center
-        zoom: 7,
-        pitch: 0,
-        bearing: 0
-      });
+    const initMap = async () => {
+      try {
+        const mapboxgl = await getMapboxGL();
+        mapboxgl.accessToken = mapboxToken;
+        
+        map.current = new mapboxgl.Map({
+          container: mapContainer.current!,
+          style: 'mapbox://styles/mapbox/streets-v12',
+          center: [8.5417, 47.3769], // Switzerland center
+          zoom: 7,
+          pitch: 0,
+          bearing: 0
+        });
 
-      // Add navigation controls
-      map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
+        // Add navigation controls
+        map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
-      // Add geolocate control
-      const geolocate = new mapboxgl.GeolocateControl({
-        positionOptions: {
-          enableHighAccuracy: true
-        },
-        trackUserLocation: true,
-        showUserHeading: true
-      });
-      
-      map.current.addControl(geolocate, 'top-right');
+        // Add geolocate control
+        const geolocate = new mapboxgl.GeolocateControl({
+          positionOptions: {
+            enableHighAccuracy: true
+          },
+          trackUserLocation: true,
+          showUserHeading: true
+        });
+        
+        map.current.addControl(geolocate, 'top-right');
 
-      setError('');
-      setShowTokenInput(false);
+        setError('');
+        setShowTokenInput(false);
 
-    } catch (err) {
-      setError(t('mapboxInitError'));
-      setShowTokenInput(true);
-    }
+      } catch (err) {
+        setError(t('mapboxInitError'));
+        setShowTokenInput(true);
+      }
+    };
+
+    initMap();
 
     return () => {
       map.current?.remove();

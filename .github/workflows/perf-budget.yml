@@ -1,0 +1,99 @@
+name: Performance Budget Check
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+  push:
+    branches: [ 'perf/**', 'feat/**', 'fix/**' ]
+
+jobs:
+  check-performance-budget:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build:ci
+
+      - name: Check performance budget
+        id: perf-check
+        run: npm run perf:check
+        continue-on-error: true
+
+      - name: Upload performance summary
+        uses: actions/upload-artifact@v4
+        with:
+          name: perf-summary
+          path: dist/perf-summary.json
+          retention-days: 30
+
+      - name: Upload build manifest
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-manifest
+          path: dist/.vite/manifest.json
+          retention-days: 30
+
+      - name: Upload stats (if available)
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: build-stats
+          path: dist/stats.html
+          retention-days: 30
+        continue-on-error: true
+
+      - name: Add performance summary to job
+        if: always()
+        run: |
+          # Install bc for calculations
+          sudo apt-get update && sudo apt-get install -y bc jq
+          
+          if [ -f "dist/perf-summary.json" ]; then
+            echo "## 📊 Performance Budget Results" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            
+            # Parse the JSON summary
+            INITIAL_BYTES=$(jq -r '.initialBytes' dist/perf-summary.json)
+            INITIAL_GZIP=$(jq -r '.initialGzipBytes' dist/perf-summary.json)
+            THRESHOLD_BYTES=$(jq -r '.thresholdBytes' dist/perf-summary.json)
+            THRESHOLD_GZIP=$(jq -r '.thresholdGzipBytes' dist/perf-summary.json)
+            PASSED=$(jq -r '.passed' dist/perf-summary.json)
+            
+            # Convert bytes to MB for display
+            INITIAL_MB=$(echo "scale=2; $INITIAL_BYTES / 1048576" | bc -l)
+            INITIAL_GZIP_MB=$(echo "scale=2; $INITIAL_GZIP / 1048576" | bc -l)
+            THRESHOLD_MB=$(echo "scale=2; $THRESHOLD_BYTES / 1048576" | bc -l)
+            THRESHOLD_GZIP_MB=$(echo "scale=2; $THRESHOLD_GZIP / 1048576" | bc -l)
+            
+            if [ "$PASSED" = "true" ]; then
+              echo "✅ **Performance Budget: PASSED**" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "❌ **Performance Budget: FAILED**" >> $GITHUB_STEP_SUMMARY
+            fi
+            
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "| Metric | Current | Budget | Status |" >> $GITHUB_STEP_SUMMARY
+            echo "|--------|---------|--------|--------|" >> $GITHUB_STEP_SUMMARY
+            echo "| Bundle Size | ${INITIAL_MB} MB | ${THRESHOLD_MB} MB | $([ $INITIAL_BYTES -le $THRESHOLD_BYTES ] && echo '✅' || echo '❌') |" >> $GITHUB_STEP_SUMMARY
+            echo "| Gzipped Size | ${INITIAL_GZIP_MB} MB | ${THRESHOLD_GZIP_MB} MB | $([ $INITIAL_GZIP -le $THRESHOLD_GZIP ] && echo '✅' || echo '❌') |" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "📄 Check the uploaded \`perf-summary.json\` artifact for detailed breakdown." >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Fail job if budget exceeded
+        if: steps.perf-check.outcome == 'failure'
+        run: |
+          echo "::error::Performance budget exceeded. Check the summary above for details."
+          exit 1

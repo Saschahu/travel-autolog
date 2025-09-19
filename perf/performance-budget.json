@@ -1,0 +1,5 @@
+{
+  "initialBytes": 5500000,
+  "initialGzipBytes": 1450000,
+  "note": "Initial bundle size budgets. Current app: ~5.3MB (~1.38MB gzipped). Adjust if target markets/devices change or after optimization efforts."
+}

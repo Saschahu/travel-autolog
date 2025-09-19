@@ -5,7 +5,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { FolderOpen, AlertCircle, Loader2 } from 'lucide-react';
 import { pickDirectoryWeb } from '@/lib/fs/webDirectory';
 
-export const DirectoryPickerBridge = () => {
+const DirectoryPickerBridge = () => {
   const [isStarting, setIsStarting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -105,3 +105,5 @@ export const DirectoryPickerBridge = () => {
     </div>
   );
 };
+
+export default DirectoryPickerBridge;

@@ -12,7 +12,7 @@ export async function formatDateA4(d: Date, lang: string): Promise<string> {
   try {
     const localeModule = await (dfLocales[lang] ?? dfLocales.en)();
     const locale = localeModule.default || localeModule;
-    const { format } = await import('date-fns');
+    const { format } = await import('date-fns/format');
     return format(d, 'P', { locale }); // Locale-specific short date format
   } catch (error) {
     console.warn('Failed to format date with locale', lang, error);

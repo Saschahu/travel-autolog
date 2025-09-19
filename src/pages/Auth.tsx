@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Fingerprint, Mail, Lock, User, Building2, Smartphone } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-export const Auth = () => {
+const Auth = () => {
   const { signIn, signUp, user, authenticateWithBiometrics, loading } = useAuth();
   const navigate = useNavigate();
   
@@ -263,3 +263,5 @@ export const Auth = () => {
     </div>
   );
 };
+
+export default Auth;

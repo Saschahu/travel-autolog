@@ -1,5 +1,5 @@
 import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
+import { loadPdf } from '@/lib/loadPdf';
 import { Job } from '@/hooks/useJobs';
 import { TimeEntry } from '@/lib/timeCalc';
 import { OvertimeCalculation } from '@/types/overtime';

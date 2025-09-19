@@ -5,10 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { UserProfileProvider } from "@/contexts/UserProfileContext";
 import { useAuth } from "@/contexts/AuthContext";
-import Index from "./pages/Index";
-import { Auth } from "./pages/Auth";
-import NotFound from "./pages/NotFound";
-import { DirectoryPickerBridge } from "./pages/DirectoryPickerBridge";
+import { LazyIndex, LazyAuth, LazyNotFound, LazyDirectoryPickerBridge } from "@/routes";
 
 const queryClient = new QueryClient();
 
@@ -31,17 +28,17 @@ function AppContent() {
       <Routes>
         <Route 
           path="/" 
-          element={user ? <Index /> : <Navigate to="/auth" replace />} 
+          element={user ? <LazyIndex /> : <Navigate to="/auth" replace />} 
         />
         <Route 
           path="/auth" 
-          element={!user ? <Auth /> : <Navigate to="/" replace />} 
+          element={!user ? <LazyAuth /> : <Navigate to="/" replace />} 
         />
         <Route 
           path="/bridge/directory-picker" 
-          element={<DirectoryPickerBridge />} 
+          element={<LazyDirectoryPickerBridge />} 
         />
-        <Route path="*" element={<NotFound />} />
+        <Route path="*" element={<LazyNotFound />} />
       </Routes>
     </BrowserRouter>
   );

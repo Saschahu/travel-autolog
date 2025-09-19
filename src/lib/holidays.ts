@@ -1,5 +1,6 @@
 import { toZonedTime, formatInTimeZone } from 'date-fns-tz';
-import { format, parseISO } from 'date-fns';
+import { format } from 'date-fns/format';
+import { parseISO } from 'date-fns/parseISO';
 import Holidays from 'date-holidays';
 import ICAL from 'ical.js';
 

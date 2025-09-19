@@ -11,7 +11,7 @@ import { Job } from '@/hooks/useJobs';
 import { DayReport } from '@/types/dayReport';
 import { formatDayTitle } from '@/features/jobs/report/helpers';
 import { useTranslation } from 'react-i18next';
-import { format } from "date-fns";
+import { format } from "date-fns/format";
 import { cn } from "@/lib/utils";
 
 interface ReportTabProps {

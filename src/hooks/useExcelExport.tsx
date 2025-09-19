@@ -1,6 +1,6 @@
 import { buildComposeUrl } from '@/lib/emailProviders';
 import { splitEmails, validateEmails } from '@/lib/email';
-import * as XLSX from 'xlsx';
+// import * as XLSX from 'xlsx'; // Removed for performance - replaced with ExcelJS lazy loading
 import { useUserProfile } from '@/contexts/UserProfileContext';
 import { Share } from '@capacitor/share';
 import { Capacitor } from '@capacitor/core';

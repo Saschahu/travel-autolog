@@ -17,7 +17,7 @@ import { OvertimeTab } from '@/components/overtime/OvertimeTab';
 import { ReportTab } from '@/components/reports/ReportTab';
 import { FinishJobTab } from '@/components/finish/FinishJobTab';
 import { cn } from '@/lib/utils';
-import { format } from 'date-fns';
+import { format } from 'date-fns/format';
 
 // Utils to handle date-only (YYYY-MM-DD) values without timezone shifts
 const parseYmdToLocalDate = (s?: string): Date | undefined => {

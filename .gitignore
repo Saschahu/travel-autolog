@@ -28,3 +28,9 @@ android/
 
 # Lokale Secrets
 .env
+
+# Testing
+coverage/
+test-results/
+playwright-report/
+playwright/.cache/

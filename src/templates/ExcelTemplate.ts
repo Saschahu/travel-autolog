@@ -1,4 +1,4 @@
-import * as XLSX from 'xlsx';
+import { SafeWorksheet, createWorksheetFromAOA, setCellValue as adapterSetCellValue } from '@/lib/xlsxAdapter';
 
 export interface JobTemplateData {
   customerName: string;
@@ -25,11 +25,12 @@ export interface JobTemplateData {
 }
 
 export class ExcelTemplate {
-  private worksheet: XLSX.WorkSheet;
+  private worksheet: SafeWorksheet;
   private currentRow: number = 1;
 
   constructor() {
-    this.worksheet = XLSX.utils.aoa_to_sheet([]);
+    // Initialize with empty data, will be populated in initializeTemplate
+    this.worksheet = {};
     this.initializeTemplate();
   }
 
@@ -352,7 +353,7 @@ export class ExcelTemplate {
     }
   }
 
-  public getWorksheet(): XLSX.WorkSheet {
+  public getWorksheet(): SafeWorksheet {
     return this.worksheet;
   }
 }

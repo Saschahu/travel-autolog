@@ -16,6 +16,7 @@ import {
   formatDistance,
   getCurrentPosition 
 } from '@/lib/geo';
+import { getMapboxToken, setMapboxToken } from '@/security/storage';
 
 interface GPSSettingsData {
   styleId: string;
@@ -38,8 +39,8 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
   const { t } = useTranslation();
   const { toast } = useToast();
   const [isGettingLocation, setIsGettingLocation] = useState(false);
-  const [mapboxToken, setMapboxToken] = useState(() => {
-    return localStorage.getItem('mapbox_token') || '';
+  const [mapboxToken, setMapboxTokenState] = useState(() => {
+    return getMapboxToken() || '';
   });
   const [geofenceMonitor] = useState(() => new GeofenceMonitor());
   const [geofenceStatus, setGeofenceStatus] = useState<{
@@ -184,11 +185,19 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
   };
 
   const handleTokenSave = () => {
-    localStorage.setItem('mapbox_token', mapboxToken);
-    toast({
-      title: t('mapboxTokenSaved'),
-      description: 'Token wurde erfolgreich gespeichert'
-    });
+    const success = setMapboxToken(mapboxToken);
+    if (success) {
+      toast({
+        title: t('mapboxTokenSaved'),
+        description: 'Token wurde erfolgreich gespeichert'
+      });
+    } else {
+      toast({
+        title: 'Token Error',
+        description: 'Invalid token format',
+        variant: 'destructive'
+      });
+    }
   };
 
   return (
@@ -210,7 +219,7 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
                 type="password"
                 placeholder="pk.eyJ1..."
                 value={mapboxToken}
-                onChange={(e) => setMapboxToken(e.target.value)}
+                onChange={(e) => setMapboxTokenState(e.target.value)}
                 className="flex-1"
               />
               <Button onClick={handleTokenSave} variant="outline">

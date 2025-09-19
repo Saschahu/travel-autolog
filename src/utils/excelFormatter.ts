@@ -1,17 +1,17 @@
-import * as XLSX from 'xlsx';
+import { SafeWorksheet, SafeWorkbook, createWorkbook, appendSheetToWorkbook } from '@/lib/xlsxAdapter';
 
 export class ExcelFormatter {
-  static createFormattedWorkbook(worksheets: { name: string; data: XLSX.WorkSheet }[]): XLSX.WorkBook {
-    const workbook = XLSX.utils.book_new();
+  static async createFormattedWorkbook(worksheets: { name: string; data: SafeWorksheet }[]): Promise<SafeWorkbook> {
+    const workbook = await createWorkbook();
     
-    worksheets.forEach(sheet => {
-      XLSX.utils.book_append_sheet(workbook, sheet.data, sheet.name);
-    });
+    for (const sheet of worksheets) {
+      await appendSheetToWorkbook(workbook, sheet.data, sheet.name);
+    }
     
     return workbook;
   }
 
-  static applyPrintSettings(worksheet: XLSX.WorkSheet) {
+  static applyPrintSettings(worksheet: SafeWorksheet) {
     // Druckeinstellungen
     worksheet['!margins'] = {
       left: 0.7,
@@ -32,13 +32,13 @@ export class ExcelFormatter {
     worksheet['!printArea'] = 'A1:L30';
   }
 
-  static addPageBreaks(worksheet: XLSX.WorkSheet, rows: number[]) {
+  static addPageBreaks(worksheet: SafeWorksheet, rows: number[]) {
     worksheet['!pageBreaks'] = {
       rowBreaks: rows.map(row => ({ row: row - 1, max: 16383 }))
     };
   }
 
-  static protectWorksheet(worksheet: XLSX.WorkSheet, protectedCells: string[]) {
+  static protectWorksheet(worksheet: SafeWorksheet, protectedCells: string[]) {
     // Arbeitsblatt-Schutz (vereinfacht)
     worksheet['!protect'] = {
       password: '',
@@ -47,7 +47,7 @@ export class ExcelFormatter {
     };
   }
 
-  static addFormulas(worksheet: XLSX.WorkSheet, formulas: { cell: string; formula: string }[]) {
+  static addFormulas(worksheet: SafeWorksheet, formulas: { cell: string; formula: string }[]) {
     formulas.forEach(({ cell, formula }) => {
       if (!worksheet[cell]) {
         worksheet[cell] = {};

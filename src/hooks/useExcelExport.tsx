@@ -1,6 +1,6 @@
 import { buildComposeUrl } from '@/lib/emailProviders';
 import { splitEmails, validateEmails } from '@/lib/email';
-import * as XLSX from 'xlsx';
+import { createWorkbook, writeWorkbookToBuffer } from '@/lib/xlsxAdapter';
 import { useUserProfile } from '@/contexts/UserProfileContext';
 import { Share } from '@capacitor/share';
 import { Capacitor } from '@capacitor/core';
@@ -16,8 +16,8 @@ export const useExcelExport = () => {
   const { profile } = useUserProfile();
   const { toast } = useToast();
 
-  const generateJobExcel = (jobs: any[], reportType: 'single' | 'all' = 'all') => {
-    const workbook = XLSX.utils.book_new();
+  const generateJobExcel = async (jobs: any[], reportType: 'single' | 'all' = 'all') => {
+    const workbook = await createWorkbook();
     
     if (reportType === 'single' && jobs.length === 1) {
       // Einzelner Auftrag - verwende das professionelle Template
@@ -159,8 +159,8 @@ export const useExcelExport = () => {
     }
 
     // Mehrere Aufträge oder Fallback → ursprüngliche Tabellen-Ansicht
-    const workbook = generateJobExcel(jobs);
-    const excelBuffer = XLSX.write(workbook, { type: 'array', bookType: 'xlsx' });
+    const workbook = await generateJobExcel(jobs);
+    const excelBuffer = await writeWorkbookToBuffer(workbook, { type: 'array', bookType: 'xlsx' });
     const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
     const url = URL.createObjectURL(blob);
     const defaultFilename = filename || `Auftraege_${new Date().toISOString().split('T')[0]}.xlsx`;

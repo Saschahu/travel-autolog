@@ -1,10 +1,11 @@
 import { Capacitor } from '@capacitor/core';
+import { getMapboxToken as getStoredMapboxToken } from '@/security/storage';
 
 export function getMapboxToken(): string | undefined {
   try {
     const ui = typeof window !== 'undefined'
-      ? (localStorage.getItem('mapbox_token') || '').trim()
-      : '';
+      ? getStoredMapboxToken()
+      : null;
     if (ui) return ui;
 
     // Native → mobiler Token; Web → Web-Token

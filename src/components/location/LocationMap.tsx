@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { getMapboxToken, setMapboxToken } from '@/security/storage';
 
 interface LocationData {
   latitude: number;
@@ -46,13 +47,13 @@ export const LocationMap: React.FC<LocationMapProps> = ({
   const [localToken, setLocalToken] = React.useState<string>('');
   const [showTokenInput, setShowTokenInput] = React.useState(false);
   
-  // Check for token from environment or localStorage
+  // Check for token from environment or secure storage
   React.useEffect(() => {
     if (MAPBOX_TOKEN && MAPBOX_TOKEN !== 'pk.XXXXXXXXXXXXXXXXXXXX') {
       setLocalToken(MAPBOX_TOKEN);
       setShowTokenInput(false);
     } else {
-      const stored = localStorage.getItem('mapbox_token');
+      const stored = getMapboxToken();
       console.log('Gespeichertes Token gefunden:', stored ? stored.substring(0, 10) + '...' : 'keins');
       if (stored) {
         setLocalToken(stored);
@@ -66,9 +67,13 @@ export const LocationMap: React.FC<LocationMapProps> = ({
   
   const handleTokenSave = () => {
     if (localToken.trim()) {
-      localStorage.setItem('mapbox_token', localToken.trim());
-      setShowTokenInput(false);
-      console.log('Token gespeichert:', localToken.substring(0, 10) + '...');
+      const success = setMapboxToken(localToken.trim());
+      if (success) {
+        setShowTokenInput(false);
+        console.log('Token gespeichert:', localToken.substring(0, 10) + '...');
+      } else {
+        console.warn('Token konnte nicht gespeichert werden - ungültiges Format');
+      }
     }
   };
   

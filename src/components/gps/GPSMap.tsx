@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { AlertTriangle } from 'lucide-react';
 import { LocationData, GPSEvent } from '@/types/gps-events';
 import { useTranslation } from 'react-i18next';
+import { setMapboxToken } from '@/security/storage';
 
 interface GPSMapProps {
   currentLocation: LocationData | null;
@@ -87,10 +88,11 @@ export const GPSMap: React.FC<GPSMapProps> = ({ currentLocation, homeLocation, t
 
   const handleTokenSave = () => {
     if (mapboxToken.trim()) {
-      localStorage.setItem('mapbox_token', mapboxToken.trim());
-      setShowTokenInput(false);
-      // Force re-initialization
-      if (map.current) {
+      const success = setMapboxToken(mapboxToken.trim());
+      if (success) {
+        setShowTokenInput(false);
+        // Force re-initialization
+        if (map.current) {
         map.current.remove();
         map.current = null;
       }

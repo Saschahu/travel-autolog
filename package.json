@@ -6,9 +6,11 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:ci": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "perf:check": "node scripts/perf-check.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^7.4.2",
@@ -58,6 +60,7 @@
     "date-fns": "^3.6.0",
     "date-fns-tz": "^3.2.0",
     "date-holidays": "^3.25.1",
+    "dompurify": "^3.2.7",
     "embla-carousel-react": "^8.6.0",
     "exceljs": "^4.4.0",
     "html2canvas": "^1.4.1",
@@ -91,6 +94,7 @@
   "devDependencies": {
     "@eslint/js": "^9.32.0",
     "@tailwindcss/typography": "^0.5.16",
+    "@types/dompurify": "^3.0.5",
     "@types/node": "^22.16.5",
     "@types/react": "^18.3.23",
     "@types/react-dom": "^18.3.7",

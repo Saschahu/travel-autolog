@@ -8,6 +8,7 @@ import { OvertimeCalculation } from '@/types/overtime';
 import { renderReportElement } from '@/components/reports/renderReport';
 import { useSettingsStore } from '@/state/settingsStore';
 import { createRoot } from 'react-dom/client';
+import { toSafeHtmlSync } from '@/security/htmlSanitizer';
 
 interface A4PreviewProps {
   open: boolean;
@@ -92,7 +93,7 @@ export const A4Preview = ({
       </DialogContent>
       
       <style dangerouslySetInnerHTML={{
-        __html: `
+        __html: toSafeHtmlSync(`
           .a4-page {
             width: 210mm;
             min-height: 297mm;
@@ -138,7 +139,7 @@ export const A4Preview = ({
               page-break-after: auto;
             }
           }
-        `
+        `)
       }} />
     </Dialog>
   );

@@ -19,4 +19,34 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: ['./src/test/setup.ts'],
+    include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+    exclude: ['e2e/**'],
+    coverage: {
+      reporter: ['text', 'html', 'lcov'],
+      include: ['src/**/*.{ts,tsx}'],
+      exclude: [
+        'e2e/**',
+        'dist/**',
+        '**/*.d.ts',
+        '**/vite-env.d.ts',
+        '**/playwright/**',
+        '**/__mocks__/**',
+        '**/*.config.*',
+        '**/test/**',
+        '**/tests/**',
+        '**/*.test.*',
+        '**/*.spec.*'
+      ],
+      thresholds: {
+        lines: 0.5,
+        branches: 0.5,
+        functions: 0.5,
+        statements: 0.5
+      }
+    }
+  }
 }));

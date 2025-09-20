@@ -8,7 +8,11 @@
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "android:sync": "npx cap sync android",
+    "android:open": "npx cap open android",
+    "android:run": "npx cap run android -l --external",
+    "verify:local": "node scripts/verify-local.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^7.4.2",

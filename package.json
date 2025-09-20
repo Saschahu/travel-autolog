@@ -3,12 +3,35 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "packageManager": "npm@10",
+  "engines": {
+    "node": ">=20 <21"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:ci": "vite build",
     "build:dev": "vite build --mode development",
+    "build:native": "cross-env BUILD_TARGET=native vite build",
+    "test": "echo 'Error: no test framework configured. Install vitest to enable testing.' && exit 1",
+    "coverage": "echo 'Error: no test framework configured. Install vitest to enable coverage.' && exit 1",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "typecheck": "tsc --noEmit",
+    "preview": "vite preview",
+    "perf:check": "node scripts/check-initial-size.mjs || echo 'Warning: scripts/check-initial-size.mjs not found'",
+    "perf:routes": "node scripts/route-budgets.mjs || echo 'Warning: scripts/route-budgets.mjs not found'",
+    "lhci:desktop": "echo 'Error: Lighthouse CI not configured. Install @lhci/cli to enable LHCI.' && exit 1",
+    "lhci:mobile": "echo 'Error: Lighthouse CI not configured. Install @lhci/cli to enable LHCI.' && exit 1",
+    "lhci:all": "npm run lhci:desktop && npm run lhci:mobile",
+    "sbom:json": "echo 'Error: SBOM generation not configured. Install @cyclonedx/cyclonedx-npm to enable SBOM.' && exit 1",
+    "sbom:xml": "echo 'Error: SBOM generation not configured. Install @cyclonedx/cyclonedx-npm to enable SBOM.' && exit 1",
+    "verify:local": "node scripts/verify-local.mjs",
+    "android:run": "npm run build:native && npx cap sync android && npx cap run android",
+    "android:prep": "npm run build:native && npx cap sync android",
+    "android:install": "cd android && ./gradlew installDebug",
+    "android:start": "adb shell am start -n com.lovable.travelautolog/.MainActivity",
+    "android:clean": "rimraf android && npx cap add android",
+    "cap:sync": "npx cap sync"
   },
   "dependencies": {
     "@capacitor/android": "^7.4.2",

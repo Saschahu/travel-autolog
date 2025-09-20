@@ -61,7 +61,7 @@ Based on local testing with production build:
 The GitHub Actions workflow (`lighthouse-ci.yml`) provides:
 
 - **Trigger**: Runs on all PRs to `main` and `develop`
-- **Environment**: Ubuntu Latest with Node.js 20 and pnpm 9
+- **Environment**: Ubuntu Latest with Node.js 20 and npm
 - **Build**: Production build with safe Mapbox token fallback
 - **Testing**: Desktop profile, 3 runs for reliability
 - **Artifacts**: Uploads detailed HTML/JSON reports for debugging
@@ -69,8 +69,8 @@ The GitHub Actions workflow (`lighthouse-ci.yml`) provides:
 
 ### Workflow Steps:
 1. Checkout code
-2. Setup Node.js 20 + pnpm 9  
-3. Install dependencies with frozen lockfile
+2. Setup Node.js 20
+3. Install dependencies with npm ci
 4. Build production app with CI-safe environment
 5. Run Lighthouse CI with assertions
 6. Upload results as artifacts (regardless of pass/fail)
@@ -90,7 +90,7 @@ Developers can run Lighthouse CI locally:
 
 ```bash
 # Build production version
-pnpm build:ci
+npm run build:ci
 
 # Run Lighthouse CI (same config as CI)
 npx lhci autorun

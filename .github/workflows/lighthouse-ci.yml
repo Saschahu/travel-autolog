@@ -17,16 +17,11 @@ jobs:
         with:
           node-version: 20
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
-
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: npm ci
 
       - name: Build for CI
-        run: pnpm build:ci
+        run: npm run build:ci
         env:
           VITE_MAPBOX_TOKEN: pk.dummy_token_for_ci_fallback_testing_only
 

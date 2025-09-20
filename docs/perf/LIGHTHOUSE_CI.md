@@ -37,7 +37,7 @@ To run Lighthouse CI on your local machine:
 
 ```bash
 # Build the production version
-pnpm build:ci
+npm run build:ci
 
 # Run Lighthouse CI
 npx lhci autorun

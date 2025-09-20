@@ -1,0 +1,46 @@
+name: Performance Budget Check
+
+on:
+  push:
+    branches: [ main, perf/* ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  global-budget:
+    runs-on: ubuntu-latest
+    name: Global Bundle Budget
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check global budget
+        run: npm run perf:check
+
+  per-route-budget:
+    runs-on: ubuntu-latest
+    name: Per-Route Budget Check
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check per-route budgets
+        run: npm run perf:routes

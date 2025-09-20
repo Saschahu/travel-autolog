@@ -1,11 +1,13 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, lazy, Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { MapPin, Play, Square } from 'lucide-react';
-import MapView from '@/components/MapView';
 import { requestPermission, getCurrent, startWatch, type Fix, type WatchHandle } from '@/services/geolocation';
 import { Capacitor } from '@capacitor/core';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+
+// Lazy load heavy map component
+const MapView = lazy(() => import('@/components/MapView'));
 
 export const GPSPage: React.FC = () => {
   const { t } = useTranslation();
@@ -110,7 +112,9 @@ export const GPSPage: React.FC = () => {
         </Alert>
       )}
       
-      <MapView center={center} />
+      <Suspense fallback={<div className="h-64 bg-muted rounded-lg flex items-center justify-center">Loading map...</div>}>
+        <MapView center={center} />
+      </Suspense>
       
       <div className="text-xs text-muted-foreground">
         Plattform: {Capacitor.getPlatform()} · Secure Context: {typeof window !== 'undefined' && window.isSecureContext ? 'Ja' : 'Nein'} · Status: {isTracking ? 'Tracking aktiv' : 'Tracking inaktiv'}

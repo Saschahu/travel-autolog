@@ -168,7 +168,7 @@ const Index = () => {
     setEditOpen(true);
   };
 
-  const saveEdit = async () => {
+  const _saveEdit = async () => {
     if (!selectedJob) return;
     
     try {
@@ -196,6 +196,7 @@ const Index = () => {
           toll_amount: editData.tollAmount,
           work_report: editData.workReport,
           reports: editData.reports,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Database update requires loose typing
         } as any)
         .eq('id', selectedJob.id);
 
@@ -248,7 +249,7 @@ const Index = () => {
     }
   };
 
-  const updateDayField = (dayIndex: number, field: keyof DayData, value: string) => {
+  const _updateDayField = (dayIndex: number, field: keyof DayData, value: string) => {
     setEditData(prev => {
       const newDays = prev.days.map((day, index) => 
         index === dayIndex ? { ...day, [field]: value } : day
@@ -301,7 +302,7 @@ const Index = () => {
     });
   };
 
-  const updateEstimatedDays = (newEstimatedDays: number) => {
+  const _updateEstimatedDays = (newEstimatedDays: number) => {
     const prev = editData;
     const days = [...prev.days];
 

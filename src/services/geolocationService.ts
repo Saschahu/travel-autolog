@@ -3,6 +3,7 @@ import type { GPSSettings } from '@/types/gps';
 import type { LocationData } from '@/types/gps-events';
 
 // Import Capacitor Geolocation for mobile
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- Dynamic import for mobile platform
 let CapacitorGeolocation: any;
 if (!Capacitor.isNativePlatform()) {
   // Web fallback - use browser geolocation
@@ -140,6 +141,7 @@ export class GeolocationService {
             timeout: 10000,
             maximumAge: this.settings.capture.samplingInterval * 1000
           },
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Capacitor callback types not properly defined
           (position: any, error: any) => {
             if (error) {
               this.onError?.(error.message || 'GPS tracking error');
@@ -227,6 +229,7 @@ export class GeolocationService {
     };
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Capacitor position type not properly defined
   private transformCapacitorPosition(position: any): LocationData {
     return {
       latitude: position.coords.latitude,

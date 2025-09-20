@@ -363,8 +363,6 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
     }
   };
 
-  };
-
 
   const renderTimesSection = () => {
     const plannedDays = jobData.plannedDays || 1;

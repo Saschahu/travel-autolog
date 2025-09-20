@@ -50,7 +50,8 @@ export default function MapView({ center, zoom = 14 }: Props) {
     } catch (e: any) {
       setError(`${t('mapboxInitError')}: ${e?.message ?? String(e)}`);
     }
-  }, []); // init once
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- init once - dependencies intentionally omitted for one-time initialization
+  }, []);
 
   useEffect(() => {
     if (!mapRef.current || !center) return;

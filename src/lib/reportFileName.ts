@@ -1,9 +1,11 @@
-export function firstJobDate(job: any): Date | null {
-  const entries: any[] = [];
+import type { Job } from '@/hooks/useJobs';
+
+export function firstJobDate(job: Job): Date | null {
+  const entries: Date[] = [];
   
   // Extract dates from days array if available
   if (job.days && Array.isArray(job.days)) {
-    job.days.forEach((day: any) => {
+    job.days.forEach((day: { date?: string }) => {
       if (day.date) {
         entries.push(new Date(day.date));
       }
@@ -38,13 +40,7 @@ function normalizeStr(s: string): string {
     .replace(/^[_-]+|[_-]+$/g, '');
 }
 
-export function getReportFileName(job: {
-  id: string;
-  customerName?: string | null;
-  customerId?: string | null;
-  evaticNo?: string | null;
-  createdAt?: string | null;
-}, opts?: { customerLookup?: (id: string) => string | null; date?: Date }): string {
+export function getReportFileName(job: Job, opts?: { customerLookup?: (id: string) => string | null; date?: Date }): string {
 
   const earliest = firstJobDate(job) ?? (job.createdAt ? new Date(job.createdAt) : undefined);
   const date = opts?.date ?? earliest ?? new Date();

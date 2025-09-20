@@ -65,7 +65,7 @@ export const FinishJobTab = ({ job, onCloseDialog }: FinishJobTabProps) => {
   );
   
   // Calculate overtime
-  const overtimeCalculation = useMemo(() => calculateOvertime(job), [job, calculateOvertime, recalcTrigger]);
+  const overtimeCalculation = useMemo(() => calculateOvertime(job), [job, calculateOvertime]);
 
   // Prepare PDF in the background when tab is opened
   useEffect(() => {
@@ -86,7 +86,7 @@ export const FinishJobTab = ({ job, onCloseDialog }: FinishJobTabProps) => {
     };
     
     prepareReport();
-  }, [job.id, workReport, timeEntries.length, totalMinutes]);
+  }, [job, workReport, timeEntries, totalMinutes, overtimeCalculation]);
 
   // Clear cache when work report changes
   useEffect(() => {

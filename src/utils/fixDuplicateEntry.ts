@@ -1,6 +1,17 @@
 import { supabase } from '@/integrations/supabase/client';
 
-function isEmptyDay(day: any): boolean {
+interface DayData {
+  date?: string;
+  travelStart?: string;
+  travelEnd?: string;
+  workStart?: string;
+  workEnd?: string;
+  departureStart?: string;
+  departureEnd?: string;
+  note?: string;
+}
+
+function isEmptyDay(day: DayData): boolean {
   const hasValidTimes =
     (day.travelStart && day.travelEnd && day.travelStart !== '00:00' && day.travelEnd !== '00:00') ||
     (day.workStart && day.workEnd && day.workStart !== '00:00' && day.workEnd !== '00:00') ||
@@ -26,7 +37,7 @@ export async function removeDuplicateSeptember10th(jobId: string) {
     }
 
     const targetDate = '2025-09-10';
-    const days = job.days_data as any[];
+    const days = job.days_data as DayData[];
 
     // If there's 0 or 1 entries for the target date, nothing to do
     const duplicatesCount = days.filter((d) => d?.date === targetDate).length;

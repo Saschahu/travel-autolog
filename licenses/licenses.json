@@ -1,0 +1,3654 @@
+{
+  "timestamp": "2025-09-20T09:03:29.325Z",
+  "summary": {
+    "total": 518,
+    "allowed": 513,
+    "review": 2,
+    "denied": 0,
+    "unknown": 3,
+    "exceptions": 0
+  },
+  "licenseCounts": {
+    "MIT": 396,
+    "ISC": 71,
+    "UNKNOWN": 2,
+    "BSD-3-Clause": 9,
+    "BSD-2-Clause": 3,
+    "Apache-2.0": 16,
+    "Python-2.0": 1,
+    "(MIT OR Apache-2.0)": 2,
+    "Unlicense": 2,
+    "MIT*": 3,
+    "(ISC AND CC-BY-3.0)": 1,
+    "(MPL-2.0 OR Apache-2.0)": 1,
+    "MPL-2.0": 1,
+    "BlueOak-1.0.0": 5,
+    "(MIT OR GPL-3.0-or-later)": 1,
+    "Custom: LICENSE.txt": 1,
+    "(MIT AND Zlib)": 1,
+    "0BSD": 1,
+    "MIT AND ISC": 1
+  },
+  "packages": [
+    {
+      "package": "@alloc/quick-lru@5.2.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/sindresorhus/quick-lru",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@alloc/quick-lru/license"
+    },
+    {
+      "package": "@babel/runtime@7.28.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/babel/babel",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@babel/runtime/LICENSE"
+    },
+    {
+      "package": "@capacitor/android@7.4.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/ionic-team/capacitor",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@capacitor/android/LICENSE"
+    },
+    {
+      "package": "@capacitor/camera@7.0.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/ionic-team/capacitor-plugins",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@capacitor/camera/LICENSE"
+    },
+    {
+      "package": "@capacitor/cli@7.4.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/ionic-team/capacitor",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@capacitor/cli/LICENSE"
+    },
+    {
+      "package": "@capacitor/core@7.4.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/ionic-team/capacitor",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@capacitor/core/LICENSE"
+    },
+    {
+      "package": "@capacitor/filesystem@7.1.4",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/ionic-team/capacitor-filesystem",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@capacitor/filesystem/LICENSE"
+    },
+    {
+      "package": "@capacitor/geolocation@7.1.5",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/ionic-team/capacitor-geolocation",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@capacitor/geolocation/LICENSE"
+    },
+    {
+      "package": "@capacitor/ios@7.4.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/ionic-team/capacitor",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@capacitor/ios/LICENSE"
+    },
+    {
+      "package": "@capacitor/local-notifications@7.0.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/ionic-team/capacitor-plugins",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@capacitor/local-notifications/LICENSE"
+    },
+    {
+      "package": "@capacitor/preferences@7.0.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/ionic-team/capacitor-plugins",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@capacitor/preferences/LICENSE"
+    },
+    {
+      "package": "@capacitor/share@7.0.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/ionic-team/capacitor-plugins",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@capacitor/share/LICENSE"
+    },
+    {
+      "package": "@capacitor/synapse@1.0.4",
+      "license": "ISC",
+      "status": "allowed",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@capacitor/synapse/LICENSE.md"
+    },
+    {
+      "package": "@epic-web/invariant@1.0.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/epicweb-dev/invariant",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@epic-web/invariant/README.md"
+    },
+    {
+      "package": "@fast-csv/format@4.3.5",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/C2FO/fast-csv",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@fast-csv/format/LICENSE"
+    },
+    {
+      "package": "@fast-csv/parse@4.3.6",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/C2FO/fast-csv",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@fast-csv/parse/LICENSE"
+    },
+    {
+      "package": "@floating-ui/core@1.7.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/floating-ui/floating-ui",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@floating-ui/core/LICENSE"
+    },
+    {
+      "package": "@floating-ui/dom@1.7.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/floating-ui/floating-ui",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@floating-ui/dom/LICENSE"
+    },
+    {
+      "package": "@floating-ui/react-dom@2.1.4",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/floating-ui/floating-ui",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@floating-ui/react-dom/LICENSE"
+    },
+    {
+      "package": "@floating-ui/utils@0.2.10",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/floating-ui/floating-ui",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@floating-ui/utils/LICENSE"
+    },
+    {
+      "package": "@hookform/resolvers@3.10.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/react-hook-form/resolvers",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@hookform/resolvers/LICENSE"
+    },
+    {
+      "package": "@ionic/cli-framework-output@2.2.8",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/ionic-team/ionic-cli",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@ionic/cli-framework-output/LICENSE"
+    },
+    {
+      "package": "@ionic/utils-array@2.1.6",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/ionic-team/ionic-cli",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@ionic/utils-array/LICENSE"
+    },
+    {
+      "package": "@ionic/utils-fs@3.1.7",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/ionic-team/ionic-cli",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@ionic/utils-fs/LICENSE"
+    },
+    {
+      "package": "@ionic/utils-object@2.1.6",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/ionic-team/ionic-cli",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@ionic/utils-object/LICENSE"
+    },
+    {
+      "package": "@ionic/utils-process@2.1.12",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/ionic-team/ionic-cli",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@ionic/utils-process/LICENSE"
+    },
+    {
+      "package": "@ionic/utils-stream@3.1.7",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/ionic-team/ionic-cli",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@ionic/utils-stream/LICENSE"
+    },
+    {
+      "package": "@ionic/utils-subprocess@3.0.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/ionic-team/ionic-cli",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@ionic/utils-subprocess/LICENSE"
+    },
+    {
+      "package": "@ionic/utils-terminal@2.3.5",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/ionic-team/ionic-cli",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@ionic/utils-terminal/LICENSE"
+    },
+    {
+      "package": "@isaacs/balanced-match@4.0.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/isaacs/balanced-match",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@isaacs/balanced-match/LICENSE.md"
+    },
+    {
+      "package": "@isaacs/brace-expansion@5.0.0",
+      "license": "MIT",
+      "status": "allowed",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@isaacs/brace-expansion/LICENSE"
+    },
+    {
+      "package": "@isaacs/cliui@8.0.2",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/yargs/cliui",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@isaacs/cliui/LICENSE.txt"
+    },
+    {
+      "package": "@jridgewell/gen-mapping@0.3.5",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/jridgewell/gen-mapping",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@jridgewell/gen-mapping/LICENSE"
+    },
+    {
+      "package": "@jridgewell/resolve-uri@3.1.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/jridgewell/resolve-uri",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@jridgewell/resolve-uri/LICENSE"
+    },
+    {
+      "package": "@jridgewell/set-array@1.2.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/jridgewell/set-array",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@jridgewell/set-array/LICENSE"
+    },
+    {
+      "package": "@jridgewell/sourcemap-codec@1.5.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/jridgewell/sourcemap-codec",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@jridgewell/sourcemap-codec/LICENSE"
+    },
+    {
+      "package": "@jridgewell/trace-mapping@0.3.25",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/jridgewell/trace-mapping",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@jridgewell/trace-mapping/LICENSE"
+    },
+    {
+      "package": "@mapbox/geojson-rewind@0.5.2",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/mapbox/geojson-rewind",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@mapbox/geojson-rewind/LICENSE.txt"
+    },
+    {
+      "package": "@mapbox/jsonlint-lines-primitives@2.0.2",
+      "license": "UNKNOWN",
+      "status": "unknown",
+      "repository": "https://github.com/mapbox/jsonlint",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@mapbox/jsonlint-lines-primitives/README.md"
+    },
+    {
+      "package": "@mapbox/mapbox-gl-supported@2.0.1",
+      "license": "BSD-3-Clause",
+      "status": "allowed",
+      "repository": "https://github.com/mapbox/mapbox-gl-supported",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@mapbox/mapbox-gl-supported/LICENSE.txt"
+    },
+    {
+      "package": "@mapbox/point-geometry@0.1.0",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/mapbox/point-geometry",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@mapbox/point-geometry/LICENSE"
+    },
+    {
+      "package": "@mapbox/tiny-sdf@2.0.7",
+      "license": "BSD-2-Clause",
+      "status": "allowed",
+      "repository": "https://github.com/mapbox/tiny-sdf",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@mapbox/tiny-sdf/LICENSE.txt"
+    },
+    {
+      "package": "@mapbox/unitbezier@0.0.1",
+      "license": "BSD-2-Clause",
+      "status": "allowed",
+      "repository": "https://github.com/mapbox/unitbezier",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@mapbox/unitbezier/LICENSE"
+    },
+    {
+      "package": "@mapbox/vector-tile@1.3.1",
+      "license": "BSD-3-Clause",
+      "status": "allowed",
+      "repository": "https://github.com/mapbox/vector-tile-js",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@mapbox/vector-tile/LICENSE.txt"
+    },
+    {
+      "package": "@mapbox/whoots-js@3.1.0",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/mapbox/whoots-js",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@mapbox/whoots-js/LICENSE.md"
+    },
+    {
+      "package": "@maplibre/maplibre-gl-style-spec@19.3.3",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/maplibre/maplibre-gl-style-spec",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@maplibre/maplibre-gl-style-spec/LICENSE.txt"
+    },
+    {
+      "package": "@nodelib/fs.scandir@2.1.5",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/nodelib/nodelib.git#master",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@nodelib/fs.scandir/LICENSE"
+    },
+    {
+      "package": "@nodelib/fs.stat@2.0.5",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/nodelib/nodelib.git#master",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@nodelib/fs.stat/LICENSE"
+    },
+    {
+      "package": "@nodelib/fs.walk@1.2.8",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/nodelib/nodelib.git#master",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@nodelib/fs.walk/LICENSE"
+    },
+    {
+      "package": "@pkgjs/parseargs@0.11.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/pkgjs/parseargs",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@pkgjs/parseargs/LICENSE"
+    },
+    {
+      "package": "@radix-ui/number@1.1.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/number/README.md"
+    },
+    {
+      "package": "@radix-ui/primitive@1.1.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/primitive/README.md"
+    },
+    {
+      "package": "@radix-ui/react-accordion@1.2.11",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-accordion/LICENSE"
+    },
+    {
+      "package": "@radix-ui/react-alert-dialog@1.1.14",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-alert-dialog/LICENSE"
+    },
+    {
+      "package": "@radix-ui/react-arrow@1.1.7",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-arrow/LICENSE"
+    },
+    {
+      "package": "@radix-ui/react-aspect-ratio@1.1.7",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-aspect-ratio/LICENSE"
+    },
+    {
+      "package": "@radix-ui/react-avatar@1.1.10",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-avatar/LICENSE"
+    },
+    {
+      "package": "@radix-ui/react-checkbox@1.3.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-checkbox/LICENSE"
+    },
+    {
+      "package": "@radix-ui/react-collapsible@1.1.11",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-collapsible/LICENSE"
+    },
+    {
+      "package": "@radix-ui/react-collection@1.1.7",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-collection/LICENSE"
+    },
+    {
+      "package": "@radix-ui/react-compose-refs@1.1.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-compose-refs/README.md"
+    },
+    {
+      "package": "@radix-ui/react-context-menu@2.2.15",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-context-menu/LICENSE"
+    },
+    {
+      "package": "@radix-ui/react-context@1.1.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-context/README.md"
+    },
+    {
+      "package": "@radix-ui/react-dialog@1.1.14",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-dialog/LICENSE"
+    },
+    {
+      "package": "@radix-ui/react-direction@1.1.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-direction/README.md"
+    },
+    {
+      "package": "@radix-ui/react-dismissable-layer@1.1.10",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-dismissable-layer/LICENSE"
+    },
+    {
+      "package": "@radix-ui/react-dropdown-menu@2.1.15",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-dropdown-menu/LICENSE"
+    },
+    {
+      "package": "@radix-ui/react-focus-guards@1.1.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-focus-guards/README.md"
+    },
+    {
+      "package": "@radix-ui/react-focus-scope@1.1.7",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-focus-scope/LICENSE"
+    },
+    {
+      "package": "@radix-ui/react-hover-card@1.1.14",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-hover-card/LICENSE"
+    },
+    {
+      "package": "@radix-ui/react-id@1.1.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-id/README.md"
+    },
+    {
+      "package": "@radix-ui/react-label@2.1.7",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-label/LICENSE"
+    },
+    {
+      "package": "@radix-ui/react-menu@2.1.15",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-menu/LICENSE"
+    },
+    {
+      "package": "@radix-ui/react-menubar@1.1.15",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-menubar/LICENSE"
+    },
+    {
+      "package": "@radix-ui/react-navigation-menu@1.2.13",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-navigation-menu/LICENSE"
+    },
+    {
+      "package": "@radix-ui/react-popover@1.1.14",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-popover/LICENSE"
+    },
+    {
+      "package": "@radix-ui/react-popper@1.2.7",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-popper/LICENSE"
+    },
+    {
+      "package": "@radix-ui/react-portal@1.1.9",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-portal/LICENSE"
+    },
+    {
+      "package": "@radix-ui/react-presence@1.1.4",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-presence/LICENSE"
+    },
+    {
+      "package": "@radix-ui/react-primitive@2.1.3",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-primitive/LICENSE"
+    },
+    {
+      "package": "@radix-ui/react-progress@1.1.7",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-progress/LICENSE"
+    },
+    {
+      "package": "@radix-ui/react-radio-group@1.3.7",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-radio-group/LICENSE"
+    },
+    {
+      "package": "@radix-ui/react-roving-focus@1.1.10",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-roving-focus/LICENSE"
+    },
+    {
+      "package": "@radix-ui/react-scroll-area@1.2.9",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-scroll-area/LICENSE"
+    },
+    {
+      "package": "@radix-ui/react-select@2.2.5",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-select/LICENSE"
+    },
+    {
+      "package": "@radix-ui/react-separator@1.1.7",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-separator/LICENSE"
+    },
+    {
+      "package": "@radix-ui/react-slider@1.3.5",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-slider/LICENSE"
+    },
+    {
+      "package": "@radix-ui/react-slot@1.2.3",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-slot/LICENSE"
+    },
+    {
+      "package": "@radix-ui/react-switch@1.2.5",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-switch/LICENSE"
+    },
+    {
+      "package": "@radix-ui/react-tabs@1.1.12",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-tabs/LICENSE"
+    },
+    {
+      "package": "@radix-ui/react-toast@1.2.14",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-toast/LICENSE"
+    },
+    {
+      "package": "@radix-ui/react-toggle-group@1.1.10",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-toggle-group/LICENSE"
+    },
+    {
+      "package": "@radix-ui/react-toggle@1.1.9",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-toggle/LICENSE"
+    },
+    {
+      "package": "@radix-ui/react-tooltip@1.2.7",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-tooltip/LICENSE"
+    },
+    {
+      "package": "@radix-ui/react-use-callback-ref@1.1.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-use-callback-ref/README.md"
+    },
+    {
+      "package": "@radix-ui/react-use-controllable-state@1.2.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-use-controllable-state/LICENSE"
+    },
+    {
+      "package": "@radix-ui/react-use-effect-event@0.0.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-use-effect-event/LICENSE"
+    },
+    {
+      "package": "@radix-ui/react-use-escape-keydown@1.1.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-use-escape-keydown/README.md"
+    },
+    {
+      "package": "@radix-ui/react-use-is-hydrated@0.1.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-use-is-hydrated/LICENSE"
+    },
+    {
+      "package": "@radix-ui/react-use-layout-effect@1.1.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-use-layout-effect/README.md"
+    },
+    {
+      "package": "@radix-ui/react-use-previous@1.1.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-use-previous/README.md"
+    },
+    {
+      "package": "@radix-ui/react-use-rect@1.1.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-use-rect/README.md"
+    },
+    {
+      "package": "@radix-ui/react-use-size@1.1.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-use-size/README.md"
+    },
+    {
+      "package": "@radix-ui/react-visually-hidden@1.2.3",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/react-visually-hidden/LICENSE"
+    },
+    {
+      "package": "@radix-ui/rect@1.1.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/radix-ui/primitives",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@radix-ui/rect/README.md"
+    },
+    {
+      "package": "@remix-run/router@1.23.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/remix-run/react-router",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@remix-run/router/LICENSE.md"
+    },
+    {
+      "package": "@supabase/auth-js@2.71.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/supabase/auth-js",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@supabase/auth-js/LICENSE"
+    },
+    {
+      "package": "@supabase/functions-js@2.4.5",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/supabase/functions-js",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@supabase/functions-js/LICENSE"
+    },
+    {
+      "package": "@supabase/node-fetch@2.6.15",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/supabase/node-fetch",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@supabase/node-fetch/LICENSE.md"
+    },
+    {
+      "package": "@supabase/postgrest-js@1.19.4",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/supabase/postgrest-js",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@supabase/postgrest-js/LICENSE"
+    },
+    {
+      "package": "@supabase/realtime-js@2.15.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/supabase/realtime-js",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@supabase/realtime-js/LICENSE.md"
+    },
+    {
+      "package": "@supabase/storage-js@2.11.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/supabase/storage-js",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@supabase/storage-js/LICENSE"
+    },
+    {
+      "package": "@supabase/supabase-js@2.55.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/supabase/supabase-js",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@supabase/supabase-js/LICENSE"
+    },
+    {
+      "package": "@tanstack/query-core@5.83.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/TanStack/query",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@tanstack/query-core/LICENSE"
+    },
+    {
+      "package": "@tanstack/react-query@5.83.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/TanStack/query",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@tanstack/react-query/LICENSE"
+    },
+    {
+      "package": "@types/d3-array@3.2.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@types/d3-array/LICENSE"
+    },
+    {
+      "package": "@types/d3-color@3.1.3",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@types/d3-color/LICENSE"
+    },
+    {
+      "package": "@types/d3-ease@3.0.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@types/d3-ease/LICENSE"
+    },
+    {
+      "package": "@types/d3-interpolate@3.0.4",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@types/d3-interpolate/LICENSE"
+    },
+    {
+      "package": "@types/d3-path@3.1.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@types/d3-path/LICENSE"
+    },
+    {
+      "package": "@types/d3-scale@4.0.8",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@types/d3-scale/LICENSE"
+    },
+    {
+      "package": "@types/d3-shape@3.1.6",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@types/d3-shape/LICENSE"
+    },
+    {
+      "package": "@types/d3-time@3.0.3",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@types/d3-time/LICENSE"
+    },
+    {
+      "package": "@types/d3-timer@3.0.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@types/d3-timer/LICENSE"
+    },
+    {
+      "package": "@types/fs-extra@8.1.5",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@types/fs-extra/LICENSE"
+    },
+    {
+      "package": "@types/geojson@7946.0.16",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@types/geojson/LICENSE"
+    },
+    {
+      "package": "@types/mapbox-gl@3.4.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@types/mapbox-gl/LICENSE"
+    },
+    {
+      "package": "@types/node@14.18.63",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@fast-csv/format/node_modules/@types/node/LICENSE"
+    },
+    {
+      "package": "@types/node@22.16.5",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@types/node/LICENSE"
+    },
+    {
+      "package": "@types/phoenix@1.6.6",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@types/phoenix/LICENSE"
+    },
+    {
+      "package": "@types/prop-types@15.7.13",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@types/prop-types/LICENSE"
+    },
+    {
+      "package": "@types/raf@3.4.3",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@types/raf/LICENSE"
+    },
+    {
+      "package": "@types/react-dom@18.3.7",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@types/react-dom/LICENSE"
+    },
+    {
+      "package": "@types/react@18.3.23",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@types/react/LICENSE"
+    },
+    {
+      "package": "@types/slice-ansi@4.0.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@types/slice-ansi/LICENSE"
+    },
+    {
+      "package": "@types/trusted-types@2.0.7",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@types/trusted-types/LICENSE"
+    },
+    {
+      "package": "@types/ws@8.18.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@types/ws/LICENSE"
+    },
+    {
+      "package": "@xmldom/xmldom@0.8.10",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/xmldom/xmldom",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@xmldom/xmldom/LICENSE"
+    },
+    {
+      "package": "adler-32@1.3.1",
+      "license": "Apache-2.0",
+      "status": "allowed",
+      "repository": "https://github.com/SheetJS/js-adler32",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/adler-32/LICENSE"
+    },
+    {
+      "package": "ansi-regex@5.0.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/chalk/ansi-regex",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@ionic/utils-terminal/node_modules/ansi-regex/license"
+    },
+    {
+      "package": "ansi-regex@6.1.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/chalk/ansi-regex",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/ansi-regex/license"
+    },
+    {
+      "package": "ansi-styles@4.3.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/chalk/ansi-styles",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/ansi-styles/license"
+    },
+    {
+      "package": "ansi-styles@6.2.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/chalk/ansi-styles",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/wrap-ansi/node_modules/ansi-styles/license"
+    },
+    {
+      "package": "any-promise@1.3.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/kevinbeaty/any-promise",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/any-promise/LICENSE"
+    },
+    {
+      "package": "anymatch@3.1.3",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/micromatch/anymatch",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/anymatch/LICENSE"
+    },
+    {
+      "package": "archiver-utils@2.1.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/archiverjs/archiver-utils",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/archiver-utils/LICENSE"
+    },
+    {
+      "package": "archiver-utils@3.0.4",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/archiverjs/archiver-utils",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/zip-stream/node_modules/archiver-utils/LICENSE"
+    },
+    {
+      "package": "archiver@5.3.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/archiverjs/node-archiver",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/archiver/LICENSE"
+    },
+    {
+      "package": "arg@5.0.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/vercel/arg",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/arg/LICENSE.md"
+    },
+    {
+      "package": "argparse@2.0.1",
+      "license": "Python-2.0",
+      "status": "allowed",
+      "repository": "https://github.com/nodeca/argparse",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/argparse/LICENSE"
+    },
+    {
+      "package": "aria-hidden@1.2.4",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/theKashey/aria-hidden",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/aria-hidden/LICENSE"
+    },
+    {
+      "package": "arr-union@3.1.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/jonschlinkert/arr-union",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/arr-union/LICENSE"
+    },
+    {
+      "package": "assign-symbols@1.0.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/jonschlinkert/assign-symbols",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/assign-symbols/LICENSE"
+    },
+    {
+      "package": "astral-regex@2.0.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/kevva/astral-regex",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/astral-regex/license"
+    },
+    {
+      "package": "astronomia@4.1.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/commenthol/astronomia",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/astronomia/LICENSE"
+    },
+    {
+      "package": "async@3.2.6",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/caolan/async",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/async/LICENSE"
+    },
+    {
+      "package": "at-least-node@1.0.0",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/RyanZim/at-least-node",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/at-least-node/LICENSE"
+    },
+    {
+      "package": "atob@2.1.2",
+      "license": "(MIT OR Apache-2.0)",
+      "status": "allowed",
+      "repository": "git://git.coolaj86.com/coolaj86/atob.js",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/atob/LICENSE"
+    },
+    {
+      "package": "balanced-match@1.0.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/juliangruber/balanced-match",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/balanced-match/LICENSE.md"
+    },
+    {
+      "package": "base64-arraybuffer@1.0.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/niklasvh/base64-arraybuffer",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/base64-arraybuffer/LICENSE"
+    },
+    {
+      "package": "base64-js@1.5.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/beatgammit/base64-js",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/base64-js/LICENSE"
+    },
+    {
+      "package": "big-integer@1.6.52",
+      "license": "Unlicense",
+      "status": "allowed",
+      "repository": "https://github.com/peterolson/BigInteger.js",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/big-integer/LICENSE"
+    },
+    {
+      "package": "binary-extensions@2.3.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/sindresorhus/binary-extensions",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/binary-extensions/license"
+    },
+    {
+      "package": "binary@0.3.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/substack/node-binary",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/binary/README.markdown"
+    },
+    {
+      "package": "bl@4.1.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/rvagg/bl",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/bl/LICENSE.md"
+    },
+    {
+      "package": "bluebird@3.4.7",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/petkaantonov/bluebird",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/bluebird/LICENSE"
+    },
+    {
+      "package": "bplist-parser@0.3.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/nearinfinity/node-bplist-parser",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/bplist-parser/README.md"
+    },
+    {
+      "package": "brace-expansion@1.1.12",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/juliangruber/brace-expansion",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/brace-expansion/LICENSE"
+    },
+    {
+      "package": "brace-expansion@2.0.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/juliangruber/brace-expansion",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/readdir-glob/node_modules/brace-expansion/LICENSE"
+    },
+    {
+      "package": "braces@3.0.3",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/micromatch/braces",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/braces/LICENSE"
+    },
+    {
+      "package": "btoa@1.2.1",
+      "license": "(MIT OR Apache-2.0)",
+      "status": "allowed",
+      "repository": "git://git.coolaj86.com/coolaj86/btoa.js",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/btoa/LICENSE"
+    },
+    {
+      "package": "buffer-crc32@0.2.13",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/brianloveswords/buffer-crc32",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/buffer-crc32/LICENSE"
+    },
+    {
+      "package": "buffer-indexof-polyfill@1.0.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/sarosia/buffer-indexof-polyfill",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/buffer-indexof-polyfill/LICENSE"
+    },
+    {
+      "package": "buffer@5.7.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/feross/buffer",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/buffer/LICENSE"
+    },
+    {
+      "package": "buffers@0.1.1",
+      "license": "UNKNOWN",
+      "status": "unknown",
+      "repository": "https://github.com/substack/node-buffers",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/buffers/README.markdown"
+    },
+    {
+      "package": "bytewise-core@1.2.3",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/deanlandolt/bytewise-core",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/bytewise-core/LICENSE"
+    },
+    {
+      "package": "bytewise@1.1.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/deanlandolt/bytewise",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/bytewise/README.md"
+    },
+    {
+      "package": "caldate@2.0.5",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/commenthol/caldate",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/caldate/LICENSE"
+    },
+    {
+      "package": "camelcase-css@2.0.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/stevenvachon/camelcase-css",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/camelcase-css/license"
+    },
+    {
+      "package": "canvg@3.0.11",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/canvg/canvg",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/canvg/LICENSE"
+    },
+    {
+      "package": "cfb@1.2.2",
+      "license": "Apache-2.0",
+      "status": "allowed",
+      "repository": "https://github.com/SheetJS/js-cfb",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/cfb/LICENSE"
+    },
+    {
+      "package": "chainsaw@0.1.0",
+      "license": "MIT*",
+      "status": "allowed",
+      "repository": "https://github.com/substack/node-chainsaw",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/chainsaw/README.markdown"
+    },
+    {
+      "package": "chokidar@3.6.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/paulmillr/chokidar",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/chokidar/LICENSE"
+    },
+    {
+      "package": "chownr@2.0.0",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/isaacs/chownr",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/chownr/LICENSE"
+    },
+    {
+      "package": "class-variance-authority@0.7.1",
+      "license": "Apache-2.0",
+      "status": "allowed",
+      "repository": "https://github.com/joe-bell/cva",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/class-variance-authority/LICENSE"
+    },
+    {
+      "package": "clsx@2.1.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/lukeed/clsx",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/clsx/license"
+    },
+    {
+      "package": "cmdk@1.1.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/pacocoursey/cmdk",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/cmdk/LICENSE.md"
+    },
+    {
+      "package": "codepage@1.15.0",
+      "license": "Apache-2.0",
+      "status": "allowed",
+      "repository": "https://github.com/SheetJS/js-codepage",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/codepage/LICENSE"
+    },
+    {
+      "package": "color-convert@2.0.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/Qix-/color-convert",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/color-convert/LICENSE"
+    },
+    {
+      "package": "color-name@1.1.4",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/colorjs/color-name",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/color-name/LICENSE"
+    },
+    {
+      "package": "commander@12.1.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/tj/commander.js",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@capacitor/cli/node_modules/commander/LICENSE"
+    },
+    {
+      "package": "commander@4.1.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/tj/commander.js",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/commander/LICENSE"
+    },
+    {
+      "package": "compress-commons@4.1.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/archiverjs/node-compress-commons",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/compress-commons/LICENSE"
+    },
+    {
+      "package": "concat-map@0.0.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/substack/node-concat-map",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/concat-map/LICENSE"
+    },
+    {
+      "package": "core-js@3.45.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/zloirock/core-js",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/core-js/LICENSE"
+    },
+    {
+      "package": "core-util-is@1.0.3",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/isaacs/core-util-is",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/core-util-is/LICENSE"
+    },
+    {
+      "package": "crc-32@1.2.2",
+      "license": "Apache-2.0",
+      "status": "allowed",
+      "repository": "https://github.com/SheetJS/js-crc32",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/crc-32/LICENSE"
+    },
+    {
+      "package": "crc32-stream@4.0.3",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/archiverjs/node-crc32-stream",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/crc32-stream/LICENSE"
+    },
+    {
+      "package": "cross-env@10.0.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/kentcdodds/cross-env",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/cross-env/LICENSE"
+    },
+    {
+      "package": "cross-spawn@7.0.6",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/moxystudio/node-cross-spawn",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/cross-spawn/LICENSE"
+    },
+    {
+      "package": "css-line-break@2.1.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/niklasvh/css-line-break",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/css-line-break/LICENSE"
+    },
+    {
+      "package": "csscolorparser@1.0.3",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/deanm/css-color-parser-js",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/csscolorparser/README"
+    },
+    {
+      "package": "cssesc@3.0.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/mathiasbynens/cssesc",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/cssesc/LICENSE-MIT.txt"
+    },
+    {
+      "package": "csstype@3.1.3",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/frenic/csstype",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/csstype/LICENSE"
+    },
+    {
+      "package": "d3-array@3.2.4",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/d3/d3-array",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/d3-array/LICENSE"
+    },
+    {
+      "package": "d3-color@3.1.0",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/d3/d3-color",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/d3-color/LICENSE"
+    },
+    {
+      "package": "d3-ease@3.0.1",
+      "license": "BSD-3-Clause",
+      "status": "allowed",
+      "repository": "https://github.com/d3/d3-ease",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/d3-ease/LICENSE"
+    },
+    {
+      "package": "d3-format@3.1.0",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/d3/d3-format",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/d3-format/LICENSE"
+    },
+    {
+      "package": "d3-interpolate@3.0.1",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/d3/d3-interpolate",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/d3-interpolate/LICENSE"
+    },
+    {
+      "package": "d3-path@3.1.0",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/d3/d3-path",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/d3-path/LICENSE"
+    },
+    {
+      "package": "d3-scale@4.0.2",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/d3/d3-scale",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/d3-scale/LICENSE"
+    },
+    {
+      "package": "d3-shape@3.2.0",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/d3/d3-shape",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/d3-shape/LICENSE"
+    },
+    {
+      "package": "d3-time-format@4.1.0",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/d3/d3-time-format",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/d3-time-format/LICENSE"
+    },
+    {
+      "package": "d3-time@3.1.0",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/d3/d3-time",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/d3-time/LICENSE"
+    },
+    {
+      "package": "d3-timer@3.0.1",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/d3/d3-timer",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/d3-timer/LICENSE"
+    },
+    {
+      "package": "date-bengali-revised@2.0.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/commenthol/date-bengali-revised",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/date-bengali-revised/LICENSE"
+    },
+    {
+      "package": "date-chinese@2.1.4",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/commenthol/date-chinese",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/date-chinese/LICENSE"
+    },
+    {
+      "package": "date-easter@1.0.3",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/commenthol/date-easter",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/date-easter/LICENSE"
+    },
+    {
+      "package": "date-fns-tz@3.2.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/marnusw/date-fns-tz",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/date-fns-tz/LICENSE.md"
+    },
+    {
+      "package": "date-fns@3.6.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/date-fns/date-fns",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/date-fns/LICENSE.md"
+    },
+    {
+      "package": "date-holidays-parser@3.4.7",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/commenthol/date-holidays-parser",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/date-holidays-parser/LICENSE"
+    },
+    {
+      "package": "date-holidays@3.25.1",
+      "license": "(ISC AND CC-BY-3.0)",
+      "status": "allowed",
+      "repository": "https://github.com/commenthol/date-holidays",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/date-holidays/LICENSE"
+    },
+    {
+      "package": "dayjs@1.11.13",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/iamkun/dayjs",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/dayjs/LICENSE"
+    },
+    {
+      "package": "debug@4.4.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/debug-js/debug",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/debug/LICENSE"
+    },
+    {
+      "package": "decimal.js-light@2.5.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/MikeMcl/decimal.js-light",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/decimal.js-light/LICENCE.md"
+    },
+    {
+      "package": "deepmerge@4.3.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/TehShrike/deepmerge",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/deepmerge/license.txt"
+    },
+    {
+      "package": "define-lazy-prop@2.0.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/sindresorhus/define-lazy-prop",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/define-lazy-prop/license"
+    },
+    {
+      "package": "detect-node-es@1.1.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/thekashey/detect-node",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/detect-node-es/LICENSE"
+    },
+    {
+      "package": "didyoumean@1.2.2",
+      "license": "Apache-2.0",
+      "status": "allowed",
+      "repository": "https://github.com/dcporter/didyoumean.js",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/didyoumean/LICENSE"
+    },
+    {
+      "package": "dlv@1.1.3",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/developit/dlv",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/dlv/README.md"
+    },
+    {
+      "package": "dom-helpers@5.2.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/react-bootstrap/dom-helpers",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/dom-helpers/LICENSE"
+    },
+    {
+      "package": "dompurify@3.2.6",
+      "license": "(MPL-2.0 OR Apache-2.0)",
+      "status": "review",
+      "repository": "https://github.com/cure53/DOMPurify",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/dompurify/LICENSE"
+    },
+    {
+      "package": "duplexer2@0.1.4",
+      "license": "BSD-3-Clause",
+      "status": "allowed",
+      "repository": "https://github.com/deoxxa/duplexer2",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/duplexer2/LICENSE.md"
+    },
+    {
+      "package": "earcut@2.2.4",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/mapbox/earcut",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/earcut/LICENSE"
+    },
+    {
+      "package": "eastasianwidth@0.2.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/komagata/eastasianwidth",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/eastasianwidth/README.md"
+    },
+    {
+      "package": "elementtree@0.1.7",
+      "license": "Apache-2.0",
+      "status": "allowed",
+      "repository": "https://github.com/racker/node-elementtree",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/elementtree/LICENSE.txt"
+    },
+    {
+      "package": "embla-carousel-react@8.6.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/davidjerleke/embla-carousel",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/embla-carousel-react/README.md"
+    },
+    {
+      "package": "embla-carousel-reactive-utils@8.6.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/davidjerleke/embla-carousel",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/embla-carousel-reactive-utils/README.md"
+    },
+    {
+      "package": "embla-carousel@8.6.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/davidjerleke/embla-carousel",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/embla-carousel/README.md"
+    },
+    {
+      "package": "emoji-regex@8.0.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/mathiasbynens/emoji-regex",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@ionic/utils-terminal/node_modules/emoji-regex/LICENSE-MIT.txt"
+    },
+    {
+      "package": "emoji-regex@9.2.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/mathiasbynens/emoji-regex",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/emoji-regex/LICENSE-MIT.txt"
+    },
+    {
+      "package": "end-of-stream@1.4.5",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/mafintosh/end-of-stream",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/end-of-stream/LICENSE"
+    },
+    {
+      "package": "env-paths@2.2.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/sindresorhus/env-paths",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/env-paths/license"
+    },
+    {
+      "package": "eventemitter3@4.0.7",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/primus/eventemitter3",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/eventemitter3/LICENSE"
+    },
+    {
+      "package": "exceljs@4.4.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/exceljs/exceljs",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/exceljs/LICENSE"
+    },
+    {
+      "package": "extend-shallow@2.0.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/jonschlinkert/extend-shallow",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/extend-shallow/LICENSE"
+    },
+    {
+      "package": "extend-shallow@3.0.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/jonschlinkert/extend-shallow",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/split-string/node_modules/extend-shallow/LICENSE"
+    },
+    {
+      "package": "fast-csv@4.3.6",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/C2FO/fast-csv",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/fast-csv/LICENSE"
+    },
+    {
+      "package": "fast-equals@5.2.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/planttheidea/fast-equals",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/fast-equals/LICENSE"
+    },
+    {
+      "package": "fast-glob@3.3.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/mrmlnc/fast-glob",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/fast-glob/LICENSE"
+    },
+    {
+      "package": "fastq@1.17.1",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/mcollina/fastq",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/fastq/LICENSE"
+    },
+    {
+      "package": "fd-slicer@1.1.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/andrewrk/node-fd-slicer",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/fd-slicer/LICENSE"
+    },
+    {
+      "package": "fflate@0.8.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/101arrowz/fflate",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/fflate/LICENSE"
+    },
+    {
+      "package": "fill-range@7.1.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/jonschlinkert/fill-range",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/fill-range/LICENSE"
+    },
+    {
+      "package": "foreground-child@3.3.1",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/tapjs/foreground-child",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/foreground-child/LICENSE"
+    },
+    {
+      "package": "frac@1.1.2",
+      "license": "Apache-2.0",
+      "status": "allowed",
+      "repository": "https://github.com/SheetJS/frac",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/frac/LICENSE"
+    },
+    {
+      "package": "fs-constants@1.0.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/mafintosh/fs-constants",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/fs-constants/LICENSE"
+    },
+    {
+      "package": "fs-extra@11.3.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/jprichardson/node-fs-extra",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/fs-extra/LICENSE"
+    },
+    {
+      "package": "fs-extra@9.1.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/jprichardson/node-fs-extra",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@ionic/utils-fs/node_modules/fs-extra/LICENSE"
+    },
+    {
+      "package": "fs-minipass@2.1.0",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/npm/fs-minipass",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/fs-minipass/LICENSE"
+    },
+    {
+      "package": "fs.realpath@1.0.0",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/isaacs/fs.realpath",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/fs.realpath/LICENSE"
+    },
+    {
+      "package": "fstream@1.0.12",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/npm/fstream",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/fstream/LICENSE"
+    },
+    {
+      "package": "function-bind@1.1.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/Raynos/function-bind",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/function-bind/LICENSE"
+    },
+    {
+      "package": "geojson-vt@3.2.1",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/mapbox/geojson-vt",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/geojson-vt/LICENSE"
+    },
+    {
+      "package": "get-nonce@1.0.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/theKashey/get-nonce",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/get-nonce/LICENSE"
+    },
+    {
+      "package": "get-stream@6.0.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/sindresorhus/get-stream",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/get-stream/license"
+    },
+    {
+      "package": "get-value@2.0.6",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/jonschlinkert/get-value",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/get-value/LICENSE"
+    },
+    {
+      "package": "gl-matrix@3.4.4",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/toji/gl-matrix",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/gl-matrix/LICENSE.md"
+    },
+    {
+      "package": "glob-parent@5.1.2",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/gulpjs/glob-parent",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/chokidar/node_modules/glob-parent/LICENSE"
+    },
+    {
+      "package": "glob-parent@6.0.2",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/gulpjs/glob-parent",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/glob-parent/LICENSE"
+    },
+    {
+      "package": "glob@10.4.5",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/isaacs/node-glob",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/glob/LICENSE"
+    },
+    {
+      "package": "glob@11.0.3",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/isaacs/node-glob",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/rimraf/node_modules/glob/LICENSE"
+    },
+    {
+      "package": "glob@7.2.3",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/isaacs/node-glob",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/archiver-utils/node_modules/glob/LICENSE"
+    },
+    {
+      "package": "graceful-fs@4.2.11",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/isaacs/node-graceful-fs",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/graceful-fs/LICENSE"
+    },
+    {
+      "package": "grid-index@1.1.0",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/mapbox/grid-index",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/grid-index/LICENSE"
+    },
+    {
+      "package": "hasown@2.0.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/inspect-js/hasOwn",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/hasown/LICENSE"
+    },
+    {
+      "package": "html-parse-stringify@3.0.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/henrikjoreteg/html-parse-stringify",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/html-parse-stringify/README.md"
+    },
+    {
+      "package": "html2canvas@1.4.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/niklasvh/html2canvas",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/html2canvas/LICENSE"
+    },
+    {
+      "package": "i18next-browser-languagedetector@8.2.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/i18next/i18next-browser-languageDetector",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/i18next-browser-languagedetector/LICENSE"
+    },
+    {
+      "package": "i18next@25.3.6",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/i18next/i18next",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/i18next/LICENSE"
+    },
+    {
+      "package": "ical.js@2.2.1",
+      "license": "MPL-2.0",
+      "status": "review",
+      "repository": "https://github.com/kewisch/ical.js",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/ical.js/LICENSE"
+    },
+    {
+      "package": "idb-keyval@6.2.2",
+      "license": "Apache-2.0",
+      "status": "allowed",
+      "repository": "https://github.com/jakearchibald/idb-keyval",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/idb-keyval/LICENCE"
+    },
+    {
+      "package": "ieee754@1.2.1",
+      "license": "BSD-3-Clause",
+      "status": "allowed",
+      "repository": "https://github.com/feross/ieee754",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/ieee754/LICENSE"
+    },
+    {
+      "package": "immediate@3.0.6",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/calvinmetcalf/immediate",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/immediate/LICENSE.txt"
+    },
+    {
+      "package": "inflight@1.0.6",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/npm/inflight",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/inflight/LICENSE"
+    },
+    {
+      "package": "inherits@2.0.4",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/isaacs/inherits",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/inherits/LICENSE"
+    },
+    {
+      "package": "ini@4.1.3",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/npm/ini",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/ini/LICENSE"
+    },
+    {
+      "package": "input-otp@1.4.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/guilhermerodz/input-otp",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/input-otp/README.md"
+    },
+    {
+      "package": "internmap@2.0.3",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/mbostock/internmap",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/internmap/LICENSE"
+    },
+    {
+      "package": "is-binary-path@2.1.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/sindresorhus/is-binary-path",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/is-binary-path/license"
+    },
+    {
+      "package": "is-core-module@2.15.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/inspect-js/is-core-module",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/is-core-module/LICENSE"
+    },
+    {
+      "package": "is-docker@2.2.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/sindresorhus/is-docker",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/is-docker/license"
+    },
+    {
+      "package": "is-extendable@0.1.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/jonschlinkert/is-extendable",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/is-extendable/LICENSE"
+    },
+    {
+      "package": "is-extendable@1.0.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/jonschlinkert/is-extendable",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/split-string/node_modules/is-extendable/LICENSE"
+    },
+    {
+      "package": "is-extglob@2.1.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/jonschlinkert/is-extglob",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/is-extglob/LICENSE"
+    },
+    {
+      "package": "is-fullwidth-code-point@3.0.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/sindresorhus/is-fullwidth-code-point",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/is-fullwidth-code-point/license"
+    },
+    {
+      "package": "is-glob@4.0.3",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/micromatch/is-glob",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/is-glob/LICENSE"
+    },
+    {
+      "package": "is-number@7.0.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/jonschlinkert/is-number",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/is-number/LICENSE"
+    },
+    {
+      "package": "is-plain-object@2.0.4",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/jonschlinkert/is-plain-object",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/is-plain-object/LICENSE"
+    },
+    {
+      "package": "is-wsl@2.2.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/sindresorhus/is-wsl",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/is-wsl/license"
+    },
+    {
+      "package": "isarray@1.0.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/juliangruber/isarray",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/isarray/README.md"
+    },
+    {
+      "package": "isexe@2.0.0",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/isaacs/isexe",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/isexe/LICENSE"
+    },
+    {
+      "package": "isobject@3.0.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/jonschlinkert/isobject",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/isobject/LICENSE"
+    },
+    {
+      "package": "jackspeak@3.4.3",
+      "license": "BlueOak-1.0.0",
+      "status": "allowed",
+      "repository": "https://github.com/isaacs/jackspeak",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/jackspeak/LICENSE.md"
+    },
+    {
+      "package": "jackspeak@4.1.1",
+      "license": "BlueOak-1.0.0",
+      "status": "allowed",
+      "repository": "https://github.com/isaacs/jackspeak",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/rimraf/node_modules/jackspeak/LICENSE.md"
+    },
+    {
+      "package": "jalaali-js@1.2.8",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/jalaali/jalaali-js",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/jalaali-js/LICENSE"
+    },
+    {
+      "package": "jiti@1.21.6",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/unjs/jiti",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/jiti/LICENSE"
+    },
+    {
+      "package": "js-tokens@4.0.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/lydell/js-tokens",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/js-tokens/LICENSE"
+    },
+    {
+      "package": "js-yaml@4.1.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/nodeca/js-yaml",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/js-yaml/LICENSE"
+    },
+    {
+      "package": "json-stringify-pretty-compact@3.0.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/lydell/json-stringify-pretty-compact",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/json-stringify-pretty-compact/LICENSE"
+    },
+    {
+      "package": "jsonfile@6.2.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/jprichardson/node-jsonfile",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/jsonfile/LICENSE"
+    },
+    {
+      "package": "jspdf@3.0.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/MrRio/jsPDF",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/jspdf/LICENSE"
+    },
+    {
+      "package": "jszip@3.10.1",
+      "license": "(MIT OR GPL-3.0-or-later)",
+      "status": "allowed",
+      "repository": "https://github.com/Stuk/jszip",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/jszip/LICENSE.markdown"
+    },
+    {
+      "package": "kdbush@4.0.2",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/mourner/kdbush",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/kdbush/LICENSE"
+    },
+    {
+      "package": "kleur@3.0.3",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/lukeed/kleur",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/prompts/node_modules/kleur/license"
+    },
+    {
+      "package": "kleur@4.1.5",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/lukeed/kleur",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/kleur/license"
+    },
+    {
+      "package": "lazystream@1.0.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/jpommerening/node-lazystream",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/lazystream/LICENSE"
+    },
+    {
+      "package": "lie@3.3.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/calvinmetcalf/lie",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/lie/license.md"
+    },
+    {
+      "package": "lilconfig@3.1.3",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/antonk52/lilconfig",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/lilconfig/LICENSE"
+    },
+    {
+      "package": "lines-and-columns@1.2.4",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/eventualbuddha/lines-and-columns",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/lines-and-columns/LICENSE"
+    },
+    {
+      "package": "listenercount@1.0.1",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/jden/node-listenercount",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/listenercount/LICENSE.md"
+    },
+    {
+      "package": "lodash.defaults@4.2.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/lodash/lodash",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/lodash.defaults/LICENSE"
+    },
+    {
+      "package": "lodash.difference@4.5.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/lodash/lodash",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/lodash.difference/LICENSE"
+    },
+    {
+      "package": "lodash.escaperegexp@4.1.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/lodash/lodash",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/lodash.escaperegexp/LICENSE"
+    },
+    {
+      "package": "lodash.flatten@4.4.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/lodash/lodash",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/lodash.flatten/LICENSE"
+    },
+    {
+      "package": "lodash.groupby@4.6.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/lodash/lodash",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/lodash.groupby/LICENSE"
+    },
+    {
+      "package": "lodash.isboolean@3.0.3",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/lodash/lodash",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/lodash.isboolean/LICENSE"
+    },
+    {
+      "package": "lodash.isequal@4.5.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/lodash/lodash",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/lodash.isequal/LICENSE"
+    },
+    {
+      "package": "lodash.isfunction@3.0.9",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/lodash/lodash",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/lodash.isfunction/LICENSE"
+    },
+    {
+      "package": "lodash.isnil@4.0.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/lodash/lodash",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/lodash.isnil/LICENSE"
+    },
+    {
+      "package": "lodash.isplainobject@4.0.6",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/lodash/lodash",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/lodash.isplainobject/LICENSE"
+    },
+    {
+      "package": "lodash.isundefined@3.0.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/lodash/lodash",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/lodash.isundefined/LICENSE.txt"
+    },
+    {
+      "package": "lodash.union@4.6.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/lodash/lodash",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/lodash.union/LICENSE"
+    },
+    {
+      "package": "lodash.uniq@4.5.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/lodash/lodash",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/lodash.uniq/LICENSE"
+    },
+    {
+      "package": "lodash@4.17.21",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/lodash/lodash",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/lodash/LICENSE"
+    },
+    {
+      "package": "loose-envify@1.4.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/zertosh/loose-envify",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/loose-envify/LICENSE"
+    },
+    {
+      "package": "lru-cache@10.4.3",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/isaacs/node-lru-cache",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/lru-cache/LICENSE"
+    },
+    {
+      "package": "lru-cache@11.1.0",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/isaacs/node-lru-cache",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/rimraf/node_modules/lru-cache/LICENSE"
+    },
+    {
+      "package": "lucide-react@0.462.0",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/lucide-icons/lucide",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/lucide-react/LICENSE"
+    },
+    {
+      "package": "mapbox-gl@2.15.0",
+      "license": "Custom: LICENSE.txt",
+      "status": "unknown",
+      "repository": "https://github.com/mapbox/mapbox-gl-js",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/mapbox-gl/LICENSE.txt"
+    },
+    {
+      "package": "merge2@1.4.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/teambition/merge2",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/merge2/LICENSE"
+    },
+    {
+      "package": "micromatch@4.0.8",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/micromatch/micromatch",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/micromatch/LICENSE"
+    },
+    {
+      "package": "minimatch@10.0.3",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/isaacs/minimatch",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/rimraf/node_modules/minimatch/LICENSE"
+    },
+    {
+      "package": "minimatch@3.1.2",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/isaacs/minimatch",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/minimatch/LICENSE"
+    },
+    {
+      "package": "minimatch@5.1.6",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/isaacs/minimatch",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/readdir-glob/node_modules/minimatch/LICENSE"
+    },
+    {
+      "package": "minimatch@9.0.5",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/isaacs/minimatch",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/glob/node_modules/minimatch/LICENSE"
+    },
+    {
+      "package": "minimist@1.2.8",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/minimistjs/minimist",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/minimist/LICENSE"
+    },
+    {
+      "package": "minipass@3.3.6",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/isaacs/minipass",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/fs-minipass/node_modules/minipass/LICENSE"
+    },
+    {
+      "package": "minipass@5.0.0",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/isaacs/minipass",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/tar/node_modules/minipass/LICENSE"
+    },
+    {
+      "package": "minipass@7.1.2",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/isaacs/minipass",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/minipass/LICENSE"
+    },
+    {
+      "package": "minizlib@2.1.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/isaacs/minizlib",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/minizlib/LICENSE"
+    },
+    {
+      "package": "mkdirp@0.5.6",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/substack/node-mkdirp",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/fstream/node_modules/mkdirp/LICENSE"
+    },
+    {
+      "package": "mkdirp@1.0.4",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/isaacs/node-mkdirp",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/mkdirp/LICENSE"
+    },
+    {
+      "package": "moment-timezone@0.5.48",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/moment/moment-timezone",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/moment-timezone/LICENSE"
+    },
+    {
+      "package": "moment@2.30.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/moment/moment",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/moment/LICENSE"
+    },
+    {
+      "package": "ms@2.1.3",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/vercel/ms",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/ms/license.md"
+    },
+    {
+      "package": "murmurhash-js@1.0.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/mikolalysenko/murmurhash-js",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/murmurhash-js/README.md"
+    },
+    {
+      "package": "mz@2.7.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/normalize/mz",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/mz/LICENSE"
+    },
+    {
+      "package": "nanoid@3.3.11",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/ai/nanoid",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/nanoid/LICENSE"
+    },
+    {
+      "package": "native-run@2.0.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/ionic-team/native-run",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/native-run/LICENSE"
+    },
+    {
+      "package": "next-themes@0.3.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/pacocoursey/next-themes"
+    },
+    {
+      "package": "normalize-path@3.0.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/jonschlinkert/normalize-path",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/normalize-path/LICENSE"
+    },
+    {
+      "package": "object-assign@4.1.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/sindresorhus/object-assign",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/object-assign/license"
+    },
+    {
+      "package": "object-hash@3.0.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/puleos/object-hash",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/object-hash/LICENSE"
+    },
+    {
+      "package": "once@1.4.0",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/isaacs/once",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/once/LICENSE"
+    },
+    {
+      "package": "open@8.4.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/sindresorhus/open",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/open/license"
+    },
+    {
+      "package": "package-json-from-dist@1.0.1",
+      "license": "BlueOak-1.0.0",
+      "status": "allowed",
+      "repository": "https://github.com/isaacs/package-json-from-dist",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/package-json-from-dist/LICENSE.md"
+    },
+    {
+      "package": "pako@1.0.11",
+      "license": "(MIT AND Zlib)",
+      "status": "allowed",
+      "repository": "https://github.com/nodeca/pako",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/pako/LICENSE"
+    },
+    {
+      "package": "path-is-absolute@1.0.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/sindresorhus/path-is-absolute",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/path-is-absolute/license"
+    },
+    {
+      "package": "path-key@3.1.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/sindresorhus/path-key",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/path-key/license"
+    },
+    {
+      "package": "path-parse@1.0.7",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/jbgutierrez/path-parse",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/path-parse/LICENSE"
+    },
+    {
+      "package": "path-scurry@1.11.1",
+      "license": "BlueOak-1.0.0",
+      "status": "allowed",
+      "repository": "https://github.com/isaacs/path-scurry",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/path-scurry/LICENSE.md"
+    },
+    {
+      "package": "path-scurry@2.0.0",
+      "license": "BlueOak-1.0.0",
+      "status": "allowed",
+      "repository": "https://github.com/isaacs/path-scurry",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/rimraf/node_modules/path-scurry/LICENSE.md"
+    },
+    {
+      "package": "pbf@3.3.0",
+      "license": "BSD-3-Clause",
+      "status": "allowed",
+      "repository": "https://github.com/mapbox/pbf",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/pbf/LICENSE"
+    },
+    {
+      "package": "pend@1.2.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/andrewrk/node-pend",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/pend/LICENSE"
+    },
+    {
+      "package": "performance-now@2.1.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/braveg1rl/performance-now",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/performance-now/license.txt"
+    },
+    {
+      "package": "picocolors@1.1.1",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/alexeyraspopov/picocolors",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/picocolors/LICENSE"
+    },
+    {
+      "package": "picomatch@2.3.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/micromatch/picomatch",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/picomatch/LICENSE"
+    },
+    {
+      "package": "pify@2.3.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/sindresorhus/pify",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/pify/license"
+    },
+    {
+      "package": "pirates@4.0.6",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/danez/pirates",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/pirates/LICENSE"
+    },
+    {
+      "package": "plist@3.1.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/TooTallNate/node-plist",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/plist/LICENSE"
+    },
+    {
+      "package": "postcss-import@15.1.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/postcss/postcss-import",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/postcss-import/LICENSE"
+    },
+    {
+      "package": "postcss-js@4.0.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/postcss/postcss-js",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/postcss-js/LICENSE"
+    },
+    {
+      "package": "postcss-load-config@4.0.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/postcss/postcss-load-config",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/postcss-load-config/LICENSE"
+    },
+    {
+      "package": "postcss-nested@6.2.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/postcss/postcss-nested",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/postcss-nested/LICENSE"
+    },
+    {
+      "package": "postcss-selector-parser@6.1.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/postcss/postcss-selector-parser",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/postcss-selector-parser/LICENSE-MIT"
+    },
+    {
+      "package": "postcss-value-parser@4.2.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/TrySound/postcss-value-parser",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/postcss-value-parser/LICENSE"
+    },
+    {
+      "package": "postcss@8.5.6",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/postcss/postcss",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/postcss/LICENSE"
+    },
+    {
+      "package": "potpack@2.1.0",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/mapbox/potpack",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/potpack/LICENSE"
+    },
+    {
+      "package": "prepin@1.0.3",
+      "license": "Unlicense",
+      "status": "allowed",
+      "repository": "https://github.com/commenthol/prepin",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/prepin/README.md"
+    },
+    {
+      "package": "process-nextick-args@2.0.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/calvinmetcalf/process-nextick-args",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/process-nextick-args/license.md"
+    },
+    {
+      "package": "prompts@2.4.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/terkelg/prompts",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/prompts/license"
+    },
+    {
+      "package": "prop-types@15.8.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/facebook/prop-types",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/prop-types/LICENSE"
+    },
+    {
+      "package": "protocol-buffers-schema@3.6.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/mafintosh/protocol-buffers-schema",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/protocol-buffers-schema/LICENSE"
+    },
+    {
+      "package": "queue-microtask@1.2.3",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/feross/queue-microtask",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/queue-microtask/LICENSE"
+    },
+    {
+      "package": "quickselect@2.0.0",
+      "license": "ISC",
+      "status": "allowed",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/quickselect/LICENSE"
+    },
+    {
+      "package": "raf@3.4.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/chrisdickinson/raf",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/raf/LICENSE"
+    },
+    {
+      "package": "react-day-picker@8.10.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/gpbl/react-day-picker",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/react-day-picker/LICENSE"
+    },
+    {
+      "package": "react-dom@18.3.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/facebook/react",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/react-dom/LICENSE"
+    },
+    {
+      "package": "react-hook-form@7.61.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/react-hook-form/react-hook-form",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/react-hook-form/LICENSE"
+    },
+    {
+      "package": "react-i18next@15.6.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/i18next/react-i18next",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/react-i18next/LICENSE"
+    },
+    {
+      "package": "react-is@16.13.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/facebook/react",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/prop-types/node_modules/react-is/LICENSE"
+    },
+    {
+      "package": "react-is@18.3.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/facebook/react",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/react-is/LICENSE"
+    },
+    {
+      "package": "react-map-gl@7.1.7",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/visgl/react-map-gl",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/react-map-gl/LICENSE"
+    },
+    {
+      "package": "react-remove-scroll-bar@2.3.8",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/theKashey/react-remove-scroll-bar",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/react-remove-scroll-bar/README.md"
+    },
+    {
+      "package": "react-remove-scroll@2.7.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/theKashey/react-remove-scroll",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/react-remove-scroll/LICENSE"
+    },
+    {
+      "package": "react-resizable-panels@2.1.9",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/bvaughn/react-resizable-panels",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/react-resizable-panels/LICENSE"
+    },
+    {
+      "package": "react-router-dom@6.30.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/remix-run/react-router",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/react-router-dom/LICENSE.md"
+    },
+    {
+      "package": "react-router@6.30.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/remix-run/react-router",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/react-router/LICENSE.md"
+    },
+    {
+      "package": "react-smooth@4.0.4",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/recharts/react-smooth",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/react-smooth/LICENSE"
+    },
+    {
+      "package": "react-style-singleton@2.2.3",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/theKashey/react-style-singleton",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/react-style-singleton/LICENSE"
+    },
+    {
+      "package": "react-transition-group@4.4.5",
+      "license": "BSD-3-Clause",
+      "status": "allowed",
+      "repository": "https://github.com/reactjs/react-transition-group",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/react-transition-group/LICENSE"
+    },
+    {
+      "package": "react@18.3.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/facebook/react",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/react/LICENSE"
+    },
+    {
+      "package": "read-cache@1.0.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/TrySound/read-cache",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/read-cache/LICENSE"
+    },
+    {
+      "package": "readable-stream@2.3.8",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/nodejs/readable-stream",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/lazystream/node_modules/readable-stream/LICENSE"
+    },
+    {
+      "package": "readable-stream@3.6.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/nodejs/readable-stream",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/readable-stream/LICENSE"
+    },
+    {
+      "package": "readdir-glob@1.1.3",
+      "license": "Apache-2.0",
+      "status": "allowed",
+      "repository": "https://github.com/Yqnn/node-readdir-glob",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/readdir-glob/LICENSE"
+    },
+    {
+      "package": "readdirp@3.6.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/paulmillr/readdirp",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/readdirp/LICENSE"
+    },
+    {
+      "package": "recharts-scale@0.4.5",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/recharts/recharts-scale",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/recharts-scale/LICENSE"
+    },
+    {
+      "package": "recharts@2.15.4",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/recharts/recharts",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/recharts/LICENSE"
+    },
+    {
+      "package": "regenerator-runtime@0.13.11",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/facebook/regenerator.git#main",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/regenerator-runtime/LICENSE"
+    },
+    {
+      "package": "resolve-protobuf-schema@2.1.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/mafintosh/resolve-protobuf-schema",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/resolve-protobuf-schema/LICENSE"
+    },
+    {
+      "package": "resolve@1.22.8",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/browserify/resolve",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/resolve/LICENSE"
+    },
+    {
+      "package": "reusify@1.0.4",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/mcollina/reusify",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/reusify/LICENSE"
+    },
+    {
+      "package": "rgbcolor@1.0.1",
+      "license": "MIT*",
+      "status": "allowed",
+      "repository": "https://github.com/yetzt/node-rgbcolor",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/rgbcolor/LICENSE.md"
+    },
+    {
+      "package": "rimraf@2.7.1",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/isaacs/rimraf",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/fstream/node_modules/rimraf/LICENSE"
+    },
+    {
+      "package": "rimraf@6.0.1",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/isaacs/rimraf",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/rimraf/LICENSE"
+    },
+    {
+      "package": "run-parallel@1.2.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/feross/run-parallel",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/run-parallel/LICENSE"
+    },
+    {
+      "package": "rw@1.3.3",
+      "license": "BSD-3-Clause",
+      "status": "allowed",
+      "repository": "https://github.com/mbostock/rw",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/rw/LICENSE"
+    },
+    {
+      "package": "safe-buffer@5.1.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/feross/safe-buffer",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/lazystream/node_modules/safe-buffer/LICENSE"
+    },
+    {
+      "package": "safe-buffer@5.2.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/feross/safe-buffer",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/safe-buffer/LICENSE"
+    },
+    {
+      "package": "sax@1.1.4",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/isaacs/sax-js",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/sax/LICENSE"
+    },
+    {
+      "package": "saxes@5.0.1",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/lddubeau/saxes",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/saxes/README.md"
+    },
+    {
+      "package": "scheduler@0.23.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/facebook/react",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/scheduler/LICENSE"
+    },
+    {
+      "package": "semver@7.7.2",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/npm/node-semver",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/semver/LICENSE"
+    },
+    {
+      "package": "set-value@2.0.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/jonschlinkert/set-value",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/set-value/LICENSE"
+    },
+    {
+      "package": "setimmediate@1.0.5",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/YuzuJS/setImmediate",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/setimmediate/LICENSE.txt"
+    },
+    {
+      "package": "shebang-command@2.0.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/kevva/shebang-command",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/shebang-command/license"
+    },
+    {
+      "package": "shebang-regex@3.0.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/sindresorhus/shebang-regex",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/shebang-regex/license"
+    },
+    {
+      "package": "signal-exit@3.0.7",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/tapjs/signal-exit",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@ionic/utils-terminal/node_modules/signal-exit/LICENSE.txt"
+    },
+    {
+      "package": "signal-exit@4.1.0",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/tapjs/signal-exit",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/signal-exit/LICENSE.txt"
+    },
+    {
+      "package": "sisteransi@1.0.5",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/terkelg/sisteransi",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/sisteransi/license"
+    },
+    {
+      "package": "slice-ansi@4.0.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/chalk/slice-ansi",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/slice-ansi/license"
+    },
+    {
+      "package": "sonner@1.7.4",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/emilkowalski/sonner",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/sonner/LICENSE.md"
+    },
+    {
+      "package": "sort-asc@0.2.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/jonschlinkert/sort-asc",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/sort-asc/LICENSE"
+    },
+    {
+      "package": "sort-desc@0.2.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/jonschlinkert/sort-desc",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/sort-desc/LICENSE"
+    },
+    {
+      "package": "sort-object@3.0.3",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/doowb/sort-object",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/sort-object/LICENSE"
+    },
+    {
+      "package": "source-map-js@1.2.1",
+      "license": "BSD-3-Clause",
+      "status": "allowed",
+      "repository": "https://github.com/7rulnik/source-map-js",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/source-map-js/LICENSE"
+    },
+    {
+      "package": "split-string@3.1.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/jonschlinkert/split-string",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/split-string/LICENSE"
+    },
+    {
+      "package": "split2@4.2.0",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/mcollina/split2",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/split2/LICENSE"
+    },
+    {
+      "package": "ssf@0.11.2",
+      "license": "Apache-2.0",
+      "status": "allowed",
+      "repository": "https://github.com/SheetJS/ssf",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/ssf/LICENSE"
+    },
+    {
+      "package": "stackblur-canvas@2.7.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/flozz/StackBlur",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/stackblur-canvas/LICENSE-MIT.txt"
+    },
+    {
+      "package": "string-width@4.2.3",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/sindresorhus/string-width",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@ionic/utils-terminal/node_modules/string-width/license"
+    },
+    {
+      "package": "string-width@5.1.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/sindresorhus/string-width",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/string-width/license"
+    },
+    {
+      "package": "string_decoder@1.1.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/nodejs/string_decoder",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/lazystream/node_modules/string_decoder/LICENSE"
+    },
+    {
+      "package": "string_decoder@1.3.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/nodejs/string_decoder",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/string_decoder/LICENSE"
+    },
+    {
+      "package": "strip-ansi@6.0.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/chalk/strip-ansi",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@ionic/utils-terminal/node_modules/strip-ansi/license"
+    },
+    {
+      "package": "strip-ansi@7.1.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/chalk/strip-ansi",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/strip-ansi/license"
+    },
+    {
+      "package": "sucrase@3.35.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/alangpierce/sucrase",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/sucrase/LICENSE"
+    },
+    {
+      "package": "supercluster@8.0.1",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/mapbox/supercluster",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/supercluster/LICENSE"
+    },
+    {
+      "package": "supports-preserve-symlinks-flag@1.0.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/inspect-js/node-supports-preserve-symlinks-flag",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/supports-preserve-symlinks-flag/LICENSE"
+    },
+    {
+      "package": "svg-pathdata@6.0.3",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/nfroidure/svg-pathdata",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/svg-pathdata/LICENSE"
+    },
+    {
+      "package": "tailwind-merge@2.6.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/dcastil/tailwind-merge",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/tailwind-merge/LICENSE.md"
+    },
+    {
+      "package": "tailwindcss-animate@1.0.7",
+      "license": "MIT",
+      "status": "allowed",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/tailwindcss-animate/LICENSE"
+    },
+    {
+      "package": "tailwindcss@3.4.17",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/tailwindlabs/tailwindcss",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/tailwindcss/LICENSE"
+    },
+    {
+      "package": "tar-stream@2.2.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/mafintosh/tar-stream",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/tar-stream/LICENSE"
+    },
+    {
+      "package": "tar@6.2.1",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/isaacs/node-tar",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/tar/LICENSE"
+    },
+    {
+      "package": "text-segmentation@1.0.3",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/niklasvh/text-segmentation",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/text-segmentation/LICENSE"
+    },
+    {
+      "package": "thenify-all@1.6.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/thenables/thenify-all",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/thenify-all/LICENSE"
+    },
+    {
+      "package": "thenify@3.3.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/thenables/thenify",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/thenify/LICENSE"
+    },
+    {
+      "package": "through2@4.0.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/rvagg/through2",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/through2/LICENSE.md"
+    },
+    {
+      "package": "tiny-invariant@1.3.3",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/alexreardon/tiny-invariant",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/tiny-invariant/LICENSE"
+    },
+    {
+      "package": "tinyqueue@2.0.3",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/mourner/tinyqueue",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/tinyqueue/LICENSE"
+    },
+    {
+      "package": "tmp@0.2.5",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/raszi/node-tmp",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/tmp/LICENSE"
+    },
+    {
+      "package": "to-regex-range@5.0.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/micromatch/to-regex-range",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/to-regex-range/LICENSE"
+    },
+    {
+      "package": "tr46@0.0.3",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/Sebmaster/tr46.js"
+    },
+    {
+      "package": "traverse@0.3.9",
+      "license": "MIT*",
+      "status": "allowed",
+      "repository": "https://github.com/substack/js-traverse",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/traverse/LICENSE"
+    },
+    {
+      "package": "tree-kill@1.2.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/pkrumins/node-tree-kill",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/tree-kill/LICENSE"
+    },
+    {
+      "package": "ts-interface-checker@0.1.13",
+      "license": "Apache-2.0",
+      "status": "allowed",
+      "repository": "https://github.com/gristlabs/ts-interface-checker",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/ts-interface-checker/LICENSE"
+    },
+    {
+      "package": "tslib@2.8.1",
+      "license": "0BSD",
+      "status": "allowed",
+      "repository": "https://github.com/Microsoft/tslib",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/tslib/LICENSE.txt"
+    },
+    {
+      "package": "typescript@5.8.3",
+      "license": "Apache-2.0",
+      "status": "allowed",
+      "repository": "https://github.com/microsoft/TypeScript",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/typescript/LICENSE.txt"
+    },
+    {
+      "package": "typewise-core@1.2.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/deanlandolt/typewise-core",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/typewise-core/LICENSE"
+    },
+    {
+      "package": "typewise@1.0.3",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/deanlandolt/typewise",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/typewise/README.md"
+    },
+    {
+      "package": "undici-types@6.21.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/nodejs/undici",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/undici-types/LICENSE"
+    },
+    {
+      "package": "union-value@1.0.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/jonschlinkert/union-value",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/union-value/LICENSE"
+    },
+    {
+      "package": "universalify@2.0.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/RyanZim/universalify",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/universalify/LICENSE"
+    },
+    {
+      "package": "untildify@4.0.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/sindresorhus/untildify",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/untildify/license"
+    },
+    {
+      "package": "unzipper@0.10.14",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/ZJONSSON/node-unzipper",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/unzipper/LICENSE"
+    },
+    {
+      "package": "use-callback-ref@1.3.3",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/theKashey/use-callback-ref",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/use-callback-ref/LICENSE"
+    },
+    {
+      "package": "use-sidecar@1.1.3",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/theKashey/use-sidecar",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/use-sidecar/LICENSE"
+    },
+    {
+      "package": "use-sync-external-store@1.5.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/facebook/react",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/use-sync-external-store/LICENSE"
+    },
+    {
+      "package": "util-deprecate@1.0.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/TooTallNate/util-deprecate",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/util-deprecate/LICENSE"
+    },
+    {
+      "package": "utrie@1.0.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/niklasvh/utrie",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/utrie/LICENSE"
+    },
+    {
+      "package": "uuid@8.3.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/uuidjs/uuid",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/uuid/LICENSE.md"
+    },
+    {
+      "package": "vaul@0.9.9",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/emilkowalski/vaul",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/vaul/LICENSE.md"
+    },
+    {
+      "package": "victory-vendor@36.9.2",
+      "license": "MIT AND ISC",
+      "status": "allowed",
+      "repository": "https://github.com/FormidableLabs/victory",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/victory-vendor/README.md"
+    },
+    {
+      "package": "void-elements@3.1.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/pugjs/void-elements",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/void-elements/LICENSE"
+    },
+    {
+      "package": "vt-pbf@3.1.3",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/mapbox/vt-pbf",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/vt-pbf/LICENSE"
+    },
+    {
+      "package": "webidl-conversions@3.0.1",
+      "license": "BSD-2-Clause",
+      "status": "allowed",
+      "repository": "https://github.com/jsdom/webidl-conversions",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/webidl-conversions/LICENSE.md"
+    },
+    {
+      "package": "whatwg-url@5.0.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/jsdom/whatwg-url",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/whatwg-url/LICENSE.txt"
+    },
+    {
+      "package": "which@2.0.2",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/isaacs/node-which",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/which/LICENSE"
+    },
+    {
+      "package": "wmf@1.0.2",
+      "license": "Apache-2.0",
+      "status": "allowed",
+      "repository": "https://github.com/SheetJS/js-wmf",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/wmf/LICENSE"
+    },
+    {
+      "package": "word@0.3.0",
+      "license": "Apache-2.0",
+      "status": "allowed",
+      "repository": "https://github.com/SheetJS/js-word",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/word/LICENSE"
+    },
+    {
+      "package": "wrap-ansi@7.0.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/chalk/wrap-ansi",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/@ionic/utils-terminal/node_modules/wrap-ansi/license"
+    },
+    {
+      "package": "wrap-ansi@8.1.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/chalk/wrap-ansi",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/wrap-ansi/license"
+    },
+    {
+      "package": "wrappy@1.0.2",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/npm/wrappy",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/wrappy/LICENSE"
+    },
+    {
+      "package": "ws@8.18.3",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/websockets/ws",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/ws/LICENSE"
+    },
+    {
+      "package": "xlsx@0.18.5",
+      "license": "Apache-2.0",
+      "status": "allowed",
+      "repository": "https://github.com/SheetJS/sheetjs",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/xlsx/LICENSE"
+    },
+    {
+      "package": "xml2js@0.6.2",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/Leonidas-from-XIV/node-xml2js",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/xml2js/LICENSE"
+    },
+    {
+      "package": "xmlbuilder@11.0.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/oozcitak/xmlbuilder-js",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/xml2js/node_modules/xmlbuilder/LICENSE"
+    },
+    {
+      "package": "xmlbuilder@15.1.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/oozcitak/xmlbuilder-js",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/xmlbuilder/LICENSE"
+    },
+    {
+      "package": "xmlchars@2.2.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/lddubeau/xmlchars",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/xmlchars/LICENSE"
+    },
+    {
+      "package": "yallist@4.0.0",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/isaacs/yallist",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/yallist/LICENSE"
+    },
+    {
+      "package": "yaml@2.6.0",
+      "license": "ISC",
+      "status": "allowed",
+      "repository": "https://github.com/eemeli/yaml",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/yaml/LICENSE"
+    },
+    {
+      "package": "yauzl@2.10.0",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/thejoshwolfe/yauzl",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/yauzl/LICENSE"
+    },
+    {
+      "package": "zip-stream@4.1.1",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/archiverjs/node-zip-stream",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/zip-stream/LICENSE"
+    },
+    {
+      "package": "zod@3.25.76",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/colinhacks/zod",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/zod/LICENSE"
+    },
+    {
+      "package": "zustand@5.0.8",
+      "license": "MIT",
+      "status": "allowed",
+      "repository": "https://github.com/pmndrs/zustand",
+      "licenseFile": "/home/runner/work/travel-autolog/travel-autolog/node_modules/zustand/LICENSE"
+    }
+  ]
+}

@@ -28,3 +28,8 @@ android/
 
 # Lokale Secrets
 .env
+
+# SBOM artifacts (keep folder structure, ignore generated files)
+sbom/*.json
+sbom/*.xml
+sbom/temp/

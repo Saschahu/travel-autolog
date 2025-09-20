@@ -8,7 +8,9 @@
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "sbom:json": "cyclonedx-npm --output-format JSON --output-file sbom/cyclonedx.json",
+    "sbom:xml": "cyclonedx-npm --output-format XML --output-file sbom/cyclonedx.xml"
   },
   "dependencies": {
     "@capacitor/android": "^7.4.2",
@@ -89,6 +91,7 @@
     "zustand": "^5.0.8"
   },
   "devDependencies": {
+    "@cyclonedx/cyclonedx-npm": "^4.0.2",
     "@eslint/js": "^9.32.0",
     "@tailwindcss/typography": "^0.5.16",
     "@types/node": "^22.16.5",
@@ -100,6 +103,7 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^15.15.0",
+    "license-checker-rseidelsohn": "^4.4.2",
     "lovable-tagger": "^1.1.9",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.17",

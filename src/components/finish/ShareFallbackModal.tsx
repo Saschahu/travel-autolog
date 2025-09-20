@@ -1,9 +1,9 @@
-import React from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
 import { Download, Mail, X } from 'lucide-react';
+import React from 'react';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import type { Job } from '@/hooks/useJobs';
 import { downloadBlob, buildEmailContent, buildMailtoUrl, openMailtoLink } from '@/lib/shareWithEmail';
-import { Job } from '@/hooks/useJobs';
 
 interface UserProfile {
   reportTo?: string;

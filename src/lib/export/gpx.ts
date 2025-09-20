@@ -1,5 +1,5 @@
 // GPX export functionality for GPS tracks
-import { DailyTrack } from '@/types/tracking';
+import type { DailyTrack } from '@/types/tracking';
 
 export function generateGPX(track: DailyTrack): string {
   const header = `<?xml version="1.0" encoding="UTF-8"?>

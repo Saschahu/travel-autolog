@@ -1,4 +1,4 @@
-import { TFunction } from 'i18next';
+import type { TFunction } from 'i18next';
 
 /**
  * Safe translation helper that prevents i18n keys from showing in the UI.

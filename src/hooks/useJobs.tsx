@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
-import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { DayReport } from '@/types/dayReport';
+import { supabase } from '@/integrations/supabase/client';
+import type { DayReport } from '@/types/dayReport';
 
 export type Job = {
   id: string;

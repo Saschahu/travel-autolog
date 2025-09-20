@@ -1,25 +1,17 @@
 // GPS Tracking Settings Component
-import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
-import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Separator } from '@/components/ui/separator';
 import { 
   Navigation, 
   Download, 
   Trash2, 
   Activity, 
-  MapPin, 
-  Clock,
+  MapPin,
   AlertCircle,
   CheckCircle,
   Loader2
 } from 'lucide-react';
-import { useRouteTracking } from '@/hooks/useRouteTracking';
-import { useToast } from '@/hooks/use-toast';
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -31,6 +23,13 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import { Switch } from '@/components/ui/switch';
+import { useToast } from '@/hooks/use-toast';
+import { useRouteTracking } from '@/hooks/useRouteTracking';
 
 export const GPSTrackingSettings: React.FC = () => {
   const { t } = useTranslation();

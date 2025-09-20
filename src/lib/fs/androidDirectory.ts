@@ -1,6 +1,6 @@
 // Android SAF Directory implementation
-import { DirectoryPicker } from '@/plugins/directoryPicker';
 import { toBase64 } from '@/lib/files';
+import { DirectoryPicker } from '@/plugins/directoryPicker';
 
 export interface AndroidDirectoryRef {
   kind: 'android-uri';

@@ -1,9 +1,9 @@
+import { Play, Square, MapPin, Timer, Home } from 'lucide-react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Play, Square, MapPin, Timer, Home } from 'lucide-react';
-import { UseGPSTrackingResult } from '@/hooks/useGPSTracking';
+import type { UseGPSTrackingResult } from '@/hooks/useGPSTracking';
 
 interface GPSStatusProps {
   gpsTracking: UseGPSTrackingResult;

@@ -1,9 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
-import { 
-  getDayType, 
+import type { 
   DayTypeResult, 
   DayOverrides, 
-  HolidaySettings, 
+  HolidaySettings} from '@/lib/holidays';
+import { 
+  getDayType, 
   loadHolidaySettings 
 } from '@/lib/holidays';
 

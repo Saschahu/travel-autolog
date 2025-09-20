@@ -1,8 +1,8 @@
+import { Edit, MapPin, Clock, Home, Briefcase } from 'lucide-react';
 import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Edit, MapPin, Clock, Home, Briefcase } from 'lucide-react';
-import { GPSEvent, GPSEventType } from '@/types/gps-events';
+import type { GPSEvent, GPSEventType } from '@/types/gps-events';
 
 interface GPSEventLogProps {
   events: GPSEvent[];

@@ -1,9 +1,10 @@
 // GPS tracking service for route recording
 import { GeolocationService } from './geolocationService';
 import { trackingStore } from '@/state/trackingStore';
-import { TrackPoint, DailyTrack } from '@/types/tracking';
-import { LocationData } from '@/types/gps-events';
-import { GPSSettings, defaultGPSSettings } from '@/types/gps';
+import type { GPSSettings} from '@/types/gps';
+import { defaultGPSSettings } from '@/types/gps';
+import type { LocationData } from '@/types/gps-events';
+import type { TrackPoint, DailyTrack } from '@/types/tracking';
 
 export type TrackingStatus = 'stopped' | 'starting' | 'active' | 'error';
 

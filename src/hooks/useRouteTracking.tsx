@@ -1,8 +1,9 @@
 // React hook for GPS route tracking functionality (separate from GPS events)
 import { useState, useEffect, useRef } from 'react';
-import { gpsTrackingService, TrackingStatus } from '@/services/gpsTrackingService';
-import { DailyTrack } from '@/types/tracking';
 import { formatDistance } from '@/lib/trackingGeo';
+import type { TrackingStatus } from '@/services/gpsTrackingService';
+import { gpsTrackingService } from '@/services/gpsTrackingService';
+import type { DailyTrack } from '@/types/tracking';
 
 export interface UseRouteTrackingResult {
   // Status

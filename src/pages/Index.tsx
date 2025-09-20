@@ -1,36 +1,28 @@
+import { Plus, FileText, Navigation, BarChart3 } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import { tt } from '@/lib/i18nSafe';
-import { MobileLayout } from '@/components/layout/MobileLayout';
-import { AppHeader } from '@/components/layout/AppHeader';
-import { JobEntryForm } from '@/components/forms/JobEntryForm';
-import { JobStatusCard } from '@/components/dashboard/JobStatusCard';
-import { JobFilterDropdown, type JobFilter } from '@/components/dashboard/JobFilterDropdown';
-import { useEmailService } from '@/hooks/useEmailService';
-import { ExportPage } from '@/components/export/ExportPage';
-import { SettingsDialog } from '@/components/settings/SettingsDialog';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Plus, FileText, Clock, TrendingUp, Settings, Navigation, BarChart3, MapPin } from 'lucide-react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { LeavingHomeDialog } from '@/components/location/LeavingHomeDialog';
-import { GPSPage } from '@/components/gps/GPSPage';
-import { useLocation } from '@/hooks/useLocation';
-import { useUserProfile } from '@/contexts/UserProfileContext';
-import { useToast } from '@/hooks/use-toast';
-import { useJobs, type Job } from '@/hooks/useJobs';
-import { supabase } from '@/integrations/supabase/client';
-import { OvertimeTab } from '@/components/overtime/OvertimeTab';
-import { FinishJobTab } from '@/components/finish/FinishJobTab';
-import { ReportTab } from '@/components/reports/ReportTab';
-import { BuildInfo } from '@/components/ui/build-info';
 import React from 'react';
-import { DayReport } from '@/types/dayReport';
+import { useTranslation } from 'react-i18next';
+import { JobFilterDropdown, type JobFilter } from '@/components/dashboard/JobFilterDropdown';
+import { JobStatusCard } from '@/components/dashboard/JobStatusCard';
+import { ExportPage } from '@/components/export/ExportPage';
+import { JobEntryForm } from '@/components/forms/JobEntryForm';
+import { GPSPage } from '@/components/gps/GPSPage';
+import { AppHeader } from '@/components/layout/AppHeader';
+import { MobileLayout } from '@/components/layout/MobileLayout';
+import { LeavingHomeDialog } from '@/components/location/LeavingHomeDialog';
+import { SettingsDialog } from '@/components/settings/SettingsDialog';
+import { BuildInfo } from '@/components/ui/build-info';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useUserProfile } from '@/contexts/UserProfileContext';
 import { initializeReports, adjustReportsToEstimatedDays } from '@/features/jobs/report/helpers';
+import { useToast } from '@/hooks/use-toast';
+import { useEmailService } from '@/hooks/useEmailService';
+import { useJobs, type Job } from '@/hooks/useJobs';
+import { useLocation } from '@/hooks/useLocation';
+import { supabase } from '@/integrations/supabase/client';
+import type { DayReport } from '@/types/dayReport';
 
 type DayData = {
   day: number;
@@ -54,7 +46,7 @@ const Index = () => {
   const { jobs, isLoading: isLoadingJobs, fetchJobs, setJobs } = useJobs();
 
   useEffect(() => {
-    try { localStorage.setItem('activeTab', activeTab); } catch {}
+    try { localStorage.setItem('activeTab', activeTab); } catch { /* ignore storage errors */ }
   }, [activeTab]);
 
   console.log('Index component render:', { 

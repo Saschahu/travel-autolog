@@ -1,7 +1,11 @@
 // Unified directory picker interface for both web and Android
-import { isNativeAndroid } from '@/lib/platform';
-import type { WebDirectoryHandle } from './webDirectory';
 import type { AndroidDirectoryRef } from './androidDirectory';
+import {
+  pickDirectoryAndroid,
+  checkPermissionAndroid,
+  writeTestFileAndroid
+} from './androidDirectory';
+import type { WebDirectoryHandle } from './webDirectory';
 import {
   pickDirectoryWeb,
   loadPersistedWebHandle,
@@ -13,11 +17,7 @@ import {
   waitForBridgeSelection,
   ensurePermission
 } from './webDirectory';
-import {
-  pickDirectoryAndroid,
-  checkPermissionAndroid,
-  writeTestFileAndroid
-} from './androidDirectory';
+import { isNativeAndroid } from '@/lib/platform';
 
 // Re-export functions for external use
 export { isFileSystemAccessSupported, isInCrossOriginFrame } from './webDirectory';

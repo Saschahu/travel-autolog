@@ -1,10 +1,10 @@
 import { useUserProfile } from '@/contexts/UserProfileContext';
-import { useExcelExport } from '@/hooks/useExcelExport';
 import { useToast } from '@/hooks/use-toast';
-import { sendReportEmail } from '@/lib/sendReportEmail';
+import { useExcelExport } from '@/hooks/useExcelExport';
 import { useExportSettings } from '@/hooks/useExportSettings';
-import { extractTimeEntriesFromJob, calculateTotalHoursFromEntries } from '@/lib/timeCalc';
 import { useOvertimeCalculation } from '@/hooks/useOvertimeCalculation';
+import { sendReportEmail } from '@/lib/sendReportEmail';
+import { extractTimeEntriesFromJob, calculateTotalHoursFromEntries } from '@/lib/timeCalc';
 
 export const useEmailService = () => {
   const { profile } = useUserProfile();

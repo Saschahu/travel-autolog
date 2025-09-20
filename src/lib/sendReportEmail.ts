@@ -1,13 +1,13 @@
 import { Capacitor } from '@capacitor/core';
-import { EmailSender } from '@/plugins/emailSender';
-import { DirectoryPicker } from '@/plugins/directoryPicker';
+import type { Job } from '@/hooks/useJobs';
+import { toBase64 } from '@/lib/files';
+import { getReportFileName } from '@/lib/reportFileName';
 import { getOrBuildReportPdf } from '@/lib/reportPdf';
 import { buildEmailContent, buildMailtoUrl } from '@/lib/shareWithEmail';
-import { getReportFileName } from '@/lib/reportFileName';
-import { toBase64 } from '@/lib/files';
-import { Job } from '@/hooks/useJobs';
-import { TimeEntry } from '@/lib/timeCalc';
-import { OvertimeCalculation } from '@/types/overtime';
+import type { TimeEntry } from '@/lib/timeCalc';
+import { DirectoryPicker } from '@/plugins/directoryPicker';
+import { EmailSender } from '@/plugins/emailSender';
+import type { OvertimeCalculation } from '@/types/overtime';
 
 interface UserProfile {
   reportTo?: string;

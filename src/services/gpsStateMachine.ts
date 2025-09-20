@@ -1,5 +1,5 @@
-import { LocationData, GPSState, GPSEventType, GPSEvent } from '@/types/gps-events';
-import { GPSSettings } from '@/types/gps';
+import type { GPSSettings } from '@/types/gps';
+import type { LocationData, GPSState, GPSEventType, GPSEvent } from '@/types/gps-events';
 
 export class GPSStateMachine {
   private currentState: GPSState = 'idle_at_home';

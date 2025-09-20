@@ -38,7 +38,7 @@ export class ExcelFormatter {
     };
   }
 
-  static protectWorksheet(worksheet: XLSX.WorkSheet, protectedCells: string[]) {
+  static protectWorksheet(worksheet: XLSX.WorkSheet, _protectedCells: string[]) {
     // Arbeitsblatt-Schutz (vereinfacht)
     worksheet['!protect'] = {
       password: '',

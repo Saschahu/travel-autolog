@@ -1,4 +1,4 @@
-import { DayReport } from '@/types/dayReport';
+import type { DayReport } from '@/types/dayReport';
 
 export function formatDayTitle(dr: DayReport, i: number, locale = 'de'): string {
   if (dr.dateISO) {

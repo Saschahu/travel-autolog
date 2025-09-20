@@ -1,7 +1,8 @@
 // IndexedDB storage for GPS tracking data
 import { get, set, del, keys } from 'idb-keyval';
-import { DailyTrack, TrackPoint, TrackingConfig, DEFAULT_TRACKING_CONFIG } from '@/types/tracking';
 import { distanceMeters, haversine, todayLocalISO } from '@/lib/trackingGeo';
+import type { DailyTrack, TrackPoint, TrackingConfig} from '@/types/tracking';
+import { DEFAULT_TRACKING_CONFIG } from '@/types/tracking';
 
 export class TrackingStore {
   private config: TrackingConfig = DEFAULT_TRACKING_CONFIG;

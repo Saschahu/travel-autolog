@@ -1,4 +1,4 @@
-import { GPSEvent, GPSSession, GPSEventType } from '@/types/gps-events';
+import type { GPSEvent, GPSSession} from '@/types/gps-events';
 
 export interface SessionTimers {
   travelTime: number; // minutes
@@ -39,7 +39,7 @@ export class GPSSessionCalculator {
 
     for (let i = 0; i < sortedEvents.length; i++) {
       const event = sortedEvents[i];
-      const nextEvent = sortedEvents[i + 1];
+      const _nextEvent = sortedEvents[i + 1];
 
       switch (event.type) {
         case 'HOME_LEAVE':

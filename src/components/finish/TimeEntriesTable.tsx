@@ -1,8 +1,9 @@
-import React from 'react';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Clock } from 'lucide-react';
-import { TimeEntry, minutesBetween, formatHm, formatHours } from '@/lib/timeCalc';
+import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import type { TimeEntry} from '@/lib/timeCalc';
+import { minutesBetween, formatHm, formatHours } from '@/lib/timeCalc';
 
 interface TimeEntriesTableProps {
   entries: TimeEntry[];

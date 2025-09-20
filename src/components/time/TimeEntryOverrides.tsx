@@ -1,8 +1,8 @@
 import React from 'react';
-import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
-import { DayOverrides } from '@/lib/holidays';
+import { Label } from '@/components/ui/label';
+import type { DayOverrides } from '@/lib/holidays';
 
 interface TimeEntryOverridesProps {
   overrides: DayOverrides;

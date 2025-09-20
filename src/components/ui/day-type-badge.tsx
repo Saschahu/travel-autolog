@@ -1,7 +1,7 @@
+import { Calendar, Sun, Moon, Star } from 'lucide-react';
 import React from 'react';
 import { Badge } from '@/components/ui/badge';
-import { DayTypeResult } from '@/lib/holidays';
-import { Calendar, Sun, Moon, Star } from 'lucide-react';
+import type { DayTypeResult } from '@/lib/holidays';
 
 interface DayTypeBadgeProps {
   dayType: DayTypeResult;

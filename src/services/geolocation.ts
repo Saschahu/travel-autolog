@@ -1,5 +1,6 @@
 import { Capacitor } from '@capacitor/core';
-import { Geolocation, Position } from '@capacitor/geolocation';
+import type { Position } from '@capacitor/geolocation';
+import { Geolocation } from '@capacitor/geolocation';
 
 export type Fix = {
   lat: number; lng: number; accuracy?: number | null; speed?: number | null; ts: number;

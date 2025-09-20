@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
 import { Printer } from 'lucide-react';
-import { Job } from '@/hooks/useJobs';
-import { TimeEntry } from '@/lib/timeCalc';
-import { OvertimeCalculation } from '@/types/overtime';
+import React, { useState, useEffect } from 'react';
 import { renderReportElement } from '@/components/reports/renderReport';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import type { Job } from '@/hooks/useJobs';
+import type { TimeEntry } from '@/lib/timeCalc';
 import { useSettingsStore } from '@/state/settingsStore';
-import { createRoot } from 'react-dom/client';
+import type { OvertimeCalculation } from '@/types/overtime';
 
 interface A4PreviewProps {
   open: boolean;

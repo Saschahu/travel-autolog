@@ -1,14 +1,13 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Clock, Calculator, TrendingUp, RefreshCw } from 'lucide-react';
-import { Job } from '@/hooks/useJobs';
-import { useOvertimeCalculation } from '@/hooks/useOvertimeCalculation';
-import { useTranslation } from 'react-i18next';
-import { formatHours } from '@/lib/timeCalc';
-import { splitOvertime, generatePayableFormula, decimalHoursToMinutes } from '@/lib/overtimeCalc';
+import { Clock, Calculator, RefreshCw } from 'lucide-react';
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
+import type { Job } from '@/hooks/useJobs';
+import { useOvertimeCalculation } from '@/hooks/useOvertimeCalculation';
+import { splitOvertime, decimalHoursToMinutes } from '@/lib/overtimeCalc';
+import { formatHours } from '@/lib/timeCalc';
 
 interface OvertimeTabProps {
   job: Job;

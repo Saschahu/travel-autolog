@@ -1,6 +1,6 @@
-import { LocationData } from '@/types/gps-events';
-import { GPSSettings } from '@/types/gps';
 import { Capacitor } from '@capacitor/core';
+import type { GPSSettings } from '@/types/gps';
+import type { LocationData } from '@/types/gps-events';
 
 // Import Capacitor Geolocation for mobile
 let CapacitorGeolocation: any;
@@ -8,8 +8,9 @@ if (!Capacitor.isNativePlatform()) {
   // Web fallback - use browser geolocation
 } else {
   try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     CapacitorGeolocation = require('@capacitor/geolocation').Geolocation;
-  } catch (e) {
+  } catch (_e) {
     console.warn('Capacitor Geolocation not available, using web fallback');
   }
 }
@@ -56,7 +57,7 @@ export class GeolocationService {
         await this.getCurrentPosition();
         return true;
       }
-    } catch (error) {
+    } catch (_error) {
       return false;
     }
   }

@@ -1,10 +1,10 @@
 import React from 'react';
 import { I18nextProvider } from 'react-i18next';
-import { createReportI18n } from '@/lib/i18n/reportI18n';
 import ReportView from './ReportView';
-import { Job } from '@/hooks/useJobs';
-import { TimeEntry } from '@/lib/timeCalc';
-import { OvertimeCalculation } from '@/types/overtime';
+import type { Job } from '@/hooks/useJobs';
+import { createReportI18n } from '@/lib/i18n/reportI18n';
+import type { TimeEntry } from '@/lib/timeCalc';
+import type { OvertimeCalculation } from '@/types/overtime';
 
 interface ReportData {
   job: Job;

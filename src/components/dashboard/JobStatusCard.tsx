@@ -1,12 +1,12 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Clock, MapPin, CheckCircle, AlertCircle, Trash2, Play, Square } from 'lucide-react';
 import { format } from 'date-fns';
 import { de } from 'date-fns/locale';
-import { useOvertimeCalculation } from '@/hooks/useOvertimeCalculation';
-import { Job } from '@/hooks/useJobs';
+import { Clock, MapPin, CheckCircle, AlertCircle, Trash2, Play, Square } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import type { Job } from '@/hooks/useJobs';
+import { useOvertimeCalculation } from '@/hooks/useOvertimeCalculation';
 
 interface JobStatusCardProps extends Job {
   onDetails?: () => void;
@@ -36,7 +36,7 @@ export const JobStatusCard = (props: JobStatusCardProps) => {
   } = props;
   
   const { t } = useTranslation();
-  const { calculateTimeBreakdown, formatMinutesToHours } = useOvertimeCalculation();
+  const { calculateTimeBreakdown } = useOvertimeCalculation();
   const getStatusIcon = () => {
     switch (status) {
       case 'open':

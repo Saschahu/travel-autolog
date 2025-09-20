@@ -1,18 +1,18 @@
+import { format } from "date-fns";
+import { ChevronLeft, ChevronRight, Save, FileText, CalendarIcon } from 'lucide-react';
 import React, { useState, useEffect, useCallback } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Textarea } from '@/components/ui/textarea';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar } from '@/components/ui/calendar';
-import { useToast } from '@/hooks/use-toast';
-import { ChevronLeft, ChevronRight, Save, FileText, CalendarIcon } from 'lucide-react';
-import { Job } from '@/hooks/useJobs';
-import { DayReport } from '@/types/dayReport';
 import { formatDayTitle } from '@/features/jobs/report/helpers';
-import { useTranslation } from 'react-i18next';
-import { format } from "date-fns";
+import { useToast } from '@/hooks/use-toast';
+import type { Job } from '@/hooks/useJobs';
 import { cn } from "@/lib/utils";
+import type { DayReport } from '@/types/dayReport';
 
 interface ReportTabProps {
   job: Job;

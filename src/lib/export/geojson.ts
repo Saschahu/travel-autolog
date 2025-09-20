@@ -1,5 +1,5 @@
 // GeoJSON export functionality for GPS tracks
-import { DailyTrack } from '@/types/tracking';
+import type { DailyTrack } from '@/types/tracking';
 
 export function generateGeoJSON(track: DailyTrack): object {
   const coordinates = track.points.map(point => [

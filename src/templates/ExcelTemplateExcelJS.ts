@@ -1,5 +1,5 @@
 import ExcelJS from 'exceljs';
-import { JobTemplateData } from './ExcelTemplate';
+import type { JobTemplateData } from './ExcelTemplate';
 
 export async function generateSingleJobTemplateBuffer(data: JobTemplateData): Promise<ArrayBuffer> {
   const workbook = new ExcelJS.Workbook();

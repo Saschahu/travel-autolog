@@ -1,35 +1,32 @@
-import React, { useState, useMemo, useEffect, useCallback } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { useToast } from '@/hooks/use-toast';
-import { useEmailService } from '@/hooks/useEmailService';
-import { useOvertimeCalculation } from '@/hooks/useOvertimeCalculation';
 import { FileCheck, Mail, Eye, LayoutDashboard, Save } from 'lucide-react';
-import { Job } from '@/hooks/useJobs';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { useExcelExport } from '@/hooks/useExcelExport';
-import { useNavigate } from 'react-router-dom';
-import { TimeEntriesTable } from './TimeEntriesTable';
-import { OvertimeBreakdown } from './OvertimeBreakdown';
-import { A4Preview } from './A4Preview';
-import { DayTypeBadge } from '@/components/ui/day-type-badge';
-import { TimeEntryOverrides } from '@/components/time/TimeEntryOverrides';
-import { useDayTypeDetection } from '@/hooks/useDayTypeDetection';
-import { DayOverrides } from '@/lib/holidays';
-import { extractTimeEntriesFromJob, calculateTotalHoursFromEntries } from '@/lib/timeCalc';
-import { shareReportWithAttachment, canShareFiles } from '@/lib/shareWithEmail';
-import { getOrBuildReportPdf, clearReportPdfCache, generateReportFilename } from '@/lib/reportPdf';
-import { sendReportEmail } from '@/lib/sendReportEmail';
-import { ShareFallbackModal } from './ShareFallbackModal';
-import { useExportSettings } from '@/hooks/useExportSettings';
-import { useUserProfile } from '@/contexts/UserProfileContext';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { tt } from '@/lib/i18nSafe';
+import { useNavigate } from 'react-router-dom';
+import { A4Preview } from './A4Preview';
+import { OvertimeBreakdown } from './OvertimeBreakdown';
+import { ShareFallbackModal } from './ShareFallbackModal';
+import { TimeEntriesTable } from './TimeEntriesTable';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import { useUserProfile } from '@/contexts/UserProfileContext';
+import { buildReportSummary } from '@/features/jobs/report/helpers';
+import { useToast } from '@/hooks/use-toast';
+import { useDayTypeDetection } from '@/hooks/useDayTypeDetection';
+import { useEmailService } from '@/hooks/useEmailService';
+import { useExcelExport } from '@/hooks/useExcelExport';
+import { useExportSettings } from '@/hooks/useExportSettings';
+import type { Job } from '@/hooks/useJobs';
+import { useOvertimeCalculation } from '@/hooks/useOvertimeCalculation';
 import { isFileSystemAccessSupported, writeFile, getDirectoryName } from '@/lib/fsAccess';
 import { loadExportHandle } from '@/lib/fsStore';
+import type { DayOverrides } from '@/lib/holidays';
+import { tt } from '@/lib/i18nSafe';
 import { getReportFileName } from '@/lib/reportFileName';
-import { buildReportSummary } from '@/features/jobs/report/helpers';
+import { getOrBuildReportPdf, clearReportPdfCache } from '@/lib/reportPdf';
+import { sendReportEmail } from '@/lib/sendReportEmail';
+import { shareReportWithAttachment, canShareFiles } from '@/lib/shareWithEmail';
+import { extractTimeEntriesFromJob, calculateTotalHoursFromEntries } from '@/lib/timeCalc';
 
 interface FinishJobTabProps {
   job: Job;
@@ -37,7 +34,7 @@ interface FinishJobTabProps {
   onCloseDialog?: () => void;
 }
 
-export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabProps) => {
+export const FinishJobTab = ({ job, onCloseDialog }: FinishJobTabProps) => {
   // Build workReport from reports array for backwards compatibility and PDF generation
   const workReport = useMemo(() => {
     if (job.reports && job.reports.length > 0) {
@@ -49,17 +46,12 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
   const [isSending, setIsSending] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
-  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
-  const [dayOverrides, setDayOverrides] = useState<Record<string, DayOverrides>>({});
   const [showFallbackModal, setShowFallbackModal] = useState(false);
   const [fallbackFile, setFallbackFile] = useState<File | undefined>();
   const [isPdfReady, setIsPdfReady] = useState(false);
   
   const { toast } = useToast();
-  const { sendJobReport } = useEmailService();
-  const { generateJobExcel } = useExcelExport();
   const navigate = useNavigate();
-  const { detectDayType } = useDayTypeDetection();
   const { profile } = useUserProfile();
   const { t } = useTranslation();
   const exportSettings = useExportSettings();
@@ -100,14 +92,6 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
   useEffect(() => {
     clearReportPdfCache();
   }, [workReport]);
-
-  const handleSaveWorkReport = async () => {
-    // This is now handled by the Report tab
-    toast({
-      title: t('info'),
-      description: 'Reports werden im Report-Tab bearbeitet',
-    });
-  };
 
   const handleSendReport = async () => {
     setIsSending(true);
@@ -173,7 +157,7 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
             setFallbackFile(result.file);
             setShowFallbackModal(true);
           }
-        } catch (fallbackError) {
+        } catch (_fallbackError) {
            toast({
              title: t('error'),
              description: t('errorSendingReport'),

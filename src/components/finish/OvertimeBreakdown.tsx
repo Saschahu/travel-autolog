@@ -1,11 +1,11 @@
-import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Calculator } from 'lucide-react';
-import { OvertimeCalculation } from '@/types/overtime';
-import { formatHours } from '@/lib/timeCalc';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useOvertimeCalculation } from '@/hooks/useOvertimeCalculation';
 import { splitOvertime, generatePayableFormula, decimalHoursToMinutes } from '@/lib/overtimeCalc';
-import { useTranslation } from 'react-i18next';
+import { formatHours } from '@/lib/timeCalc';
+import type { OvertimeCalculation } from '@/types/overtime';
 
 interface OvertimeBreakdownProps {
   calculation: OvertimeCalculation;

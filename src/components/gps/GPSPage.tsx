@@ -1,11 +1,11 @@
+import { Capacitor } from '@capacitor/core';
+import { MapPin, Play, Square } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button } from '@/components/ui/button';
-import { MapPin, Play, Square } from 'lucide-react';
 import MapView from '@/components/MapView';
-import { requestPermission, getCurrent, startWatch, type Fix, type WatchHandle } from '@/services/geolocation';
-import { Capacitor } from '@capacitor/core';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { requestPermission, getCurrent, startWatch, type Fix, type WatchHandle } from '@/services/geolocation';
 
 export const GPSPage: React.FC = () => {
   const { t } = useTranslation();

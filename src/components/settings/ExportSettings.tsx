@@ -1,14 +1,20 @@
+import { FolderOpen, Mail, TestTube, AlertCircle, Info, Loader2, RefreshCw } from 'lucide-react';
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { FolderOpen, Mail, Plus, TestTube, AlertCircle, Check, X, Info, Loader2, RefreshCw } from 'lucide-react';
+import { Slider } from '@/components/ui/slider';
 import { useToast } from '@/hooks/use-toast';
+import {
+  EMAIL_PROVIDERS,
+  openCompose,
+  getTestMessage,
+  getProviderById
+} from '@/lib/emailProviders';
 import {
   pickDirectory,
   loadPersistedDirectory,
@@ -21,16 +27,8 @@ import {
   isFileSystemAccessSupported,
   isInCrossOriginFrame
 } from '@/lib/fs/directoryPicker';
-import {
-  EMAIL_PROVIDERS,
-  openCompose,
-  getTestMessage,
-  getProviderById
-} from '@/lib/emailProviders';
 import { isNativeAndroid } from '@/lib/platform';
-import { Slider } from '@/components/ui/slider';
 import { useSettingsStore } from '@/state/settingsStore';
-import type { ExportFolderRef } from '@/lib/fs/directoryPicker';
 
 interface ExportSettingsData {
   directoryHandle?: any;

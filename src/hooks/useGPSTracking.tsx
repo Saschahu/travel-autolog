@@ -1,11 +1,13 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { LocationData, GPSState, GPSEvent, GPSSession } from '@/types/gps-events';
-import { GPSSettings, defaultGPSSettings } from '@/types/gps';
-import { GPSStateMachine } from '@/services/gpsStateMachine';
-import { GeolocationService } from '@/services/geolocationService';
-import { GPSSessionCalculator, SessionTimers } from '@/services/gpsSessionCalculator';
-import { useSupabaseGPS } from '@/hooks/useSupabaseGPS';
 import { useToast } from '@/hooks/use-toast';
+import { useSupabaseGPS } from '@/hooks/useSupabaseGPS';
+import { GeolocationService } from '@/services/geolocationService';
+import type { SessionTimers } from '@/services/gpsSessionCalculator';
+import { GPSSessionCalculator } from '@/services/gpsSessionCalculator';
+import { GPSStateMachine } from '@/services/gpsStateMachine';
+import type { GPSSettings} from '@/types/gps';
+import { defaultGPSSettings } from '@/types/gps';
+import type { LocationData, GPSState, GPSEvent, GPSSession } from '@/types/gps-events';
 
 export interface UseGPSTrackingResult {
   // State

@@ -1,4 +1,5 @@
-import i18next, { i18n as I18nInstance } from 'i18next';
+import type { i18n as I18nInstance } from 'i18next';
+import i18next from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
 // Import report translations

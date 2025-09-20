@@ -1,5 +1,5 @@
 // Geolocation utilities for GPS tracking
-import { TrackPoint } from '@/types/tracking';
+import type { TrackPoint } from '@/types/tracking';
 
 const R = 6371000; // Earth's radius in meters
 

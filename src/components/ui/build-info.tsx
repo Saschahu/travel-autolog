@@ -1,5 +1,5 @@
-import { Badge } from '@/components/ui/badge';
 import buildInfo from '@/build-info.json';
+import { Badge } from '@/components/ui/badge';
 
 export function BuildInfo() {
   const { version, sha, target, timestamp } = buildInfo;

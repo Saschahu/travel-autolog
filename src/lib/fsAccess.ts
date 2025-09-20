@@ -17,7 +17,7 @@ export function isInCrossOriginFrame(): boolean {
     if (window.top === window) return false;
     
     // Try to access parent origin - throws in cross-origin context
-    // eslint-disable-next-line no-unused-expressions
+     
     (window.top as Window).location.origin;
     
     // If no error thrown, check if origins differ

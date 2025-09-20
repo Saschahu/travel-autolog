@@ -1,14 +1,14 @@
+import { MapPin, Home, Crosshair, Settings, Navigation } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { Badge } from '@/components/ui/badge';
-import { MapPin, Home, Crosshair, Settings, Navigation } from 'lucide-react';
-import { useLocation } from '@/hooks/useLocation';
 import { useToast } from '@/hooks/use-toast';
+import { useLocation } from '@/hooks/useLocation';
 
 export const LocationSettings = () => {
   const { t } = useTranslation();

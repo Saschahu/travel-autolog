@@ -1,8 +1,8 @@
+import { FolderOpen, AlertCircle, Loader2 } from 'lucide-react';
 import { useState } from 'react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { FolderOpen, AlertCircle, Loader2 } from 'lucide-react';
 import { pickDirectoryWeb } from '@/lib/fs/webDirectory';
 
 export const DirectoryPickerBridge = () => {

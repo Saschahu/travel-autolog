@@ -1,11 +1,11 @@
+import { MapPin, Play, Square, Home, Navigation, Globe } from 'lucide-react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { MapPin, Play, Square, Home, Navigation, Globe } from 'lucide-react';
-import { useLocation } from '@/hooks/useLocation';
 import { LocationMap } from './LocationMap';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useLocation } from '@/hooks/useLocation';
 
 interface LocationData {
   latitude: number;

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Job } from '@/hooks/useJobs';
-import { TimeEntry } from '@/lib/timeCalc';
-import { OvertimeCalculation } from '@/types/overtime';
-import { getOrderRefs } from '@/lib/orderRefs';
+import type { Job } from '@/hooks/useJobs';
 import { formatDateA4, formatHours, formatDecimalHours } from '@/lib/format';
+import { getOrderRefs } from '@/lib/orderRefs';
+import type { TimeEntry } from '@/lib/timeCalc';
+import type { OvertimeCalculation } from '@/types/overtime';
 
 interface ReportViewProps {
   job: Job;

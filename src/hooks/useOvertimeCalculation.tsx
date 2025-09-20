@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
-import { OvertimeSettings, OvertimeCalculation, TimeSlot, DEFAULT_OVERTIME_SETTINGS } from '@/types/overtime';
-import { Job } from '@/hooks/useJobs';
+import type { Job } from '@/hooks/useJobs';
+import type { OvertimeSettings, OvertimeCalculation, TimeSlot} from '@/types/overtime';
+import { DEFAULT_OVERTIME_SETTINGS } from '@/types/overtime';
 
 export const useOvertimeCalculation = () => {
   const [overtimeSettings, setOvertimeSettings] = useState<OvertimeSettings>(DEFAULT_OVERTIME_SETTINGS);

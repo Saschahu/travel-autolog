@@ -1,24 +1,22 @@
-import { validateEmailInput } from '@/lib/email';
+import { User, Settings, AlertTriangle, Mail } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useUserProfile } from '@/contexts/UserProfileContext';
-import { useToast } from '@/hooks/use-toast';
+import { ExportSettings } from './ExportSettings';
+import { LanguageSettings } from './LanguageSettings';
+import { GPSSettingsComponent } from '@/components/gps/GPSSettingsComponent';
+import { HolidaySettings } from '@/components/settings/HolidaySettings';
+import { OvertimeSettings } from '@/components/settings/OvertimeSettings';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Switch } from '@/components/ui/switch';
-import { User, MapPin, Settings, Home, Clock, FolderOpen, AlertTriangle, Mail } from 'lucide-react';
-import { OvertimeSettings } from '@/components/settings/OvertimeSettings';
-import { HolidaySettings } from '@/components/settings/HolidaySettings';
-import { GPSSettingsComponent } from '@/components/gps/GPSSettingsComponent';
-import { ExportSettings } from './ExportSettings';
-import { LanguageSettings } from './LanguageSettings';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { resetAppData } from '@/utils/resetAppData';
+import { useUserProfile } from '@/contexts/UserProfileContext';
+import { useToast } from '@/hooks/use-toast';
+import { validateEmailInput } from '@/lib/email';
 import { isFileSystemAccessSupported, loadHandle } from '@/lib/fsAccess';
+import { resetAppData } from '@/utils/resetAppData';
 
 interface SettingsDialogProps {
   open: boolean;

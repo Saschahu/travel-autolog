@@ -1,16 +1,17 @@
-import { buildComposeUrl } from '@/lib/emailProviders';
-import { splitEmails, validateEmails } from '@/lib/email';
+import { Capacitor } from '@capacitor/core';
+import { Share } from '@capacitor/share';
 import * as XLSX from 'xlsx';
 import { useUserProfile } from '@/contexts/UserProfileContext';
-import { Share } from '@capacitor/share';
-import { Capacitor } from '@capacitor/core';
 import { useToast } from '@/hooks/use-toast';
-import { ExcelTemplate, JobTemplateData } from '@/templates/ExcelTemplate';
-import { ExcelFormatter } from '@/utils/excelFormatter';
-import { generateSingleJobTemplateBuffer } from '@/templates/ExcelTemplateExcelJS';
-import { DirectoryPicker } from '@/plugins/directoryPicker';
-import { isNativeAndroid } from '@/lib/platform';
+import { splitEmails, validateEmails } from '@/lib/email';
+import { buildComposeUrl } from '@/lib/emailProviders';
 import { toBase64 } from '@/lib/files';
+import { isNativeAndroid } from '@/lib/platform';
+import { DirectoryPicker } from '@/plugins/directoryPicker';
+import type { JobTemplateData } from '@/templates/ExcelTemplate';
+import { ExcelTemplate } from '@/templates/ExcelTemplate';
+import { generateSingleJobTemplateBuffer } from '@/templates/ExcelTemplateExcelJS';
+import { ExcelFormatter } from '@/utils/excelFormatter';
 
 export const useExcelExport = () => {
   const { profile } = useUserProfile();

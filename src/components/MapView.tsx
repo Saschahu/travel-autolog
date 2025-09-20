@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
+import { useEffect, useRef, useState } from 'react';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { getMapboxToken, looksLikePublicToken } from '@/lib/mapboxToken';
 import { useTranslation } from 'react-i18next';
+import { getMapboxToken, looksLikePublicToken } from '@/lib/mapboxToken';
 
 type Props = { center?: [number, number]; zoom?: number };
 

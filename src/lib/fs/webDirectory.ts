@@ -14,7 +14,7 @@ export const isFileSystemAccessSupported = (): boolean => {
 export function isInCrossOriginFrame(): boolean {
   try {
     if (window.top === window) return false;
-    // eslint-disable-next-line no-unused-expressions
+     
     (window.top as Window).location.origin;
     return window.top!.location.origin !== window.location.origin;
   } catch {

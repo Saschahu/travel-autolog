@@ -1,23 +1,23 @@
+import { format } from 'date-fns';
+import { Clock, MapPin, User, Wrench, Hotel, Car, Calendar as CalendarIcon, BarChart3, FileText, CheckCircle } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Separator } from '@/components/ui/separator';
-import { Clock, MapPin, User, Wrench, Hotel, Car, Calendar as CalendarIcon, BarChart3, FileText, CheckCircle } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
-import { removeDuplicateSeptember10th } from '@/utils/fixDuplicateEntry';
+import { FinishJobTab } from '@/components/finish/FinishJobTab';
 import { OvertimeTab } from '@/components/overtime/OvertimeTab';
 import { ReportTab } from '@/components/reports/ReportTab';
-import { FinishJobTab } from '@/components/finish/FinishJobTab';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Separator } from '@/components/ui/separator';
+import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 import { cn } from '@/lib/utils';
-import { format } from 'date-fns';
+import { removeDuplicateSeptember10th } from '@/utils/fixDuplicateEntry';
 
 // Utils to handle date-only (YYYY-MM-DD) values without timezone shifts
 const parseYmdToLocalDate = (s?: string): Date | undefined => {
@@ -75,8 +75,8 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
   const [currentStep, setCurrentStep] = useState<'customer' | 'machine' | 'times' | 'hotel' | 'travel' | 'overtime' | 'report' | 'finish'>('customer');
   const [isLoading, setIsLoading] = useState(false);
   const [currentJobId, setCurrentJobId] = useState<string | null>(jobId || null);
-  const [isEditingJob, setIsEditingJob] = useState(Boolean(jobId));
-  const [isCreatingNewJob, setIsCreatingNewJob] = useState(!Boolean(jobId)); // Track if this was originally a new job
+  const [isEditingJob, setIsEditingJob] = useState(!!jobId);
+  const [isCreatingNewJob, setIsCreatingNewJob] = useState(!jobId); // Track if this was originally a new job
   const [currentJob, setCurrentJob] = useState<any>(null);
   const { toast } = useToast();
 
@@ -181,14 +181,6 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
 
   const updateField = (field: keyof JobData, value: string | number) => {
     setJobData(prev => ({ ...prev, [field]: value }));
-  };
-
-  const getCurrentTime = () => {
-    return new Date().toTimeString().slice(0, 5);
-  };
-
-  const getCurrentDate = () => {
-    return new Date().toISOString().split('T')[0];
   };
 
   const handleJobUpdate = (updatedJob: any) => {
@@ -371,19 +363,6 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
     }
   };
 
-  const startNewJob = () => {
-    setJobData({ 
-      plannedDays: 1,
-      hotelPrice: 0
-    });
-    setCurrentStep('customer');
-    setCurrentJobId(null);
-    setIsCreatingNewJob(true);
-    setIsEditingJob(false);
-    toast({
-      title: t('newJob'),
-      description: t('newJobStarted')
-    });
   };
 
 
@@ -946,7 +925,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
             
             {/* Row 2: Travel, Overtime, Report, Finish */}
             <div className="flex justify-between items-center gap-1">
-              {editJobStepsRow2.map((step, index) => {
+              {editJobStepsRow2.map((step) => {
                 const Icon = step.icon;
                 const isActive = currentStep === step.id;
                 const isCompleted = [...editJobStepsRow1, ...editJobStepsRow2].findIndex(s => s.id === currentStep) > [...editJobStepsRow1, ...editJobStepsRow2].indexOf(step);

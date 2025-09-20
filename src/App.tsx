@@ -9,6 +9,7 @@ import Index from "./pages/Index";
 import { Auth } from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import { DirectoryPickerBridge } from "./pages/DirectoryPickerBridge";
+import { AppErrorBoundary } from "@/components/common/AppErrorBoundary";
 
 const queryClient = new QueryClient();
 
@@ -48,15 +49,17 @@ function AppContent() {
 }
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <UserProfileProvider>
-      <TooltipProvider>
-        <AppContent />
-        <Toaster />
-        <Sonner />
-      </TooltipProvider>
-    </UserProfileProvider>
-  </QueryClientProvider>
+  <AppErrorBoundary>
+    <QueryClientProvider client={queryClient}>
+      <UserProfileProvider>
+        <TooltipProvider>
+          <AppContent />
+          <Toaster />
+          <Sonner />
+        </TooltipProvider>
+      </UserProfileProvider>
+    </QueryClientProvider>
+  </AppErrorBoundary>
 );
 
 export default App;

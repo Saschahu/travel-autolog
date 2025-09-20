@@ -1,0 +1,78 @@
+name-template: 'v$RESOLVED_VERSION'
+tag-template: 'v$RESOLVED_VERSION'
+
+categories:
+  - title: '🚀 Features'
+    labels:
+      - 'feat'
+      - 'feature'
+      - 'enhancement'
+  - title: '🐛 Bug Fixes'
+    labels:
+      - 'fix'
+      - 'bugfix'
+      - 'bug'
+  - title: '⚡ Performance'
+    labels:
+      - 'perf'
+      - 'performance'
+  - title: '🔒 Security'
+    labels:
+      - 'sec'
+      - 'security'
+  - title: '📚 Documentation'
+    labels:
+      - 'docs'
+      - 'documentation'
+  - title: '🧹 Chore'
+    labels:
+      - 'chore'
+      - 'maintenance'
+
+change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
+
+template: |
+  ## Changes
+
+  $CHANGES
+
+  ## Contributors
+
+  $CONTRIBUTORS
+
+version-resolver:
+  major:
+    labels:
+      - 'major'
+  minor:
+    labels:
+      - 'minor'
+      - 'feat'
+      - 'feature'
+  patch:
+    labels:
+      - 'patch'
+      - 'fix'
+      - 'bugfix'
+      - 'chore'
+  default: patch
+
+autolabeler:
+  - label: 'feat'
+    title:
+      - '/^feat(\(.+\))?\!?:.+$/'
+  - label: 'fix'
+    title:
+      - '/^fix(\(.+\))?\!?:.+$/'
+  - label: 'perf'
+    title:
+      - '/^perf(\(.+\))?\!?:.+$/'
+  - label: 'docs'
+    title:
+      - '/^docs(\(.+\))?\!?:.+$/'
+  - label: 'chore'
+    title:
+      - '/^chore(\(.+\))?\!?:.+$/'
+  - label: 'sec'
+    title:
+      - '/^sec(\(.+\))?\!?:.+$/'

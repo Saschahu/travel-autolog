@@ -1,0 +1,92 @@
+name: Play Store Track Promotion
+
+on:
+  workflow_dispatch:
+    inputs:
+      fromTrack:
+        description: 'Source track to promote from'
+        required: true
+        default: 'internal'
+        type: choice
+        options:
+          - internal
+          - alpha
+          - beta
+          - production
+      toTrack:
+        description: 'Target track to promote to'
+        required: true
+        default: 'beta'
+        type: choice
+        options:
+          - alpha
+          - beta
+          - production
+      releaseName:
+        description: 'Release name (optional, falls back to latest tag)'
+        required: false
+        type: string
+      dryRun:
+        description: 'Dry run (no actual promotion)'
+        required: true
+        default: true
+        type: boolean
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Check for Play Store credentials
+        id: check-creds
+        run: |
+          if [ -z "${{ secrets.PLAY_JSON }}" ]; then
+            echo "has_creds=false" >> $GITHUB_OUTPUT
+          else
+            echo "has_creds=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Setup Play Store credentials
+        if: steps.check-creds.outputs.has_creds == 'true'
+        run: |
+          mkdir -p ~/.config/gpp
+          echo '${{ secrets.PLAY_JSON }}' | base64 -d > ~/.config/gpp/service-account.json
+
+      - name: Add Android platform and sync
+        if: steps.check-creds.outputs.has_creds == 'true'
+        run: |
+          npx cap add android
+          npx cap sync android
+
+      - name: Promote release
+        if: steps.check-creds.outputs.has_creds == 'true'
+        run: |
+          cd android
+          ./gradlew publish${{ github.event.inputs.toTrack }} \
+            --no-daemon \
+            -PfromTrack=${{ github.event.inputs.fromTrack }} \
+            -PpromoteOnly=true \
+            -PdryRun=${{ github.event.inputs.dryRun }}
+
+      - name: Skip promotion (no credentials)
+        if: steps.check-creds.outputs.has_creds == 'false'
+        run: |
+          echo "Skipping promotion (no PLAY_JSON secret configured)"
+          echo "To enable Play Store promotion, add the PLAY_JSON secret with your service account key"
+          exit 0
+
+      - name: Cleanup credentials
+        if: always() && steps.check-creds.outputs.has_creds == 'true'
+        run: |
+          rm -f ~/.config/gpp/service-account.json

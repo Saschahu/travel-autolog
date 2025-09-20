@@ -8,7 +8,9 @@
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "changelog:gen": "conventional-changelog -p conventionalcommits -i CHANGELOG.md -s -r 2",
+    "release:notes": "conventional-changelog -p conventionalcommits -r 1"
   },
   "dependencies": {
     "@capacitor/android": "^7.4.2",
@@ -96,6 +98,7 @@
     "@types/react-dom": "^18.3.7",
     "@vitejs/plugin-react-swc": "^3.11.0",
     "autoprefixer": "^10.4.21",
+    "conventional-changelog-cli": "^5.0.0",
     "eslint": "^9.32.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",

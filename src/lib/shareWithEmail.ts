@@ -19,9 +19,20 @@ interface ReportData {
   overtimeCalculation: OvertimeCalculation;
 }
 
+// Type guard for navigator share capability
+interface NavigatorWithShare {
+  canShare?: (data: { files?: File[] }) => boolean;
+  share?: (data: { files: File[]; title: string; text: string }) => Promise<void>;
+}
+
+function hasShareCapability(nav: unknown): nav is NavigatorWithShare {
+  return typeof nav === 'object' && nav !== null && 'canShare' in nav && 'share' in nav;
+}
+
 export function canShareFiles(): boolean {
-  // @ts-ignore - Web Share API Level 2 types may not be available
-  return !!(navigator as any).canShare && !!(navigator as any).share;
+  return hasShareCapability(navigator) && 
+    typeof navigator.canShare === 'function' && 
+    typeof navigator.share === 'function';
 }
 
 export async function shareReportWithAttachment(data: ReportData, profile?: UserProfile) {
@@ -34,10 +45,10 @@ export async function shareReportWithAttachment(data: ReportData, profile?: User
     const title = `ServiceTracker – Arbeitsbericht`;
     const text = `Arbeitsbericht ${data.job.evaticNo ? `(EVATIC ${data.job.evaticNo}) ` : ''}Job ${data.job.id}`;
 
-    // @ts-ignore
-    if ((navigator as any).canShare?.({ files: [file] })) {
-      // @ts-ignore
-      await (navigator as any).share({ 
+    // @ts-expect-error - Web Share API Level 2 types may not be fully available in TypeScript yet
+    if (hasShareCapability(navigator) && navigator.canShare?.({ files: [file] })) {
+      // @ts-expect-error - Web Share API Level 2 types may not be fully available in TypeScript yet  
+      await navigator.share?.({ 
         files: [file], 
         title, 
         text 

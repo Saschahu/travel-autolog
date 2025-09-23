@@ -1,12 +1,37 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { getMapboxToken, looksLikePublicToken } from '@/lib/mapboxToken';
 import { useTranslation } from 'react-i18next';
 
-type Props = { center?: [number, number]; zoom?: number };
+type Props = { center?: [number, number]; zoom?: number; onReady?: () => void };
 
-export default function MapView({ center, zoom = 14 }: Props) {
+// Light structure types for Mapbox objects
+interface MBMapLike {
+  on: (event: string, handler: (evt: unknown) => void) => void;
+  remove: () => void;
+  easeTo: (options: { center: [number, number]; zoom: number; duration: number }) => void;
+  getZoom: () => number;
+}
+
+interface MBErrorEvent {
+  error?: {
+    status?: number;
+    message?: string;
+  };
+}
+
+// Guards
+function isMapLike(obj: unknown): obj is MBMapLike {
+  return typeof obj === 'object' && obj !== null && 
+    'on' in obj && 'remove' in obj && 'easeTo' in obj && 'getZoom' in obj;
+}
+
+function isErrorEvent(evt: unknown): evt is MBErrorEvent {
+  return typeof evt === 'object' && evt !== null && 'error' in evt;
+}
+
+export default function MapView({ center, zoom = 14, onReady }: Props) {
   const { t } = useTranslation();
   const hostRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
@@ -14,6 +39,13 @@ export default function MapView({ center, zoom = 14 }: Props) {
   const [error, setError] = useState<string | null>(null);
 
   const token = getMapboxToken();
+
+  // Memoize init options to avoid unnecessary re-renders
+  const initOptions = useMemo(() => ({
+    style: 'mapbox://styles/mapbox/streets-v12',
+    center: center ?? [10.75, 59.91] as [number, number],
+    zoom: center ? zoom : 12,
+  }), [center, zoom]);
 
   useEffect(() => {
     if (!hostRef.current || mapRef.current) return;
@@ -32,25 +64,29 @@ export default function MapView({ center, zoom = 14 }: Props) {
     try {
       const map = new mapboxgl.Map({
         container: hostRef.current,
-        style: 'mapbox://styles/mapbox/streets-v12',
-        center: center ?? [10.75, 59.91],
-        zoom: center ? zoom : 12,
+        ...initOptions,
       });
       mapRef.current = map;
 
       map.on('error', (evt) => {
-        const status = (evt?.error as any)?.status;
-        const msg = (evt?.error as any)?.message ?? '';
-        if (status === 401 || status === 403 || /Unauthorized|Invalid|forbidden/i.test(msg)) {
-          setError(t('mapboxTokenRejected'));
+        if (isErrorEvent(evt)) {
+          const status = evt.error?.status;
+          const msg = evt.error?.message ?? '';
+          if (status === 401 || status === 403 || /Unauthorized|Invalid|forbidden/i.test(msg)) {
+            setError(t('mapboxTokenRejected'));
+          }
         }
       });
 
+      // Call onReady callback if provided
+      onReady?.();
+
       return () => { map.remove(); mapRef.current = null; };
-    } catch (e: any) {
-      setError(`${t('mapboxInitError')}: ${e?.message ?? String(e)}`);
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : String(e);
+      setError(`${t('mapboxInitError')}: ${message}`);
     }
-  }, []); // init once
+  }, [initOptions, onReady, t, token]); // Fixed dependencies
 
   useEffect(() => {
     if (!mapRef.current || !center) return;

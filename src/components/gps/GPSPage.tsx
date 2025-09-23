@@ -7,6 +7,18 @@ import { requestPermission, getCurrent, startWatch, type Fix, type WatchHandle }
 import { Capacitor } from '@capacitor/core';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
+// Guard functions for error handling
+function isErrorWithMessage(error: unknown): error is { message: string } {
+  return typeof error === 'object' && error !== null && 'message' in error && typeof (error as { message: unknown }).message === 'string';
+}
+
+function getErrorMessage(error: unknown): string {
+  if (isErrorWithMessage(error)) {
+    return error.message;
+  }
+  return String(error);
+}
+
 export const GPSPage: React.FC = () => {
   const { t } = useTranslation();
   const [center, setCenter] = useState<[number, number]>();
@@ -34,8 +46,8 @@ export const GPSPage: React.FC = () => {
       const fix = await getCurrent();
       setCenter([fix.lng, fix.lat]); // Mapbox: [lng, lat]
       setMsg(undefined);
-    } catch (error: any) {
-      setMsg('Standort konnte nicht ermittelt werden. ' + (error?.message ?? ''));
+    } catch (error: unknown) {
+      setMsg('Standort konnte nicht ermittelt werden. ' + getErrorMessage(error));
     } finally {
       setIsGettingLocation(false);
     }
@@ -48,13 +60,13 @@ export const GPSPage: React.FC = () => {
       watchRef.current = await startWatch((fix: Fix) => {
         setCenter([fix.lng, fix.lat]);
         // TODO: FSM hier füttern (depart/arrive usw.)
-      }, (err) => {
-        setMsg('GPS-Fehler: ' + (err?.message ?? String(err)));
+      }, (err: unknown) => {
+        setMsg('GPS-Fehler: ' + getErrorMessage(err));
         setIsTracking(false);
       });
       setIsTracking(true);
-    } catch (error: any) {
-      setMsg(t('trackingCouldNotStart') + ' ' + (error?.message ?? ''));
+    } catch (error: unknown) {
+      setMsg(t('trackingCouldNotStart') + ' ' + getErrorMessage(error));
     }
   };
 

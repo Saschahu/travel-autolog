@@ -10,9 +10,10 @@ import { JobFilterDropdown, type JobFilter } from '@/components/dashboard/JobFil
 import { ExcelUpload } from './ExcelUpload';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useExportSettings } from '@/hooks/useExportSettings';
+import { Job } from '@/hooks/useJobs';
 
 interface ExportPageProps {
-  jobs: any[];
+  jobs: Job[];
 }
 
 export const ExportPage = ({ jobs }: ExportPageProps) => {
@@ -74,7 +75,7 @@ export const ExportPage = ({ jobs }: ExportPageProps) => {
 
           <div>
             <label className="text-sm font-medium mb-2 block">{t('singleJobTemplate')}</label>
-            <Select value={selectedJobId} onValueChange={(v) => setSelectedJobId(v as any)}>
+            <Select value={selectedJobId} onValueChange={(v: string) => setSelectedJobId(v as string | 'all')}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Alle" />
               </SelectTrigger>

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-// @ts-ignore - mapbox types might not be available yet
+// @ts-expect-error - mapbox types might not be available yet, but we need the runtime import
 import Map, { Marker, NavigationControl, GeolocateControl } from 'react-map-gl';
 import { MapPin, Home, Clock } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -87,8 +87,9 @@ export const LocationMap: React.FC<LocationMapProps> = ({
 
   // Auto-fit map to show all available pins
   useEffect(() => {
-    const map = (mapRef.current as any);
-    if (!map) return;
+    // Guard to check if ref has map-like methods
+    const map = mapRef.current;
+    if (!map || typeof map !== 'object' || !('flyTo' in map) || !('fitBounds' in map)) return;
 
     const points: [number, number][] = [];
     if (currentLocation) points.push([currentLocation.longitude, currentLocation.latitude]);
@@ -99,8 +100,11 @@ export const LocationMap: React.FC<LocationMapProps> = ({
 
     if (points.length === 0) return;
 
+    // Type assertion with proper guard check
+    const mapWithMethods = map as { flyTo: (opts: { center: [number, number]; zoom: number; duration: number }) => void; fitBounds: (bounds: [[number, number], [number, number]], opts: { padding: number; maxZoom: number; duration: number }) => void };
+
     if (points.length === 1) {
-      map.flyTo({ center: points[0], zoom: 13, duration: 600 });
+      mapWithMethods.flyTo({ center: points[0], zoom: 13, duration: 600 });
     } else {
       const lngs = points.map((p) => p[0]);
       const lats = points.map((p) => p[1]);
@@ -108,7 +112,7 @@ export const LocationMap: React.FC<LocationMapProps> = ({
       const maxLng = Math.max(...lngs);
       const minLat = Math.min(...lats);
       const maxLat = Math.max(...lats);
-      map.fitBounds(
+      mapWithMethods.fitBounds(
         [
           [minLng, minLat],
           [maxLng, maxLat],

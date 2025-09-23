@@ -17,54 +17,79 @@ export interface PayableFormula {
   totalPayable: string;
 }
 
+type OvertimeSettingsLike = {
+  overtimeRate1?: unknown;
+  overtimeRate2?: unknown;
+  saturdayRate?: unknown;
+  sundayRate?: unknown;
+};
+
+const toNum = (v: unknown, defaultValue = 0): number => {
+  return Number.isFinite(v as number) ? (v as number) : defaultValue;
+};
+
 /**
  * Split overtime hours into base overtime and surcharge components
  */
-export function splitOvertime(ot50Minutes: number, ot100Minutes: number, saturdayMinutes: number, sundayMinutes: number, overtimeSettings: any): {
+export function splitOvertime(ot50Minutes: number, ot100Minutes: number, saturdayMinutes: number, sundayMinutes: number, overtimeSettings: unknown): {
   ot50Split?: OvertimeSplit;
   ot100Split?: OvertimeSplit;
   saturdaySplit?: OvertimeSplit;
   sundaySplit?: OvertimeSplit;
 } {
-  const result: any = {};
+  if (!overtimeSettings || typeof overtimeSettings !== 'object') {
+    return {};
+  }
+  
+  const settings = overtimeSettings as OvertimeSettingsLike;
+  const result: {
+    ot50Split?: OvertimeSplit;
+    ot100Split?: OvertimeSplit;
+    saturdaySplit?: OvertimeSplit;
+    sundaySplit?: OvertimeSplit;
+  } = {};
 
   if (ot50Minutes > 0) {
-    const surchargeMin = ot50Minutes * (overtimeSettings.overtimeRate1 / 100);
+    const rate1 = toNum(settings.overtimeRate1, 50);
+    const surchargeMin = ot50Minutes * (rate1 / 100);
     result.ot50Split = {
       baseMinutes: ot50Minutes,
       surchargeMinutes: surchargeMin,
-      creditMinutes: ot50Minutes * (1 + overtimeSettings.overtimeRate1 / 100),
-      rate: overtimeSettings.overtimeRate1
+      creditMinutes: ot50Minutes * (1 + rate1 / 100),
+      rate: rate1
     };
   }
 
   if (ot100Minutes > 0) {
-    const surchargeMin = ot100Minutes * (overtimeSettings.overtimeRate2 / 100);
+    const rate2 = toNum(settings.overtimeRate2, 100);
+    const surchargeMin = ot100Minutes * (rate2 / 100);
     result.ot100Split = {
       baseMinutes: ot100Minutes,
       surchargeMinutes: surchargeMin,
-      creditMinutes: ot100Minutes * (1 + overtimeSettings.overtimeRate2 / 100),
-      rate: overtimeSettings.overtimeRate2
+      creditMinutes: ot100Minutes * (1 + rate2 / 100),
+      rate: rate2
     };
   }
 
   if (saturdayMinutes > 0) {
-    const surchargeMin = saturdayMinutes * (overtimeSettings.saturdayRate / 100);
+    const satRate = toNum(settings.saturdayRate, 50);
+    const surchargeMin = saturdayMinutes * (satRate / 100);
     result.saturdaySplit = {
       baseMinutes: saturdayMinutes,
       surchargeMinutes: surchargeMin,
-      creditMinutes: saturdayMinutes * (1 + overtimeSettings.saturdayRate / 100),
-      rate: overtimeSettings.saturdayRate
+      creditMinutes: saturdayMinutes * (1 + satRate / 100),
+      rate: satRate
     };
   }
 
   if (sundayMinutes > 0) {
-    const surchargeMin = sundayMinutes * (overtimeSettings.sundayRate / 100);
+    const sunRate = toNum(settings.sundayRate, 100);
+    const surchargeMin = sundayMinutes * (sunRate / 100);
     result.sundaySplit = {
       baseMinutes: sundayMinutes,
       surchargeMinutes: surchargeMin,
-      creditMinutes: sundayMinutes * (1 + overtimeSettings.sundayRate / 100),
-      rate: overtimeSettings.sundayRate
+      creditMinutes: sundayMinutes * (1 + sunRate / 100),
+      rate: sunRate
     };
   }
 
@@ -77,7 +102,7 @@ export function splitOvertime(ot50Minutes: number, ot100Minutes: number, saturda
 export function generatePayableFormula(
   regularMinutes: number,
   splits: ReturnType<typeof splitOvertime>,
-  t: (key: string, options?: any) => string
+  t: (key: string, options?: unknown) => string
 ): string {
   const parts = [formatHours(regularMinutes)];
 

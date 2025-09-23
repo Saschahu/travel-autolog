@@ -14,10 +14,15 @@ export const isFileSystemAccessSupported = (): boolean => {
 export function isInCrossOriginFrame(): boolean {
   try {
     if (window.top === window) return false;
-    // eslint-disable-next-line no-unused-expressions
-    (window.top as Window).location.origin;
-    return window.top!.location.origin !== window.location.origin;
+    // Try to access parent origin - throws in cross-origin context
+    if (window.top) {
+      const origin = window.top.location.origin;
+      // If no error thrown, check if origins differ
+      return origin !== window.location.origin;
+    }
+    return false;
   } catch {
+    // Access denied means cross-origin
     return true;
   }
 }
@@ -33,10 +38,14 @@ export async function pickDirectoryWeb(): Promise<WebDirectoryHandle | null> {
   }
 
   try {
-    const handle = await (window as any).showDirectoryPicker({ 
+    const handle = await (window as { showDirectoryPicker?: (options: unknown) => Promise<FileSystemDirectoryHandle> }).showDirectoryPicker?.({ 
       mode: 'readwrite',
       startIn: 'documents'
     });
+
+    if (!handle) {
+      throw new Error('Failed to get directory handle');
+    }
 
     // Request permission
     const permission = await handle.requestPermission?.({ mode: 'readwrite' });

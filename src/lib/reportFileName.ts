@@ -1,18 +1,34 @@
-export function firstJobDate(job: any): Date | null {
-  const entries: any[] = [];
+type ReportNameInput = {
+  date?: unknown;
+  customer?: unknown;
+  jobId?: unknown;
+  days?: unknown;
+  workStartDate?: unknown;
+  travelStartDate?: unknown;
+  departureStartDate?: unknown;
+};
+
+export function firstJobDate(job: unknown): Date | null {
+  if (!job || typeof job !== 'object') return null;
+  
+  const jobData = job as ReportNameInput;
+  const entries: Date[] = [];
   
   // Extract dates from days array if available
-  if (job.days && Array.isArray(job.days)) {
-    job.days.forEach((day: any) => {
-      if (day.date) {
-        entries.push(new Date(day.date));
+  if (Array.isArray(jobData.days)) {
+    jobData.days.forEach((day: unknown) => {
+      if (day && typeof day === 'object' && 'date' in day) {
+        const dayObj = day as { date?: unknown };
+        if (dayObj.date) {
+          entries.push(new Date(dayObj.date as string));
+        }
       }
     });
   } else {
     // Extract from top-level job properties
-    if (job.workStartDate) entries.push(new Date(job.workStartDate));
-    if (job.travelStartDate) entries.push(new Date(job.travelStartDate));
-    if (job.departureStartDate) entries.push(new Date(job.departureStartDate));
+    if (jobData.workStartDate) entries.push(new Date(jobData.workStartDate as string));
+    if (jobData.travelStartDate) entries.push(new Date(jobData.travelStartDate as string));
+    if (jobData.departureStartDate) entries.push(new Date(jobData.departureStartDate as string));
   }
   
   if (entries.length === 0) return null;
@@ -32,8 +48,9 @@ function normalizeStr(s: string): string {
   return s
     .normalize('NFKD')
     .replace(/[\u0300-\u036f]/g, '')     // Diakritika
+    .replace(/[^\p{L}\p{N}\s._-]/gu, '')  // Keep only letters, numbers, spaces, dots, underscores, hyphens
+    .trim()
     .replace(/\s+/g, '_')
-    .replace(/[^a-zA-Z0-9._-]/g, '-')
     .replace(/[_-]{2,}/g, '_')
     .replace(/^[_-]+|[_-]+$/g, '');
 }

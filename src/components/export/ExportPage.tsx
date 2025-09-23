@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useExportSettings } from '@/hooks/useExportSettings';
 
 interface ExportPageProps {
-  jobs: any[];
+  jobs: unknown[];
 }
 
 export const ExportPage = ({ jobs }: ExportPageProps) => {
@@ -25,9 +25,9 @@ export const ExportPage = ({ jobs }: ExportPageProps) => {
 
   const getFilteredJobs = () => {
     // Wenn ein bestimmter Auftrag gewählt ist, hat das Vorrang
-    if (selectedJobId !== 'all') return jobs.filter(j => j.id === selectedJobId);
+    if (selectedJobId !== 'all') return jobs.filter(j => (j as { id: string }).id === selectedJobId);
     if (exportFilter === 'all') return jobs;
-    return jobs.filter(job => job.status === exportFilter);
+    return jobs.filter(job => (job as { status: string }).status === exportFilter);
   };
 
   const handleExport = async () => {
@@ -40,7 +40,7 @@ export const ExportPage = ({ jobs }: ExportPageProps) => {
       
       const dateStr = new Date().toISOString().split('T')[0];
       const filename = filteredJobs.length === 1
-        ? `ServiceTracker_Arbeitszeit-Nachweis_${(filteredJobs[0].customerName || 'Kunde').replace(/\s+/g,'_')}_${dateStr}.xlsx`
+        ? `ServiceTracker_Arbeitszeit-Nachweis_${((filteredJobs[0] as { customerName?: string }).customerName || 'Kunde').replace(/\s+/g,'_')}_${dateStr}.xlsx`
         : `Auftraege_${exportFilter}_${dateStr}.xlsx`;
       await exportToExcel(filteredJobs, filename, exportSettings.exportDirUri);
     } finally {
@@ -51,9 +51,9 @@ export const ExportPage = ({ jobs }: ExportPageProps) => {
   const filteredJobs = getFilteredJobs();
   const stats = {
     total: filteredJobs.length,
-    active: filteredJobs.filter(j => j.status === 'active').length,
-    open: filteredJobs.filter(j => j.status === 'open').length,
-    completed: filteredJobs.filter(j => j.status === 'completed' || j.status === 'completed-sent').length,
+    active: filteredJobs.filter(j => (j as { status: string }).status === 'active').length,
+    open: filteredJobs.filter(j => (j as { status: string }).status === 'open').length,
+    completed: filteredJobs.filter(j => ['completed', 'completed-sent'].includes((j as { status: string }).status)).length,
   };
 
   return (
@@ -74,15 +74,18 @@ export const ExportPage = ({ jobs }: ExportPageProps) => {
 
           <div>
             <label className="text-sm font-medium mb-2 block">{t('singleJobTemplate')}</label>
-            <Select value={selectedJobId} onValueChange={(v) => setSelectedJobId(v as any)}>
+            <Select value={selectedJobId} onValueChange={(v) => setSelectedJobId(v)}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Alle" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{t('exportAll')}</SelectItem>
-                {jobs.map(j => (
-                  <SelectItem key={j.id} value={j.id}>{`${j.customerName || 'Unbenannt'} — ${j.id}`}</SelectItem>
-                ))}
+                {jobs.map(j => {
+                  const job = j as { id: string; customerName?: string };
+                  return (
+                    <SelectItem key={job.id} value={job.id}>{`${job.customerName || 'Unbenannt'} — ${job.id}`}</SelectItem>
+                  );
+                })}
               </SelectContent>
             </Select>
           </div>

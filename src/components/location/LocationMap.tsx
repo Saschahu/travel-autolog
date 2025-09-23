@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-// @ts-ignore - mapbox types might not be available yet
+// @ts-expect-error - mapbox types might not be available yet
 import Map, { Marker, NavigationControl, GeolocateControl } from 'react-map-gl';
 import { MapPin, Home, Clock } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -87,8 +87,8 @@ export const LocationMap: React.FC<LocationMapProps> = ({
 
   // Auto-fit map to show all available pins
   useEffect(() => {
-    const map = (mapRef.current as any);
-    if (!map) return;
+    const map = mapRef.current as unknown;
+    if (!map || typeof map !== 'object' || !map) return;
 
     const points: [number, number][] = [];
     if (currentLocation) points.push([currentLocation.longitude, currentLocation.latitude]);
@@ -99,8 +99,10 @@ export const LocationMap: React.FC<LocationMapProps> = ({
 
     if (points.length === 0) return;
 
+    const mapObj = map as { flyTo?: (opts: unknown) => void; fitBounds?: (bounds: unknown, opts: unknown) => void };
+
     if (points.length === 1) {
-      map.flyTo({ center: points[0], zoom: 13, duration: 600 });
+      mapObj.flyTo?.({ center: points[0], zoom: 13, duration: 600 });
     } else {
       const lngs = points.map((p) => p[0]);
       const lats = points.map((p) => p[1]);
@@ -108,7 +110,7 @@ export const LocationMap: React.FC<LocationMapProps> = ({
       const maxLng = Math.max(...lngs);
       const minLat = Math.min(...lats);
       const maxLat = Math.max(...lats);
-      map.fitBounds(
+      mapObj.fitBounds?.(
         [
           [minLng, minLat],
           [maxLng, maxLat],

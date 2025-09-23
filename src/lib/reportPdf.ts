@@ -54,57 +54,59 @@ function hashJobData(data: ReportData): string {
 }
 
 export async function buildReportPdf(data: ReportData): Promise<Blob> {
-  return new Promise(async (resolve, reject) => {
-    try {
-      // Get current report language and PDF quality setting
-      const settings = useSettingsStore.getState();
-      const lang = settings.getReportLang();
-      const quality = (settings.pdfQuality ?? 60) / 100; // Default 60%
-      
-      // Create a temporary container for the report
-      const container = document.createElement('div');
-      container.style.position = 'absolute';
-      container.style.left = '-9999px';
-      container.style.top = '-9999px';
-      container.style.width = '210mm';
-      container.style.padding = '15mm';
-      container.style.backgroundColor = 'white';
-      container.style.color = 'black';
-      container.style.fontFamily = 'Arial, sans-serif';
-      
-      // Render the report with proper i18n
-      const { element } = await renderReportElement(data, lang);
-      
-      // Create a root and render the element
-      const root = createRoot(container);
-      root.render(element);
-      
-      // Wait a bit for React to render
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
-      document.body.appendChild(container);
-
+  return new Promise<Blob>((resolve, reject) => {
+    void (async () => {
       try {
-        // Use optimized PDF generation with JPEG compression
-        const pdfBlob = await makeReportPdf(container, { 
-          quality, 
-          scale: 2 
-        });
+        // Get current report language and PDF quality setting
+        const settings = useSettingsStore.getState();
+        const lang = settings.getReportLang();
+        const quality = (settings.pdfQuality ?? 60) / 100; // Default 60%
         
-        // Clean up
-        root.unmount();
-        document.body.removeChild(container);
-        resolve(pdfBlob);
+        // Create a temporary container for the report
+        const container = document.createElement('div');
+        container.style.position = 'absolute';
+        container.style.left = '-9999px';
+        container.style.top = '-9999px';
+        container.style.width = '210mm';
+        container.style.padding = '15mm';
+        container.style.backgroundColor = 'white';
+        container.style.color = 'black';
+        container.style.fontFamily = 'Arial, sans-serif';
+        
+        // Render the report with proper i18n
+        const { element } = await renderReportElement(data, lang);
+        
+        // Create a root and render the element
+        const root = createRoot(container);
+        root.render(element);
+        
+        // Wait a bit for React to render
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        document.body.appendChild(container);
 
+        try {
+          // Use optimized PDF generation with JPEG compression
+          const pdfBlob = await makeReportPdf(container, { 
+            quality, 
+            scale: 2 
+          });
+          
+          // Clean up
+          root.unmount();
+          document.body.removeChild(container);
+          resolve(pdfBlob);
+
+        } catch (error) {
+          // Clean up on error
+          root.unmount();
+          document.body.removeChild(container);
+          reject(error);
+        }
       } catch (error) {
-        // Clean up on error
-        root.unmount();
-        document.body.removeChild(container);
         reject(error);
       }
-    } catch (error) {
-      reject(error);
-    }
+    })();
   });
 }
 

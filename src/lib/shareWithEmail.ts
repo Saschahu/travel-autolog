@@ -20,7 +20,7 @@ interface ReportData {
 }
 
 export function canShareFiles(): boolean {
-  // @ts-ignore - Web Share API Level 2 types may not be available
+  // @ts-expect-error - Web Share API Level 2 types may not be available
   return !!(navigator as any).canShare && !!(navigator as any).share;
 }
 
@@ -31,16 +31,20 @@ export async function shareReportWithAttachment(data: ReportData, profile?: User
 
     const file = new File([blob], fileName, { type: 'application/pdf' });
 
-    const title = `ServiceTracker – Arbeitsbericht`;
-    const text = `Arbeitsbericht ${data.job.evaticNo ? `(EVATIC ${data.job.evaticNo}) ` : ''}Job ${data.job.id}`;
+    const title: unknown = `ServiceTracker – Arbeitsbericht`;
+    const text: unknown = `Arbeitsbericht ${data.job.evaticNo ? `(EVATIC ${data.job.evaticNo}) ` : ''}Job ${data.job.id}`;
 
-    // @ts-ignore
+    // Type guards for Web Share API parameters
+    const safeTitle = typeof title === 'string' ? title : '';
+    const safeText = typeof text === 'string' ? text : '';
+
+    // @ts-expect-error - Web Share API Level 2 types may not be available
     if ((navigator as any).canShare?.({ files: [file] })) {
-      // @ts-ignore
+      // @ts-expect-error - Web Share API Level 2 types may not be available
       await (navigator as any).share({ 
         files: [file], 
-        title, 
-        text 
+        title: safeTitle, 
+        text: safeText 
       });
       return { ok: true, method: 'share' as const };
     }
@@ -79,25 +83,35 @@ ServiceTracker Team`;
 }
 
 export function buildMailtoUrl(
-  recipients: { to?: string; cc?: string; bcc?: string },
-  subject: string,
-  body: string
+  recipients: { to?: unknown; cc?: unknown; bcc?: unknown },
+  subject: unknown,
+  body: unknown
 ): string {
+  // Type guards
+  const safeSubject = typeof subject === 'string' ? subject : '';
+  const safeBody = typeof body === 'string' ? body : '';
+  const safeTo = typeof recipients.to === 'string' ? recipients.to : '';
+  const safeCc = typeof recipients.cc === 'string' ? recipients.cc : '';
+  const safeBcc = typeof recipients.bcc === 'string' ? recipients.bcc : '';
+  
   // Use proper encodeURIComponent for all parameters to avoid + issues
   const parts = [];
   
-  if (recipients.cc) parts.push(`cc=${encodeURIComponent(recipients.cc)}`);
-  if (recipients.bcc) parts.push(`bcc=${encodeURIComponent(recipients.bcc)}`);
-  parts.push(`subject=${encodeURIComponent(subject)}`);
-  parts.push(`body=${encodeURIComponent(body)}`);
+  if (safeCc) parts.push(`cc=${encodeURIComponent(safeCc)}`);
+  if (safeBcc) parts.push(`bcc=${encodeURIComponent(safeBcc)}`);
+  parts.push(`subject=${encodeURIComponent(safeSubject)}`);
+  parts.push(`body=${encodeURIComponent(safeBody)}`);
 
-  const to = recipients.to ? encodeURIComponent(recipients.to) : '';
+  const to = safeTo ? encodeURIComponent(safeTo) : '';
   return `mailto:${to}?${parts.join('&')}`;
 }
 
-export function openMailtoLink(url: string): boolean {
+export function openMailtoLink(url: unknown): boolean {
+  // Type guard
+  const safeUrl = typeof url === 'string' ? url : '';
+  
   try {
-    window.location.href = url;
+    window.location.href = safeUrl;
     return true;
   } catch (error) {
     console.error('Failed to open mailto link:', error);

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-// @ts-ignore - mapbox types might not be available yet
+// @ts-expect-error - mapbox types might not be available yet
 import Map, { Marker, NavigationControl, GeolocateControl } from 'react-map-gl';
 import { MapPin, Home, Clock } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';

@@ -29,6 +29,16 @@ const parseYmdToLocalDate = (s?: string): Date | undefined => {
 
 const formatLocalToYmd = (date?: Date): string => (date ? format(date, 'yyyy-MM-dd') : '');
 
+// New FormState type as required
+type FormState = { 
+  title: string; 
+  estimatedDays: number; 
+  days: unknown[] 
+};
+
+// Define the valid step IDs type
+type StepId = 'customer' | 'machine' | 'times' | 'hotel' | 'travel' | 'overtime' | 'report' | 'finish';
+
 interface JobData {
   travelStart: string;
   travelStartDate: string;
@@ -61,7 +71,7 @@ interface JobData {
   plannedDays: number;
   estimatedDays: number;
   // Dynamic time fields for multiple days
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 interface JobEntryFormProps {
@@ -69,16 +79,53 @@ interface JobEntryFormProps {
   jobId?: string; // For editing existing jobs
 }
 
+// Type guards for mapRowToForm
+const isString = (value: unknown): value is string => typeof value === 'string';
+const isNumber = (value: unknown): value is number => typeof value === 'number';
+const isArray = (value: unknown): value is unknown[] => Array.isArray(value);
+
+// mapRowToForm function with type guards
+const mapRowToForm = (row: unknown): FormState => {
+  if (!row || typeof row !== 'object') {
+    return { title: '', estimatedDays: 1, days: [] };
+  }
+  
+  const obj = row as Record<string, unknown>;
+  
+  return {
+    title: isString(obj.title) ? obj.title : '',
+    estimatedDays: isNumber(obj.estimated_days) ? obj.estimated_days : 1,
+    days: isArray(obj.days) ? obj.days : []
+  };
+};
+
 export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
   const { t } = useTranslation();
+  
+  // Add FormState alongside existing jobData
+  const [form, setForm] = useState<FormState>({ title: '', estimatedDays: 1, days: [] });
   const [jobData, setJobData] = useState<Partial<JobData>>({ plannedDays: 1, estimatedDays: 1 });
-  const [currentStep, setCurrentStep] = useState<'customer' | 'machine' | 'times' | 'hotel' | 'travel' | 'overtime' | 'report' | 'finish'>('customer');
+  const [currentStep, setCurrentStep] = useState<StepId>('customer');
   const [isLoading, setIsLoading] = useState(false);
   const [currentJobId, setCurrentJobId] = useState<string | null>(jobId || null);
-  const [isEditingJob, setIsEditingJob] = useState(Boolean(jobId));
-  const [isCreatingNewJob, setIsCreatingNewJob] = useState(!Boolean(jobId)); // Track if this was originally a new job
-  const [currentJob, setCurrentJob] = useState<any>(null);
+  const [isEditingJob, setIsEditingJob] = useState(!!jobId);
+  const [isCreatingNewJob, setIsCreatingNewJob] = useState(!jobId); // Track if this was originally a new job
+  const [currentJob, setCurrentJob] = useState<unknown>(null);
   const { toast } = useToast();
+
+  // Validation function as required
+  const isValid = !!form.title && form.estimatedDays > 0;
+
+  // onChangeField function with proper typing
+  const onChangeField = (k: string, v: unknown) => {
+    if (k === 'title' && isString(v)) {
+      setForm(prev => ({ ...prev, title: v }));
+    } else if (k === 'estimatedDays' && isNumber(v)) {
+      setForm(prev => ({ ...prev, estimatedDays: v }));
+    } else if (k === 'days' && isArray(v)) {
+      setForm(prev => ({ ...prev, days: v }));
+    }
+  };
 
   // Load existing job data when jobId is provided
   useEffect(() => {
@@ -129,27 +176,30 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
 
             // Load time data from days_data into form fields
             daysData.forEach((dayData, dayIndex) => {
-              const day = dayData as any; // Type assertion for JSON data
-              if (day.date) {
-                newJobData[`dayDate${dayIndex}`] = day.date;
-              }
-              if (day.travelStart) {
-                newJobData[`travelStart${dayIndex}`] = day.travelStart;
-              }
-              if (day.travelEnd) {
-                newJobData[`travelEnd${dayIndex}`] = day.travelEnd;
-              }
-              if (day.workStart) {
-                newJobData[`workStart${dayIndex}`] = day.workStart;
-              }
-              if (day.workEnd) {
-                newJobData[`workEnd${dayIndex}`] = day.workEnd;
-              }
-              if (day.departureStart) {
-                newJobData[`departureStart${dayIndex}`] = day.departureStart;
-              }
-              if (day.departureEnd) {
-                newJobData[`departureEnd${dayIndex}`] = day.departureEnd;
+              // Type guard for JSON data
+              if (dayData && typeof dayData === 'object') {
+                const day = dayData as Record<string, unknown>;
+                if (typeof day.date === 'string') {
+                  newJobData[`dayDate${dayIndex}`] = day.date;
+                }
+                if (typeof day.travelStart === 'string') {
+                  newJobData[`travelStart${dayIndex}`] = day.travelStart;
+                }
+                if (typeof day.travelEnd === 'string') {
+                  newJobData[`travelEnd${dayIndex}`] = day.travelEnd;
+                }
+                if (typeof day.workStart === 'string') {
+                  newJobData[`workStart${dayIndex}`] = day.workStart;
+                }
+                if (typeof day.workEnd === 'string') {
+                  newJobData[`workEnd${dayIndex}`] = day.workEnd;
+                }
+                if (typeof day.departureStart === 'string') {
+                  newJobData[`departureStart${dayIndex}`] = day.departureStart;
+                }
+                if (typeof day.departureEnd === 'string') {
+                  newJobData[`departureEnd${dayIndex}`] = day.departureEnd;
+                }
               }
             });
 
@@ -179,8 +229,11 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
   const isPersisted = Boolean(currentJobId);
   const customerName = jobData.customerName || null;
 
-  const updateField = (field: keyof JobData, value: string | number) => {
-    setJobData(prev => ({ ...prev, [field]: value }));
+  const updateField = (field: string, value: unknown) => {
+    // Add type guards for safe assignment
+    if (typeof value === 'string' || typeof value === 'number') {
+      setJobData(prev => ({ ...prev, [field]: value }));
+    }
   };
 
   const getCurrentTime = () => {
@@ -191,14 +244,15 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
     return new Date().toISOString().split('T')[0];
   };
 
-  const handleJobUpdate = (updatedJob: any) => {
+  const handleJobUpdate = (updatedJob: unknown) => {
     setCurrentJob(updatedJob);
     // Persist only the reports field to Supabase to keep DB in sync
-    if (updatedJob?.id) {
+    if (updatedJob && typeof updatedJob === 'object' && 'id' in updatedJob) {
+      const job = updatedJob as { id: string; reports?: unknown };
       supabase
         .from('jobs')
-        .update({ reports: updatedJob.reports })
-        .eq('id', updatedJob.id)
+        .update({ reports: job.reports })
+        .eq('id', job.id)
         .then(({ error }) => {
           if (error) {
             console.error('Error updating reports:', error);
@@ -475,7 +529,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                         id={`travel-start-${dayIndex}`}
                         type="time"
                         value={jobData[`travelStart${dayIndex}`] || ''}
-                        onChange={(e) => updateField(`travelStart${dayIndex}` as any, e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateField(`travelStart${dayIndex}`, e.target.value)}
                         className="h-8 text-xs"
                       />
                     </div>
@@ -485,7 +539,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                         id={`travel-end-${dayIndex}`}
                         type="time"
                         value={jobData[`travelEnd${dayIndex}`] || ''}
-                        onChange={(e) => updateField(`travelEnd${dayIndex}` as any, e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateField(`travelEnd${dayIndex}`, e.target.value)}
                         className="h-8 text-xs"
                       />
                     </div>
@@ -502,7 +556,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                         id={`work-start-${dayIndex}`}
                         type="time"
                         value={jobData[`workStart${dayIndex}`] || ''}
-                        onChange={(e) => updateField(`workStart${dayIndex}` as any, e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateField(`workStart${dayIndex}`, e.target.value)}
                         className="h-8 text-xs"
                       />
                     </div>
@@ -512,7 +566,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                         id={`work-end-${dayIndex}`}
                         type="time"
                         value={jobData[`workEnd${dayIndex}`] || ''}
-                        onChange={(e) => updateField(`workEnd${dayIndex}` as any, e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateField(`workEnd${dayIndex}`, e.target.value)}
                         className="h-8 text-xs"
                       />
                     </div>
@@ -529,7 +583,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                         id={`departure-start-${dayIndex}`}
                         type="time"
                         value={jobData[`departureStart${dayIndex}`] || ''}
-                        onChange={(e) => updateField(`departureStart${dayIndex}` as any, e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateField(`departureStart${dayIndex}`, e.target.value)}
                         className="h-8 text-xs"
                       />
                     </div>
@@ -539,7 +593,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                         id={`departure-end-${dayIndex}`}
                         type="time"
                         value={jobData[`departureEnd${dayIndex}`] || ''}
-                        onChange={(e) => updateField(`departureEnd${dayIndex}` as any, e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => updateField(`departureEnd${dayIndex}`, e.target.value)}
                         className="h-8 text-xs"
                       />
                     </div>
@@ -581,9 +635,9 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
       id: currentJobId,
       customer_name: jobData.customerName || '',
       // Add other required fields for the OvertimeTab
-    };
+    } as const;
 
-    return <OvertimeTab job={mockJob as any} />;
+    return <OvertimeTab job={mockJob} />;
   };
 
   const renderReportSection = () => {
@@ -615,9 +669,9 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
       id: currentJobId,
       customer_name: jobData.customerName || '',
       // Add other required fields for the FinishJobTab
-    };
+    } as const;
 
-    return <FinishJobTab job={mockJob as any} onJobUpdate={() => {}} onCloseDialog={() => {}} />;
+    return <FinishJobTab job={mockJob} onJobUpdate={() => {}} onCloseDialog={() => {}} />;
   };
 
   const renderCustomerSection = () => (
@@ -982,7 +1036,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                   size="sm"
                   onClick={() => {
                     if (isAccessible) {
-                      setCurrentStep(step.id as any);
+                      setCurrentStep(step.id as StepId);
                     } else {
                       toast({
                         title: t('saveCustomerFirst'),
@@ -1046,7 +1100,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
             onClick={() => {
               const currentIndex = steps.findIndex(s => s.id === currentStep);
               if (currentIndex > 0) {
-                setCurrentStep(steps[currentIndex - 1].id as any);
+                setCurrentStep(steps[currentIndex - 1].id as StepId);
               }
             }}
             disabled={currentStep === 'customer'}
@@ -1087,7 +1141,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
               } else {
                 const currentIndex = steps.findIndex(s => s.id === currentStep);
                 if (currentIndex < steps.length - 1) {
-                  setCurrentStep(steps[currentIndex + 1].id as any);
+                  setCurrentStep(steps[currentIndex + 1].id as StepId);
                 } else if (currentStep === 'finish') {
                   // Complete the job
                   await saveJobData(false);

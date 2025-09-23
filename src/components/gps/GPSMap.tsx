@@ -40,7 +40,7 @@ export const GPSMap: React.FC<GPSMapProps> = ({ currentLocation, homeLocation, t
       setShowTokenInput(true);
       setError(t('mapboxEnvTokenMissing'));
     }
-  }, []);
+  }, [t]);
 
   // Initialize map when token is available
   useEffect(() => {
@@ -83,7 +83,7 @@ export const GPSMap: React.FC<GPSMapProps> = ({ currentLocation, homeLocation, t
     return () => {
       map.current?.remove();
     };
-  }, [mapboxToken]);
+  }, [mapboxToken, t]);
 
   const handleTokenSave = () => {
     if (mapboxToken.trim()) {

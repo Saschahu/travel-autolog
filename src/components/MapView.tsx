@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { getMapboxToken, looksLikePublicToken } from '@/lib/mapboxToken';
@@ -14,6 +14,18 @@ export default function MapView({ center, zoom = 14 }: Props) {
   const [error, setError] = useState<string | null>(null);
 
   const token = getMapboxToken();
+
+  // Create memoized init options to avoid unnecessary re-renders
+  const initOptions = useMemo(() => ({
+    center: center ?? [10.75, 59.91],
+    zoom: center ? zoom : 12,
+    accessToken: token,
+    style: 'mapbox://styles/mapbox/streets-v12'
+  }), [center, zoom, token]);
+
+  const onReady = useCallback(() => {
+    // Map ready callback - can be used for further initialization
+  }, []);
 
   useEffect(() => {
     if (!hostRef.current || mapRef.current) return;
@@ -50,7 +62,8 @@ export default function MapView({ center, zoom = 14 }: Props) {
     } catch (e: any) {
       setError(`${t('mapboxInitError')}: ${e?.message ?? String(e)}`);
     }
-  }, []); // init once
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Map absichtlich nur einmal initialisieren
 
   useEffect(() => {
     if (!mapRef.current || !center) return;

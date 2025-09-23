@@ -897,7 +897,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
     if (isEditingJob && has && currentStep !== 'hotel') {
       setCurrentStep('hotel');
     }
-  }, [jobData.hotelName, isEditingJob]);
+  }, [jobData.hotelName, isEditingJob, currentStep]);
 
   return (
     <div className="h-full flex flex-col">

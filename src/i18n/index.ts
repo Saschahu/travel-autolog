@@ -392,6 +392,15 @@ const resources = {
       folderSelectionFailed: 'Folder selection failed',
       folderSelectionError: 'Error in folder selection',
       unknownError: 'An unknown error occurred.',
+      
+      // Image Upload
+      insertImage: 'Insert image',
+      tooLarge: 'File is too large. Maximum size is 8MB.',
+      uploadFailed: 'Image upload failed',
+      uploadingImage: 'Uploading image...',
+      imageAltText: 'Image description (alt text)',
+      imageAltPlaceholder: 'Describe this image for screen readers...',
+      addAltText: 'Add description',
       popupBlocked: 'Pop-up blocked',
       allowPopups: 'Please allow pop-ups for this page and try again.',
       newTabOpened: 'New tab opened',
@@ -852,6 +861,15 @@ const resources = {
       
       // Mapbox Errors
       mapboxTokenMissing: 'Kein Mapbox-Token gefunden. (Native: VITE_MAPBOX_TOKEN_MOBILE, Web: VITE_MAPBOX_TOKEN_WEB oder im GPS-UI speichern)',
+      
+      // Image Upload
+      insertImage: 'Bild einfügen',
+      tooLarge: 'Datei ist zu groß. Maximale Größe ist 8MB.',
+      uploadFailed: 'Bild-Upload fehlgeschlagen',
+      uploadingImage: 'Bild wird hochgeladen...',
+      imageAltText: 'Bildbeschreibung (Alt-Text)',
+      imageAltPlaceholder: 'Beschreiben Sie dieses Bild für Screenreader...',
+      addAltText: 'Beschreibung hinzufügen',
       mapboxTokenInvalid: 'Mapbox-Token ungültig (muss mit "pk." beginnen).',
       mapboxTokenRejected: 'Mapbox lehnt den Token ab (401/403). Für Web: Domain in URL-Restrictions. Für Native: separaten mobilen Token ohne URL-Restrictions nutzen.',
       mapboxTokenMissingShort: 'Mapbox-Token fehlt.',

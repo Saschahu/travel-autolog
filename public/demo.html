@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Report Editor - Image Upload Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    typography: {
+                        DEFAULT: {
+                            css: {
+                                maxWidth: 'none',
+                                img: {
+                                    borderRadius: '0.5rem',
+                                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/typography@0.5.16/dist/index.min.js"></script>
+</head>
+<body class="bg-gray-50 p-8">
+    <div class="max-w-4xl mx-auto">
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">Travel AutoLog - Report Editor</h1>
+            <p class="text-gray-600">Stage 2 Implementation: Rich Text Editor with Image Upload</p>
+        </div>
+
+        <!-- Report Tab Demo -->
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+            <div class="border-b border-gray-200 px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-lg font-semibold text-gray-900">Bericht für Tag 1/3</h2>
+                    <div class="flex items-center gap-2 text-sm text-gray-500">
+                        <span>📅 2024-01-15</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rich Text Editor Toolbar -->
+            <div class="border-b border-gray-200 px-6 py-3 bg-gray-50">
+                <div class="flex items-center gap-1 flex-wrap">
+                    <button class="p-2 hover:bg-gray-200 rounded-md" title="Bold">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6V4zm0 8h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6v-8z"/>
+                        </svg>
+                    </button>
+                    <button class="p-2 hover:bg-gray-200 rounded-md" title="Italic">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 4h-9M14 20H5M12.5 4l-3 16"/>
+                        </svg>
+                    </button>
+                    <button class="p-2 hover:bg-gray-200 rounded-md" title="Bullet List">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>
+                        </svg>
+                    </button>
+                    <button class="p-2 hover:bg-gray-200 rounded-md" title="Numbered List">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h10M7 12h4m1 8l-4-4H8l4-4V8H7v4h3m-3 4h3.4"/>
+                        </svg>
+                    </button>
+                    <div class="w-px h-6 bg-gray-300 mx-1"></div>
+                    <button class="p-2 hover:bg-gray-200 rounded-md" title="Undo">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/>
+                        </svg>
+                    </button>
+                    <button class="p-2 hover:bg-gray-200 rounded-md" title="Redo">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 10h-10a8 8 0 00-8 8v2m18-10l-6-6m6 6l-6 6"/>
+                        </svg>
+                    </button>
+                    <div class="w-px h-6 bg-gray-300 mx-1"></div>
+                    <button class="p-2 hover:bg-blue-200 bg-blue-100 text-blue-600 rounded-md" title="Bild einfügen" onclick="showImageDialog()">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Rich Text Content -->
+            <div class="px-6 py-4">
+                <div class="prose prose-sm max-w-none min-h-[400px] focus:outline-none" contenteditable="true">
+                    <p>Heute habe ich die Installation des neuen Steuerungssystems abgeschlossen. Folgende Arbeiten wurden durchgeführt:</p>
+                    
+                    <ul>
+                        <li><strong>Alte SPS-Einheit entfernt</strong> - Siemens S7-300 System ordnungsgemäß heruntergefahren</li>
+                        <li><strong>Neue Siemens S7-1200 installiert</strong> - In den Schaltschrank eingebaut und verkabelt</li>
+                        <li><strong>I/O-Module angeschlossen</strong> - Alle 24 digitalen und 8 analogen Eingänge getestet</li>
+                        <li>Kommunikationsverbindungen hergestellt</li>
+                    </ul>
+
+                    <p>Hier ist das fertig installierte System:</p>
+
+                    <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAwIiBoZWlnaHQ9IjQwMCIgdmlld0JveD0iMCAwIDYwMCA0MDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI2MDAiIGhlaWdodD0iNDAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxyZWN0IHg9IjUwIiB5PSI1MCIgd2lkdGg9IjUwMCIgaGVpZ2h0PSIzMDAiIGZpbGw9IiNEMUQ1REIiIHN0cm9rZT0iIzlDQTNBRiIgc3Ryb2tlLXdpZHRoPSIyIiByeD0iOCIvPgo8cmVjdCB4PSIxMDAiIHk9IjEwMCIgd2lkdGg9IjE1MCIgaGVpZ2h0PSI4MCIgZmlsbD0iIzM3NEY2OCIgcng9IjQiLz4KPHJlY3QgeD0iMjgwIiB5PSIxMDAiIHdpZHRoPSIxMDAiIGhlaWdodD0iODAiIGZpbGw9IiNEQzI2MjYiIHJ4PSI0Ii8+CjxyZWN0IHg9IjQxMCIgeT0iMTAwIiB3aWR0aD0iMTAwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjMDU5NjY5IiByeD0iNCIvPgo8dGV4dCB4PSIxNzUiIHk9IjE0NSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+U2llbWVucyBTNy0xMjAwPC90ZXh0Pgo8dGV4dCB4PSIzMzAiIHk9IjE0NSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEwIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+UG93ZXIgU3VwcGx5PC90ZXh0Pgo8dGV4dCB4PSI0NjAiIHk9IjE0NSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEwIiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+SS9PIE1vZHVsZXM8L3RleHQ+CjxsaW5lIHgxPSIyNTAiIHkxPSIxNDAiIHgyPSIyODAiIHkyPSIxNDAiIHN0cm9rZT0iIzY3NzI4MCIgc3Ryb2tlLXdpZHRoPSIyIi8+CjxsaW5lIHgxPSIzODAiIHkxPSIxNDAiIHgyPSI0MTAiIHkyPSIxNDAiIHN0cm9rZT0iIzY3NzI4MCIgc3Ryb2tlLXdpZHRoPSIyIi8+CjxyZWN0IHg9IjEwMCIgeT0iMjIwIiB3aWR0aD0iNDEwIiBoZWlnaHQ9IjYwIiBmaWxsPSIjRkVGM0MyIiBzdHJva2U9IiNEOUY5OUQiIHN0cm9rZS13aWR0aD0iMiIgcng9IjQiLz4KPHN2Z2NpcmNsZSBjeD0iMTMwIiBjeT0iMjUwIiByPSI1IiBmaWxsPSIjMTZBMzRBIi8+CjxzdmNpcmNsZSBjeD0iMTYwIiBjeT0iMjUwIiByPSI1IiBmaWxsPSIjMTZBMzRBIi8+CjxzdmNjaXJjbGUgY3g9IjE5MCIgY3k9IjI1MCIgcj0iNSIgZmlsbD0iIzE2QTM0QSIvPgo8dGV4dCB4PSIzMDAiIHk9IjI1NSIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBmaWxsPSIjMzc0MTUxIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5TWVNURU0gT1BFUkFUSU9OQUw8L3RleHQ+Cjx0ZXh0IHg9IjMwMCIgeT0iMzIwIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiMzNzQxNTEiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZvbnQtd2VpZ2h0PSJib2xkIj5TY2hhbHRzY2hyYW5rbW9udGFnZSBhYmdlc2NobG9zc2VuPC90ZXh0Pgo8L3N2Zz4K"
+                         alt="Fertig installiertes Siemens S7-1200 SPS-System im Schaltschrank mit Power Supply und I/O-Modulen, System ist betriebsbereit" 
+                         loading="lazy" 
+                         class="rounded-lg shadow-lg max-w-full h-auto"/>
+
+                    <p>Das System ist jetzt voll funktionsfähig und bereit für die Inbetriebnahme morgen. Alle Tests waren erfolgreich:</p>
+
+                    <blockquote>
+                        <p><strong>Testprotokoll:</strong> Alle digitalen Ein- und Ausgänge funktionieren ordnungsgemäß. Kommunikation zur übergeordneten Leittechnik hergestellt. System läuft stabil.</p>
+                    </blockquote>
+
+                    <p>Morgen wird das Engineering-Team vor Ort sein, um die finale Konfiguration zu laden.</p>
+                </div>
+            </div>
+
+            <!-- Footer controls -->
+            <div class="border-t border-gray-200 px-6 py-4 bg-gray-50">
+                <div class="flex items-center justify-between">
+                    <button class="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:text-gray-900 disabled:opacity-50">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                        Vorheriger Tag
+                    </button>
+                    
+                    <button class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm rounded-md hover:bg-blue-700">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3-3m0 0l-3 3m3-3v12"/>
+                        </svg>
+                        Speichern
+                    </button>
+                    
+                    <button class="flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:text-gray-900">
+                        Nächster Tag
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Implementation Summary -->
+        <div class="mt-8 bg-white rounded-lg shadow-lg p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">🎯 Stage 2 Implementation Summary</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="font-semibold text-green-700 mb-2">✅ Completed Features</h4>
+                    <ul class="text-sm space-y-1 text-gray-600">
+                        <li>• Rich text editor with TipTap</li>
+                        <li>• Auto-resize to 1600px, JPEG @ ~85%</li>
+                        <li>• EXIF/GPS data stripping</li>
+                        <li>• MIME + magic byte validation</li>
+                        <li>• Alt-text prompts for accessibility</li>
+                        <li>• Lazy loading (loading="lazy")</li>
+                        <li>• Feature flag: VITE_ENABLE_REPORT_IMAGES</li>
+                        <li>• i18n support (EN/DE)</li>
+                        <li>• 8MB file size limit</li>
+                        <li>• Supabase storage integration</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-semibold text-blue-700 mb-2">🔒 Security & Privacy</h4>
+                    <ul class="text-sm space-y-1 text-gray-600">
+                        <li>• File signature validation</li>
+                        <li>• EXIF metadata stripped</li>
+                        <li>• User-specific storage paths</li>
+                        <li>• Signed URLs with 7-day TTL</li>
+                        <li>• RLS policies ready</li>
+                        <li>• Development mode fallback</li>
+                    </ul>
+                    
+                    <h4 class="font-semibold text-purple-700 mb-2 mt-4">📱 UX Features</h4>
+                    <ul class="text-sm space-y-1 text-gray-600">
+                        <li>• Upload progress indication</li>
+                        <li>• Error handling with toasts</li>
+                        <li>• Keyboard navigation support</li>
+                        <li>• Mobile-responsive toolbar</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Upload Dialog (Demo) -->
+    <div id="imageDialog" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold">Beschreibung hinzufügen</h3>
+                <button onclick="hideImageDialog()" class="text-gray-400 hover:text-gray-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="mb-4">
+                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjEyMCIgdmlld0JveD0iMCAwIDIwMCAxMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMTIwIiBmaWxsPSIjRTVFN0VCIi8+CjxjaXJjbGUgY3g9IjEwMCIgY3k9IjYwIiByPSIyMCIgZmlsbD0iIzlDQTNBRiIvPgo8cGF0aCBkPSJNODUgNDVMMTAwIDYwTDExNSA0NSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSJub25lIi8+Cjx0ZXh0IHg9IjEwMCIgeT0iOTAiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxMiIgZmlsbD0iIzlDQTNBRiIgdGV4dC1hbmNob3I9Im1pZGRsZSI+TmV1ZXMgQmlsZDwvdGV4dD4KPC9zdmc+" 
+                     alt="" 
+                     class="w-full h-24 object-cover rounded border">
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Bildbeschreibung (Alt-Text)</label>
+                <textarea 
+                    class="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent" 
+                    rows="3" 
+                    placeholder="Beschreiben Sie dieses Bild für Screenreader..."></textarea>
+            </div>
+            
+            <div class="flex justify-end gap-3">
+                <button onclick="hideImageDialog()" class="px-4 py-2 text-gray-600 hover:text-gray-800">Abbrechen</button>
+                <button onclick="insertImage()" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Bild einfügen</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showImageDialog() {
+            document.getElementById('imageDialog').classList.remove('hidden');
+            document.getElementById('imageDialog').classList.add('flex');
+        }
+        
+        function hideImageDialog() {
+            document.getElementById('imageDialog').classList.add('hidden');
+            document.getElementById('imageDialog').classList.remove('flex');
+        }
+        
+        function insertImage() {
+            hideImageDialog();
+            // In real implementation, this would insert the image into the editor
+            alert('Bild würde jetzt in den Editor eingefügt werden');
+        }
+    </script>
+</body>
+</html>

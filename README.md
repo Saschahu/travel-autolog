@@ -161,3 +161,31 @@ Die Android Gradle Konfiguration pinnt automatisch alle Kotlin Dependencies auf 
 
 ### App-Daten zurücksetzen
 In der App: Einstellungen → Erweitert → "App-Daten löschen"
+
+## Report Editor – Images
+
+The report editor supports image uploads with the following features:
+
+### Limits & Formats
+- **File size**: Maximum 8MB per image
+- **Formats**: JPEG, PNG, WebP, GIF
+- **Auto-resize**: Images are automatically resized to max 1600px while preserving aspect ratio
+- **Quality**: JPEG compression at ~85% for optimal size/quality balance
+
+### Privacy & Security
+- **EXIF stripping**: All metadata including GPS location is automatically removed
+- **File validation**: Images are validated by both MIME type and file signature (magic bytes)
+- **Access control**: Images are stored with user-specific paths and signed URLs
+
+### Feature Flag
+Images can be disabled by setting `VITE_ENABLE_REPORT_IMAGES=false` (default: enabled)
+
+### Storage
+- Images are stored in Supabase Storage bucket `reports`
+- Path structure: `{userId}/{year}/{month}/{day}/{uuid}.jpg`
+- Signed URLs with 7-day expiry for secure access
+
+### Troubleshooting
+- If upload fails, check Supabase storage bucket configuration
+- In development mode without bucket, temporary URLs are used
+- Images support lazy loading and include alt-text for accessibility

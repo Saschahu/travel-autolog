@@ -8,7 +8,7 @@ import { Capacitor } from '@capacitor/core';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
 export const GPSPage: React.FC = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('gps');
   const [center, setCenter] = useState<[number, number]>();
   const [msg, setMsg] = useState<string>();
   const [isTracking, setIsTracking] = useState(false);

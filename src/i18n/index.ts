@@ -603,7 +603,69 @@ const resources = {
         unknownError: 'Unknown error occurred'
       }
     },
-    job: jobTranslationsEn
+    job: jobTranslationsEn,
+    gps: {
+      // Current State
+      currentState: 'Current State',
+      trackingActive: 'Tracking active',
+      trackingStopped: 'Tracking stopped',
+      gpsAuthorized: 'GPS authorized',
+      gpsPermissionMissing: 'GPS permission missing',
+      
+      // State Labels
+      idleAtHome: 'Home (Ready)',
+      departing: 'Leaving Home',
+      enRouteToCustomer: 'En route to customer',
+      stationaryCheck: 'Stationary check',
+      atCustomer: 'At customer',
+      leavingCustomer: 'Leaving customer',
+      enRouteHome: 'Returning home',
+      stationaryHomeCheck: 'Home check',
+      done: 'Completed',
+      
+      // Timer Section
+      timer: 'Timer',
+      travel: 'Travel',
+      workTime: 'Work time',
+      returnTrip: 'Return trip',
+      
+      // Control Section
+      control: 'Control',
+      requestPermission: 'GPS Permission',
+      getCurrentPosition: 'Get position',
+      startTracking: 'Start Tracking',
+      stopTracking: 'Stop Tracking',
+      
+      // Action Buttons
+      work: 'Work',
+      private: 'Private',
+      confirmAtCustomer: 'At customer',
+      denyAtCustomer: 'Not at customer',
+      confirmWorkDone: 'Work finished',
+      continueWorking: 'Continue working',
+      confirmHomeArrival: 'Return trip finished',
+      
+      // Location Info
+      locationInfo: 'Location Info',
+      lastPosition: 'Last position:',
+      noPositionAvailable: 'No position available',
+      speed: 'Speed:',
+      accuracy: 'Accuracy:',
+      timestamp: 'Timestamp:',
+      
+      // Aria Labels for Screen Readers
+      ariaRequestPermission: 'Request GPS location permission',
+      ariaGetCurrentPosition: 'Get current GPS position',
+      ariaStartTracking: 'Start GPS location tracking',
+      ariaStopTracking: 'Stop GPS location tracking',
+      ariaSelectWork: 'Select work trip type',
+      ariaSelectPrivate: 'Select private trip type',
+      ariaConfirmAtCustomer: 'Confirm arrival at customer location',
+      ariaDenyAtCustomer: 'Confirm not at customer location',
+      ariaConfirmWorkDone: 'Confirm work is completed',
+      ariaContinueWorking: 'Continue working at current location',
+      ariaConfirmHomeArrival: 'Confirm arrival back home'
+    }
   },
   de: {
     translation: {
@@ -1014,52 +1076,6 @@ const resources = {
       privateTrip: 'Private Reise',
       privateTripDescription: 'Viel Spaß bei deinen privaten Aktivitäten!',
       
-      // GPS tracking specific translations
-      gpsTracking: {
-        tracking: {
-          title: 'GPS-Strecken-Aufzeichnung',
-          description: 'GPS-Punkte aufzeichnen um tägliche Strecken mit Entfernungsberechnung zu erstellen.',
-          toggle: 'Aufzeichnung aktivieren',
-          toggleDescription: 'GPS-Punkte während Aktivität aufzeichnen',
-          active: 'Aktiv',
-          starting: 'Startet...',
-          stopped: 'Gestoppt',
-          error: 'Fehler'
-        },
-        stats: {
-          pointsToday: 'Punkte heute',
-          distanceToday: 'Strecke heute'
-        },
-        export: {
-          title: 'Heutige Strecke exportieren',
-          gpx: 'GPX exportieren',
-          geojson: 'GeoJSON exportieren',
-          success: 'Export erfolgreich',
-          error: 'Export fehlgeschlagen',
-          gpxDownloaded: 'GPX-Datei heruntergeladen',
-          geojsonDownloaded: 'GeoJSON-Datei heruntergeladen',
-          failed: 'Strecken-Export fehlgeschlagen',
-          noDataToExport: 'Keine GPS-Daten für heute aufgezeichnet'
-        },
-        cleanup: {
-          button: 'Alte Strecken löschen',
-          confirmTitle: 'Alte Strecken löschen?',
-          confirmDescription: 'Dies löscht alle GPS-Strecken älter als 60 Tage. Diese Aktion kann nicht rückgängig gemacht werden.',
-          confirm: 'Löschen',
-          success: 'Aufräumen erfolgreich',
-          error: 'Aufräumen fehlgeschlagen',
-          failed: 'Alte Strecken konnten nicht gelöscht werden',
-          deletedCount: '{{count}} alte Strecken gelöscht',
-          description: 'Entfernt automatisch Strecken älter als 60 Tage'
-        },
-        maintenance: {
-          title: 'Wartung'
-        },
-        backgroundMode: {
-          info: 'Hintergrund-Tracking benötigt zusätzliche Berechtigungen auf Android-Geräten.'
-        }
-      },
-      
       // Overtime Rules
       overtimeRules: 'Überstundenregeln:',
       rule8to12: '• 8-12 Stunden: 50% Zuschlag auf Überstunden',
@@ -1096,7 +1112,69 @@ const resources = {
         unknownError: 'Unbekannter Fehler aufgetreten'
       }
     },
-    job: jobTranslationsDe
+    job: jobTranslationsDe,
+    gps: {
+      // Current State
+      currentState: 'Aktueller Zustand',
+      trackingActive: 'Tracking aktiv',
+      trackingStopped: 'Tracking gestoppt',
+      gpsAuthorized: 'GPS berechtigt',
+      gpsPermissionMissing: 'GPS Berechtigung fehlt',
+      
+      // State Labels
+      idleAtHome: 'Zuhause (Bereit)',
+      departing: 'Verlässt Zuhause',
+      enRouteToCustomer: 'Anreise zum Kunden',
+      stationaryCheck: 'Stationär-Prüfung',
+      atCustomer: 'Beim Kunden',
+      leavingCustomer: 'Verlässt Kunde',
+      enRouteHome: 'Heimreise',
+      stationaryHomeCheck: 'Zuhause-Prüfung',
+      done: 'Abgeschlossen',
+      
+      // Timer Section
+      timer: 'Timer',
+      travel: 'Anreise',
+      workTime: 'Arbeitszeit',
+      returnTrip: 'Heimreise',
+      
+      // Control Section
+      control: 'Kontrolle',
+      requestPermission: 'GPS Berechtigung',
+      getCurrentPosition: 'Position abrufen',
+      startTracking: 'Tracking starten',
+      stopTracking: 'Tracking stoppen',
+      
+      // Action Buttons
+      work: 'Arbeit',
+      private: 'Privat',
+      confirmAtCustomer: 'Beim Kunden',
+      denyAtCustomer: 'Nicht beim Kunden',
+      confirmWorkDone: 'Arbeit fertig',
+      continueWorking: 'Weiter arbeiten',
+      confirmHomeArrival: 'Heimreise beendet',
+      
+      // Location Info
+      locationInfo: 'Standort-Info',
+      lastPosition: 'Letzte Position:',
+      noPositionAvailable: 'Keine Position verfügbar',
+      speed: 'Geschwindigkeit:',
+      accuracy: 'Genauigkeit:',
+      timestamp: 'Zeitstempel:',
+      
+      // Aria Labels for Screen Readers
+      ariaRequestPermission: 'GPS-Standort-Berechtigung anfordern',
+      ariaGetCurrentPosition: 'Aktuelle GPS-Position abrufen',
+      ariaStartTracking: 'GPS-Standort-Verfolgung starten',
+      ariaStopTracking: 'GPS-Standort-Verfolgung stoppen',
+      ariaSelectWork: 'Arbeitsreise-Typ auswählen',
+      ariaSelectPrivate: 'Private Reise-Typ auswählen',
+      ariaConfirmAtCustomer: 'Ankunft beim Kunden bestätigen',
+      ariaDenyAtCustomer: 'Bestätigen, nicht beim Kunden zu sein',
+      ariaConfirmWorkDone: 'Bestätigen, dass die Arbeit abgeschlossen ist',
+      ariaContinueWorking: 'Am aktuellen Standort weiterarbeiten',
+      ariaConfirmHomeArrival: 'Ankunft zu Hause bestätigen'
+    }
   },
   no: {
     translation: {

@@ -572,7 +572,91 @@ const resources = {
       rule8to12: '• 8-12 hours: 50% surcharge on overtime',
       ruleOver12: '• Over 12 hours: 100% surcharge on overtime',
       weekendRules: 'Weekend Rules:',
-      payment: '• Payment: At least guaranteed hours + overtime surcharges'
+      payment: '• Payment: At least guaranteed hours + overtime surcharges',
+      
+      // GPS tracking specific translations
+      gpsTracking: {
+        tracking: {
+          title: 'GPS Route Recording',
+          description: 'Record GPS points to create daily routes with distance calculation.',
+          toggle: 'Enable Recording',
+          toggleDescription: 'Record GPS points during activity',
+          active: 'Active',
+          starting: 'Starting...',
+          stopped: 'Stopped',
+          error: 'Error'
+        },
+        stats: {
+          pointsToday: 'Points Today',
+          distanceToday: 'Distance Today'
+        },
+        status: {
+          currentState: 'Current State',
+          timer: 'Timer',
+          control: 'Control',
+          locationInfo: 'Location Info',
+          trackingActive: 'Tracking Active',
+          trackingStopped: 'Tracking Stopped',
+          gpsAuthorized: 'GPS Authorized',
+          gpsPermissionMissing: 'GPS Permission Missing',
+          travelTime: 'Travel',
+          workTime: 'Work Time',
+          returnTime: 'Return',
+          gpsPermission: 'GPS Permission',
+          getPosition: 'Get Position',
+          work: 'Work',
+          private: 'Private',
+          atCustomer: 'At Customer',
+          notAtCustomer: 'Not At Customer',
+          workDone: 'Work Done',
+          continueWorking: 'Continue Working',
+          returnCompleted: 'Return Completed',
+          lastPosition: 'Last Position',
+          noPositionAvailable: 'No Position Available',
+          speed: 'Speed',
+          accuracy: 'Accuracy',
+          timestamp: 'Timestamp',
+          states: {
+            idle_at_home: 'At Home (Ready)',
+            departing: 'Leaving Home',
+            en_route_to_customer: 'En Route to Customer',
+            stationary_check: 'Stationary Check',
+            at_customer: 'At Customer',
+            leaving_customer: 'Leaving Customer',
+            en_route_home: 'En Route Home',
+            stationary_home_check: 'Home Check',
+            done: 'Completed'
+          }
+        },
+        export: {
+          title: 'Export Today\'s Route',
+          gpx: 'Export GPX',
+          geojson: 'Export GeoJSON',
+          success: 'Export Successful',
+          error: 'Export Failed',
+          gpxDownloaded: 'GPX File Downloaded',
+          geojsonDownloaded: 'GeoJSON File Downloaded',
+          failed: 'Route Export Failed',
+          noDataToExport: 'No GPS Data Recorded Today'
+        },
+        cleanup: {
+          button: 'Delete Old Routes',
+          confirmTitle: 'Delete Old Routes?',
+          confirmDescription: 'This will delete all GPS routes older than 60 days. This action cannot be undone.',
+          confirm: 'Delete',
+          success: 'Cleanup Successful',
+          error: 'Cleanup Failed',
+          failed: 'Old Routes Could Not Be Deleted',
+          deletedCount: '{{count}} old routes deleted',
+          description: 'Automatically removes routes older than 60 days'
+        },
+        maintenance: {
+          title: 'Maintenance'
+        },
+        backgroundMode: {
+          info: 'Background tracking requires additional permissions on Android devices.'
+        }
+      }
     },
     
     // Privacy and consent translations
@@ -1079,6 +1163,44 @@ const resources = {
         stats: {
           pointsToday: 'Punkte heute',
           distanceToday: 'Strecke heute'
+        },
+        status: {
+          currentState: 'Aktueller Zustand',
+          timer: 'Timer',
+          control: 'Kontrolle',
+          locationInfo: 'Standort-Info',
+          trackingActive: 'Tracking aktiv',
+          trackingStopped: 'Tracking gestoppt',
+          gpsAuthorized: 'GPS berechtigt',
+          gpsPermissionMissing: 'GPS Berechtigung fehlt',
+          travelTime: 'Anreise',
+          workTime: 'Arbeitszeit',
+          returnTime: 'Heimreise',
+          gpsPermission: 'GPS Berechtigung',
+          getPosition: 'Position abrufen',
+          work: 'Arbeit',
+          private: 'Privat',
+          atCustomer: 'Beim Kunden',
+          notAtCustomer: 'Nicht beim Kunden',
+          workDone: 'Arbeit fertig',
+          continueWorking: 'Weiter arbeiten',
+          returnCompleted: 'Heimreise beendet',
+          lastPosition: 'Letzte Position',
+          noPositionAvailable: 'Keine Position verfügbar',
+          speed: 'Geschwindigkeit',
+          accuracy: 'Genauigkeit',
+          timestamp: 'Zeitstempel',
+          states: {
+            idle_at_home: 'Zuhause (Bereit)',
+            departing: 'Verlässt Zuhause',
+            en_route_to_customer: 'Anreise zum Kunden',
+            stationary_check: 'Stationär-Prüfung',
+            at_customer: 'Beim Kunden',
+            leaving_customer: 'Verlässt Kunde',
+            en_route_home: 'Heimreise',
+            stationary_home_check: 'Zuhause-Prüfung',
+            done: 'Abgeschlossen'
+          }
         },
         export: {
           title: 'Heutige Strecke exportieren',

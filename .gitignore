@@ -29,14 +29,6 @@ android/
 # Lokale Secrets
 .env
 
-# Android Keystore & Security Files
-*.keystore
-*.jks
-*.p12
-*.key
-keystore.properties
-google-services.json
-service-account.json
-
-# Play Console Service Account
-play-console-service-account.json
+# Lighthouse CI results
+lhci-results/
+.lighthouseci/

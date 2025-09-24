@@ -1,72 +1,82 @@
 /**
- * HTML Sanitizer Module
- * 
- * Provides safe HTML handling using DOMPurify with Trusted Types support
- * for CSP compliance and XSS prevention.
+ * HTML sanitizer with Trusted Types support
+ * Provides safe HTML sanitization with deferred DOMPurify loading
  */
 
-// Dynamic import of DOMPurify to keep it out of initial bundle
-let DOMPurify: typeof import('dompurify').default | null = null;
+// Trusted Types support check
+export function supportsTrustedTypes(): boolean {
+  return typeof window !== 'undefined' && 'trustedTypes' in window;
+}
+
+// Create a trusted type policy if supported
+let trustedTypePolicy: TrustedTypePolicy | null = null;
+
+if (supportsTrustedTypes()) {
+  try {
+    trustedTypePolicy = window.trustedTypes!.createPolicy('travel-autolog-sanitizer', {
+      createHTML: (input: string) => input, // DOMPurify will sanitize before this
+    });
+  } catch (error) {
+    console.warn('Could not create trusted type policy:', error);
+  }
+}
 
 /**
- * Lazily load DOMPurify only when needed
+ * Lazy load DOMPurify to avoid importing it at startup
  */
-async function getDOMPurify() {
-  if (!DOMPurify) {
-    // Dynamic import to avoid loading DOMPurify in initial bundle
-    const module = await import('dompurify');
-    DOMPurify = module.default;
-  }
+async function getDOMPurify(): Promise<typeof import('dompurify').default> {
+  const { default: DOMPurify } = await import('dompurify');
   return DOMPurify;
 }
 
 /**
- * Sanitize HTML input using DOMPurify with strict settings
- * @param input - Raw HTML string to sanitize
- * @returns Sanitized HTML string safe for DOM insertion
+ * Basic HTML sanitization rules
  */
-export async function sanitizeHtml(input: string): Promise<string> {
-  const purify = await getDOMPurify();
-  
-  // Configure DOMPurify with strict settings for production
-  return purify.sanitize(input, {
-    ALLOWED_TAGS: [
-      'p', 'br', 'strong', 'em', 'u', 'i', 'b', 'span', 'div',
-      'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-      'ul', 'ol', 'li',
-      'a', 'blockquote', 'code', 'pre'
-    ],
-    ALLOWED_ATTR: ['href', 'title', 'target', 'rel', 'class'],
-    ALLOW_DATA_ATTR: false,
-    ALLOW_UNKNOWN_PROTOCOLS: false,
-    SANITIZE_DOM: true,
-    KEEP_CONTENT: true,
-    // Remove any script-related attributes
-    FORBID_ATTR: ['onclick', 'onload', 'onerror', 'onmouseover'],
-    // Remove script and style tags completely
-    FORBID_TAGS: ['script', 'style', 'object', 'embed', 'iframe']
-  });
+export const SAFE_HTML_CONFIG = {
+  ALLOWED_TAGS: ['b', 'i', 'em', 'strong', 'u', 'br', 'p', 'span', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
+  ALLOWED_ATTR: ['class', 'id'],
+  FORBID_TAGS: ['script', 'object', 'embed', 'form', 'input', 'textarea'],
+  FORBID_ATTR: ['onclick', 'onload', 'onerror', 'onmouseover', 'onfocus', 'onblur', 'style'],
+};
+
+/**
+ * Sanitize HTML string removing dangerous elements and attributes
+ */
+export async function sanitizeHtml(html: string): Promise<string> {
+  if (!html || typeof html !== 'string') {
+    return '';
+  }
+
+  try {
+    const DOMPurify = await getDOMPurify();
+    
+    // Configure DOMPurify with safe settings
+    return DOMPurify.sanitize(html, {
+      ALLOWED_TAGS: SAFE_HTML_CONFIG.ALLOWED_TAGS,
+      ALLOWED_ATTR: SAFE_HTML_CONFIG.ALLOWED_ATTR,
+      FORBID_TAGS: SAFE_HTML_CONFIG.FORBID_TAGS,
+      FORBID_ATTR: SAFE_HTML_CONFIG.FORBID_ATTR,
+      USE_PROFILES: { html: true },
+    });
+  } catch (error) {
+    console.error('Error sanitizing HTML:', error);
+    // Fallback: strip all tags
+    return html.replace(/<[^>]*>/g, '');
+  }
 }
 
 /**
- * Create safe HTML for DOM insertion with Trusted Types support
- * @param input - Raw HTML string to sanitize
- * @returns TrustedHTML object if supported, otherwise sanitized string
+ * Create safe HTML that can be used with Trusted Types
+ * Returns TrustedHTML when supported, otherwise sanitized string
  */
-export async function toSafeHtml(input: string): Promise<TrustedHTML | string> {
-  const sanitized = await sanitizeHtml(input);
+export async function toSafeHtml(html: string): Promise<TrustedHTML | string> {
+  const sanitized = await sanitizeHtml(html);
   
-  // Use Trusted Types if available
-  if (typeof window !== 'undefined' && window.trustedTypes) {
+  if (supportsTrustedTypes() && trustedTypePolicy) {
     try {
-      // Create or get existing policy
-      const policy = window.trustedTypes.createPolicy('app#default', {
-        createHTML: (input: string) => input // Input is already sanitized
-      });
-      
-      return policy.createHTML(sanitized);
+      return trustedTypePolicy.createHTML(sanitized);
     } catch (error) {
-      console.warn('Failed to create Trusted Types policy:', error);
+      console.warn('Could not create trusted HTML:', error);
       return sanitized;
     }
   }
@@ -75,36 +85,51 @@ export async function toSafeHtml(input: string): Promise<TrustedHTML | string> {
 }
 
 /**
- * Synchronous HTML sanitization (fallback when async is not possible)
- * Note: This should be avoided in favor of the async version when possible
- * @param input - Raw HTML string to sanitize
- * @returns Sanitized HTML string (without DOMPurify if not loaded)
+ * Strip all HTML tags and return plain text
  */
-export function sanitizeHtmlSync(input: string): string {
-  if (!DOMPurify) {
-    console.warn('DOMPurify not loaded, using basic sanitization');
-    // Basic fallback sanitization (not as secure as DOMPurify)
-    return input
-      .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-      .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '')
-      .replace(/on\w+\s*=\s*"[^"]*"/gi, '')
-      .replace(/on\w+\s*=\s*'[^']*'/gi, '')
-      .replace(/javascript:/gi, '');
+export function stripHtmlTags(html: string): string {
+  if (!html || typeof html !== 'string') {
+    return '';
   }
   
-  return DOMPurify.sanitize(input, {
-    ALLOWED_TAGS: [
-      'p', 'br', 'strong', 'em', 'u', 'i', 'b', 'span', 'div',
-      'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-      'ul', 'ol', 'li',
-      'a', 'blockquote', 'code', 'pre'
-    ],
-    ALLOWED_ATTR: ['href', 'title', 'target', 'rel', 'class'],
-    ALLOW_DATA_ATTR: false,
-    ALLOW_UNKNOWN_PROTOCOLS: false,
-    SANITIZE_DOM: true,
-    KEEP_CONTENT: true,
-    FORBID_ATTR: ['onclick', 'onload', 'onerror', 'onmouseover'],
-    FORBID_TAGS: ['script', 'style', 'object', 'embed', 'iframe']
-  });
+  return html
+    .replace(/<[^>]*>/g, '') // Remove all HTML tags
+    .replace(/&nbsp;/g, ' ') // Replace &nbsp; with regular space
+    .replace(/&amp;/g, '&') // Decode common entities
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .trim();
+}
+
+/**
+ * Check if string contains potentially dangerous HTML
+ */
+export function containsDangerousHtml(html: string): boolean {
+  if (!html || typeof html !== 'string') {
+    return false;
+  }
+
+  // Check for script tags
+  if (/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi.test(html)) {
+    return true;
+  }
+
+  // Check for event handlers
+  if (/\s+on\w+\s*=/gi.test(html)) {
+    return true;
+  }
+
+  // Check for javascript: URLs
+  if (/javascript\s*:/gi.test(html)) {
+    return true;
+  }
+
+  // Check for data: URLs with script content
+  if (/data\s*:\s*text\s*\/\s*html/gi.test(html)) {
+    return true;
+  }
+
+  return false;
 }

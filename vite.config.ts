@@ -19,12 +19,18 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  build: {
-    manifest: true,
-    rollupOptions: {
-      output: {
-        manualChunks: undefined, // Let Rollup handle chunking automatically
-      },
-    },
-  },
+  test: {
+    environment: 'jsdom',
+    setupFiles: ['./test/setup.ts'],
+    css: true,
+    coverage: {
+      reporter: ['text', 'html', 'lcov'],
+      thresholds: {
+        lines: 60,
+        branches: 50,
+        functions: 60,
+        statements: 60
+      }
+    }
+  }
 }));

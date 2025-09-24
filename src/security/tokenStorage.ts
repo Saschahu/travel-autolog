@@ -1,150 +1,143 @@
-/**
- * Token Storage Module
- * 
- * Handles authentication token storage with support for both IndexedDB (default)
- * and optional cookie-based authentication mode.
- */
+import { get, set, del } from 'idb-keyval';
 
-/**
- * Check if cookie-based authentication mode is enabled
- */
-function isCookieMode(): boolean {
-  return import.meta.env.VITE_AUTH_COOKIE_MODE === 'true';
+const MAPBOX_TOKEN_KEY = 'mapbox_token';
+const MIGRATION_KEY = 'token_migration_complete';
+
+export interface TokenValidationResult {
+  isValid: boolean;
+  token?: string;
+  error?: string;
 }
 
 /**
- * Get the session URL for cookie-based authentication
+ * Validates if a token looks like a valid Mapbox public token
  */
-function getSessionUrl(): string {
-  return import.meta.env.VITE_AUTH_SESSION_URL || '/auth/session';
+export function validateMapboxToken(token?: string): TokenValidationResult {
+  if (!token) {
+    return { isValid: false, error: 'Token is empty' };
+  }
+
+  const trimmed = token.trim();
+  if (!trimmed) {
+    return { isValid: false, error: 'Token is empty after trimming' };
+  }
+
+  // Mapbox public token regex: pk.{base64-like-chars}
+  const mapboxTokenRegex = /^pk\.[A-Za-z0-9._\-]{10,}$/;
+  if (!mapboxTokenRegex.test(trimmed)) {
+    return { isValid: false, error: 'Token format invalid' };
+  }
+
+  return { isValid: true, token: trimmed };
 }
 
 /**
- * Interface for authentication session data
+ * Reads token from IndexedDB
  */
-export interface AuthSession {
-  user: {
-    id: string;
-    email: string;
-  } | null;
-  isAuthenticated: boolean;
-}
-
-/**
- * Check authentication status based on current mode
- * @returns Promise<AuthSession> - Current authentication session
- */
-export async function checkAuthStatus(): Promise<AuthSession> {
-  if (isCookieMode()) {
-    return checkCookieAuthStatus();
-  } else {
-    return checkIndexedDBAuthStatus();
+export async function readTokenFromIDB(): Promise<string | undefined> {
+  try {
+    return await get(MAPBOX_TOKEN_KEY);
+  } catch (error) {
+    console.warn('Error reading token from IndexedDB:', error);
+    return undefined;
   }
 }
 
 /**
- * Check authentication status via cookie-based session endpoint
+ * Writes token to IndexedDB
  */
-async function checkCookieAuthStatus(): Promise<AuthSession> {
+export async function writeTokenToIDB(token: string): Promise<void> {
   try {
-    const sessionUrl = getSessionUrl();
-    const response = await fetch(sessionUrl, {
-      method: 'GET',
-      credentials: 'include', // Include cookies
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
+    await set(MAPBOX_TOKEN_KEY, token);
+  } catch (error) {
+    console.error('Error writing token to IndexedDB:', error);
+    throw error;
+  }
+}
+
+/**
+ * Removes token from IndexedDB
+ */
+export async function removeTokenFromIDB(): Promise<void> {
+  try {
+    await del(MAPBOX_TOKEN_KEY);
+  } catch (error) {
+    console.warn('Error removing token from IndexedDB:', error);
+  }
+}
+
+/**
+ * Checks if migration from localStorage to IndexedDB has been completed
+ */
+export async function isMigrationComplete(): Promise<boolean> {
+  try {
+    return (await get(MIGRATION_KEY)) === true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Marks migration as complete
+ */
+export async function markMigrationComplete(): Promise<void> {
+  try {
+    await set(MIGRATION_KEY, true);
+  } catch (error) {
+    console.warn('Error marking migration complete:', error);
+  }
+}
+
+/**
+ * Migrates token from localStorage to IndexedDB (idempotent)
+ */
+export async function migrateTokenStorage(): Promise<void> {
+  // Check if already migrated
+  if (await isMigrationComplete()) {
+    return;
+  }
+
+  try {
+    // Get token from localStorage
+    const lsToken = localStorage.getItem(MAPBOX_TOKEN_KEY);
+    if (lsToken) {
+      const validation = validateMapboxToken(lsToken);
+      if (validation.isValid && validation.token) {
+        // Store in IndexedDB
+        await writeTokenToIDB(validation.token);
+        // Remove from localStorage
+        localStorage.removeItem(MAPBOX_TOKEN_KEY);
       }
-    });
-
-    if (response.ok) {
-      const session = await response.json();
-      return {
-        user: session.user || null,
-        isAuthenticated: !!session.user
-      };
-    } else {
-      return {
-        user: null,
-        isAuthenticated: false
-      };
     }
+
+    // Mark migration as complete
+    await markMigrationComplete();
   } catch (error) {
-    console.error('Cookie auth status check failed:', error);
-    return {
-      user: null,
-      isAuthenticated: false
-    };
+    console.error('Error during token migration:', error);
+    throw error;
   }
 }
 
 /**
- * Check authentication status via IndexedDB (default mode)
- * This integrates with the existing Supabase auth system
+ * Gets token with cookie-mode flag bypass
  */
-async function checkIndexedDBAuthStatus(): Promise<AuthSession> {
-  try {
-    // This is a placeholder for IndexedDB-based auth status check
-    // The actual implementation would integrate with the existing AuthContext
-    // and Supabase authentication system
-    
-    // Import Supabase client dynamically to avoid circular dependencies
-    const { supabase } = await import('@/integrations/supabase/client');
-    const { data: { session } } = await supabase.auth.getSession();
-    
-    return {
-      user: session?.user ? {
-        id: session.user.id,
-        email: session.user.email || ''
-      } : null,
-      isAuthenticated: !!session?.user
-    };
-  } catch (error) {
-    console.error('IndexedDB auth status check failed:', error);
-    return {
-      user: null,
-      isAuthenticated: false
-    };
-  }
-}
-
-/**
- * Clear authentication tokens/session based on current mode
- */
-export async function clearAuthTokens(): Promise<void> {
-  if (isCookieMode()) {
-    // In cookie mode, tokens are managed server-side
-    // Client-side logout would typically call a logout endpoint
-    console.log('Cookie mode: Tokens are managed server-side');
-  } else {
-    // In IndexedDB mode, use existing Supabase signOut
+export async function getTokenWithCookieBypass(cookieMode: boolean = false): Promise<string | undefined> {
+  if (cookieMode) {
+    // In cookie mode, we bypass storage and check session URL directly
     try {
-      const { supabase } = await import('@/integrations/supabase/client');
-      await supabase.auth.signOut();
-    } catch (error) {
-      console.error('Failed to clear IndexedDB tokens:', error);
+      const url = new URL(window.location.href);
+      const sessionToken = url.searchParams.get('session_token');
+      if (sessionToken) {
+        const validation = validateMapboxToken(sessionToken);
+        return validation.isValid ? validation.token : undefined;
+      }
+    } catch {
+      // URL parsing failed, continue with normal flow
     }
+    return undefined;
   }
-}
 
-/**
- * Get current authentication mode for debugging/logging
- */
-export function getAuthMode(): 'cookie' | 'indexeddb' {
-  return isCookieMode() ? 'cookie' : 'indexeddb';
-}
-
-/**
- * Log current authentication mode configuration
- */
-export function logAuthConfig(): void {
-  const mode = getAuthMode();
-  console.log(`Auth mode: ${mode}`);
-  
-  if (mode === 'cookie') {
-    console.log(`Session URL: ${getSessionUrl()}`);
-    console.log('Note: Tokens are managed server-side via HttpOnly cookies');
-  } else {
-    console.log('Note: Using IndexedDB storage via Supabase client');
-  }
+  // Normal flow: migrate if needed, then read from IndexedDB
+  await migrateTokenStorage();
+  return await readTokenFromIDB();
 }

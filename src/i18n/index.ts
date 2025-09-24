@@ -224,6 +224,7 @@ const resources = {
       gps: 'GPS',  
       settings: 'Settings',
       holidays: 'Holidays',
+      privacy: 'Privacy',
       advanced: 'Advanced',
       appLanguage: 'App language',
       uiLanguage: 'Interface language',
@@ -573,6 +574,85 @@ const resources = {
       weekendRules: 'Weekend Rules:',
       payment: '• Payment: At least guaranteed hours + overtime surcharges'
     },
+    
+    // Privacy and consent translations
+    privacy: {
+      // Consent Dialog
+      consentTitle: 'Privacy & Telemetry',
+      consentSubtitle: 'Help us improve the app by sharing anonymous usage data',
+      acceptTelemetry: 'Accept Telemetry',
+      declineTelemetry: 'Continue Without Telemetry',
+      saving: 'Saving...',
+      consentNote: 'You can change this setting anytime in app settings.',
+      readFullPolicy: 'Read full privacy policy',
+      
+      // Privacy Summary
+      briefDescription: 'We collect anonymous crash reports and performance data to improve app stability and user experience.',
+      dataTypes: 'This includes error messages, app performance metrics, and device information (no personal data).',
+      canChangeAnytime: 'You can change your privacy preferences anytime.',
+      learnMore: 'Learn more',
+      
+      // Full privacy information
+      whatWeCollect: 'What We Collect',
+      collectDescription: 'We collect anonymous crash reports, error logs, and performance metrics. No personal information, location data, or work content is included.',
+      howWeUseData: 'How We Use This Data',
+      useCase1: 'Identify and fix app crashes and bugs',
+      useCase2: 'Improve app performance and stability',
+      useCase3: 'Understand which features are most useful',
+      yourRights: 'Your Rights',
+      rightsDescription: 'You can opt out anytime, export your local data, or delete all local app data from your device.',
+      lastUpdated: 'Last updated',
+      lastUpdatedDate: 'January 2024',
+      
+      // Settings
+      telemetrySettings: 'Telemetry & Analytics',
+      telemetryToggleLabel: 'Share anonymous crash reports & performance data',
+      telemetryToggleDescription: 'Helps us improve app stability and user experience',
+      consentNotSet: 'Telemetry consent has not been set. The consent dialog will appear on next app start.',
+      settingsUpdated: 'Privacy settings updated',
+      telemetryEnabled: 'Anonymous telemetry enabled',
+      telemetryDisabled: 'Anonymous telemetry disabled',
+      error: 'Error',
+      failedToUpdateSettings: 'Failed to update privacy settings',
+      
+      // Privacy information
+      privacyInformation: 'Privacy Information',
+      
+      // Data management
+      dataManagement: 'Data Management',
+      dataManagementDescription: 'Export or delete all your local app data stored on this device.',
+      currentDataSummary: 'Current data stored locally',
+      indexedDbEntries: '{{count}} database entries',
+      localStorageEntries: '{{count}} local storage items',
+      preferenceEntries: '{{count}} app preferences',
+      
+      // Export
+      exportMyData: 'Export My Data',  
+      exporting: 'Exporting...',
+      exportSuccess: 'Data Export Successful',
+      exportSuccessDescription: 'Your app data has been downloaded as a JSON file.',
+      exportError: 'Export Failed',
+      exportErrorDescription: 'Failed to export your data. Please try again.',
+      
+      // Delete
+      deleteMyData: 'Delete My Data (Local Device)',
+      deleting: 'Deleting...',
+      confirmDelete: 'Delete All Local Data?',
+      deleteWarning: 'This will permanently delete all app data stored on this device.',
+      deleteWarningList: 'This includes',
+      deleteItem1: 'All job entries and reports',
+      deleteItem2: 'Settings and preferences',
+      deleteItem3: 'GPS tracking data',
+      deleteItem4: 'Export directory selections',
+      deleteIrreversible: 'This action cannot be undone!',
+      cancel: 'Cancel',
+      confirmDeleteButton: 'Delete All Data',
+      deleteSuccess: 'Data Deleted Successfully',
+      deleteSuccessDescription: 'All local app data has been deleted. The app will reload.',
+      deleteError: 'Delete Failed',
+      deleteErrorDescription: 'Failed to delete some data. Please try again or restart the app.'
+    },
+    
     job: jobTranslationsEn
   },
   de: {
@@ -637,6 +717,7 @@ const resources = {
       gps: 'GPS',
       settings: 'Einstellungen',
       holidays: 'Feiertage',
+      privacy: 'Datenschutz',
       advanced: 'Erweitert',
       appLanguage: 'App-Sprache',
       uiLanguage: 'Sprache der Benutzeroberfläche',
@@ -1036,6 +1117,85 @@ const resources = {
       weekendRules: 'Wochenendregeln:',
       payment: '• Bezahlung: Mindestens garantierte Stunden + Überstundenzuschläge'
     },
+    
+    // Privacy and consent translations (German)
+    privacy: {
+      // Consent Dialog
+      consentTitle: 'Datenschutz & Telemetrie',
+      consentSubtitle: 'Helfen Sie uns, die App zu verbessern, indem Sie anonyme Nutzungsdaten teilen',
+      acceptTelemetry: 'Telemetrie akzeptieren',
+      declineTelemetry: 'Ohne Telemetrie fortfahren',
+      saving: 'Speichern...',
+      consentNote: 'Sie können diese Einstellung jederzeit in den App-Einstellungen ändern.',
+      readFullPolicy: 'Vollständige Datenschutzerklärung lesen',
+      
+      // Privacy Summary
+      briefDescription: 'Wir sammeln anonyme Absturzberichte und Leistungsdaten, um die App-Stabilität und Benutzererfahrung zu verbessern.',
+      dataTypes: 'Dies umfasst Fehlermeldungen, App-Leistungsmetriken und Geräteinformationen (keine persönlichen Daten).',
+      canChangeAnytime: 'Sie können Ihre Datenschutzeinstellungen jederzeit ändern.',
+      learnMore: 'Mehr erfahren',
+      
+      // Full privacy information
+      whatWeCollect: 'Was wir sammeln',
+      collectDescription: 'Wir sammeln anonyme Absturzberichte, Fehlerprotokolle und Leistungsmetriken. Keine persönlichen Informationen, Standortdaten oder Arbeitsinhalte sind enthalten.',
+      howWeUseData: 'Wie wir diese Daten verwenden',
+      useCase1: 'App-Abstürze und Fehler identifizieren und beheben',
+      useCase2: 'App-Leistung und Stabilität verbessern',
+      useCase3: 'Verstehen, welche Funktionen am nützlichsten sind',
+      yourRights: 'Ihre Rechte',
+      rightsDescription: 'Sie können sich jederzeit abmelden, Ihre lokalen Daten exportieren oder alle lokalen App-Daten von Ihrem Gerät löschen.',
+      lastUpdated: 'Zuletzt aktualisiert',
+      lastUpdatedDate: 'Januar 2024',
+      
+      // Settings
+      telemetrySettings: 'Telemetrie & Analytik',
+      telemetryToggleLabel: 'Anonyme Absturzberichte & Leistungsdaten teilen',
+      telemetryToggleDescription: 'Hilft uns, die App-Stabilität und Benutzererfahrung zu verbessern',
+      consentNotSet: 'Telemetrie-Einverständnis wurde nicht gesetzt. Der Einverständnisdialog erscheint beim nächsten App-Start.',
+      settingsUpdated: 'Datenschutzeinstellungen aktualisiert',
+      telemetryEnabled: 'Anonyme Telemetrie aktiviert',
+      telemetryDisabled: 'Anonyme Telemetrie deaktiviert',
+      error: 'Fehler',
+      failedToUpdateSettings: 'Datenschutzeinstellungen konnten nicht aktualisiert werden',
+      
+      // Privacy information
+      privacyInformation: 'Datenschutzinformationen',
+      
+      // Data management
+      dataManagement: 'Datenverwaltung',
+      dataManagementDescription: 'Exportieren oder löschen Sie alle Ihre lokalen App-Daten, die auf diesem Gerät gespeichert sind.',
+      currentDataSummary: 'Aktuell lokal gespeicherte Daten',
+      indexedDbEntries: '{{count}} Datenbankeinträge',
+      localStorageEntries: '{{count}} lokale Speicherelemente',
+      preferenceEntries: '{{count}} App-Einstellungen',
+      
+      // Export
+      exportMyData: 'Meine Daten exportieren',
+      exporting: 'Exportiere...',
+      exportSuccess: 'Datenexport erfolgreich',
+      exportSuccessDescription: 'Ihre App-Daten wurden als JSON-Datei heruntergeladen.',
+      exportError: 'Export fehlgeschlagen',
+      exportErrorDescription: 'Export Ihrer Daten fehlgeschlagen. Bitte versuchen Sie es erneut.',
+      
+      // Delete
+      deleteMyData: 'Meine Daten löschen (Lokales Gerät)',
+      deleting: 'Lösche...',
+      confirmDelete: 'Alle lokalen Daten löschen?',
+      deleteWarning: 'Dies wird alle auf diesem Gerät gespeicherten App-Daten dauerhaft löschen.',
+      deleteWarningList: 'Dies umfasst',
+      deleteItem1: 'Alle Auftragseinträge und Berichte',
+      deleteItem2: 'Einstellungen und Präferenzen',
+      deleteItem3: 'GPS-Tracking-Daten',
+      deleteItem4: 'Export-Verzeichnisauswahlen',
+      deleteIrreversible: 'Diese Aktion kann nicht rückgängig gemacht werden!',
+      cancel: 'Abbrechen',
+      confirmDeleteButton: 'Alle Daten löschen',
+      deleteSuccess: 'Daten erfolgreich gelöscht',
+      deleteSuccessDescription: 'Alle lokalen App-Daten wurden gelöscht. Die App wird neu geladen.',
+      deleteError: 'Löschen fehlgeschlagen',
+      deleteErrorDescription: 'Einige Daten konnten nicht gelöscht werden. Bitte versuchen Sie es erneut oder starten Sie die App neu.'
+    },
+    
     job: jobTranslationsDe
   },
   no: {

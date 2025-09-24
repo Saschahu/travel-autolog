@@ -1,14 +1,12 @@
 /**
- * Feature flags configuration
+ * Feature flags for the application
  */
-
-// XLSX Import Feature Flag
-export const ENABLE_XLSX = import.meta.env.VITE_ENABLE_XLSX_IMPORT === 'true';
 
 /**
- * Check if XLSX import functionality is enabled
- * @returns true if XLSX import is enabled, false otherwise
+ * Check if smart GPS feature is enabled via environment variable
+ * @returns {boolean} true if VITE_ENABLE_SMART_GPS is set to 'true', false otherwise
  */
-export function isXlsxEnabled(): boolean {
-  return ENABLE_XLSX;
+export function isSmartGpsEnabled(): boolean {
+  const flag = import.meta.env.VITE_ENABLE_SMART_GPS;
+  return flag === 'true';
 }

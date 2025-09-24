@@ -1,59 +1,54 @@
-import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
 
 export class ExcelFormatter {
-  static createFormattedWorkbook(worksheets: { name: string; data: XLSX.WorkSheet }[]): XLSX.WorkBook {
-    const workbook = XLSX.utils.book_new();
+  static createFormattedWorkbook(worksheets: { name: string; data: any[][] }[]): ExcelJS.Workbook {
+    const workbook = new ExcelJS.Workbook();
     
     worksheets.forEach(sheet => {
-      XLSX.utils.book_append_sheet(workbook, sheet.data, sheet.name);
+      const worksheet = workbook.addWorksheet(sheet.name);
+      sheet.data.forEach(row => {
+        worksheet.addRow(row);
+      });
     });
     
     return workbook;
   }
 
-  static applyPrintSettings(worksheet: XLSX.WorkSheet) {
+  static applyPrintSettings(worksheet: ExcelJS.Worksheet) {
     // Druckeinstellungen
-    worksheet['!margins'] = {
-      left: 0.7,
-      right: 0.7,
-      top: 0.75,
-      bottom: 0.75,
-      header: 0.3,
-      footer: 0.3
-    };
-    
-    // Seitenausrichtung
-    worksheet['!page'] = {
+    worksheet.pageSetup = {
+      margins: {
+        left: 0.7,
+        right: 0.7,
+        top: 0.75,
+        bottom: 0.75,
+        header: 0.3,
+        footer: 0.3
+      },
       orientation: 'portrait',
-      scale: 100
-    };
-    
-    // Druckbereich
-    worksheet['!printArea'] = 'A1:L30';
-  }
-
-  static addPageBreaks(worksheet: XLSX.WorkSheet, rows: number[]) {
-    worksheet['!pageBreaks'] = {
-      rowBreaks: rows.map(row => ({ row: row - 1, max: 16383 }))
+      scale: 100,
+      printArea: 'A1:L30'
     };
   }
 
-  static protectWorksheet(worksheet: XLSX.WorkSheet, protectedCells: string[]) {
+  static addPageBreaks(worksheet: ExcelJS.Worksheet, rows: number[]) {
+    rows.forEach(row => {
+      worksheet.getRow(row).addPageBreak = true;
+    });
+  }
+
+  static protectWorksheet(worksheet: ExcelJS.Worksheet, protectedCells: string[]) {
     // Arbeitsblatt-Schutz (vereinfacht)
-    worksheet['!protect'] = {
-      password: '',
+    worksheet.protect('', {
       selectLockedCells: false,
       selectUnlockedCells: true
-    };
+    });
   }
 
-  static addFormulas(worksheet: XLSX.WorkSheet, formulas: { cell: string; formula: string }[]) {
+  static addFormulas(worksheet: ExcelJS.Worksheet, formulas: { cell: string; formula: string }[]) {
     formulas.forEach(({ cell, formula }) => {
-      if (!worksheet[cell]) {
-        worksheet[cell] = {};
-      }
-      worksheet[cell].f = formula;
-      worksheet[cell].t = 'n';
+      const excelCell = worksheet.getCell(cell);
+      excelCell.value = { formula };
     });
   }
 

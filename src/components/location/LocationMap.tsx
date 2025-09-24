@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { migrateFromLocalStorage, saveTokenSecure, loadTokenSecure } from '@/security/storage';
 
 interface LocationData {
   latitude: number;
@@ -46,29 +47,42 @@ export const LocationMap: React.FC<LocationMapProps> = ({
   const [localToken, setLocalToken] = React.useState<string>('');
   const [showTokenInput, setShowTokenInput] = React.useState(false);
   
-  // Check for token from environment or localStorage
+  // Check for token from environment or secure storage
   React.useEffect(() => {
-    if (MAPBOX_TOKEN && MAPBOX_TOKEN !== 'pk.XXXXXXXXXXXXXXXXXXXX') {
-      setLocalToken(MAPBOX_TOKEN);
-      setShowTokenInput(false);
-    } else {
-      const stored = localStorage.getItem('mapbox_token');
-      console.log('Gespeichertes Token gefunden:', stored ? stored.substring(0, 10) + '...' : 'keins');
-      if (stored) {
-        setLocalToken(stored);
+    const loadToken = async () => {
+      if (MAPBOX_TOKEN && MAPBOX_TOKEN !== 'pk.XXXXXXXXXXXXXXXXXXXX') {
+        setLocalToken(MAPBOX_TOKEN);
         setShowTokenInput(false);
       } else {
-        console.warn('Mapbox Token fehlt. Bitte .env-Datei konfigurieren.');
-        setShowTokenInput(true);
+        // Migrate from localStorage if exists
+        await migrateFromLocalStorage();
+        
+        // Load from secure storage
+        const stored = await loadTokenSecure();
+        console.log('Gespeichertes Token gefunden:', stored ? stored.substring(0, 10) + '...' : 'keins');
+        if (stored) {
+          setLocalToken(stored);
+          setShowTokenInput(false);
+        } else {
+          console.warn('Mapbox Token fehlt. Bitte .env-Datei konfigurieren.');
+          setShowTokenInput(true);
+        }
       }
-    }
+    };
+    
+    loadToken();
   }, []);
   
-  const handleTokenSave = () => {
+  const handleTokenSave = async () => {
     if (localToken.trim()) {
-      localStorage.setItem('mapbox_token', localToken.trim());
-      setShowTokenInput(false);
-      console.log('Token gespeichert:', localToken.substring(0, 10) + '...');
+      try {
+        await saveTokenSecure(localToken.trim());
+        setShowTokenInput(false);
+        console.log('Token sicher gespeichert:', localToken.substring(0, 10) + '...');
+      } catch (error) {
+        console.error('Fehler beim Speichern des Tokens:', error);
+        alert('Ungültiges Token-Format. Token muss mit "pk." beginnen.');
+      }
     }
   };
   

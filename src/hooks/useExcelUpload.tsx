@@ -1,15 +1,7 @@
-import * as XLSX from 'xlsx';
+import { readWorkbook } from '@/lib/excelAdapter';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
-
-type ExcelRow = Record<string, unknown>;
-
-interface ParsedExcelData {
-  sheets: { name: string; data: ExcelRow[]; rowCount: number }[];
-  totalSheets: number;
-  totalRows: number;
-}
 
 export const useExcelUpload = () => {
   const [isUploading, setIsUploading] = useState(false);
@@ -20,7 +12,7 @@ export const useExcelUpload = () => {
     try {
       // Parse Excel file
       const data = await parseExcelFile(file);
-
+      
       // Upload to Supabase Storage
       const fileName = `${Date.now()}_${file.name}`;
       const { data: uploadData, error: uploadError } = await supabase.storage
@@ -50,38 +42,25 @@ export const useExcelUpload = () => {
     }
   };
 
-  const parseExcelFile = async (file: File): Promise<ParsedExcelData> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
+  const parseExcelFile = async (file: File): Promise<any> => {
+    try {
+      const rows = await readWorkbook(file);
+      
+      // Convert to sheets format to maintain compatibility
+      const sheets = [{
+        name: 'Sheet1',
+        data: rows,
+        rowCount: rows.length
+      }];
 
-      reader.onload = (e) => {
-        try {
-          const data = new Uint8Array(e.target?.result as ArrayBuffer);
-          const workbook = XLSX.read(data, { type: 'array' });
-
-          const sheets = workbook.SheetNames.map((name) => {
-            const worksheet = workbook.Sheets[name];
-            const jsonData = XLSX.utils.sheet_to_json<ExcelRow>(worksheet, { defval: null });
-            return {
-              name,
-              data: jsonData,
-              rowCount: jsonData.length,
-            };
-          });
-
-          resolve({
-            sheets,
-            totalSheets: sheets.length,
-            totalRows: sheets.reduce((sum, sheet) => sum + sheet.rowCount, 0),
-          });
-        } catch (error) {
-          reject(error);
-        }
+      return {
+        sheets,
+        totalSheets: sheets.length,
+        totalRows: sheets.reduce((sum, sheet) => sum + sheet.rowCount, 0)
       };
-
-      reader.onerror = () => reject(new Error('Datei konnte nicht gelesen werden'));
-      reader.readAsArrayBuffer(file);
-    });
+    } catch (error) {
+      throw new Error('Datei konnte nicht gelesen werden');
+    }
   };
 
   const getUploadedFiles = async () => {

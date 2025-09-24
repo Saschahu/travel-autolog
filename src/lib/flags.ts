@@ -1,3 +1,14 @@
-/** Feature flag: gate XLSX import via Vite env */
+/**
+ * Feature flags configuration
+ */
+
+// XLSX Import Feature Flag
 export const ENABLE_XLSX = import.meta.env.VITE_ENABLE_XLSX_IMPORT === 'true';
-export function isXlsxEnabled() { return ENABLE_XLSX; }
+
+/**
+ * Check if XLSX import functionality is enabled
+ * @returns true if XLSX import is enabled, false otherwise
+ */
+export function isXlsxEnabled(): boolean {
+  return ENABLE_XLSX;
+}

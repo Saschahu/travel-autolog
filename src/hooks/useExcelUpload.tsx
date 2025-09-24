@@ -2,6 +2,7 @@ import { readWorkbook } from '@/lib/excelAdapter';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
+import { isXlsxEnabled } from '@/lib/flags';
 
 export const useExcelUpload = () => {
   const [isUploading, setIsUploading] = useState(false);
@@ -10,6 +11,19 @@ export const useExcelUpload = () => {
   const uploadExcelFile = async (file: File) => {
     setIsUploading(true);
     try {
+      // Get file extension for validation
+      const fileExtension = file.name.toLowerCase().split('.').pop() || '';
+      
+      // Block XLSX/XLS files if flag is disabled (CSV remains allowed)
+      if (['xlsx', 'xls'].includes(fileExtension) && !isXlsxEnabled()) {
+        toast({
+          title: 'Upload Fehler',
+          description: 'XLSX-Import ist deaktiviert. Nur CSV-Dateien sind erlaubt.',
+          variant: 'destructive',
+        });
+        return { success: false, error: 'XLSX disabled' };
+      }
+      
       // Parse Excel file
       const data = await parseExcelFile(file);
       

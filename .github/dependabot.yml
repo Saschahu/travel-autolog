@@ -1,0 +1,49 @@
+version: 2
+updates:
+  # NPM dependencies
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+    open-pull-requests-limit: 5
+    versioning-strategy: increase
+    labels:
+      - "deps"
+      - "automated"
+    reviewers:
+      - "@Saschahu"
+    groups:
+      # Group minor and patch updates together
+      minor-and-patch:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+        exclude-patterns:
+          # Exclude heavy libraries from grouping (separate PRs)
+          - "mapbox-gl"
+          - "exceljs" 
+          - "jspdf"
+      # Group security updates separately
+      security:
+        patterns:
+          - "*"
+        update-types:
+          - "security"
+
+  # GitHub Actions dependencies  
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday" 
+      time: "06:00"
+    open-pull-requests-limit: 5
+    labels:
+      - "deps"
+      - "automated"
+    reviewers:
+      - "@Saschahu"

@@ -1,0 +1,60 @@
+name: Lockfile Integrity Check
+
+on:
+  pull_request:
+    paths:
+      - 'package.json'
+      - 'package-lock.json'
+
+jobs:
+  lockfile-integrity:
+    name: Verify Lockfile Integrity
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Verify lockfile matches package.json
+        run: |
+          echo "🔍 Verifying package-lock.json matches package.json..."
+          
+          # Create a backup of the current lockfile
+          cp package-lock.json package-lock.json.original
+          
+          # Remove lockfile and reinstall to generate fresh one
+          rm package-lock.json
+          npm install --package-lock-only
+          
+          # Compare the generated lockfile with the original
+          if ! diff -q package-lock.json.original package-lock.json > /dev/null; then
+            echo "❌ package-lock.json is out of sync with package.json!"
+            echo ""
+            echo "Differences found:"
+            diff package-lock.json.original package-lock.json || true
+            echo ""
+            echo "Please run 'npm install' locally and commit the updated package-lock.json"
+            exit 1
+          else
+            echo "✅ package-lock.json is in sync with package.json"
+          fi
+
+      - name: Install dependencies with frozen lockfile
+        run: |
+          echo "🔒 Installing dependencies with frozen lockfile..."
+          npm ci
+          echo "✅ Dependencies installed successfully"
+
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-

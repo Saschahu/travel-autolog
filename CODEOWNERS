@@ -1,0 +1,22 @@
+# Global ownership - all files require review from repository owner
+* @Saschahu
+
+# Security and dependency files require extra scrutiny
+.github/dependabot.yml @Saschahu
+.github/workflows/security-*.yml @Saschahu
+SECURITY.md @Saschahu
+package.json @Saschahu
+package-lock.json @Saschahu
+
+# Configuration files
+capacitor.config.ts @Saschahu
+vite.config.ts @Saschahu
+tailwind.config.ts @Saschahu
+tsconfig*.json @Saschahu
+
+# Build and deployment scripts
+scripts/ @Saschahu
+.github/workflows/ @Saschahu
+
+# Database migrations
+supabase/migrations/ @Saschahu

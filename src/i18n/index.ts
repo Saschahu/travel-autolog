@@ -496,6 +496,7 @@ const resources = {
       travelBack: 'Travel Back (km)',
       tollsNorwegian: 'Tolls / Bom (NOK)',
       back: 'Back',
+      next: 'Next',
       newJob: 'New job',
       saveCustomer: 'Save customer',
       saveAndContinue: 'Save & Continue',

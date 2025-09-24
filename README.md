@@ -96,6 +96,42 @@ npm run build
 - **Web**: `VITE_MAPBOX_TOKEN_WEB` (mit URL-Restrictions)
 - **Native**: `VITE_MAPBOX_TOKEN_MOBILE` (ohne URL-Restrictions)
 
+## Data Import
+
+Die Anwendung unterstützt den Import von Arbeitszeitdaten über Excel-Dateien mit konfigurierbarer Funktionalität:
+
+### Feature Flag: VITE_ENABLE_XLSX_IMPORT
+
+- **Standard**: `false` (XLSX-Import deaktiviert)
+- **Aktivierung**: Setzen Sie `VITE_ENABLE_XLSX_IMPORT=true` in der `.env`-Datei
+
+### CSV Fallback
+
+Wenn XLSX-Import deaktiviert ist, steht automatisch CSV-Import als Fallback zur Verfügung:
+- Unterstützte Formate: `.csv` mit Standard-Trennzeichen (Komma, Semikolon)
+- Gleiche Datenstruktur wie XLSX-Import erwartet
+- Automatische Encoding-Erkennung (UTF-8, ISO-8859-1)
+
+### Sicherheitsmaßnahmen
+
+Für beide Import-Methoden gelten folgende Limits:
+- **Dateigröße**: Maximal 10 MB
+- **Zeilen**: Maximal 10.000 Datensätze pro Datei
+- **Formeln**: Excel-Formeln werden automatisch als Werte importiert
+- **Malware-Schutz**: Nur whitelistete Dateitypen erlaubt
+
+### XLSX-Import wieder aktivieren
+
+```bash
+# .env-Datei bearbeiten
+echo "VITE_ENABLE_XLSX_IMPORT=true" >> .env
+
+# Anwendung neu starten
+npm run dev
+```
+
+**Hinweis**: Nach Aktivierung ist die Excel-Upload-Komponente im Export-Bereich verfügbar.
+
 ### Build Info
 
 Das BuildInfo-Badge zeigt:

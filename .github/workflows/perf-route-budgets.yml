@@ -1,0 +1,83 @@
+name: Performance Route Budgets
+
+on:
+  push:
+    branches: [ main, 'perf/**' ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  performance-budgets:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build for CI
+        run: npm run build:ci
+
+      - name: Run per-route performance budgets
+        id: perf-routes
+        run: |
+          npm run perf:routes || {
+            echo "route-budgets-failed=true" >> $GITHUB_OUTPUT
+            exit 1
+          }
+
+      - name: Upload performance artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: performance-artifacts
+          path: |
+            dist/route-perf-summary.json
+            dist/.vite/manifest.json
+
+      - name: Generate Performance Summary
+        if: always()
+        run: |
+          echo "## 🚀 Performance Route Budgets Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ -f "dist/route-perf-summary.json" ]; then
+            echo "### Route Performance Summary" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "| Route | Current Size (gzip) | Budget (gzip) | Status |" >> $GITHUB_STEP_SUMMARY
+            echo "|-------|---------------------|---------------|--------|" >> $GITHUB_STEP_SUMMARY
+            
+            # Parse JSON and create table
+            node -e "
+              const fs = require('fs');
+              const summary = JSON.parse(fs.readFileSync('dist/route-perf-summary.json', 'utf8'));
+              summary.routes.forEach(route => {
+                const budget = summary.thresholdGzipBytes[route.name];
+                const status = route.initialGzipBytes <= budget ? '✅ PASS' : '❌ FAIL';
+                const size = (route.initialGzipBytes / 1024).toFixed(1) + ' KB';
+                const budgetStr = (budget / 1024).toFixed(1) + ' KB';
+                console.log(\`| \${route.name} | \${size} | \${budgetStr} | \${status} |\`);
+              });
+            " >> $GITHUB_STEP_SUMMARY
+            
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "**Report generated:** $(date)" >> $GITHUB_STEP_SUMMARY
+            
+            # Show failed routes details if any
+            if [ "${{ steps.perf-routes.outputs.route-budgets-failed }}" = "true" ]; then
+              echo "" >> $GITHUB_STEP_SUMMARY
+              echo "### ❌ Routes Exceeding Budgets" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+              echo "Some routes exceeded their performance budgets. Check the job logs above for detailed breakdown of the heaviest files." >> $GITHUB_STEP_SUMMARY
+            fi
+          else
+            echo "❌ Performance summary not found" >> $GITHUB_STEP_SUMMARY
+          fi

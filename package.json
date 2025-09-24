@@ -7,8 +7,10 @@
     "dev": "vite",
     "build": "vite build",
     "build:dev": "vite build --mode development",
+    "build:ci": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "perf:routes": "node scripts/route-budgets.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^7.4.2",

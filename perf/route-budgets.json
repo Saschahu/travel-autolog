@@ -1,0 +1,24 @@
+{
+  "routes": [
+    {
+      "name": "home",
+      "module": "src/pages/Index.tsx",
+      "gzipBudget": 1500000
+    },
+    {
+      "name": "gps",
+      "module": "src/components/gps/GPSPage.tsx",
+      "gzipBudget": 1500000
+    },
+    {
+      "name": "export",
+      "module": "src/components/export/ExportPage.tsx", 
+      "gzipBudget": 1500000
+    },
+    {
+      "name": "settings",
+      "module": "src/components/settings/SettingsDialog.tsx",
+      "gzipBudget": 1500000
+    }
+  ]
+}

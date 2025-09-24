@@ -1,0 +1,148 @@
+name: Android Release Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      play_upload:
+        description: 'Upload to Play Store (requires secrets)'
+        required: false
+        default: false
+        type: boolean
+      play_track:
+        description: 'Play Store track (internal/alpha/beta/production)'
+        required: false
+        default: 'internal'
+        type: choice
+        options:
+          - internal
+          - alpha
+          - beta
+          - production
+  push:
+    tags:
+      - 'v*.*.*'
+
+jobs:
+  build-android-release:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Need full history for versioning from tags
+
+      - name: 🏷️ Extract version info
+        id: version
+        run: |
+          if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+            TAG_VERSION=${GITHUB_REF#refs/tags/v}
+            echo "version_name=${TAG_VERSION}" >> $GITHUB_OUTPUT
+            IFS='.' read -r major minor patch <<< "${TAG_VERSION}"
+            version_code=$((major * 10000 + minor * 100 + patch))
+            echo "version_code=${version_code}" >> $GITHUB_OUTPUT
+            echo "is_tag=true" >> $GITHUB_OUTPUT
+          else
+            echo "version_name=0.0.0-dev+$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+            echo "version_code=$(date +%s)" >> $GITHUB_OUTPUT
+            echo "is_tag=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: 📦 Install Node dependencies
+        run: npm ci
+
+      - name: 🏗️ Build web assets
+        run: npm run build
+
+      - name: 🔄 Sync Capacitor
+        run: npx cap sync android --no-interactive
+
+      - name: ☕ Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: 🔑 Decode Android keystore
+        if: env.TAL_KEYSTORE_BASE64
+        run: |
+          echo "🔐 Setting up release keystore..."
+          mkdir -p android/app/build
+        env:
+          TAL_KEYSTORE_BASE64: ${{ secrets.TAL_KEYSTORE_BASE64 }}
+
+      - name: 📝 Set Android version
+        run: |
+          echo "📱 Setting version: ${{ steps.version.outputs.version_name }} (${{ steps.version.outputs.version_code }})"
+          node scripts/android-version.cjs
+        env:
+          ANDROID_VERSION_NAME: ${{ steps.version.outputs.version_name }}
+          ANDROID_VERSION_CODE: ${{ steps.version.outputs.version_code }}
+
+      - name: 🔨 Build signed AAB
+        run: |
+          cd android
+          chmod +x ./gradlew
+          ./gradlew :app:bundleRelease
+        env:
+          TAL_KEYSTORE_BASE64: ${{ secrets.TAL_KEYSTORE_BASE64 }}
+          TAL_KEY_ALIAS: ${{ secrets.TAL_KEY_ALIAS }}
+          TAL_KEY_PASSWORD: ${{ secrets.TAL_KEY_PASSWORD }}
+          TAL_STORE_PASSWORD: ${{ secrets.TAL_STORE_PASSWORD }}
+
+      - name: 🎯 Setup Play Store credentials
+        if: ${{ (secrets.PLAY_JSON && github.event.inputs.play_upload == 'true') || (secrets.PLAY_JSON && github.ref_type == 'tag') }}
+        run: |
+          echo "🎮 Setting up Play Store service account..."
+          mkdir -p ~/.config/gpp
+          echo "${{ secrets.PLAY_JSON }}" | base64 -d > ~/.config/gpp/service-account.json
+          echo "✅ Play Store credentials configured"
+
+      - name: 🚀 Upload to Play Store
+        if: ${{ (secrets.PLAY_JSON && github.event.inputs.play_upload == 'true') || (secrets.PLAY_JSON && github.ref_type == 'tag') }}
+        run: |
+          cd android
+          echo "🎮 Uploading to Play Store track: ${{ github.event.inputs.play_track || 'internal' }}"
+          ./gradlew publishReleaseBundle
+        env:
+          PLAY_TRACK: ${{ github.event.inputs.play_track || 'internal' }}
+          PLAY_DRY_RUN: ${{ github.event.inputs.play_upload == 'true' && 'false' || 'true' }}
+
+      - name: 📤 Upload AAB artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: travel-autolog-release-${{ steps.version.outputs.version_name }}-${{ github.run_number }}
+          path: |
+            android/app/build/outputs/bundle/release/*.aab
+            android/app/build/outputs/mapping/release/
+
+      - name: 📊 Job Summary
+        run: |
+          echo "## 🚀 Android Release Build Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**📱 Version:** ${{ steps.version.outputs.version_name }} (code: ${{ steps.version.outputs.version_code }})" >> $GITHUB_STEP_SUMMARY
+          echo "**🏷️ Tag build:** ${{ steps.version.outputs.is_tag }}" >> $GITHUB_STEP_SUMMARY
+          echo "**🔐 Signed:** ${{ env.TAL_KEYSTORE_BASE64 && 'Yes' || 'No (unsigned debug build)' }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📦 Artifacts Generated" >> $GITHUB_STEP_SUMMARY
+          echo "- 🎯 **AAB:** \`android/app/build/outputs/bundle/release/app-release.aab\`" >> $GITHUB_STEP_SUMMARY
+          echo "- 🗃️ **ProGuard mapping:** \`android/app/build/outputs/mapping/release/\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [[ "${{ secrets.PLAY_JSON }}" && ("${{ github.event.inputs.play_upload }}" == "true" || "${{ github.ref_type }}" == "tag") ]]; then
+            echo "### 🎮 Play Store Upload" >> $GITHUB_STEP_SUMMARY
+            echo "**Track:** ${{ github.event.inputs.play_track || 'internal' }}" >> $GITHUB_STEP_SUMMARY
+            echo "**Dry Run:** ${{ github.event.inputs.play_upload == 'true' && 'No' || 'Yes' }}" >> $GITHUB_STEP_SUMMARY
+            echo "✅ Upload completed successfully" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "### 🎮 Play Store Upload" >> $GITHUB_STEP_SUMMARY
+            echo "⏭️ Skipped (no PLAY_JSON secret or manual upload not requested)" >> $GITHUB_STEP_SUMMARY
+          fi
+        env:
+          TAL_KEYSTORE_BASE64: ${{ secrets.TAL_KEYSTORE_BASE64 }}

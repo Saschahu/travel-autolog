@@ -34,8 +34,11 @@ export const GPSPage: React.FC = () => {
       const fix = await getCurrent();
       setCenter([fix.lng, fix.lat]); // Mapbox: [lng, lat]
       setMsg(undefined);
-    } catch (error: any) {
-      setMsg('Standort konnte nicht ermittelt werden. ' + (error?.message ?? ''));
+    } catch (error: unknown) {
+      const message = error && typeof error === 'object' && 'message' in error 
+        ? String(error.message) 
+        : '';
+      setMsg('Standort konnte nicht ermittelt werden. ' + message);
     } finally {
       setIsGettingLocation(false);
     }
@@ -48,13 +51,19 @@ export const GPSPage: React.FC = () => {
       watchRef.current = await startWatch((fix: Fix) => {
         setCenter([fix.lng, fix.lat]);
         // TODO: FSM hier füttern (depart/arrive usw.)
-      }, (err) => {
-        setMsg('GPS-Fehler: ' + (err?.message ?? String(err)));
+      }, (err: unknown) => {
+        const message = err && typeof err === 'object' && 'message' in err 
+          ? String(err.message) 
+          : String(err);
+        setMsg('GPS-Fehler: ' + message);
         setIsTracking(false);
       });
       setIsTracking(true);
-    } catch (error: any) {
-      setMsg(t('trackingCouldNotStart') + ' ' + (error?.message ?? ''));
+    } catch (error: unknown) {
+      const message = error && typeof error === 'object' && 'message' in error 
+        ? String(error.message) 
+        : '';
+      setMsg(t('trackingCouldNotStart') + ' ' + message);
     }
   };
 

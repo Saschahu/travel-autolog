@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -63,7 +63,7 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
       });
       geofenceMonitor.setHome(savedHome);
     }
-  }, []);
+  }, [geofenceMonitor, updateNestedSettings]);
 
   // Set up geofence status listener
   useEffect(() => {
@@ -87,7 +87,7 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
     onSettingsChange({ ...settings, ...updates });
   };
 
-  const updateNestedSettings = <K extends keyof GPSSettingsData>(
+  const updateNestedSettings = useCallback(<K extends keyof GPSSettingsData>(
     key: K, 
     updates: Partial<GPSSettingsData[K]>
   ) => {
@@ -98,7 +98,7 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
         [key]: { ...currentValue, ...updates }
       });
     }
-  };
+  }, [settings, onSettingsChange]);
 
   const setCurrentAsHome = async () => {
     setIsGettingLocation(true);

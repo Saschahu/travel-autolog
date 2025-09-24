@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useExportSettings } from '@/hooks/useExportSettings';
 
 interface ExportPageProps {
-  jobs: any[];
+  jobs: unknown[]; // Will be properly typed in future batches
 }
 
 export const ExportPage = ({ jobs }: ExportPageProps) => {
@@ -74,15 +74,19 @@ export const ExportPage = ({ jobs }: ExportPageProps) => {
 
           <div>
             <label className="text-sm font-medium mb-2 block">{t('singleJobTemplate')}</label>
-            <Select value={selectedJobId} onValueChange={(v) => setSelectedJobId(v as any)}>
+            <Select value={selectedJobId} onValueChange={(v: string) => setSelectedJobId(v as string | 'all')}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Alle" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">{t('exportAll')}</SelectItem>
-                {jobs.map(j => (
-                  <SelectItem key={j.id} value={j.id}>{`${j.customerName || 'Unbenannt'} — ${j.id}`}</SelectItem>
-                ))}
+                {jobs.map((j: unknown) => {
+                  // Type guard for job objects
+                  const job = j && typeof j === 'object' && 'id' in j && 'customerName' in j ? j as { id: string; customerName?: string } : null;
+                  return job ? (
+                    <SelectItem key={job.id} value={job.id}>{`${job.customerName || 'Unbenannt'} — ${job.id}`}</SelectItem>
+                  ) : null;
+                })}
               </SelectContent>
             </Select>
           </div>

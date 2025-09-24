@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 
 // Check if we're running in a web browser or mobile app
-const isWeb = typeof window !== 'undefined' && !window.hasOwnProperty('Capacitor');
+const isWeb = typeof window !== 'undefined' && !('Capacitor' in window);
 
 // Fallback implementations for web
 const WebGeolocation = {

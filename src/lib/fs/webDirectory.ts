@@ -14,8 +14,10 @@ export const isFileSystemAccessSupported = (): boolean => {
 export function isInCrossOriginFrame(): boolean {
   try {
     if (window.top === window) return false;
-    // eslint-disable-next-line no-unused-expressions
-    (window.top as Window).location.origin;
+    if (window.top && window.top.location) {
+      // Access parent origin to trigger error in cross-origin context
+      void window.top.location.origin;
+    }
     return window.top!.location.origin !== window.location.origin;
   } catch {
     return true;
@@ -33,7 +35,13 @@ export async function pickDirectoryWeb(): Promise<WebDirectoryHandle | null> {
   }
 
   try {
-    const handle = await (window as any).showDirectoryPicker({ 
+    const windowWithPicker = window as unknown;
+    if (!windowWithPicker || typeof windowWithPicker !== 'object' || !('showDirectoryPicker' in windowWithPicker)) {
+      throw new Error('showDirectoryPicker not available');
+    }
+    
+    const picker = (windowWithPicker as { showDirectoryPicker: (options?: { mode?: string; startIn?: string }) => Promise<unknown> }).showDirectoryPicker;
+    const handle = await picker({ 
       mode: 'readwrite',
       startIn: 'documents'
     });

@@ -1,18 +1,49 @@
-export function firstJobDate(job: any): Date | null {
-  const entries: any[] = [];
+export function buildReportFileName(input: unknown): string {
+  // Guard for job object
+  if (!input || typeof input !== 'object') {
+    return 'unknown-job.pdf';
+  }
+  
+  const job = input as Record<string, unknown>;
+  const id = typeof job.id === 'string' ? job.id : 'no-id';
+  const customerName = typeof job.customerName === 'string' ? job.customerName : null;
+  const customerId = typeof job.customerId === 'string' ? job.customerId : null;
+  const evaticNo = typeof job.evaticNo === 'string' ? job.evaticNo : null;
+  const createdAt = typeof job.createdAt === 'string' ? job.createdAt : null;
+  
+  return getReportFileName({ id, customerName, customerId, evaticNo, createdAt });
+}
+
+export function firstJobDate(job: unknown): Date | null {
+  if (!job || typeof job !== 'object') return null;
+  
+  const jobObj = job as Record<string, unknown>;
+  const entries: Date[] = [];
   
   // Extract dates from days array if available
-  if (job.days && Array.isArray(job.days)) {
-    job.days.forEach((day: any) => {
-      if (day.date) {
-        entries.push(new Date(day.date));
+  if (Array.isArray(jobObj.days)) {
+    jobObj.days.forEach((day: unknown) => {
+      if (day && typeof day === 'object' && 'date' in day) {
+        const dayObj = day as { date: unknown };
+        if (typeof dayObj.date === 'string' || dayObj.date instanceof Date) {
+          const date = new Date(dayObj.date);
+          if (!isNaN(date.getTime())) {
+            entries.push(date);
+          }
+        }
       }
     });
   } else {
     // Extract from top-level job properties
-    if (job.workStartDate) entries.push(new Date(job.workStartDate));
-    if (job.travelStartDate) entries.push(new Date(job.travelStartDate));
-    if (job.departureStartDate) entries.push(new Date(job.departureStartDate));
+    const dateFields = ['workStartDate', 'travelStartDate', 'departureStartDate'];
+    dateFields.forEach(field => {
+      if (field in jobObj && (typeof jobObj[field] === 'string' || jobObj[field] instanceof Date)) {
+        const date = new Date(jobObj[field] as string | Date);
+        if (!isNaN(date.getTime())) {
+          entries.push(date);
+        }
+      }
+    });
   }
   
   if (entries.length === 0) return null;
@@ -33,7 +64,7 @@ function normalizeStr(s: string): string {
     .normalize('NFKD')
     .replace(/[\u0300-\u036f]/g, '')     // Diakritika
     .replace(/\s+/g, '_')
-    .replace(/[^a-zA-Z0-9._-]/g, '-')
+    .replace(/[^\p{L}\p{N}\s._-]/gu, '-') // Unicode-aware character class
     .replace(/[_-]{2,}/g, '_')
     .replace(/^[_-]+|[_-]+$/g, '');
 }

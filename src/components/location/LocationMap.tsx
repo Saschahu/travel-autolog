@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-// @ts-ignore - mapbox types might not be available yet
+// @ts-expect-error - mapbox types might not be available yet
 import Map, { Marker, NavigationControl, GeolocateControl } from 'react-map-gl';
 import { MapPin, Home, Clock } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -87,8 +87,8 @@ export const LocationMap: React.FC<LocationMapProps> = ({
 
   // Auto-fit map to show all available pins
   useEffect(() => {
-    const map = (mapRef.current as any);
-    if (!map) return;
+    const map = mapRef.current as unknown;
+    if (!map || typeof map !== 'object' || !('fitBounds' in map)) return;
 
     const points: [number, number][] = [];
     if (currentLocation) points.push([currentLocation.longitude, currentLocation.latitude]);

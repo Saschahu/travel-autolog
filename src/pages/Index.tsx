@@ -54,7 +54,7 @@ const Index = () => {
   const { jobs, isLoading: isLoadingJobs, fetchJobs, setJobs } = useJobs();
 
   useEffect(() => {
-    try { localStorage.setItem('activeTab', activeTab); } catch {}
+    try { localStorage.setItem('activeTab', activeTab); } catch { /* ignore localStorage errors */ }
   }, [activeTab]);
 
   console.log('Index component render:', { 

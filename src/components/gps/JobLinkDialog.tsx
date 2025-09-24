@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -31,13 +31,7 @@ export const JobLinkDialog: React.FC<JobLinkDialogProps> = ({
   
   const { linkSessionToJob, getOpenJobs } = useSupabaseGPS();
 
-  useEffect(() => {
-    if (open) {
-      loadJobs();
-    }
-  }, [open]);
-
-  const loadJobs = async () => {
+  const loadJobs = useCallback(async () => {
     setLoading(true);
     try {
       const openJobs = await getOpenJobs();
@@ -47,7 +41,13 @@ export const JobLinkDialog: React.FC<JobLinkDialogProps> = ({
     } finally {
       setLoading(false);
     }
-  };
+  }, [getOpenJobs]);
+
+  useEffect(() => {
+    if (open) {
+      loadJobs();
+    }
+  }, [open, loadJobs]);
 
   const handleLinkJob = async () => {
     if (!selectedJobId) return;

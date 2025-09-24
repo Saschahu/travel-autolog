@@ -20,8 +20,9 @@ interface ReportData {
 }
 
 export function canShareFiles(): boolean {
-  // @ts-ignore - Web Share API Level 2 types may not be available
-  return !!(navigator as any).canShare && !!(navigator as any).share;
+  // @ts-expect-error - Web Share API Level 2 types may not be available
+  const nav = navigator as unknown;
+  return !!(nav && typeof nav === 'object' && 'canShare' in nav && 'share' in nav);
 }
 
 export async function shareReportWithAttachment(data: ReportData, profile?: UserProfile) {
@@ -34,10 +35,15 @@ export async function shareReportWithAttachment(data: ReportData, profile?: User
     const title = `ServiceTracker – Arbeitsbericht`;
     const text = `Arbeitsbericht ${data.job.evaticNo ? `(EVATIC ${data.job.evaticNo}) ` : ''}Job ${data.job.id}`;
 
-    // @ts-ignore
-    if ((navigator as any).canShare?.({ files: [file] })) {
-      // @ts-ignore
-      await (navigator as any).share({ 
+    // @ts-expect-error - Web Share API Level 2 types may not be available
+    const nav = navigator as unknown;
+    const shareableNav = nav && typeof nav === 'object' &&
+      'canShare' in nav && typeof nav.canShare === 'function' &&
+      'share' in nav && typeof nav.share === 'function' ? nav : null;
+      
+    if (shareableNav && shareableNav.canShare({ files: [file] })) {
+      // @ts-expect-error - Web Share API Level 2 types may not be available  
+      await shareableNav.share({ 
         files: [file], 
         title, 
         text 

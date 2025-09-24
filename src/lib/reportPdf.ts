@@ -54,23 +54,24 @@ function hashJobData(data: ReportData): string {
 }
 
 export async function buildReportPdf(data: ReportData): Promise<Blob> {
-  return new Promise(async (resolve, reject) => {
-    try {
-      // Get current report language and PDF quality setting
-      const settings = useSettingsStore.getState();
-      const lang = settings.getReportLang();
-      const quality = (settings.pdfQuality ?? 60) / 100; // Default 60%
-      
-      // Create a temporary container for the report
-      const container = document.createElement('div');
-      container.style.position = 'absolute';
-      container.style.left = '-9999px';
-      container.style.top = '-9999px';
-      container.style.width = '210mm';
-      container.style.padding = '15mm';
-      container.style.backgroundColor = 'white';
-      container.style.color = 'black';
-      container.style.fontFamily = 'Arial, sans-serif';
+  return new Promise((resolve, reject) => {
+    void (async () => {
+      try {
+        // Get current report language and PDF quality setting
+        const settings = useSettingsStore.getState();
+        const lang = settings.getReportLang();
+        const quality = (settings.pdfQuality ?? 60) / 100; // Default 60%
+        
+        // Create a temporary container for the report
+        const container = document.createElement('div');
+        container.style.position = 'absolute';
+        container.style.left = '-9999px';
+        container.style.top = '-9999px';
+        container.style.width = '210mm';
+        container.style.padding = '15mm';
+        container.style.backgroundColor = 'white';
+        container.style.color = 'black';
+        container.style.fontFamily = 'Arial, sans-serif';
       
       // Render the report with proper i18n
       const { element } = await renderReportElement(data, lang);
@@ -102,9 +103,7 @@ export async function buildReportPdf(data: ReportData): Promise<Blob> {
         document.body.removeChild(container);
         reject(error);
       }
-    } catch (error) {
-      reject(error);
-    }
+    })();
   });
 }
 

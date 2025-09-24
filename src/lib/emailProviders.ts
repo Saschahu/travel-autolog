@@ -91,7 +91,7 @@ export const buildComposeUrl = (providerId: string, options: ComposeOptions): st
         + (bccList.length ? `bcc=${joinComma(bccList)}&` : '')
         + `title=${su}&body=${bo}`;
     
-    default: // 'mailto' System
+    default: { // 'mailto' System
       const base = `mailto:${toList.join(',')}`;
       const params = new URLSearchParams();
       if (ccList.length) params.set('cc', ccList.join(','));
@@ -99,6 +99,7 @@ export const buildComposeUrl = (providerId: string, options: ComposeOptions): st
       params.set('subject', options.subject);
       params.set('body', options.body);
       return `${base}?${params.toString()}`;
+    }
   }
 };
 

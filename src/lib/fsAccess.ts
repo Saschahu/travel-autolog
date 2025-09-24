@@ -1,11 +1,39 @@
 // File System Access API utilities for directory picker
-// Using 'any' types to avoid conflicts with browser built-in types
+// Using proper types with guards to handle browser API limitations
 
 import { saveExportHandle, loadExportHandle } from './fsStore';
 
 const IDB_KEY = 'export-directory-handle';
 
-export type DirHandle = any;
+// Type helpers for File System Access API
+type FileHandleLike = {
+  requestPermission?: (options?: { mode?: 'read' | 'readwrite' }) => Promise<string>;
+  getFile?: () => Promise<File>;
+  createWritable?: () => Promise<unknown>;
+  name?: string;
+};
+
+type DirHandleLike = {
+  requestPermission?: (options?: { mode?: 'read' | 'readwrite' }) => Promise<string>;  
+  getFileHandle?: (name: string, options?: { create?: boolean }) => Promise<FileHandleLike>;
+  values?: () => AsyncIterableIterator<unknown>;
+  name?: string;
+};
+
+export type DirHandle = DirHandleLike;
+
+// Type guards
+const isFn = (obj: unknown, prop: string): boolean => {
+  return obj != null && typeof obj === 'object' && prop in obj && typeof (obj as Record<string, unknown>)[prop] === 'function';
+};
+
+const isFileHandleLike = (obj: unknown): obj is FileHandleLike => {
+  return obj != null && typeof obj === 'object';
+};
+
+const isDirHandleLike = (obj: unknown): obj is DirHandleLike => {
+  return obj != null && typeof obj === 'object';
+};
 
 export const isFileSystemAccessSupported = (): boolean => {
   return 'showDirectoryPicker' in window;
@@ -17,8 +45,10 @@ export function isInCrossOriginFrame(): boolean {
     if (window.top === window) return false;
     
     // Try to access parent origin - throws in cross-origin context
-    // eslint-disable-next-line no-unused-expressions
-    (window.top as Window).location.origin;
+    if (window.top && window.top.location) {
+      // Access parent origin to trigger error in cross-origin context
+      void window.top.location.origin;
+    }
     
     // If no error thrown, check if origins differ
     return window.top!.location.origin !== window.location.origin;
@@ -38,13 +68,24 @@ export async function requestReadWrite(handle: DirHandle): Promise<boolean> {
   }
 }
 
-export const pickDirectory = async (): Promise<any | null> => {
+export const pickDirectory = async (): Promise<DirHandleLike | null> => {
   if (!isFileSystemAccessSupported()) {
     throw new Error('File System Access API is not supported in this browser');
   }
 
   try {
-    const handle = await (window as any).showDirectoryPicker({ mode: 'readwrite' });
+    const windowWithPicker = window as unknown;
+    if (!windowWithPicker || typeof windowWithPicker !== 'object' || !('showDirectoryPicker' in windowWithPicker)) {
+      throw new Error('showDirectoryPicker not available');
+    }
+    
+    const picker = (windowWithPicker as { showDirectoryPicker: (options?: { mode?: string }) => Promise<unknown> }).showDirectoryPicker;
+    const handle = await picker({ mode: 'readwrite' });
+    
+    if (!isDirHandleLike(handle)) {
+      throw new Error('Invalid directory handle received');
+    }
+    
     if (handle.requestPermission) {
       const permission = await handle.requestPermission({ mode: 'readwrite' });
       if (permission !== 'granted') {
@@ -62,39 +103,54 @@ export const pickDirectory = async (): Promise<any | null> => {
 };
 
 export async function pickDirectoryDirect(): Promise<DirHandle | null> {
-  // Check user activation (helps with debugging)
-  if (navigator.userActivation && !navigator.userActivation.isActive) {
+  // Check user activation (helps with debugging)  
+  const userActivation = navigator as unknown as { userActivation?: { isActive: boolean } };
+  if (userActivation.userActivation && !userActivation.userActivation.isActive) {
     throw new Error('No user activation');
   }
 
-  const handle = await (window as any).showDirectoryPicker({ mode: 'readwrite' });
+  const windowWithPicker = window as unknown;
+  if (!windowWithPicker || typeof windowWithPicker !== 'object' || !('showDirectoryPicker' in windowWithPicker)) {
+    throw new Error('showDirectoryPicker not available');
+  }
+  
+  const picker = (windowWithPicker as { showDirectoryPicker: (options?: { mode?: string }) => Promise<unknown> }).showDirectoryPicker;
+  const handle = await picker({ mode: 'readwrite' });
+  
+  if (!isDirHandleLike(handle)) {
+    return null;
+  }
+  
   const permission = await handle.requestPermission?.({ mode: 'readwrite' });
   if (permission !== 'granted') return null;
   
-  await saveExportHandle(handle, { displayName: handle.name });
+  await saveExportHandle(handle, { displayName: handle.name || 'Directory' });
   return handle;
 }
 
-export async function queryPermission(handle: any): Promise<PermissionState> {
+export async function queryPermission(handle: unknown): Promise<PermissionState> {
   try {
-    const permission = await handle.queryPermission?.({ mode: 'readwrite' });
+    if (!isDirHandleLike(handle) || !handle.queryPermission) return 'prompt';
+    const permission = await handle.queryPermission({ mode: 'readwrite' });
     return (permission ?? 'prompt') as PermissionState;
   } catch {
     return 'prompt';
   }
 }
 
-export async function requestPermission(handle: any): Promise<boolean> {
+export async function requestPermission(handle: unknown): Promise<boolean> {
   try {
-    const permission = await handle.requestPermission?.({ mode: 'readwrite' });
+    if (!isDirHandleLike(handle) || !handle.requestPermission) return false;
+    const permission = await handle.requestPermission({ mode: 'readwrite' });
     return permission === 'granted';
   } catch {
     return false;
   }
 }
 
-export function computeDisplayName(handle: any, meta?: { displayName?: string }): string {
-  return meta?.displayName || handle?.name || 'Unbekannter Ordner';
+export function computeDisplayName(handle: unknown, meta?: { displayName?: string }): string {
+  const dirHandle = isDirHandleLike(handle) ? handle : null;
+  return meta?.displayName || dirHandle?.name || 'Unbekannter Ordner';
 }
 
 export function openDirectoryPickerBridge(): boolean {
@@ -152,7 +208,7 @@ export async function waitForBridgeSelection(): Promise<DirHandle | null> {
   });
 }
 
-export const persistHandle = async (handle: any): Promise<void> => {
+export const persistHandle = async (handle: unknown): Promise<void> => {
   if (!('indexedDB' in window)) return;
   
   try {
@@ -169,14 +225,14 @@ export const persistHandle = async (handle: any): Promise<void> => {
   }
 };
 
-export const loadHandle = async (): Promise<any | null> => {
+export const loadHandle = async (): Promise<unknown | null> => {
   if (!('indexedDB' in window)) return null;
   
   try {
     const db = await openIDB();
     const transaction = db.transaction(['handles'], 'readonly');
     const store = transaction.objectStore('handles');
-    const handle = await new Promise<any | null>((resolve, reject) => {
+    const handle = await new Promise<unknown | null>((resolve, reject) => {
       const request = store.get(IDB_KEY);
       request.onsuccess = () => resolve(request.result || null);
       request.onerror = () => reject(request.error);
@@ -188,9 +244,9 @@ export const loadHandle = async (): Promise<any | null> => {
   }
 };
 
-export const ensurePermission = async (handle: any): Promise<boolean> => {
+export const ensurePermission = async (handle: unknown): Promise<boolean> => {
   try {
-    if (!handle.queryPermission) return true;
+    if (!isDirHandleLike(handle) || !handle.queryPermission) return true;
     
     const permission = await handle.queryPermission({ mode: 'readwrite' });
     
@@ -210,28 +266,40 @@ export const ensurePermission = async (handle: any): Promise<boolean> => {
   }
 };
 
-export const createSubdirectory = async (parentHandle: any, name: string): Promise<any> => {
+export const createSubdirectory = async (parentHandle: unknown, name: string): Promise<unknown> => {
   try {
+    if (!isDirHandleLike(parentHandle) || !parentHandle.getDirectoryHandle) {
+      throw new Error('Invalid parent directory handle');
+    }
     return await parentHandle.getDirectoryHandle(name, { create: true });
   } catch (error) {
     throw new Error(`Failed to create subdirectory "${name}": ${error}`);
   }
 };
 
-export const writeFile = async (directoryHandle: any, filename: string, blob: Blob): Promise<void> => {
+export const writeFile = async (directoryHandle: unknown, filename: string, blob: Blob): Promise<void> => {
   try {
+    if (!isDirHandleLike(directoryHandle) || !directoryHandle.getFileHandle) {
+      throw new Error('Invalid directory handle');
+    }
     const fileHandle = await directoryHandle.getFileHandle(filename, { create: true });
+    if (!isFileHandleLike(fileHandle) || !fileHandle.createWritable) {
+      throw new Error('Invalid file handle');
+    }
     const writable = await fileHandle.createWritable();
-    await writable.write(blob);
-    await writable.close();
+    if (writable && typeof writable === 'object' && 'write' in writable && 'close' in writable) {
+      await (writable as { write: (data: Blob) => Promise<void>; close: () => Promise<void> }).write(blob);
+      await (writable as { write: (data: Blob) => Promise<void>; close: () => Promise<void> }).close();
+    }
   } catch (error) {
     throw new Error(`Failed to write file "${filename}": ${error}`);
   }
 };
 
-export const getDirectoryName = async (handle: any): Promise<string> => {
+export const getDirectoryName = async (handle: unknown): Promise<string> => {
   try {
-    return handle.name || 'Ausgewählter Ordner';
+    const dirHandle = isDirHandleLike(handle) ? handle : null;
+    return dirHandle?.name || 'Ausgewählter Ordner';
   } catch (error) {
     return 'Ausgewählter Ordner';
   }

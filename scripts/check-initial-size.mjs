@@ -1,165 +1,250 @@
 #!/usr/bin/env node
 
-import { readFileSync, existsSync, statSync } from 'fs';
-import { writeFileSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, statSync } from 'fs';
 import { gzipSync } from 'zlib';
 import path from 'path';
 
-/**
- * Bundle size checker for performance budgets
- * Analyzes Vite manifest to calculate initial JS payload size
- */
-
-const MANIFEST_PATH = './dist/.vite/manifest.json';
+const DIST_DIR = './dist';
+const MANIFEST_PATH = path.join(DIST_DIR, '.vite/manifest.json');
 const BUDGET_PATH = './perf/performance-budget.json';
-const OUTPUT_PATH = './dist/perf-summary.json';
+const OUTPUT_PATH = path.join(DIST_DIR, 'perf-summary.json');
+
+// Parse command line arguments
+const args = process.argv.slice(2);
+const entryFilter = args.find(arg => arg.startsWith('--entry='))?.split('=')[1];
+const includeCss = args.includes('--include-css');
 
 function loadManifest() {
   if (!existsSync(MANIFEST_PATH)) {
-    console.error('❌ manifest.json not found. Run build with manifest: true first.');
+    console.error(`❌ Manifest not found at ${MANIFEST_PATH}`);
+    console.error('Ensure you run the build with manifest: true in vite.config.ts');
     process.exit(1);
   }
   
-  return JSON.parse(readFileSync(MANIFEST_PATH, 'utf8'));
+  try {
+    return JSON.parse(readFileSync(MANIFEST_PATH, 'utf8'));
+  } catch (error) {
+    console.error(`❌ Failed to parse manifest: ${error.message}`);
+    process.exit(1);
+  }
 }
 
 function loadBudget() {
   if (!existsSync(BUDGET_PATH)) {
-    console.error('❌ performance-budget.json not found.');
+    console.error(`❌ Budget file not found at ${BUDGET_PATH}`);
     process.exit(1);
   }
   
-  return JSON.parse(readFileSync(BUDGET_PATH, 'utf8'));
+  try {
+    return JSON.parse(readFileSync(BUDGET_PATH, 'utf8'));
+  } catch (error) {
+    console.error(`❌ Failed to parse budget: ${error.message}`);
+    process.exit(1);
+  }
 }
 
 function getFileSize(filePath) {
-  const fullPath = path.join('./dist', filePath);
+  const fullPath = path.join(DIST_DIR, filePath);
   if (!existsSync(fullPath)) {
     console.warn(`⚠️  File not found: ${fullPath}`);
-    return 0;
+    return { bytes: 0, gzipBytes: 0 };
   }
-  return statSync(fullPath).size;
-}
-
-function getGzipSize(filePath) {
-  const fullPath = path.join('./dist', filePath);
-  if (!existsSync(fullPath)) {
-    console.warn(`⚠️  File not found: ${fullPath}`);
-    return 0;
-  }
-  const content = readFileSync(fullPath);
-  return gzipSync(content).length;
-}
-
-function collectInitialChunks(manifest) {
-  const visited = new Set();
-  const initialChunks = [];
   
-  // Find entry points
-  const entries = Object.entries(manifest)
-    .filter(([_, chunk]) => chunk.isEntry)
-    .map(([key, chunk]) => ({ key, chunk }));
+  const content = readFileSync(fullPath);
+  const bytes = content.length;
+  const gzipBytes = gzipSync(content).length;
+  
+  return { bytes, gzipBytes };
+}
+
+function isJavaScriptFile(file) {
+  return file.endsWith('.js') || file.endsWith('.mjs');
+}
+
+function isCssFile(file) {
+  return file.endsWith('.css');
+}
+
+function buildInitialGraph(entryChunk, manifest, visited = new Set()) {
+  if (visited.has(entryChunk.file)) {
+    return { files: [], bytes: 0, gzipBytes: 0 };
+  }
+  
+  visited.add(entryChunk.file);
+  
+  let files = [];
+  let totalBytes = 0;
+  let totalGzipBytes = 0;
+  
+  // Add the entry file itself if it's JS (or CSS if includeCss is true)
+  if (isJavaScriptFile(entryChunk.file) || (includeCss && isCssFile(entryChunk.file))) {
+    const size = getFileSize(entryChunk.file);
+    files.push({
+      file: entryChunk.file,
+      bytes: size.bytes,
+      gzipBytes: size.gzipBytes
+    });
+    totalBytes += size.bytes;
+    totalGzipBytes += size.gzipBytes;
+  }
+  
+  // Add CSS files if includeCss is enabled
+  if (includeCss && entryChunk.css) {
+    for (const cssFile of entryChunk.css) {
+      if (!visited.has(cssFile)) {
+        visited.add(cssFile);
+        const size = getFileSize(cssFile);
+        files.push({
+          file: cssFile,
+          bytes: size.bytes,
+          gzipBytes: size.gzipBytes
+        });
+        totalBytes += size.bytes;
+        totalGzipBytes += size.gzipBytes;
+      }
+    }
+  }
+  
+  // Traverse static imports (NOT dynamic imports)
+  if (entryChunk.imports) {
+    for (const importFile of entryChunk.imports) {
+      const importChunk = manifest[importFile];
+      if (importChunk) {
+        const subGraph = buildInitialGraph(importChunk, manifest, visited);
+        files.push(...subGraph.files);
+        totalBytes += subGraph.bytes;
+        totalGzipBytes += subGraph.gzipBytes;
+      }
+    }
+  }
+  
+  return { files, bytes: totalBytes, gzipBytes: totalGzipBytes };
+}
+
+function analyzeEntries(manifest) {
+  const entries = [];
+  
+  // Find all entry chunks
+  for (const [key, chunk] of Object.entries(manifest)) {
+    if (chunk.isEntry && isJavaScriptFile(chunk.file)) {
+      // Skip if filtering by specific entry
+      if (entryFilter && !key.includes(entryFilter)) {
+        continue;
+      }
+      
+      console.log(`📊 Analyzing entry: ${key} -> ${chunk.file}`);
+      
+      const initialGraph = buildInitialGraph(chunk, manifest);
+      
+      entries.push({
+        name: key,
+        initialBytes: initialGraph.bytes,
+        initialGzipBytes: initialGraph.gzipBytes,
+        files: initialGraph.files
+      });
+    }
+  }
   
   if (entries.length === 0) {
     console.error('❌ No entry chunks found in manifest');
     process.exit(1);
   }
   
-  function collectChunk(chunkInfo) {
-    if (visited.has(chunkInfo.file)) return;
-    visited.add(chunkInfo.file);
-    
-    if (chunkInfo.file.endsWith('.js')) {
-      initialChunks.push(chunkInfo.file);
-    }
-    
-    // Recursively collect eager imports (not dynamic imports)
-    if (chunkInfo.imports) {
-      chunkInfo.imports.forEach(importFile => {
-        const importChunk = Object.values(manifest).find(chunk => chunk.file === importFile);
-        if (importChunk) {
-          collectChunk(importChunk);
-        }
-      });
+  return entries;
+}
+
+function findWorstCase(entries) {
+  let worstCase = entries[0];
+  
+  for (const entry of entries) {
+    if (entry.initialBytes > worstCase.initialBytes) {
+      worstCase = entry;
     }
   }
   
-  // Collect all entry chunks and their eager dependencies
-  entries.forEach(({ chunk }) => collectChunk(chunk));
-  
   return {
-    entries: entries.map(({ key, chunk }) => ({ key, file: chunk.file })),
-    chunks: initialChunks
+    entry: worstCase.name,
+    initialBytes: worstCase.initialBytes,
+    initialGzipBytes: worstCase.initialGzipBytes
   };
 }
 
-function calculateSizes(chunks) {
-  let totalBytes = 0;
-  let totalGzipBytes = 0;
+function formatBytes(bytes) {
+  return (bytes / 1024).toFixed(2) + ' KB';
+}
+
+function checkBudget(worstCase, budget) {
+  const bytesExceeded = worstCase.initialBytes > budget.initialBytes;
+  const gzipExceeded = worstCase.initialGzipBytes > budget.initialGzipBytes;
   
-  chunks.forEach(chunkFile => {
-    const size = getFileSize(chunkFile);
-    const gzipSize = getGzipSize(chunkFile);
-    totalBytes += size;
-    totalGzipBytes += gzipSize;
+  if (bytesExceeded || gzipExceeded) {
+    console.log('\n❌ BUDGET EXCEEDED:');
+    console.log(`   Worst case entry: ${worstCase.entry}`);
     
-    console.log(`📦 ${chunkFile}: ${(size / 1024).toFixed(1)}KB (${(gzipSize / 1024).toFixed(1)}KB gzip)`);
-  });
+    if (bytesExceeded) {
+      console.log(`   Raw bytes: ${formatBytes(worstCase.initialBytes)} > ${formatBytes(budget.initialBytes)} (threshold)`);
+      console.log(`   Overage: +${formatBytes(worstCase.initialBytes - budget.initialBytes)}`);
+    }
+    
+    if (gzipExceeded) {
+      console.log(`   Gzipped bytes: ${formatBytes(worstCase.initialGzipBytes)} > ${formatBytes(budget.initialGzipBytes)} (threshold)`);
+      console.log(`   Overage: +${formatBytes(worstCase.initialGzipBytes - budget.initialGzipBytes)}`);
+    }
+    
+    return false;
+  }
   
-  return { totalBytes, totalGzipBytes };
+  console.log('\n✅ BUDGET PASSED:');
+  console.log(`   Worst case entry: ${worstCase.entry}`);
+  console.log(`   Raw bytes: ${formatBytes(worstCase.initialBytes)} ≤ ${formatBytes(budget.initialBytes)} (threshold)`);
+  console.log(`   Gzipped bytes: ${formatBytes(worstCase.initialGzipBytes)} ≤ ${formatBytes(budget.initialGzipBytes)} (threshold)`);
+  
+  return true;
 }
 
 function main() {
-  console.log('🔍 Analyzing initial bundle size...\n');
+  console.log('🚀 Checking initial payload size...');
   
   const manifest = loadManifest();
   const budget = loadBudget();
   
-  const { entries, chunks } = collectInitialChunks(manifest);
-  const { totalBytes, totalGzipBytes } = calculateSizes(chunks);
+  console.log(`📋 Using budget: ${formatBytes(budget.initialBytes)} raw, ${formatBytes(budget.initialGzipBytes)} gzipped`);
   
-  console.log(`\n📊 Initial payload summary:`);
-  console.log(`   Entries: ${entries.map(e => e.key).join(', ')}`);
-  console.log(`   Chunks: ${chunks.length}`);
-  console.log(`   Total: ${(totalBytes / 1024).toFixed(1)}KB (${(totalGzipBytes / 1024).toFixed(1)}KB gzip)`);
+  if (entryFilter) {
+    console.log(`🎯 Filtering entries by: ${entryFilter}`);
+  }
   
+  if (includeCss) {
+    console.log('🎨 Including CSS files in analysis');
+  }
+  
+  const entries = analyzeEntries(manifest);
+  const worstCase = findWorstCase(entries);
+  
+  // Create output summary
   const summary = {
-    initialBytes: totalBytes,
-    initialGzipBytes: totalGzipBytes,
-    entries: entries,
-    chunks: chunks,
+    entries,
+    worstCase,
     timestamp: new Date().toISOString(),
     thresholdBytes: budget.initialBytes,
     thresholdGzipBytes: budget.initialGzipBytes
   };
   
-  // Write summary
+  // Write summary to output file
   writeFileSync(OUTPUT_PATH, JSON.stringify(summary, null, 2));
-  console.log(`\n💾 Summary written to ${OUTPUT_PATH}`);
+  console.log(`📄 Performance summary written to ${OUTPUT_PATH}`);
   
-  // Check budgets
-  let failed = false;
-  
-  if (totalBytes > budget.initialBytes) {
-    console.error(`\n❌ BUDGET EXCEEDED: Initial bytes ${totalBytes} > ${budget.initialBytes} threshold`);
-    failed = true;
-  } else {
-    console.log(`\n✅ Initial bytes budget OK: ${totalBytes} <= ${budget.initialBytes}`);
+  // Display results
+  console.log('\n📊 ENTRY ANALYSIS:');
+  for (const entry of entries) {
+    console.log(`   ${entry.name}: ${formatBytes(entry.initialBytes)} raw, ${formatBytes(entry.initialGzipBytes)} gzipped (${entry.files.length} files)`);
   }
   
-  if (totalGzipBytes > budget.initialGzipBytes) {
-    console.error(`❌ BUDGET EXCEEDED: Initial gzip bytes ${totalGzipBytes} > ${budget.initialGzipBytes} threshold`);
-    failed = true;
-  } else {
-    console.log(`✅ Initial gzip bytes budget OK: ${totalGzipBytes} <= ${budget.initialGzipBytes}`);
-  }
-  
-  if (failed) {
-    console.error('\n💥 Performance budget check FAILED');
-    process.exit(1);
-  } else {
-    console.log('\n🎉 Performance budget check PASSED');
-  }
+  // Check budget and exit with appropriate code
+  const passed = checkBudget(worstCase, budget);
+  process.exit(passed ? 0 : 1);
 }
 
-main();
+if (import.meta.url === `file://${process.argv[1]}`) {
+  main();
+}

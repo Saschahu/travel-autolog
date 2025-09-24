@@ -1,13 +1,13 @@
 name: Performance Budget Check
 
 on:
-  pull_request:
-    branches: [main, develop]
   push:
-    branches: [perf/*, feat/*, fix/*]
+    branches: [ main, perf/* ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
-  perf-budget:
+  performance-budget:
     runs-on: ubuntu-latest
     
     steps:
@@ -17,49 +17,70 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
+          node-version: 18
+          cache: 'npm'
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: npm ci
 
-      - name: Build for CI
-        run: pnpm build:ci
+      - name: Build for production
+        run: npm run build:ci
 
       - name: Check performance budget
         id: perf-check
-        run: pnpm perf:check
+        run: |
+          if npm run perf:check; then
+            echo "status=passed" >> $GITHUB_OUTPUT
+          else
+            echo "status=failed" >> $GITHUB_OUTPUT
+            exit 1
+          fi
 
-      - name: Upload performance artifacts
+      - name: Generate job summary
+        if: always()
+        run: |
+          echo "## 📊 Performance Budget Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [[ -f "dist/perf-summary.json" ]]; then
+            # Parse JSON and create summary
+            echo "### Bundle Analysis" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            
+            # Extract worst case info using node
+            node -e "
+              const summary = JSON.parse(require('fs').readFileSync('dist/perf-summary.json', 'utf8'));
+              const formatBytes = (bytes) => (bytes / 1024).toFixed(2) + ' KB';
+              
+              console.log('**Worst Case Entry:** ' + summary.worstCase.entry);
+              console.log('**Raw Size:** ' + formatBytes(summary.worstCase.initialBytes) + ' / ' + formatBytes(summary.thresholdBytes) + ' (threshold)');
+              console.log('**Gzipped Size:** ' + formatBytes(summary.worstCase.initialGzipBytes) + ' / ' + formatBytes(summary.thresholdGzipBytes) + ' (threshold)');
+              console.log('');
+              console.log('### All Entries');
+              console.log('');
+              console.log('| Entry | Raw Size | Gzipped Size | Files |');
+              console.log('|-------|----------|--------------|-------|');
+              
+              summary.entries.forEach(entry => {
+                console.log('| ' + entry.name + ' | ' + formatBytes(entry.initialBytes) + ' | ' + formatBytes(entry.initialGzipBytes) + ' | ' + entry.files.length + ' |');
+              });
+            " >> $GITHUB_STEP_SUMMARY
+            
+            if [[ "${{ steps.perf-check.outputs.status }}" == "passed" ]]; then
+              echo "" >> $GITHUB_STEP_SUMMARY
+              echo "✅ **Status:** PASSED" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "" >> $GITHUB_STEP_SUMMARY
+              echo "❌ **Status:** FAILED - Budget exceeded" >> $GITHUB_STEP_SUMMARY
+            fi
+          else
+            echo "❌ Performance summary not found" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Upload performance summary
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: performance-artifacts
-          path: |
-            dist/perf-summary.json
-            dist/stats.html
-            dist/.vite/manifest.json
-
-      - name: Add job summary on budget failure
-        if: failure() && steps.perf-check.outcome == 'failure'
-        run: |
-          echo "## 🚨 Performance Budget Exceeded" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "The bundle size has exceeded the configured performance budget." >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          if [ -f "dist/perf-summary.json" ]; then
-            echo "### Current Bundle Size" >> $GITHUB_STEP_SUMMARY
-            echo '```json' >> $GITHUB_STEP_SUMMARY
-            cat dist/perf-summary.json >> $GITHUB_STEP_SUMMARY
-            echo '```' >> $GITHUB_STEP_SUMMARY
-            echo "" >> $GITHUB_STEP_SUMMARY
-            echo "Please review the bundle size and consider:" >> $GITHUB_STEP_SUMMARY
-            echo "- Code splitting with dynamic imports" >> $GITHUB_STEP_SUMMARY
-            echo "- Removing unused dependencies" >> $GITHUB_STEP_SUMMARY
-            echo "- Lazy loading non-critical features" >> $GITHUB_STEP_SUMMARY
-            echo "- Updating performance budgets if the increase is justified" >> $GITHUB_STEP_SUMMARY
-          fi
+          name: perf-summary
+          path: dist/perf-summary.json
+          retention-days: 30

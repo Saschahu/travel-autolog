@@ -1,5 +1,5 @@
 {
-  "initialBytes": 6000000,
-  "initialGzipBytes": 1600000,
-  "note": "Performance budgets for initial JS payload. Current bundle ≈5.3MB initial (≈1.4MB gzipped). Budgets set 10-15% above current to prevent regression while allowing for small growth. Adjust if target markets/devices change or after bundle optimization."
+  "initialBytes": 800000,
+  "initialGzipBytes": 600000,
+  "note": "Thresholds derived from post-PR vendor-slim baseline (~507 KB). Keep ≤+20% headroom."
 }

@@ -25,6 +25,14 @@ export default tseslint.config(
       ],
       "@typescript-eslint/no-unused-vars": "off",
       "no-dupe-keys": "error",
+      // Security: Prevent raw dangerouslySetInnerHTML usage
+      "no-restricted-syntax": [
+        "error",
+        {
+          "selector": "JSXAttribute[name.name='dangerouslySetInnerHTML']",
+          "message": "dangerouslySetInnerHTML usage detected. Use @/security/htmlSanitizer toSafeHtml() or create a safe component instead."
+        }
+      ],
     },
   }
 );

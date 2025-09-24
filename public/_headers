@@ -1,0 +1,37 @@
+# Production Content Security Policy Headers
+# Netlify-style headers file
+#
+# This CSP policy enforces strict security while allowing necessary resources for the Travel AutoLog app.
+# For other hosting providers, see docs/security/CSP_DEPLOYMENT.md
+
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob: https://api.mapbox.com; font-src 'self'; connect-src 'self' https://api.mapbox.com https://events.mapbox.com https://pgpszvgsjgkuctcjwwgd.supabase.co wss://pgpszvgsjgkuctcjwwgd.supabase.co; worker-src 'self' blob:; child-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests;
+
+# Security Headers
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  X-XSS-Protection: 1; mode=block
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(self), camera=(), microphone=(), payment=(), usb=()
+
+# Cache Control for Static Assets
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Service Worker
+/sw.js
+  Cache-Control: no-cache
+
+# Manifest and Icons
+/manifest.json
+  Cache-Control: public, max-age=86400
+
+/favicon.ico
+  Cache-Control: public, max-age=86400
+
+/*.png
+  Cache-Control: public, max-age=86400
+
+/*.svg
+  Cache-Control: public, max-age=86400

@@ -19,6 +19,74 @@ interface A4PreviewProps {
   overtimeCalculation: OvertimeCalculation;
 }
 
+// Safe A4 print styles component
+const A4PrintStyles: React.FC = () => {
+  useEffect(() => {
+    const cssContent = `
+      .a4-page {
+        width: 210mm;
+        min-height: 297mm;
+        margin: 0 auto;
+        padding: 15mm;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        page-break-after: always;
+      }
+      
+      .a4-page-container {
+        width: 210mm;
+        min-height: 297mm;
+        margin: 0 auto;
+        padding: 15mm;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      }
+      
+      @page {
+        size: A4;
+        margin: 15mm;
+      }
+      
+      @media print {
+        .a4-page, .a4-page-container {
+          width: auto;
+          min-height: auto;
+          margin: 0;
+          padding: 0;
+          box-shadow: none;
+          page-break-after: auto;
+        }
+        
+        .section {
+          page-break-inside: avoid;
+        }
+        
+        table {
+          page-break-inside: auto;
+        }
+        
+        tr {
+          page-break-inside: avoid;
+          page-break-after: auto;
+        }
+      }
+    `;
+
+    const styleElement = document.createElement('style');
+    styleElement.textContent = cssContent;
+    styleElement.setAttribute('data-a4-print-styles', 'true');
+    document.head.appendChild(styleElement);
+
+    // Cleanup on unmount
+    return () => {
+      const existingStyle = document.querySelector('style[data-a4-print-styles="true"]');
+      if (existingStyle) {
+        existingStyle.remove();
+      }
+    };
+  }, []);
+
+  return null;
+};
+
 export const A4Preview = ({ 
   open, 
   onOpenChange, 
@@ -91,55 +159,8 @@ export const A4Preview = ({
         </div>
       </DialogContent>
       
-      <style dangerouslySetInnerHTML={{
-        __html: `
-          .a4-page {
-            width: 210mm;
-            min-height: 297mm;
-            margin: 0 auto;
-            padding: 15mm;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            page-break-after: always;
-          }
-          
-          .a4-page-container {
-            width: 210mm;
-            min-height: 297mm;
-            margin: 0 auto;
-            padding: 15mm;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-          }
-          
-          @page {
-            size: A4;
-            margin: 15mm;
-          }
-          
-          @media print {
-            .a4-page, .a4-page-container {
-              width: auto;
-              min-height: auto;
-              margin: 0;
-              padding: 0;
-              box-shadow: none;
-              page-break-after: auto;
-            }
-            
-            .section {
-              page-break-inside: avoid;
-            }
-            
-            table {
-              page-break-inside: auto;
-            }
-            
-            tr {
-              page-break-inside: avoid;
-              page-break-after: auto;
-            }
-          }
-        `
-      }} />
+      {/* Safe A4 print styles */}
+      <A4PrintStyles />
     </Dialog>
   );
 };

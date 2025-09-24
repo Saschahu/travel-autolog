@@ -16,7 +16,7 @@ import { HolidaySettings } from '@/components/settings/HolidaySettings';
 import { GPSSettingsComponent } from '@/components/gps/GPSSettingsComponent';
 import { ExportSettings } from './ExportSettings';
 import { LanguageSettings } from './LanguageSettings';
-import { PrivacySettings } from '@/components/privacy/PrivacySettings';
+import { FeatureFlagsPanel } from './FeatureFlagsPanel';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { resetAppData } from '@/utils/resetAppData';
 import { isFileSystemAccessSupported, loadHandle } from '@/lib/fsAccess';
@@ -246,8 +246,8 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
             <TabsTrigger value="gps">{t('gps')}</TabsTrigger>
             <TabsTrigger value="overtime">{t('overtime')}</TabsTrigger>
             <TabsTrigger value="holidays">{t('holidays')}</TabsTrigger>
-            <TabsTrigger value="privacy">{t('privacy')}</TabsTrigger>
             <TabsTrigger value="advanced">{t('advanced')}</TabsTrigger>
+            <TabsTrigger value="experiments">{t('experiments')}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="profile" className="space-y-6">
@@ -431,10 +431,6 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
             <HolidaySettings />
           </TabsContent>
           
-          <TabsContent value="privacy" className="space-y-6">
-            <PrivacySettings />
-          </TabsContent>
-          
           <TabsContent value="advanced" className="space-y-6">
             <Card>
               <CardHeader>
@@ -461,6 +457,10 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="experiments" className="space-y-6">
+            <FeatureFlagsPanel />
           </TabsContent>
         </Tabs>
       </DialogContent>

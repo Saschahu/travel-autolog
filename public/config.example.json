@@ -1,0 +1,11 @@
+{
+  "version": "1.0",
+  "timestamp": 1640995200000,
+  "flags": {
+    "gps.enhancedTelemetry": false,
+    "ui.experimentalPdf": true,
+    "perf.deferHeavyImports": true,
+    "security.strictCSP": true,
+    "export.excelV2": false
+  }
+}

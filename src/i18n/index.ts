@@ -224,8 +224,8 @@ const resources = {
       gps: 'GPS',  
       settings: 'Settings',
       holidays: 'Holidays',
-      privacy: 'Privacy',
       advanced: 'Advanced',
+      experiments: 'Experiments',
       appLanguage: 'App language',
       uiLanguage: 'Interface language',
       logout: 'Logout',
@@ -496,12 +496,10 @@ const resources = {
       travelBack: 'Travel Back (km)',
       tollsNorwegian: 'Tolls / Bom (NOK)',
       back: 'Back',
-      next: 'Next',
       newJob: 'New job',
       saveCustomer: 'Save customer',
       saveAndContinue: 'Save & Continue',
       completeJob: 'Complete job',
-      next: 'Next',
       plannedDaysLabel: 'Planned duration (days)',
       now: 'Now',
       customerSavedGoMachineTitle: 'Continue to machine',
@@ -575,170 +573,36 @@ const resources = {
       ruleOver12: '• Over 12 hours: 100% surcharge on overtime',
       weekendRules: 'Weekend Rules:',
       payment: '• Payment: At least guaranteed hours + overtime surcharges',
-      
-      // GPS tracking specific translations
-      gpsTracking: {
-        tracking: {
-          title: 'GPS Route Recording',
-          description: 'Record GPS points to create daily routes with distance calculation.',
-          toggle: 'Enable Recording',
-          toggleDescription: 'Record GPS points during activity',
-          active: 'Active',
-          starting: 'Starting...',
-          stopped: 'Stopped',
-          error: 'Error'
-        },
-        stats: {
-          pointsToday: 'Points Today',
-          distanceToday: 'Distance Today'
-        },
-        status: {
-          currentState: 'Current State',
-          timer: 'Timer',
-          control: 'Control',
-          locationInfo: 'Location Info',
-          trackingActive: 'Tracking Active',
-          trackingStopped: 'Tracking Stopped',
-          gpsAuthorized: 'GPS Authorized',
-          gpsPermissionMissing: 'GPS Permission Missing',
-          travelTime: 'Travel',
-          workTime: 'Work Time',
-          returnTime: 'Return',
-          gpsPermission: 'GPS Permission',
-          getPosition: 'Get Position',
-          work: 'Work',
-          private: 'Private',
-          atCustomer: 'At Customer',
-          notAtCustomer: 'Not At Customer',
-          workDone: 'Work Done',
-          continueWorking: 'Continue Working',
-          returnCompleted: 'Return Completed',
-          lastPosition: 'Last Position',
-          noPositionAvailable: 'No Position Available',
-          speed: 'Speed',
-          accuracy: 'Accuracy',
-          timestamp: 'Timestamp',
-          states: {
-            idle_at_home: 'At Home (Ready)',
-            departing: 'Leaving Home',
-            en_route_to_customer: 'En Route to Customer',
-            stationary_check: 'Stationary Check',
-            at_customer: 'At Customer',
-            leaving_customer: 'Leaving Customer',
-            en_route_home: 'En Route Home',
-            stationary_home_check: 'Home Check',
-            done: 'Completed'
-          }
-        },
-        export: {
-          title: 'Export Today\'s Route',
-          gpx: 'Export GPX',
-          geojson: 'Export GeoJSON',
-          success: 'Export Successful',
-          error: 'Export Failed',
-          gpxDownloaded: 'GPX File Downloaded',
-          geojsonDownloaded: 'GeoJSON File Downloaded',
-          failed: 'Route Export Failed',
-          noDataToExport: 'No GPS Data Recorded Today'
-        },
-        cleanup: {
-          button: 'Delete Old Routes',
-          confirmTitle: 'Delete Old Routes?',
-          confirmDescription: 'This will delete all GPS routes older than 60 days. This action cannot be undone.',
-          confirm: 'Delete',
-          success: 'Cleanup Successful',
-          error: 'Cleanup Failed',
-          failed: 'Old Routes Could Not Be Deleted',
-          deletedCount: '{{count}} old routes deleted',
-          description: 'Automatically removes routes older than 60 days'
-        },
-        maintenance: {
-          title: 'Maintenance'
-        },
-        backgroundMode: {
-          info: 'Background tracking requires additional permissions on Android devices.'
-        }
+
+      // Feature Flags
+      flags: {
+        title: 'Feature Flags',
+        flagName: 'Flag Name',
+        currentValue: 'Current Value',
+        defaultValue: 'Default Value',
+        source: 'Source',
+        description: 'Description',
+        sourceDefault: 'Default',
+        sourceRemote: 'Remote',
+        sourceLocal: 'Local Override',
+        resetToDefaults: 'Reset to Defaults',
+        resetSuccess: 'Reset Complete',
+        resetSuccessDescription: 'All flags have been reset to defaults',
+        refreshFromServer: 'Refresh from Server',
+        refreshSuccess: 'Config Updated',
+        refreshSuccessDescription: 'Remote configuration fetched successfully',
+        refreshFailed: 'Refresh Failed',
+        refreshFailedDescription: 'Could not fetch remote configuration',
+        refreshError: 'Refresh Error',
+        remoteConfigEnabled: 'Remote configuration is enabled',
+        remoteConfigDisabled: 'Remote configuration is disabled (no VITE_CONFIG_URL)',
+        lastFetch: 'Last fetch',
+        stale: 'may be outdated',
+        error: 'Error',
+        invalidValue: 'Invalid value entered',
+        unknownError: 'Unknown error occurred'
       }
     },
-    
-    // Privacy and consent translations
-    privacy: {
-      // Consent Dialog
-      consentTitle: 'Privacy & Telemetry',
-      consentSubtitle: 'Help us improve the app by sharing anonymous usage data',
-      acceptTelemetry: 'Accept Telemetry',
-      declineTelemetry: 'Continue Without Telemetry',
-      saving: 'Saving...',
-      consentNote: 'You can change this setting anytime in app settings.',
-      readFullPolicy: 'Read full privacy policy',
-      
-      // Privacy Summary
-      briefDescription: 'We collect anonymous crash reports and performance data to improve app stability and user experience.',
-      dataTypes: 'This includes error messages, app performance metrics, and device information (no personal data).',
-      canChangeAnytime: 'You can change your privacy preferences anytime.',
-      learnMore: 'Learn more',
-      
-      // Full privacy information
-      whatWeCollect: 'What We Collect',
-      collectDescription: 'We collect anonymous crash reports, error logs, and performance metrics. No personal information, location data, or work content is included.',
-      howWeUseData: 'How We Use This Data',
-      useCase1: 'Identify and fix app crashes and bugs',
-      useCase2: 'Improve app performance and stability',
-      useCase3: 'Understand which features are most useful',
-      yourRights: 'Your Rights',
-      rightsDescription: 'You can opt out anytime, export your local data, or delete all local app data from your device.',
-      lastUpdated: 'Last updated',
-      lastUpdatedDate: 'January 2024',
-      
-      // Settings
-      telemetrySettings: 'Telemetry & Analytics',
-      telemetryToggleLabel: 'Share anonymous crash reports & performance data',
-      telemetryToggleDescription: 'Helps us improve app stability and user experience',
-      consentNotSet: 'Telemetry consent has not been set. The consent dialog will appear on next app start.',
-      settingsUpdated: 'Privacy settings updated',
-      telemetryEnabled: 'Anonymous telemetry enabled',
-      telemetryDisabled: 'Anonymous telemetry disabled',
-      error: 'Error',
-      failedToUpdateSettings: 'Failed to update privacy settings',
-      
-      // Privacy information
-      privacyInformation: 'Privacy Information',
-      
-      // Data management
-      dataManagement: 'Data Management',
-      dataManagementDescription: 'Export or delete all your local app data stored on this device.',
-      currentDataSummary: 'Current data stored locally',
-      indexedDbEntries: '{{count}} database entries',
-      localStorageEntries: '{{count}} local storage items',
-      preferenceEntries: '{{count}} app preferences',
-      
-      // Export
-      exportMyData: 'Export My Data',  
-      exporting: 'Exporting...',
-      exportSuccess: 'Data Export Successful',
-      exportSuccessDescription: 'Your app data has been downloaded as a JSON file.',
-      exportError: 'Export Failed',
-      exportErrorDescription: 'Failed to export your data. Please try again.',
-      
-      // Delete
-      deleteMyData: 'Delete My Data (Local Device)',
-      deleting: 'Deleting...',
-      confirmDelete: 'Delete All Local Data?',
-      deleteWarning: 'This will permanently delete all app data stored on this device.',
-      deleteWarningList: 'This includes',
-      deleteItem1: 'All job entries and reports',
-      deleteItem2: 'Settings and preferences',
-      deleteItem3: 'GPS tracking data',
-      deleteItem4: 'Export directory selections',
-      deleteIrreversible: 'This action cannot be undone!',
-      cancel: 'Cancel',
-      confirmDeleteButton: 'Delete All Data',
-      deleteSuccess: 'Data Deleted Successfully',
-      deleteSuccessDescription: 'All local app data has been deleted. The app will reload.',
-      deleteError: 'Delete Failed',
-      deleteErrorDescription: 'Failed to delete some data. Please try again or restart the app.'
-    },
-    
     job: jobTranslationsEn
   },
   de: {
@@ -803,8 +667,8 @@ const resources = {
       gps: 'GPS',
       settings: 'Einstellungen',
       holidays: 'Feiertage',
-      privacy: 'Datenschutz',
       advanced: 'Erweitert',
+      experiments: 'Experimente',
       appLanguage: 'App-Sprache',
       uiLanguage: 'Sprache der Benutzeroberfläche',
       logout: 'Abmelden',
@@ -1166,44 +1030,6 @@ const resources = {
           pointsToday: 'Punkte heute',
           distanceToday: 'Strecke heute'
         },
-        status: {
-          currentState: 'Aktueller Zustand',
-          timer: 'Timer',
-          control: 'Kontrolle',
-          locationInfo: 'Standort-Info',
-          trackingActive: 'Tracking aktiv',
-          trackingStopped: 'Tracking gestoppt',
-          gpsAuthorized: 'GPS berechtigt',
-          gpsPermissionMissing: 'GPS Berechtigung fehlt',
-          travelTime: 'Anreise',
-          workTime: 'Arbeitszeit',
-          returnTime: 'Heimreise',
-          gpsPermission: 'GPS Berechtigung',
-          getPosition: 'Position abrufen',
-          work: 'Arbeit',
-          private: 'Privat',
-          atCustomer: 'Beim Kunden',
-          notAtCustomer: 'Nicht beim Kunden',
-          workDone: 'Arbeit fertig',
-          continueWorking: 'Weiter arbeiten',
-          returnCompleted: 'Heimreise beendet',
-          lastPosition: 'Letzte Position',
-          noPositionAvailable: 'Keine Position verfügbar',
-          speed: 'Geschwindigkeit',
-          accuracy: 'Genauigkeit',
-          timestamp: 'Zeitstempel',
-          states: {
-            idle_at_home: 'Zuhause (Bereit)',
-            departing: 'Verlässt Zuhause',
-            en_route_to_customer: 'Anreise zum Kunden',
-            stationary_check: 'Stationär-Prüfung',
-            at_customer: 'Beim Kunden',
-            leaving_customer: 'Verlässt Kunde',
-            en_route_home: 'Heimreise',
-            stationary_home_check: 'Zuhause-Prüfung',
-            done: 'Abgeschlossen'
-          }
-        },
         export: {
           title: 'Heutige Strecke exportieren',
           gpx: 'GPX exportieren',
@@ -1239,87 +1065,37 @@ const resources = {
       rule8to12: '• 8-12 Stunden: 50% Zuschlag auf Überstunden',
       ruleOver12: '• Über 12 Stunden: 100% Zuschlag auf Überstunden',
       weekendRules: 'Wochenendregeln:',
-      payment: '• Bezahlung: Mindestens garantierte Stunden + Überstundenzuschläge'
+      payment: '• Bezahlung: Mindestens garantierte Stunden + Überstundenzuschläge',
+
+      // Feature Flags
+      flags: {
+        title: 'Feature Flags',
+        flagName: 'Flag Name',
+        currentValue: 'Aktueller Wert',
+        defaultValue: 'Standardwert',
+        source: 'Quelle',
+        description: 'Beschreibung',
+        sourceDefault: 'Standard',
+        sourceRemote: 'Remote',
+        sourceLocal: 'Lokale Überschreibung',
+        resetToDefaults: 'Auf Standards zurücksetzen',
+        resetSuccess: 'Zurücksetzung erfolgreich',
+        resetSuccessDescription: 'Alle Flags wurden auf Standardwerte zurückgesetzt',
+        refreshFromServer: 'Vom Server aktualisieren',
+        refreshSuccess: 'Konfiguration aktualisiert',
+        refreshSuccessDescription: 'Remote-Konfiguration erfolgreich abgerufen',
+        refreshFailed: 'Aktualisierung fehlgeschlagen',
+        refreshFailedDescription: 'Remote-Konfiguration konnte nicht abgerufen werden',
+        refreshError: 'Aktualisierungsfehler',
+        remoteConfigEnabled: 'Remote-Konfiguration ist aktiviert',
+        remoteConfigDisabled: 'Remote-Konfiguration ist deaktiviert (keine VITE_CONFIG_URL)',
+        lastFetch: 'Letzte Aktualisierung',
+        stale: 'möglicherweise veraltet',
+        error: 'Fehler',
+        invalidValue: 'Ungültiger Wert eingegeben',
+        unknownError: 'Unbekannter Fehler aufgetreten'
+      }
     },
-    
-    // Privacy and consent translations (German)
-    privacy: {
-      // Consent Dialog
-      consentTitle: 'Datenschutz & Telemetrie',
-      consentSubtitle: 'Helfen Sie uns, die App zu verbessern, indem Sie anonyme Nutzungsdaten teilen',
-      acceptTelemetry: 'Telemetrie akzeptieren',
-      declineTelemetry: 'Ohne Telemetrie fortfahren',
-      saving: 'Speichern...',
-      consentNote: 'Sie können diese Einstellung jederzeit in den App-Einstellungen ändern.',
-      readFullPolicy: 'Vollständige Datenschutzerklärung lesen',
-      
-      // Privacy Summary
-      briefDescription: 'Wir sammeln anonyme Absturzberichte und Leistungsdaten, um die App-Stabilität und Benutzererfahrung zu verbessern.',
-      dataTypes: 'Dies umfasst Fehlermeldungen, App-Leistungsmetriken und Geräteinformationen (keine persönlichen Daten).',
-      canChangeAnytime: 'Sie können Ihre Datenschutzeinstellungen jederzeit ändern.',
-      learnMore: 'Mehr erfahren',
-      
-      // Full privacy information
-      whatWeCollect: 'Was wir sammeln',
-      collectDescription: 'Wir sammeln anonyme Absturzberichte, Fehlerprotokolle und Leistungsmetriken. Keine persönlichen Informationen, Standortdaten oder Arbeitsinhalte sind enthalten.',
-      howWeUseData: 'Wie wir diese Daten verwenden',
-      useCase1: 'App-Abstürze und Fehler identifizieren und beheben',
-      useCase2: 'App-Leistung und Stabilität verbessern',
-      useCase3: 'Verstehen, welche Funktionen am nützlichsten sind',
-      yourRights: 'Ihre Rechte',
-      rightsDescription: 'Sie können sich jederzeit abmelden, Ihre lokalen Daten exportieren oder alle lokalen App-Daten von Ihrem Gerät löschen.',
-      lastUpdated: 'Zuletzt aktualisiert',
-      lastUpdatedDate: 'Januar 2024',
-      
-      // Settings
-      telemetrySettings: 'Telemetrie & Analytik',
-      telemetryToggleLabel: 'Anonyme Absturzberichte & Leistungsdaten teilen',
-      telemetryToggleDescription: 'Hilft uns, die App-Stabilität und Benutzererfahrung zu verbessern',
-      consentNotSet: 'Telemetrie-Einverständnis wurde nicht gesetzt. Der Einverständnisdialog erscheint beim nächsten App-Start.',
-      settingsUpdated: 'Datenschutzeinstellungen aktualisiert',
-      telemetryEnabled: 'Anonyme Telemetrie aktiviert',
-      telemetryDisabled: 'Anonyme Telemetrie deaktiviert',
-      error: 'Fehler',
-      failedToUpdateSettings: 'Datenschutzeinstellungen konnten nicht aktualisiert werden',
-      
-      // Privacy information
-      privacyInformation: 'Datenschutzinformationen',
-      
-      // Data management
-      dataManagement: 'Datenverwaltung',
-      dataManagementDescription: 'Exportieren oder löschen Sie alle Ihre lokalen App-Daten, die auf diesem Gerät gespeichert sind.',
-      currentDataSummary: 'Aktuell lokal gespeicherte Daten',
-      indexedDbEntries: '{{count}} Datenbankeinträge',
-      localStorageEntries: '{{count}} lokale Speicherelemente',
-      preferenceEntries: '{{count}} App-Einstellungen',
-      
-      // Export
-      exportMyData: 'Meine Daten exportieren',
-      exporting: 'Exportiere...',
-      exportSuccess: 'Datenexport erfolgreich',
-      exportSuccessDescription: 'Ihre App-Daten wurden als JSON-Datei heruntergeladen.',
-      exportError: 'Export fehlgeschlagen',
-      exportErrorDescription: 'Export Ihrer Daten fehlgeschlagen. Bitte versuchen Sie es erneut.',
-      
-      // Delete
-      deleteMyData: 'Meine Daten löschen (Lokales Gerät)',
-      deleting: 'Lösche...',
-      confirmDelete: 'Alle lokalen Daten löschen?',
-      deleteWarning: 'Dies wird alle auf diesem Gerät gespeicherten App-Daten dauerhaft löschen.',
-      deleteWarningList: 'Dies umfasst',
-      deleteItem1: 'Alle Auftragseinträge und Berichte',
-      deleteItem2: 'Einstellungen und Präferenzen',
-      deleteItem3: 'GPS-Tracking-Daten',
-      deleteItem4: 'Export-Verzeichnisauswahlen',
-      deleteIrreversible: 'Diese Aktion kann nicht rückgängig gemacht werden!',
-      cancel: 'Abbrechen',
-      confirmDeleteButton: 'Alle Daten löschen',
-      deleteSuccess: 'Daten erfolgreich gelöscht',
-      deleteSuccessDescription: 'Alle lokalen App-Daten wurden gelöscht. Die App wird neu geladen.',
-      deleteError: 'Löschen fehlgeschlagen',
-      deleteErrorDescription: 'Einige Daten konnten nicht gelöscht werden. Bitte versuchen Sie es erneut oder starten Sie die App neu.'
-    },
-    
     job: jobTranslationsDe
   },
   no: {

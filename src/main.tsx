@@ -3,11 +3,12 @@ import App from './App.tsx'
 import './index.css'
 import './i18n'
 import { AuthProvider } from "@/contexts/AuthContext";
-import { initCSPBoot, setupCSP } from '@/boot/cspBoot';
+import { bootFlags } from "@/boot/flagsBoot";
 
-// Initialize CSP boot modules
-initCSPBoot();
-setupCSP();
+// Initialize feature flags system early
+bootFlags().catch(error => {
+  console.error('Failed to boot feature flags:', error);
+});
 
 createRoot(document.getElementById("root")!).render(
   <AuthProvider>

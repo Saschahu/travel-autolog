@@ -2,17 +2,29 @@ import * as XLSX from 'xlsx';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
+import { ENABLE_XLSX } from '@/lib/flags';
+
+type ExcelRow = Record<string, unknown>;
+
+interface ParsedExcelData {
+  sheets: { name: string; data: ExcelRow[]; rowCount: number }[];
+  totalSheets: number;
+  totalRows: number;
+}
 
 export const useExcelUpload = () => {
   const [isUploading, setIsUploading] = useState(false);
   const { toast } = useToast();
 
   const uploadExcelFile = async (file: File) => {
+    if (!ENABLE_XLSX) {
+      throw new Error('XLSX import is disabled by feature flag');
+    }
     setIsUploading(true);
     try {
       // Parse Excel file
       const data = await parseExcelFile(file);
-      
+
       // Upload to Supabase Storage
       const fileName = `${Date.now()}_${file.name}`;
       const { data: uploadData, error: uploadError } = await supabase.storage
@@ -42,29 +54,29 @@ export const useExcelUpload = () => {
     }
   };
 
-  const parseExcelFile = (file: File): Promise<any> => {
+  const parseExcelFile = async (file: File): Promise<ParsedExcelData> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      
+
       reader.onload = (e) => {
         try {
           const data = new Uint8Array(e.target?.result as ArrayBuffer);
           const workbook = XLSX.read(data, { type: 'array' });
-          
-          const sheets = workbook.SheetNames.map(name => {
+
+          const sheets = workbook.SheetNames.map((name) => {
             const worksheet = workbook.Sheets[name];
-            const jsonData = XLSX.utils.sheet_to_json(worksheet);
+            const jsonData = XLSX.utils.sheet_to_json<ExcelRow>(worksheet, { defval: null });
             return {
               name,
               data: jsonData,
-              rowCount: jsonData.length
+              rowCount: jsonData.length,
             };
           });
 
           resolve({
             sheets,
             totalSheets: sheets.length,
-            totalRows: sheets.reduce((sum, sheet) => sum + sheet.rowCount, 0)
+            totalRows: sheets.reduce((sum, sheet) => sum + sheet.rowCount, 0),
           });
         } catch (error) {
           reject(error);

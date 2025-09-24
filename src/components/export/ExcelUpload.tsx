@@ -1,4 +1,5 @@
 import React, { useRef } from 'react';
+import { ENABLE_XLSX } from '@/lib/flags';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -18,20 +19,17 @@ export const ExcelUpload = () => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Check if it's an Excel file
     const allowedTypes = [
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      'application/vnd.ms-excel'
+      'application/vnd.ms-excel',
     ];
-
     if (!allowedTypes.includes(file.type)) {
       alert(t('pleaseSelectExcelFile'));
       return;
     }
 
     await uploadExcelFile(file);
-    
-    // Reset input
+
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -44,22 +42,23 @@ export const ExcelUpload = () => {
           <FileSpreadsheet className="h-5 w-5" />
           {t('excelImport')}
         </CardTitle>
-        <CardDescription>
-          {t('excelImportDescription')}
-        </CardDescription>
+        <CardDescription>{t('excelImportDescription')}</CardDescription>
       </CardHeader>
+
       <CardContent className="space-y-4">
         <input
           type="file"
           ref={fileInputRef}
           onChange={handleFileChange}
-          accept=".xlsx,.xls"
           className="hidden"
+          disabled={!ENABLE_XLSX}
+          aria-disabled={!ENABLE_XLSX}
+          accept={ENABLE_XLSX ? '.xlsx,.xls' : ''}
         />
-        
-        <Button 
+
+        <Button
           onClick={handleFileSelect}
-          disabled={isUploading}
+          disabled={isUploading || !ENABLE_XLSX}
           className="w-full"
           variant="outline"
         >
@@ -70,6 +69,12 @@ export const ExcelUpload = () => {
           )}
           {isUploading ? t('uploading') : t('selectExcelFile')}
         </Button>
+
+        {!ENABLE_XLSX && (
+          <p className="text-sm text-muted-foreground">
+            {t('excelImportDeactivated', 'Excel-Import vorübergehend deaktiviert (Sicherheitsmaßnahme).')}
+          </p>
+        )}
 
         <div className="text-sm text-muted-foreground">
           <p>{t('supportedFormats')}</p>

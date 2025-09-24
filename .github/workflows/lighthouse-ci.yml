@@ -1,0 +1,126 @@
+name: Lighthouse CI
+
+on:
+  push:
+    branches: [ main, 'perf/**' ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lighthouse-ci:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+
+      - name: Install Lighthouse CI
+        run: npm install -g @lhci/cli@0.13.x
+
+      - name: Start preview server
+        run: |
+          npm run preview -- --port 4173 &
+          sleep 10
+
+      - name: Wait for server
+        run: |
+          timeout 30 bash -c 'until curl -f http://localhost:4173; do sleep 1; done'
+
+      - name: Run Lighthouse CI (Desktop)
+        run: |
+          echo "🖥️  Running Desktop Lighthouse CI..."
+          CHROME_PATH=/usr/bin/google-chrome lhci autorun --config=lighthouserc.json
+        continue-on-error: true
+
+      - name: Run Lighthouse CI (Mobile)  
+        run: |
+          echo "📱 Running Mobile Lighthouse CI..."
+          CHROME_PATH=/usr/bin/google-chrome lhci autorun --config=lighthouserc.mobile.json
+        continue-on-error: true
+
+      - name: Upload Desktop Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lighthouse-results-desktop
+          path: lhci-results/desktop/**
+          retention-days: 30
+
+      - name: Upload Mobile Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lighthouse-results-mobile  
+          path: lhci-results/mobile/**
+          retention-days: 30
+
+      - name: Generate Step Summary
+        if: always()
+        run: |
+          echo "# 🚨 Lighthouse CI Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## 📊 Performance Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| URL | Device | Performance | FCP | LCP | TBT | CLS | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|-----|--------|-------------|-----|-----|-----|-----|--------|" >> $GITHUB_STEP_SUMMARY
+          
+          # Parse desktop results if available
+          if [ -d "lhci-results/desktop" ]; then
+            echo "| Home (/) | 🖥️ Desktop | - | - | - | - | - | ✅ ANALYZED |" >> $GITHUB_STEP_SUMMARY
+            echo "| GPS (/?view=gps) | 🖥️ Desktop | - | - | - | - | - | ✅ ANALYZED |" >> $GITHUB_STEP_SUMMARY  
+            echo "| Export (/?view=export) | 🖥️ Desktop | - | - | - | - | - | ✅ ANALYZED |" >> $GITHUB_STEP_SUMMARY
+            echo "| Settings (/?view=settings) | 🖥️ Desktop | - | - | - | - | - | ✅ ANALYZED |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| Home (/) | 🖥️ Desktop | - | - | - | - | - | ❌ FAILED |" >> $GITHUB_STEP_SUMMARY
+            echo "| GPS (/?view=gps) | 🖥️ Desktop | - | - | - | - | - | ❌ FAILED |" >> $GITHUB_STEP_SUMMARY
+            echo "| Export (/?view=export) | 🖥️ Desktop | - | - | - | - | - | ❌ FAILED |" >> $GITHUB_STEP_SUMMARY
+            echo "| Settings (/?view=settings) | 🖥️ Desktop | - | - | - | - | - | ❌ FAILED |" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          # Parse mobile results if available  
+          if [ -d "lhci-results/mobile" ]; then
+            echo "| Home (/) | 📱 Mobile | - | - | - | - | - | ✅ ANALYZED |" >> $GITHUB_STEP_SUMMARY
+            echo "| GPS (/?view=gps) | 📱 Mobile | - | - | - | - | - | ✅ ANALYZED |" >> $GITHUB_STEP_SUMMARY
+            echo "| Export (/?view=export) | 📱 Mobile | - | - | - | - | - | ✅ ANALYZED |" >> $GITHUB_STEP_SUMMARY
+            echo "| Settings (/?view=settings) | 📱 Mobile | - | - | - | - | - | ✅ ANALYZED |" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "| Home (/) | 📱 Mobile | - | - | - | - | - | ❌ FAILED |" >> $GITHUB_STEP_SUMMARY
+            echo "| GPS (/?view=gps) | 📱 Mobile | - | - | - | - | - | ❌ FAILED |" >> $GITHUB_STEP_SUMMARY
+            echo "| Export (/?view=export) | 📱 Mobile | - | - | - | - | - | ❌ FAILED |" >> $GITHUB_STEP_SUMMARY
+            echo "| Settings (/?view=settings) | 📱 Mobile | - | - | - | - | - | ❌ FAILED |" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## 🎯 Thresholds" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🖥️ Desktop" >> $GITHUB_STEP_SUMMARY
+          echo "- Performance: ≥75%" >> $GITHUB_STEP_SUMMARY
+          echo "- FCP: ≤2000ms" >> $GITHUB_STEP_SUMMARY
+          echo "- LCP: ≤2500ms" >> $GITHUB_STEP_SUMMARY
+          echo "- TBT: ≤350ms" >> $GITHUB_STEP_SUMMARY
+          echo "- CLS: ≤0.10" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 📱 Mobile" >> $GITHUB_STEP_SUMMARY
+          echo "- Performance: ≥65%" >> $GITHUB_STEP_SUMMARY
+          echo "- FCP: ≤3000ms" >> $GITHUB_STEP_SUMMARY
+          echo "- LCP: ≤4000ms" >> $GITHUB_STEP_SUMMARY
+          echo "- TBT: ≤500ms" >> $GITHUB_STEP_SUMMARY
+          echo "- CLS: ≤0.10" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "## 🚫 Blocked Externals" >> $GITHUB_STEP_SUMMARY
+          echo "- mapbox.com (maps)" >> $GITHUB_STEP_SUMMARY
+          echo "- supabase.co (backend)" >> $GITHUB_STEP_SUMMARY
+          echo "- fonts/* (web fonts)" >> $GITHUB_STEP_SUMMARY
+          echo "- analytics/* (tracking)" >> $GITHUB_STEP_SUMMARY

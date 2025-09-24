@@ -28,3 +28,7 @@ android/
 
 # Lokale Secrets
 .env
+
+# Lighthouse CI results
+.lighthouseci/
+lhci-results/

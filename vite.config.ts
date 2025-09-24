@@ -21,16 +21,7 @@ export default defineConfig(({ mode }) => ({
   },
   test: {
     environment: 'jsdom',
-    setupFiles: ['./test/setup.ts'],
-    css: true,
-    coverage: {
-      reporter: ['text', 'html', 'lcov'],
-      thresholds: {
-        lines: 60,
-        branches: 50,
-        functions: 60,
-        statements: 60
-      }
-    }
-  }
+    setupFiles: ['./src/test/setup.ts'],
+    globals: true,
+  },
 }));

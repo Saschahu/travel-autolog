@@ -23,7 +23,7 @@ export function validateMapboxToken(token?: string): TokenValidationResult {
   }
 
   // Mapbox public token regex: pk.{base64-like-chars}
-  const mapboxTokenRegex = /^pk\.[A-Za-z0-9._\-]{10,}$/;
+  const mapboxTokenRegex = /^pk\.[A-Za-z0-9._-]{10,}$/;
   if (!mapboxTokenRegex.test(trimmed)) {
     return { isValid: false, error: 'Token format invalid' };
   }

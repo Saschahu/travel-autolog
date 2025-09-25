@@ -9,7 +9,7 @@ export default tseslint.config(
   {
     ignores: [
       "dist",
-      "android/**", // Android Gradle artifacts (build outputs, intermediates)
+      "android/**",
       "coverage/**",
       "node_modules/**",
       "**/.vite/**",

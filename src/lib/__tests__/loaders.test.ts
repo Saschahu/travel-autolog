@@ -126,11 +126,45 @@ describe('Lazy Loaders', () => {
     });
 
     it('should handle import errors', async () => {
-      vi.doMock('jspdf', () => {
-        throw new Error('jsPDF import failed');
-      });
+      vi.resetModules();
 
-      await expect(loadJsPDF()).rejects.toThrow('jsPDF import failed');
+      vi.doMock(
+        'jspdf',
+        async () => {
+          throw new Error('jsPDF import failed');
+        },
+        { virtual: true },
+      );
+
+      try {
+        const { loadJsPDF: loadJsPDFWithError } = await import('../loaders');
+
+        const result = await loadJsPDFWithError().then(
+          () => ({ ok: true as const }),
+          (err) => ({ ok: false as const, err }),
+        );
+
+        expect(result.ok).toBe(false);
+
+        const messageFragments = [
+          result.err instanceof Error ? result.err.message : String(result.err),
+          result.err instanceof Error && result.err.cause instanceof Error
+            ? result.err.cause.message
+            : undefined,
+        ].filter(Boolean) as string[];
+
+        expect(messageFragments.join(' ')).toContain('jsPDF import failed');
+      } finally {
+        vi.resetModules();
+        vi.doUnmock('jspdf');
+        vi.doMock(
+          'jspdf',
+          () => ({
+            jsPDF: mockJsPDF,
+          }),
+          { virtual: true },
+        );
+      }
     });
   });
 

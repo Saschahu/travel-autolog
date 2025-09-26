@@ -62,70 +62,69 @@ function sanitizeKey(key: unknown): string {
  * Read Excel file from ArrayBuffer with defensive parsing
  */
 export async function readExcelFile(buffer: ArrayBuffer): Promise<ExcelReadResult> {
-  try {
-    if (!buffer || buffer.byteLength === 0) {
-      return {
-        worksheets: [],
-        success: false,
-        error: 'Empty or invalid buffer'
-      };
-    }
+  if (!buffer || buffer.byteLength === 0) {
+    return {
+      worksheets: [],
+      success: false,
+      error: 'Empty or invalid buffer'
+    };
+  }
 
-    // Parse the workbook
-    const workbook = XLSX.read(buffer, { 
+  let workbook: XLSX.WorkBook;
+  try {
+    workbook = XLSX.read(buffer, {
       type: 'array',
       codepage: 65001, // UTF-8
       cellDates: true,
       cellNF: false,
       cellHTML: false // Prevent HTML injection
     });
-
-    const worksheets: WorksheetData[] = [];
-
-    // Process each worksheet
-    for (const sheetName of workbook.SheetNames) {
-      const worksheet = workbook.Sheets[sheetName];
-      if (!worksheet) continue;
-
-      try {
-        // Convert to JSON with safe parsing
-        const jsonData = XLSX.utils.sheet_to_json(worksheet, {
-          header: 1, // Array of arrays
-          defval: null,
-          blankrows: false
-        });
-
-        // Sanitize the data
-        const sanitizedData = jsonData.map((row: unknown) => {
-          if (!Array.isArray(row)) {
-            return [];
-          }
-          return row.map(coerceToPrimitive);
-        });
-
-        worksheets.push({
-          name: sanitizeKey(sheetName),
-          data: sanitizedData
-        });
-      } catch (sheetError) {
-        console.warn(`Error processing sheet ${sheetName}:`, sheetError);
-        // Continue with other sheets
-      }
-    }
-
-    return {
-      worksheets,
-      success: true
-    };
-
   } catch (error) {
-    console.error('Error reading Excel file:', error);
+    console.error('[excelAdapter] read error', error);
     return {
       worksheets: [],
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: String((error as Error)?.message ?? error)
     };
   }
+
+  const worksheets: WorksheetData[] = [];
+
+  // Process each worksheet
+  for (const sheetName of workbook.SheetNames) {
+    const worksheet = workbook.Sheets[sheetName];
+    if (!worksheet) continue;
+
+    try {
+      // Convert to JSON with safe parsing
+      const jsonData = XLSX.utils.sheet_to_json(worksheet, {
+        header: 1, // Array of arrays
+        defval: null,
+        blankrows: false
+      });
+
+      // Sanitize the data
+      const sanitizedData = jsonData.map((row: unknown) => {
+        if (!Array.isArray(row)) {
+          return [];
+        }
+        return row.map(coerceToPrimitive);
+      });
+
+      worksheets.push({
+        name: sanitizeKey(sheetName),
+        data: sanitizedData
+      });
+    } catch (sheetError) {
+      console.warn(`Error processing sheet ${sheetName}:`, sheetError);
+      // Continue with other sheets
+    }
+  }
+
+  return {
+    worksheets,
+    success: true
+  };
 }
 
 /**

@@ -201,7 +201,7 @@ describe('Remote Config', () => {
           'gps.enhancedTelemetry': true,
           'ui.experimentalPdf': 'invalid_type', // Wrong type
           'unknown.flag': true, // Unknown flag
-          'ui.experimentalPdf': false // Valid
+          'ui.experimentalPdf_alt': false // Valid
         }
       };
 

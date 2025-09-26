@@ -20,7 +20,7 @@ import { Label } from '@/components/ui/label';
 import { LeavingHomeDialog } from '@/components/location/LeavingHomeDialog';
 import { GPSPage } from '@/components/gps/GPSPage';
 import { useLocation } from '@/hooks/useLocation';
-import { useUserProfile } from '@/contexts/UserProfileContext';
+import { useUserProfile } from '@/contexts/user-profile-context.helpers';
 import { useToast } from '@/hooks/use-toast';
 import { useJobs, type Job } from '@/hooks/useJobs';
 import { supabase } from '@/integrations/supabase/client';

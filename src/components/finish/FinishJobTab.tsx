@@ -23,7 +23,7 @@ import { getOrBuildReportPdf, clearReportPdfCache, generateReportFilename } from
 import { sendReportEmail } from '@/lib/sendReportEmail';
 import { ShareFallbackModal } from './ShareFallbackModal';
 import { useExportSettings } from '@/hooks/useExportSettings';
-import { useUserProfile } from '@/contexts/UserProfileContext';
+import { useUserProfile } from '@/contexts/user-profile-context.helpers';
 import { useTranslation } from 'react-i18next';
 import { tt } from '@/lib/i18nSafe';
 import { isFileSystemAccessSupported, writeFile, getDirectoryName } from '@/lib/fsAccess';

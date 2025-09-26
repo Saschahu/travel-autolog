@@ -82,6 +82,9 @@ vi.mock('next-themes', () => ({
 // Mock AuthContext
 vi.mock('@/contexts/AuthContext', () => ({
   AuthProvider: ({ children }: any) => children,
+}));
+
+vi.mock('@/contexts/auth-context.helpers', () => ({
   useAuth: () => ({
     user: null,
     loading: false,
@@ -93,6 +96,21 @@ vi.mock('@/contexts/AuthContext', () => ({
 // Mock UserProfileContext  
 vi.mock('@/contexts/UserProfileContext', () => ({
   UserProfileProvider: ({ children }: any) => children,
+}));
+
+vi.mock('@/contexts/user-profile-context.helpers', () => ({
+  useUserProfile: () => ({
+    profile: {
+      name: '',
+      homeAddress: '',
+      email: '',
+      preferredEmailApp: 'default',
+      gpsEnabled: false,
+      localStoragePath: '',
+    },
+    updateProfile: vi.fn(),
+    isLoading: false,
+  }),
 }));
 
 // Helper to create a test wrapper with providers

@@ -1,4 +1,4 @@
-import { useUserProfile } from '@/contexts/UserProfileContext';
+import { useUserProfile } from '@/contexts/user-profile-context.helpers';
 import { useExcelExport } from '@/hooks/useExcelExport';
 import { useToast } from '@/hooks/use-toast';
 import { sendReportEmail } from '@/lib/sendReportEmail';

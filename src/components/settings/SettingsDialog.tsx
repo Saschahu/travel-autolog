@@ -1,7 +1,7 @@
 import { validateEmailInput } from '@/lib/email';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useUserProfile } from '@/contexts/UserProfileContext';
+import { useUserProfile } from '@/contexts/user-profile-context.helpers';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';

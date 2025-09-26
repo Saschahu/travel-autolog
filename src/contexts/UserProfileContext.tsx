@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { useState, useEffect, ReactNode } from 'react';
 import { Preferences } from '@capacitor/preferences';
+import { UserProfileContext } from './user-profile-context.helpers';
 
 export interface UserProfile {
   name: string;
@@ -14,7 +15,7 @@ export interface UserProfile {
   reportBcc?: string | null;
 }
 
-interface UserProfileContextType {
+export interface UserProfileContextType {
   profile: UserProfile;
   updateProfile: (updates: Partial<UserProfile>) => Promise<void>;
   isLoading: boolean;
@@ -30,16 +31,6 @@ const defaultProfile: UserProfile = {
   reportTo: null,
   reportCc: null,
   reportBcc: null,
-};
-
-const UserProfileContext = createContext<UserProfileContextType | undefined>(undefined);
-
-export const useUserProfile = () => {
-  const context = useContext(UserProfileContext);
-  if (!context) {
-    throw new Error('useUserProfile must be used within a UserProfileProvider');
-  }
-  return context;
 };
 
 interface UserProfileProviderProps {

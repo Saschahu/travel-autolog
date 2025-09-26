@@ -1,7 +1,7 @@
 import { buildComposeUrl } from '@/lib/emailProviders';
 import { splitEmails, validateEmails } from '@/lib/email';
 import { exportWorkbook } from '@/lib/excelAdapter';
-import { useUserProfile } from '@/contexts/UserProfileContext';
+import { useUserProfile } from '@/contexts/user-profile-context.helpers';
 import { Share } from '@capacitor/share';
 import { Capacitor } from '@capacitor/core';
 import { useToast } from '@/hooks/use-toast';

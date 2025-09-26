@@ -38,7 +38,7 @@ export async function resizeImage(
     img.onload = () => {
       try {
         // Calculate new dimensions while preserving aspect ratio
-        let { width, height } = calculateDimensions(
+        const { width, height } = calculateDimensions(
           img.width,
           img.height,
           maxWidth,

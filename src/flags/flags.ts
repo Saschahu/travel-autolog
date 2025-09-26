@@ -17,6 +17,8 @@ interface FlagCache {
   updatedAt: number;
 }
 
+type Flags = Record<FlagKey, FlagValue>;
+
 // Initial flag registry
 export const FLAG_REGISTRY: Record<FlagKey, FlagDef> = {
   'gps.enhancedTelemetry': {
@@ -63,8 +65,11 @@ const localOverrides = new Map<FlagKey, FlagValue>();
 type FlagListener = (flags: Record<FlagKey, FlagValue>) => void;
 const listeners: FlagListener[] = [];
 
+const defaultFlags: Flags = initializeDefaults();
+
 // Initialize defaults on import for tests
-currentFlags = initializeDefaults();
+export let currentFlags: Flags =
+  (globalThis as any).__TEST_FLAGS__ ?? defaultFlags;
 
 // Initialize with defaults
 function initializeDefaults(): Record<FlagKey, FlagValue> {

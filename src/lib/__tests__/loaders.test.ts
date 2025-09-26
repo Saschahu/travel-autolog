@@ -208,13 +208,13 @@ describe('Lazy Loaders', () => {
   });
 
   describe('module import patterns', () => {
-    it('should NOT import modules at top-level (preventing eager loading)', () => {
+    it('should NOT import modules at top-level (preventing eager loading)', async () => {
       // This test verifies that modules are not imported until functions are called
       // Reset modules to ensure clean state
       vi.resetModules();
 
       // Import the loaders module (should not trigger dynamic imports)
-      require('../loaders');
+      await import('../loaders');
 
       // Verify that mock modules have not been initialized yet
       // This is implicitly tested by the fact that our mocks work correctly

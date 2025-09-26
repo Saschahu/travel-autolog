@@ -264,7 +264,7 @@ export function createGpsFsm(
 
     dispatch(event: any): void {
       switch (event.type) {
-        case 'LOCATION_UPDATE':
+        case 'LOCATION_UPDATE': {
           // Store location in history (keep rolling window)
           state.locationHistory.push(event.location);
           const maxHistorySize = Math.ceil(config.dwellMs / (5 * 1000)); // Assume 5 second sampling
@@ -275,6 +275,7 @@ export function createGpsFsm(
           state.lastLocation = event.location;
           checkStateTransitions(event.location);
           break;
+        }
 
         case 'SELECT_WORK':
           if (state.currentState === 'departing') {

@@ -49,7 +49,7 @@ export function createGpsFsm(
   dispatch(event: { type: 'DENY_WORK_DONE' }): void;
   dispatch(event: { type: 'CONFIRM_HOME_ARRIVAL' }): void;
 } {
-  let state: FsmState = {
+  const state: FsmState = {
     currentState: 'idle_at_home',
     locationHistory: [],
     stationaryStartTime: undefined,

@@ -110,11 +110,22 @@ describe('Lazy Loaders', () => {
     });
 
     it('should handle import errors', async () => {
-      vi.doMock('exceljs', () => {
-        throw new Error('ExcelJS import failed');
-      });
+      await vi.resetModules();
+      vi.doMock(
+        'exceljs',
+        () => {
+          throw new Error('ExcelJS import failed');
+        },
+        { virtual: true },
+      );
 
-      await expect(loadExcelJS()).rejects.toThrow('ExcelJS import failed');
+      const { loadExcelJS } = await import('../loaders');
+
+      await expect(loadExcelJS()).rejects.toThrow(/ExcelJS import failed/i);
+
+      // cleanup for downstream tests
+      vi.unmock('exceljs');
+      await vi.resetModules();
     });
   });
 

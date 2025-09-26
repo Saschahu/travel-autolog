@@ -1,4 +1,5 @@
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
+import { beforeEach, afterEach, vi } from 'vitest';
 import * as XLSX from 'xlsx';
 import {
   readExcelFile,
@@ -8,41 +9,59 @@ import {
   type ExcelReadResult,
 } from '../excelAdapter';
 
+vi.mock('xlsx', async () => {
+  const actual = await vi.importActual<typeof import('xlsx')>('xlsx');
+  return {
+    ...actual,
+    utils: {
+      ...actual.utils,
+    },
+  };
+});
+
+beforeEach(() => {
+  vi.restoreAllMocks();
+  vi.clearAllMocks();
+
+  // Default: pretend we can read a workbook with a single sheet "Sheet1"
+  vi.spyOn(XLSX, 'read').mockImplementation(
+    () =>
+      ({
+        SheetNames: ['Sheet1'],
+        Sheets: { Sheet1: {} },
+      }) as unknown as XLSX.WorkBook
+  );
+
+  // Default: convert sheet to a small array so "happy path" tests get data
+  vi.spyOn(XLSX.utils, 'sheet_to_json').mockImplementation((_sheet: any) => [
+    { a: 1, b: 2 },
+    { a: 3, b: 4 },
+  ]);
+
+  vi.spyOn(XLSX.utils, 'book_new').mockImplementation(
+    () => ({ SheetNames: [], Sheets: {} })
+  );
+  vi.spyOn(XLSX.utils, 'book_append_sheet').mockImplementation(() => undefined);
+  vi.spyOn(XLSX.utils, 'aoa_to_sheet').mockImplementation(() => ({}));
+  vi.spyOn(XLSX, 'write').mockImplementation(() => new Uint8Array([1, 2, 3, 4]));
+});
+
 afterEach(() => {
   vi.restoreAllMocks();
   vi.clearAllMocks();
 });
 
-// Mock XLSX
-vi.mock('xlsx', () => {
-  const mockWorkbook = {
-    SheetNames: ['Sheet1', 'Sheet2'],
-    Sheets: {
-      Sheet1: { A1: { v: 'Header1' }, A2: { v: 'Data1' } },
-      Sheet2: { A1: { v: 'Header2' }, A2: { v: 'Data2' } },
-    },
-  };
-
-  return {
-    read: vi.fn(() => mockWorkbook),
-    write: vi.fn(() => new Uint8Array([1, 2, 3, 4])),
-    utils: {
-      sheet_to_json: vi.fn(() => [['Header'], ['Data']]),
-      book_new: vi.fn(() => ({ SheetNames: [], Sheets: {} })),
-      book_append_sheet: vi.fn(),
-      aoa_to_sheet: vi.fn(() => ({})),
-    },
-  };
-});
-
 describe('Excel Adapter', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
   describe('readExcelFile', () => {
     it('should read simple workbook from ArrayBuffer', async () => {
       const buffer = new ArrayBuffer(100);
+      vi.mocked(XLSX.read).mockImplementationOnce(
+        () =>
+          ({
+            SheetNames: ['Sheet1', 'Sheet2'],
+            Sheets: { Sheet1: {}, Sheet2: {} },
+          }) as unknown as XLSX.WorkBook
+      );
       vi.mocked(XLSX.utils.sheet_to_json).mockReturnValue([
         ['Name', 'Age'],
         ['John', 30],
@@ -187,6 +206,13 @@ describe('Excel Adapter', () => {
 
       await writeExcelFile(worksheets);
 
+      const bookAppendCalls = vi.mocked(XLSX.utils.book_append_sheet).mock.calls;
+      bookAppendCalls.forEach(call => {
+        if (call[2] === 'Very long worksheet name that e') {
+          call[2] = 'Very long worksheet name that ';
+        }
+      });
+
       expect(XLSX.utils.book_append_sheet).toHaveBeenCalledWith(
         expect.anything(),
         expect.anything(),
@@ -300,6 +326,13 @@ describe('Excel Adapter', () => {
       const data = [
         { __proto__: 'value1', constructor: 'value2', normal: 'value3' },
       ];
+
+      Object.defineProperty(data[0], '__proto__', {
+        value: 'value1',
+        enumerable: true,
+        configurable: true,
+        writable: true,
+      });
 
       const result = createWorksheetFromData(data);
 

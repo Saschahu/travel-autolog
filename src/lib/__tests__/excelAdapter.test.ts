@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import * as XLSX from 'xlsx';
 import {
   readExcelFile,
@@ -7,6 +7,11 @@ import {
   type WorksheetData,
   type ExcelReadResult,
 } from '../excelAdapter';
+
+afterEach(() => {
+  vi.restoreAllMocks();
+  vi.clearAllMocks();
+});
 
 // Mock XLSX
 vi.mock('xlsx', () => {
@@ -75,7 +80,7 @@ describe('Excel Adapter', () => {
 
     it('should handle XLSX.read errors', async () => {
       const buffer = new ArrayBuffer(100);
-      vi.mocked(XLSX.read).mockImplementation(() => {
+      vi.mocked(XLSX.read).mockImplementationOnce(() => {
         throw new Error('Invalid Excel file');
       });
 

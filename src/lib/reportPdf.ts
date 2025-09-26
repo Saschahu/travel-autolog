@@ -73,34 +73,39 @@ export async function buildReportPdf(data: ReportData): Promise<Blob> {
         container.style.color = 'black';
         container.style.fontFamily = 'Arial, sans-serif';
       
-      // Render the report with proper i18n
-      const { element } = await renderReportElement(data, lang);
-      
-      // Create a root and render the element
-      const root = createRoot(container);
-      root.render(element);
-      
-      // Wait a bit for React to render
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
-      document.body.appendChild(container);
+        // Render the report with proper i18n
+        const { element } = await renderReportElement(data, lang);
 
-      try {
-        // Use optimized PDF generation with JPEG compression
-        const pdfBlob = await makeReportPdf(container, { 
-          quality, 
-          scale: 2 
-        });
-        
-        // Clean up
-        root.unmount();
-        document.body.removeChild(container);
-        resolve(pdfBlob);
+        // Create a root and render the element
+        const root = createRoot(container);
+        root.render(element);
 
+        // Wait a bit for React to render
+        await new Promise(resolve => setTimeout(resolve, 100));
+
+        document.body.appendChild(container);
+
+        const cleanup = () => {
+          root.unmount();
+          if (container.parentNode) {
+            container.parentNode.removeChild(container);
+          }
+        };
+
+        try {
+          // Use optimized PDF generation with JPEG compression
+          const pdfBlob = await makeReportPdf(container, {
+            quality,
+            scale: 2
+          });
+
+          cleanup();
+          resolve(pdfBlob);
+        } catch (error) {
+          cleanup();
+          reject(error);
+        }
       } catch (error) {
-        // Clean up on error
-        root.unmount();
-        document.body.removeChild(container);
         reject(error);
       }
     })();

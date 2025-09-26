@@ -8,7 +8,7 @@
 // import * as Sentry from '@sentry/browser';
 
 let isMonitoringEnabled = false;
-let isMonitoringInitialized = false;
+const isMonitoringInitialized = false;
 
 // Environment variables for Sentry configuration
 const SENTRY_DSN = import.meta.env.VITE_SENTRY_DSN || '';

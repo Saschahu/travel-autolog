@@ -1,4 +1,12 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
+
+const HOISTED = vi.hoisted(() => ({
+  MAPBOX_CSS: {},
+  mockMapboxGL: { version: '2.15.0' },
+  mockExcelJS: { Workbook: class {} },
+  mockJsPDF: class jsPDF {},
+  mockSupabase: { createClient: vi.fn() },
+}));
 import {
   loadMapboxGL,
   loadExcelJS,
@@ -9,25 +17,29 @@ import {
   clearModuleCache,
 } from '../loaders';
 
-// Mock dynamic imports
-const mockMapboxGL = { version: '2.15.0' };
-const mockExcelJS = { Workbook: class {} };
-const mockJsPDF = class jsPDF {};
-const mockSupabase = { createClient: vi.fn() };
+const { mockMapboxGL, mockExcelJS, mockJsPDF, mockSupabase } = HOISTED;
 
-vi.mock('mapbox-gl', () => ({
-  default: mockMapboxGL,
-}));
+vi.mock('mapbox-gl/dist/mapbox-gl.css', () => HOISTED.MAPBOX_CSS, { virtual: true });
 
-vi.mock('mapbox-gl/dist/mapbox-gl.css', () => ({}));
+vi.mock(
+  'mapbox-gl',
+  () => ({
+    default: mockMapboxGL,
+  }),
+  { virtual: true },
+);
 
-vi.mock('exceljs', () => mockExcelJS);
+vi.mock('exceljs', () => mockExcelJS, { virtual: true });
 
-vi.mock('jspdf', () => ({
-  jsPDF: mockJsPDF,
-}));
+vi.mock(
+  'jspdf',
+  () => ({
+    jsPDF: mockJsPDF,
+  }),
+  { virtual: true },
+);
 
-vi.mock('@supabase/supabase-js', () => mockSupabase);
+vi.mock('@supabase/supabase-js', () => mockSupabase, { virtual: true });
 
 // Mock setTimeout for preload tests
 global.setTimeout = vi.fn((fn) => {
@@ -59,11 +71,33 @@ describe('Lazy Loaders', () => {
     });
 
     it('should handle import errors gracefully', async () => {
-      vi.doMock('mapbox-gl', () => {
-        throw new Error('Import failed');
-      });
+      vi.resetModules();
+      vi.doMock(
+        'mapbox-gl',
+        () => {
+          throw new Error('Import failed');
+        },
+        { virtual: true },
+      );
 
-      await expect(loadMapboxGL()).rejects.toThrow('Import failed');
+      const { loadMapboxGL: loadMapboxGLWithError } = await import('../loaders');
+
+      const invokeLoader = async () => {
+        try {
+          return await loadMapboxGLWithError();
+        } catch (error) {
+          const cause = (error as { cause?: unknown }).cause;
+          if (cause instanceof Error) {
+            throw cause;
+          }
+          throw error;
+        }
+      };
+
+      await expect(invokeLoader()).rejects.toThrow('Import failed');
+
+      vi.resetModules();
+      vi.doUnmock('mapbox-gl');
     });
   });
 

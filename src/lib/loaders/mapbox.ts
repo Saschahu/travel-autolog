@@ -17,6 +17,8 @@ export async function loadMapboxGL(): Promise<typeof import('mapbox-gl')> {
   }
 
   try {
+    // ⚠️ Keep this side-effect import first. Vite needs the CSS bundled in prod,
+    // otherwise the optimizer can drop it and Mapbox renders without styles.
     await import('mapbox-gl/dist/mapbox-gl.css');
   } catch (error) {
     const err = new Error(

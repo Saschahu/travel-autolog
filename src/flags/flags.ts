@@ -65,6 +65,7 @@ const listeners: FlagListener[] = [];
 const DEFAULT_FLAG_VALUES = initializeDefaults();
 const runtime: Record<FlagKey, FlagRuntimeEntry> = initializeRuntime();
 const remoteFlagValues: Partial<Record<FlagKey, FlagValue>> = {};
+const loggedUnknownRemoteKeys = new Set<string>();
 
 function initializeDefaults(): Record<FlagKey, FlagValue> {
   const defaults: Record<FlagKey, FlagValue> = {};
@@ -346,12 +347,17 @@ export async function applyRemoteConfig(
   payload: Partial<Record<FlagKey, FlagValue>>,
 ): Promise<void> {
   let updated = false;
+  const newlySeenUnknownKeys: string[] = [];
 
   for (const [key, value] of Object.entries(payload) as [
     FlagKey,
     FlagValue,
   ][]) {
     if (!(key in FLAG_REGISTRY)) {
+      if (!loggedUnknownRemoteKeys.has(key)) {
+        loggedUnknownRemoteKeys.add(key);
+        newlySeenUnknownKeys.push(key);
+      }
       continue;
     }
 
@@ -366,6 +372,13 @@ export async function applyRemoteConfig(
 
   if (updated) {
     notifyListeners();
+  }
+
+  if (newlySeenUnknownKeys.length > 0) {
+    console.warn(
+      'Ignoring unknown remote flag keys:',
+      newlySeenUnknownKeys.join(', '),
+    );
   }
 
   await persistFlags();

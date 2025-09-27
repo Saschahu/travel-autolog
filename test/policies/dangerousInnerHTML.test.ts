@@ -20,6 +20,10 @@ const ALLOWED_FILES = [
 const DANGEROUS_PATTERN =
   /dangerouslySetInnerHTML\s*=\s*\{\s*\{\s*__html\s*:\s*[^}]+\}\s*\}/gs;
 
+function matchesDangerousPattern(value: string): boolean {
+  return new RegExp(DANGEROUS_PATTERN.source, DANGEROUS_PATTERN.flags).test(value);
+}
+
 // Pattern to detect if file imports our sanitizer
 const SANITIZER_IMPORT_PATTERN = /(import.*['"].*sanitizer|sanitizeHtml|toSafeHtml)/;
 
@@ -49,18 +53,21 @@ function checkFileForDangerousHTML(filePath: string): {
   }>;
 } {
   const content = readFileSync(filePath, 'utf-8');
-  const lines = content.split('\n');
-  
   const violations: Array<{ line: number; content: string }> = [];
   const hasSanitizer = SANITIZER_IMPORT_PATTERN.test(content);
-  
-  lines.forEach((line, index) => {
-    if (DANGEROUS_PATTERN.test(line)) {
-      violations.push({
-        line: index + 1,
-        content: line.trim(),
-      });
-    }
+
+  const matches = [...content.matchAll(DANGEROUS_PATTERN)];
+
+  matches.forEach(match => {
+    const index = match.index ?? 0;
+    const preceding = content.slice(0, index);
+    const line = preceding.split('\n').length;
+    const snippet = match[0].split('\n')[0]?.trim() ?? match[0].trim();
+
+    violations.push({
+      line,
+      content: snippet,
+    });
   });
   
   return {
@@ -211,7 +218,8 @@ describe('Security Policy: dangerouslySetInnerHTML', () => {
       ];
 
       testCases.forEach(testCase => {
-        expect(DANGEROUS_PATTERN.test(testCase)).toBe(true);
+        DANGEROUS_PATTERN.lastIndex = 0;
+        expect(matchesDangerousPattern(testCase)).toBe(true);
       });
     });
 
@@ -224,8 +232,19 @@ describe('Security Policy: dangerouslySetInnerHTML', () => {
 
       safeCases.forEach(safeCase => {
         // Reset regex state
-        DANGEROUS_PATTERN.lastIndex = 0;
-        expect(DANGEROUS_PATTERN.test(safeCase)).toBe(false);
+        expect(matchesDangerousPattern(safeCase)).toBe(false);
+      });
+    });
+
+    it('should ignore props that only mention __html in strings or comments', () => {
+      const innocuousCases = [
+        '<Component /* __html should stay in docs */ prop="value" />',
+        "const hint = 'render uses __html internally';",
+        '{/* eslint-disable-next-line __html */}\n<Element attr={value} />',
+      ];
+
+      innocuousCases.forEach(caseText => {
+        expect(matchesDangerousPattern(caseText)).toBe(false);
       });
     });
 

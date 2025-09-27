@@ -35,7 +35,11 @@ vi.mock('@tiptap/react', () => {
   };
 });
 
-/** Make Trusted Types re-definable in tests */
+/**
+ * Make Trusted Types re-definable in tests.
+ * jsdom hard-freezes window.trustedTypes, so we keep it configurable to avoid
+ * brittle errors when suites stub or polyfill Trusted Types in setup.
+ */
 try {
   Object.defineProperty(window as any, 'trustedTypes', {
     value: undefined,
@@ -53,7 +57,12 @@ vi.mock(
   { virtual: true }
 );
 
-/** Capacitor Core: mock both named + default exports */
+/**
+ * Capacitor Core: mock both named + default exports.
+ * Avoid re-mocking @capacitor/core inside individual tests—Vitest hoists the
+ * first mock declaration and later attempts cause confusing double-register
+ * failures.
+ */
 vi.mock('@capacitor/core', () => {
   const registerPlugin = vi.fn(() => ({}));
   const Capacitor = { getPlatform: () => 'web' };

@@ -8,6 +8,11 @@ export type MapboxGL = typeof import('mapbox-gl').default;
 export type ExcelJS = typeof import('exceljs');
 export type JSPDF = typeof import('jspdf').jsPDF;
 export type SupabaseClient = typeof import('@supabase/supabase-js');
+export interface SupabaseLoadError extends Error {
+  code: 'E_IMPORT_RETRY_FAILED';
+  attempts: number;
+  causes: unknown[];
+}
 
 /**
  * Lazy load Mapbox GL JS with CSS import side-effect
@@ -41,15 +46,44 @@ export async function loadJsPDF(): Promise<JSPDF> {
  * Lazy load Supabase client
  */
 export async function loadSupabase(): Promise<SupabaseClient> {
-  const resolveModule = (mod: any) => mod?.default ?? mod;
+  const resolveModule = (mod: any) => {
+    const candidate = mod?.default ?? mod;
 
-  try {
+    if (typeof candidate === 'function') {
+      try {
+        const invoked = candidate();
+        if (invoked && typeof invoked === 'object' && 'createClient' in invoked) {
+          return invoked;
+        }
+      } catch {
+        // Swallow invocation errors and fall back to returning the candidate
+      }
+    }
+
+    return candidate;
+  };
+
+  const attemptImport = async () => {
     const supabase = await import('@supabase/supabase-js');
     return resolveModule(supabase);
-  } catch (error) {
+  };
+
+  try {
+    return await attemptImport();
+  } catch (firstError) {
     await new Promise(resolve => setTimeout(resolve, 0));
-    const retry = await import('@supabase/supabase-js');
-    return resolveModule(retry);
+
+    try {
+      return await attemptImport();
+    } catch (secondError) {
+      const err = new Error(
+        'Failed to load Supabase client after retry.',
+      ) as SupabaseLoadError;
+      err.code = 'E_IMPORT_RETRY_FAILED';
+      err.attempts = 2;
+      err.causes = [firstError, secondError];
+      throw err;
+    }
   }
 }
 

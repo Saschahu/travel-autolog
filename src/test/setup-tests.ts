@@ -34,3 +34,32 @@ vi.mock('@tiptap/react', () => {
     EditorContent: () => null,
   };
 });
+
+/** Make Trusted Types re-definable in tests */
+try {
+  Object.defineProperty(window as any, 'trustedTypes', {
+    value: undefined,
+    writable: true,
+    configurable: true,
+  });
+} catch {
+  /* ignore */
+}
+
+/** Mapbox CSS side-effect (Vitest needs a default export object) */
+vi.mock(
+  'mapbox-gl/dist/mapbox-gl.css',
+  () => ({ default: {} }),
+  { virtual: true }
+);
+
+/** Capacitor Core: mock both named + default exports */
+vi.mock('@capacitor/core', () => {
+  const registerPlugin = vi.fn(() => ({}));
+  const Capacitor = { getPlatform: () => 'web' };
+  return {
+    registerPlugin,
+    Capacitor,
+    default: { registerPlugin, Capacitor },
+  };
+});

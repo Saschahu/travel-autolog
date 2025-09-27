@@ -41,8 +41,16 @@ export async function loadJsPDF(): Promise<JSPDF> {
  * Lazy load Supabase client
  */
 export async function loadSupabase(): Promise<SupabaseClient> {
-  const supabase = await import('@supabase/supabase-js');
-  return supabase;
+  const resolveModule = (mod: any) => mod?.default ?? mod;
+
+  try {
+    const supabase = await import('@supabase/supabase-js');
+    return resolveModule(supabase);
+  } catch (error) {
+    await new Promise(resolve => setTimeout(resolve, 0));
+    const retry = await import('@supabase/supabase-js');
+    return resolveModule(retry);
+  }
 }
 
 /**

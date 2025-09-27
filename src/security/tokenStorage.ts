@@ -88,6 +88,18 @@ export async function markMigrationComplete(): Promise<void> {
   }
 }
 
+export async function migrateLegacyToken(
+  local: Storage,
+  kv: { set: (key: string, value: any) => Promise<void> },
+): Promise<void> {
+  const lsToken = local.getItem(MAPBOX_TOKEN_KEY);
+  if (!lsToken) return;
+
+  await kv.set(MAPBOX_TOKEN_KEY, lsToken);
+  local.removeItem(MAPBOX_TOKEN_KEY);
+  await kv.set(MIGRATION_KEY, true);
+}
+
 /**
  * Migrates token from localStorage to IndexedDB (idempotent)
  */

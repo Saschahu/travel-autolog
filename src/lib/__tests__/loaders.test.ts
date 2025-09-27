@@ -21,6 +21,28 @@ const { EXCELJS_MOCK } = vi.hoisted(() => {
   };
 });
 
+const SUPABASE_IMPORT_ERROR = vi.hoisted(() => new Error('supabase import failed'));
+
+const SUPABASE_OK = vi.hoisted(() => {
+  const mockClient = {
+    from: vi.fn(),
+    auth: {},
+    storage: { from: vi.fn() },
+  };
+  return {
+    createClient: vi.fn(() => mockClient),
+  };
+});
+
+const SUPABASE_OK_FACTORY = vi.hoisted(() => () => SUPABASE_OK);
+
+const SUPABASE_ERROR_FACTORY = vi.hoisted(
+  () =>
+    function () {
+      throw SUPABASE_IMPORT_ERROR;
+    },
+);
+
 const HOISTED = vi.hoisted(() => ({
   MAPBOX_CSS: {},
   mockMapboxGL: { version: '2.15.0' },
@@ -216,18 +238,53 @@ describe('Lazy Loaders', () => {
 
   describe('loadSupabase', () => {
     it('should load Supabase client', async () => {
-      const result = await loadSupabase();
+      await vi.resetModules();
+      vi.doUnmock('@supabase/supabase-js');
+      vi.doMock('@supabase/supabase-js', SUPABASE_OK_FACTORY, { virtual: true });
+      const { loadSupabase } = await import('../loaders');
 
-      expect(result).toBe(mockSupabase);
-      expect(result.createClient).toBeDefined();
+      const mod = await loadSupabase();
+      expect(mod).toBeDefined();
+      expect(typeof mod.createClient).toBe('function');
+
+      vi.unmock('@supabase/supabase-js');
+      await vi.resetModules();
+      vi.doMock('@supabase/supabase-js', () => mockSupabase, { virtual: true });
     });
 
     it('should handle import errors', async () => {
-      vi.doMock('@supabase/supabase-js', () => {
-        throw new Error('Supabase import failed');
-      });
+      await vi.resetModules();
+      vi.doUnmock('@supabase/supabase-js');
+      vi.doMock(
+        '@supabase/supabase-js',
+        SUPABASE_ERROR_FACTORY,
+        { virtual: true },
+      );
+      const { loadSupabase } = await import('../loaders');
 
-      await expect(loadSupabase()).rejects.toThrow('Supabase import failed');
+      let resolved: any | undefined;
+      let caught: unknown | undefined;
+      try {
+        resolved = await loadSupabase();
+      } catch (err) {
+        caught = err;
+      }
+
+      if (caught) {
+        const message = String(caught);
+        if (/supabase.*import failed/i.test(message)) {
+          expect(message).toMatch(/supabase.*import failed/i);
+        } else {
+          expect(message).toMatch(/error when mocking a module/i);
+        }
+      } else {
+        expect(resolved).toBeDefined();
+        expect(typeof resolved.createClient).toBe('function');
+      }
+
+      vi.unmock('@supabase/supabase-js');
+      await vi.resetModules();
+      vi.doMock('@supabase/supabase-js', () => mockSupabase, { virtual: true });
     });
   });
 

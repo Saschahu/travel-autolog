@@ -1,9 +1,33 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
+const { EXCELJS_IMPORT_ERROR } = vi.hoisted(() => ({
+  EXCELJS_IMPORT_ERROR: new Error('ExcelJS import failed'),
+}));
+
+// ---- ExcelJS hoisted double (ESM-safe) ----
+const { EXCELJS_MOCK } = vi.hoisted(() => {
+  class WorkbookMock {
+    constructor() {}
+    addWorksheet() {
+      return {};
+    }
+    getWorksheet() {
+      return {};
+    }
+    xlsx = { writeBuffer: async () => new ArrayBuffer(8) };
+  }
+  return {
+    EXCELJS_MOCK: {
+      __esModule: true,
+      default: WorkbookMock,
+      Workbook: WorkbookMock,
+    },
+  };
+});
+
 const HOISTED = vi.hoisted(() => ({
   MAPBOX_CSS: {},
   mockMapboxGL: { version: '2.15.0' },
-  mockExcelJS: { Workbook: class {} },
   mockJsPDF: class jsPDF {},
   mockSupabase: { createClient: vi.fn() },
 }));
@@ -17,7 +41,7 @@ import {
   clearModuleCache,
 } from '../loaders';
 
-const { mockMapboxGL, mockExcelJS, mockJsPDF, mockSupabase } = HOISTED;
+const { mockMapboxGL, mockJsPDF, mockSupabase } = HOISTED;
 
 vi.mock('mapbox-gl/dist/mapbox-gl.css', () => HOISTED.MAPBOX_CSS, { virtual: true });
 
@@ -28,8 +52,6 @@ vi.mock(
   }),
   { virtual: true },
 );
-
-vi.mock('exceljs', () => mockExcelJS, { virtual: true });
 
 vi.mock(
   'jspdf',
@@ -103,18 +125,34 @@ describe('Lazy Loaders', () => {
 
   describe('loadExcelJS', () => {
     it('should load ExcelJS module', async () => {
-      const result = await loadExcelJS();
+      await vi.resetModules();
+      vi.mock('exceljs', () => EXCELJS_MOCK, { virtual: true });
+      const { loadExcelJS } = await import('../loaders');
 
-      expect(result).toBe(mockExcelJS);
-      expect(result.Workbook).toBeDefined();
+      const mod = await loadExcelJS();
+      expect(mod).toBeDefined();
+      const workbookExport = (mod as { Workbook?: unknown; default?: unknown }).Workbook ??
+        (mod as { Workbook?: unknown; default?: unknown }).default;
+      expect(typeof workbookExport).toBe('function');
     });
 
     it('should handle import errors', async () => {
-      vi.doMock('exceljs', () => {
-        throw new Error('ExcelJS import failed');
-      });
+      await vi.resetModules();
 
-      await expect(loadExcelJS()).rejects.toThrow('ExcelJS import failed');
+      vi.mock(
+        'exceljs',
+        () => {
+          throw EXCELJS_IMPORT_ERROR;
+        },
+        { virtual: true },
+      );
+
+      const { loadExcelJS } = await import('../loaders');
+
+      await expect(loadExcelJS()).rejects.toThrow(/ExcelJS import failed/i);
+
+      vi.unmock('exceljs');
+      await vi.resetModules();
     });
   });
 

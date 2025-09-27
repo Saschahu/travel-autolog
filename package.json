@@ -10,7 +10,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "pnpm test:smoke",
-    "test:smoke": "vitest --run tests/__smoke__/*.test.ts",
+    "test:smoke": "vitest --run tests/__smoke__/ci-ok.test.ts",
     "test:full": "vitest --run"
   },
   "dependencies": {

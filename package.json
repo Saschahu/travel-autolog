@@ -11,7 +11,9 @@
     "preview": "vite preview",
     "test": "pnpm test:smoke",
     "test:smoke": "vitest --run tests/__smoke__/ci-ok.test.ts",
-    "test:full": "vitest --run"
+    "test:full": "vitest --run",
+    "test:ci": "vitest --run --silent",
+    "postinstall": "pnpm dlx lefthook install"
   },
   "dependencies": {
     "@capacitor/android": "^7.4.2",

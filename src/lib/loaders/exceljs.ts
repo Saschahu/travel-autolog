@@ -11,6 +11,9 @@ export interface ExcelJSLoadError {
 
 let excelPromise: Promise<typeof import('exceljs')> | null = null;
 
+export const EXCELJS_DEFAULT_RETRIES = 3;
+export const EXCELJS_DEFAULT_DELAY_MS = 300;
+
 export function resetExcelJSLoader(): void {
   excelPromise = null;
 }
@@ -20,8 +23,8 @@ export async function loadExcelJS(opts?: {
   delayMs?: number;
 }): Promise<typeof import('exceljs')> {
   if (!excelPromise) {
-    const retries = opts?.retries ?? 3;
-    const delayMs = opts?.delayMs ?? 300;
+    const retries = opts?.retries ?? EXCELJS_DEFAULT_RETRIES;
+    const delayMs = opts?.delayMs ?? EXCELJS_DEFAULT_DELAY_MS;
 
     excelPromise = (async () => {
       let attempt = 0;

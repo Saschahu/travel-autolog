@@ -151,17 +151,36 @@ describe('Feature Flags', () => {
     it('should prioritize local overrides over remote config', async () => {
       // Set local override first
       setLocalOverride('gps.enhancedTelemetry', false);
-      
+
       // Apply remote config that tries to set it to true
       const remoteFlags = {
         'gps.enhancedTelemetry': true
       };
-      
+
       await applyRemoteConfig(remoteFlags);
-      
+
       // Local override should win
       expect(getFlag('gps.enhancedTelemetry')).toBe(false);
       expect(getFlagSource('gps.enhancedTelemetry')).toBe('local');
+    });
+
+    it('should restore defaults when clearing overrides after remote config', async () => {
+      const remoteFlags = {
+        'gps.enhancedTelemetry': true
+      };
+
+      await applyRemoteConfig(remoteFlags);
+      expect(getFlag('gps.enhancedTelemetry')).toBe(true);
+      expect(getFlagSource('gps.enhancedTelemetry')).toBe('remote');
+
+      setLocalOverride('gps.enhancedTelemetry', false);
+      expect(getFlag('gps.enhancedTelemetry')).toBe(false);
+      expect(getFlagSource('gps.enhancedTelemetry')).toBe('local');
+
+      clearLocalOverride('gps.enhancedTelemetry');
+
+      expect(getFlag('gps.enhancedTelemetry')).toBe(false);
+      expect(getFlagSource('gps.enhancedTelemetry')).toBe('default');
     });
   });
 

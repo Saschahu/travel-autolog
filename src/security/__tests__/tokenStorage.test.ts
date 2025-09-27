@@ -86,7 +86,7 @@ describe('Token Storage', () => {
 
   describe('IndexedDB operations', () => {
     it('should read token from IndexedDB', async () => {
-      const mockToken = 'pk.test123';
+      const mockToken = 'pk.test1234567';
       vi.mocked(get).mockResolvedValueOnce(mockToken);
 
       const result = await readTokenFromIDB();
@@ -104,7 +104,7 @@ describe('Token Storage', () => {
     });
 
     it('should write token to IndexedDB', async () => {
-      const token = 'pk.test123';
+      const token = 'pk.test1234567';
       vi.mocked(set).mockResolvedValueOnce(undefined);
 
       await writeTokenToIDB(token);
@@ -113,7 +113,7 @@ describe('Token Storage', () => {
     });
 
     it('should throw on IndexedDB write errors', async () => {
-      const token = 'pk.test123';
+      const token = 'pk.test1234567';
       const error = new Error('IDB Write Error');
       vi.mocked(set).mockRejectedValueOnce(error);
 
@@ -163,8 +163,8 @@ describe('Token Storage', () => {
     });
 
     it('should perform idempotent localStorage to IndexedDB migration', async () => {
-      const lsToken = 'pk.test123';
-      
+      const lsToken = 'pk.test1234567';
+
       // Setup: migration not complete, token in localStorage
       vi.mocked(get)
         .mockResolvedValueOnce(false) // isMigrationComplete
@@ -178,6 +178,25 @@ describe('Token Storage', () => {
       expect(set).toHaveBeenCalledWith('mapbox_token', lsToken);
       expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('mapbox_token');
       expect(set).toHaveBeenCalledWith('token_migration_complete', true);
+    });
+
+    it('should keep localStorage token when IndexedDB write fails', async () => {
+      const lsToken = 'pk.test1234567';
+      vi.mocked(get)
+        .mockResolvedValueOnce(false) // isMigrationComplete
+        .mockResolvedValue(undefined);
+      mockLocalStorage.getItem.mockReturnValue(lsToken);
+      const writeError = new Error('IDB down');
+      vi.mocked(set).mockImplementation(async (key: string) => {
+        if (key === 'mapbox_token') {
+          throw writeError;
+        }
+        return undefined as any;
+      });
+
+      await expect(migrateTokenStorage()).rejects.toThrow('IDB down');
+      expect(mockLocalStorage.removeItem).not.toHaveBeenCalledWith('mapbox_token');
+      expect(set).not.toHaveBeenCalledWith('token_migration_complete', true);
     });
 
     it('should skip migration if already complete', async () => {

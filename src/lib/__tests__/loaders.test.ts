@@ -57,6 +57,7 @@ import {
   preloadCriticalModules,
   isModuleLoaded,
   clearModuleCache,
+  type SupabaseLoadError,
 } from '../loaders';
 
 const { mockMapboxGL, mockJsPDF, mockSupabase } = HOISTED;
@@ -252,7 +253,7 @@ describe('Lazy Loaders', () => {
       vi.doMock('@supabase/supabase-js', () => mockSupabase, { virtual: true });
     });
 
-    it('should handle import errors', async () => {
+    it('should surface import errors with retry metadata', async () => {
       await vi.resetModules();
       vi.doUnmock('@supabase/supabase-js');
       vi.doMock(
@@ -262,25 +263,10 @@ describe('Lazy Loaders', () => {
       );
       const { loadSupabase } = await import('../loaders');
 
-      let resolved: any | undefined;
-      let caught: unknown | undefined;
-      try {
-        resolved = await loadSupabase();
-      } catch (err) {
-        caught = err;
-      }
-
-      if (caught) {
-        const message = String(caught);
-        if (/supabase.*import failed/i.test(message)) {
-          expect(message).toMatch(/supabase.*import failed/i);
-        } else {
-          expect(message).toMatch(/error when mocking a module/i);
-        }
-      } else {
-        expect(resolved).toBeDefined();
-        expect(typeof resolved.createClient).toBe('function');
-      }
+      await expect(loadSupabase()).rejects.toMatchObject<Partial<SupabaseLoadError>>({
+        code: 'E_IMPORT_RETRY_FAILED',
+        attempts: 2,
+      });
 
       vi.unmock('@supabase/supabase-js');
       await vi.resetModules();

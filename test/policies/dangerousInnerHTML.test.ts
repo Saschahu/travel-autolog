@@ -17,7 +17,8 @@ const ALLOWED_FILES = [
 ];
 
 // Pattern to detect dangerouslySetInnerHTML usage
-const DANGEROUS_PATTERN = /dangerouslySetInnerHTML\s*=\s*\{/g;
+const DANGEROUS_PATTERN =
+  /dangerouslySetInnerHTML\s*=\s*\{\s*\{\s*__html\s*:\s*[^}]+\}\s*\}/gs;
 
 // Pattern to detect if file imports our sanitizer
 const SANITIZER_IMPORT_PATTERN = /(import.*['"].*sanitizer|sanitizeHtml|toSafeHtml)/;

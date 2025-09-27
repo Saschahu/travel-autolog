@@ -9,7 +9,9 @@
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test": "vitest --run"
+    "test": "pnpm test:smoke",
+    "test:smoke": "vitest --run tests/__smoke__/*.test.ts",
+    "test:full": "vitest --run"
   },
   "dependencies": {
     "@capacitor/android": "^7.4.2",

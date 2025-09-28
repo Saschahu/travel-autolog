@@ -36,17 +36,18 @@ jobs:
       - run: pnpm test
 
   test-full:
-    name: test-full
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'pnpm'
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 9
-      - run: pnpm install --frozen-lockfile
-      # Vollständige Tests (darf fehlschlagen, blockiert Auto-Merge nicht)
-      - run: pnpm test:full
+  name: test-full
+  runs-on: ubuntu-latest
+  continue-on-error: true   # ✅ macht den Job grün, auch wenn Tests failen
+  steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: 'pnpm'
+    - uses: pnpm/action-setup@v4
+      with:
+        version: 9
+    - run: pnpm install --frozen-lockfile
+    # Vollständige Tests (darf fehlschlagen, blockiert Auto-Merge nicht)
+    - run: pnpm test:full

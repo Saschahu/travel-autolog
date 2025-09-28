@@ -1,3 +1,6 @@
+<!-- CI trigger: ensure required checks are registered -->
+[![CI](https://github.com/<Sascha-Hu-Inc>/<travel-autolog>/actions/workflows/ci.yml/badge.svg)](../../actions/workflows/ci.yml)
+
 # Travel AutoLog
 
 ServiceTracker automatische Dokumentation von Reise- und Arbeitszeiten für Servicetechniker.

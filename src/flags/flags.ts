@@ -1,9 +1,9 @@
 // Feature Flags Core Module
 import { get, set, del } from 'idb-keyval';
 
-// Types
 export type FlagKey = string;
 export type FlagValue = boolean | number | string;
+export type FlagSource = 'default' | 'remote' | 'local';
 
 export interface FlagDef {
   key: FlagKey;
@@ -17,70 +17,110 @@ interface FlagCache {
   updatedAt: number;
 }
 
-type Flags = Record<FlagKey, FlagValue>;
+interface FlagRuntimeEntry {
+  value: FlagValue;
+  source: FlagSource;
+}
 
-// Initial flag registry
+const IDB_KEY = 'config.flags';
+const CAPACITOR_PREFIX = 'flags_';
+const LOCALSTORAGE_PREFIX = 'travel_flags_';
+
 export const FLAG_REGISTRY: Record<FlagKey, FlagDef> = {
   'gps.enhancedTelemetry': {
     key: 'gps.enhancedTelemetry',
     default: false,
     description: 'Enable enhanced GPS telemetry collection',
-    since: '2024-01-01'
+    since: '2024-01-01',
   },
   'ui.experimentalPdf': {
     key: 'ui.experimentalPdf',
     default: false,
     description: 'Enable experimental PDF generation features',
-    since: '2024-01-01'
+    since: '2024-01-01',
   },
   'perf.deferHeavyImports': {
     key: 'perf.deferHeavyImports',
     default: true,
     description: 'Defer heavy module imports for better performance',
-    since: '2024-01-01'
+    since: '2024-01-01',
   },
   'security.strictCSP': {
     key: 'security.strictCSP',
     default: true,
     description: 'Enable strict Content Security Policy',
-    since: '2024-01-01'
+    since: '2024-01-01',
   },
   'export.excelV2': {
     key: 'export.excelV2',
     default: false,
     description: 'Use new Excel export engine (v2)',
-    since: '2024-01-01'
-  }
+    since: '2024-01-01',
+  },
 };
 
-// Storage keys
-const IDB_KEY = 'config.flags';
-const CAPACITOR_PREFIX = 'flags_';
-const LOCALSTORAGE_PREFIX = 'travel_flags_';
-
-// Local overrides
-const localOverrides = new Map<FlagKey, FlagValue>();
-
-// Listeners for flag changes
 type FlagListener = (flags: Record<FlagKey, FlagValue>) => void;
 const listeners: FlagListener[] = [];
 
-const defaultFlags: Flags = initializeDefaults();
+const DEFAULT_FLAG_VALUES = initializeDefaults();
+const runtime: Record<FlagKey, FlagRuntimeEntry> = initializeRuntime();
+const remoteFlagValues: Partial<Record<FlagKey, FlagValue>> = {};
+const loggedUnknownRemoteKeys = new Set<string>();
 
-// Initialize defaults on import for tests
-export let currentFlags: Flags =
-  (globalThis as any).__TEST_FLAGS__ ?? defaultFlags;
-
-// Initialize with defaults
 function initializeDefaults(): Record<FlagKey, FlagValue> {
   const defaults: Record<FlagKey, FlagValue> = {};
-  Object.values(FLAG_REGISTRY).forEach(flag => {
+  for (const flag of Object.values(FLAG_REGISTRY)) {
     defaults[flag.key] = flag.default;
-  });
+  }
   return defaults;
 }
 
-// Triple fallback storage helpers
+function initializeRuntime(): Record<FlagKey, FlagRuntimeEntry> {
+  const entries: Record<FlagKey, FlagRuntimeEntry> = {};
+  const testSeed = (globalThis as any).__TEST_FLAGS__ as
+    | Record<FlagKey, FlagValue>
+    | undefined;
+
+  for (const [key, defaultValue] of Object.entries(DEFAULT_FLAG_VALUES) as [
+    FlagKey,
+    FlagValue,
+  ][]) {
+    const seededValue = testSeed?.[key];
+    entries[key] = {
+      value: seededValue ?? defaultValue,
+      source: 'default',
+    };
+  }
+
+  return entries;
+}
+
+function getAllRuntimeFlags(): Record<FlagKey, FlagValue> {
+  const snapshot: Record<FlagKey, FlagValue> = {};
+  for (const [key, entry] of Object.entries(runtime) as [FlagKey, FlagRuntimeEntry][]) {
+    snapshot[key] = entry.value;
+  }
+  return snapshot;
+}
+
+function notifyListeners(): void {
+  const snapshot = getAllRuntimeFlags();
+  for (const listener of listeners) {
+    try {
+      listener(snapshot);
+    } catch (error) {
+      console.error('Error in flag listener:', error);
+    }
+  }
+}
+
+function setRuntimeValue(key: FlagKey, value: FlagValue, source: FlagSource): void {
+  if (!(key in runtime)) {
+    return;
+  }
+  runtime[key] = { value, source };
+}
+
 async function loadFromIndexedDB(): Promise<FlagCache | null> {
   try {
     return await get(IDB_KEY);
@@ -98,15 +138,18 @@ async function saveToIndexedDB(cache: FlagCache): Promise<void> {
   }
 }
 
-async function loadFromCapacitorPreferences(): Promise<Record<FlagKey, FlagValue> | null> {
+async function loadFromCapacitorPreferences(): Promise<
+  Record<FlagKey, FlagValue> | null
+> {
   try {
-    // Check if we're in a Capacitor environment
     if (typeof window !== 'undefined' && (window as any).Capacitor) {
       const { Preferences } = await import('@capacitor/preferences');
       const result: Record<FlagKey, FlagValue> = {};
-      
+
       for (const flagKey of Object.keys(FLAG_REGISTRY)) {
-        const { value } = await Preferences.get({ key: `${CAPACITOR_PREFIX}${flagKey}` });
+        const { value } = await Preferences.get({
+          key: `${CAPACITOR_PREFIX}${flagKey}`,
+        });
         if (value !== null) {
           try {
             result[flagKey] = JSON.parse(value);
@@ -115,7 +158,7 @@ async function loadFromCapacitorPreferences(): Promise<Record<FlagKey, FlagValue
           }
         }
       }
-      
+
       return Object.keys(result).length > 0 ? result : null;
     }
   } catch (error) {
@@ -124,15 +167,17 @@ async function loadFromCapacitorPreferences(): Promise<Record<FlagKey, FlagValue
   return null;
 }
 
-async function saveToCapacitorPreferences(flags: Record<FlagKey, FlagValue>): Promise<void> {
+async function saveToCapacitorPreferences(
+  flags: Record<FlagKey, FlagValue>,
+): Promise<void> {
   try {
     if (typeof window !== 'undefined' && (window as any).Capacitor) {
       const { Preferences } = await import('@capacitor/preferences');
-      
+
       for (const [key, value] of Object.entries(flags)) {
         await Preferences.set({
           key: `${CAPACITOR_PREFIX}${key}`,
-          value: JSON.stringify(value)
+          value: JSON.stringify(value),
         });
       }
     }
@@ -144,7 +189,7 @@ async function saveToCapacitorPreferences(flags: Record<FlagKey, FlagValue>): Pr
 function loadFromLocalStorage(): Record<FlagKey, FlagValue> | null {
   try {
     const result: Record<FlagKey, FlagValue> = {};
-    
+
     for (const flagKey of Object.keys(FLAG_REGISTRY)) {
       const value = localStorage.getItem(`${LOCALSTORAGE_PREFIX}${flagKey}`);
       if (value !== null) {
@@ -155,7 +200,7 @@ function loadFromLocalStorage(): Record<FlagKey, FlagValue> | null {
         }
       }
     }
-    
+
     return Object.keys(result).length > 0 ? result : null;
   } catch (error) {
     console.warn('Failed to load flags from localStorage:', error);
@@ -173,102 +218,57 @@ function saveToLocalStorage(flags: Record<FlagKey, FlagValue>): void {
   }
 }
 
-// Load cached flags with triple fallback
 async function loadCachedFlags(): Promise<Record<FlagKey, FlagValue>> {
-  // Try IndexedDB first
+  const defaults = { ...DEFAULT_FLAG_VALUES };
+
   const idbCache = await loadFromIndexedDB();
   if (idbCache?.flags) {
-    return { ...initializeDefaults(), ...idbCache.flags };
+    return { ...defaults, ...idbCache.flags };
   }
-  
-  // Try Capacitor Preferences
+
   const capacitorFlags = await loadFromCapacitorPreferences();
   if (capacitorFlags) {
-    return { ...initializeDefaults(), ...capacitorFlags };
+    return { ...defaults, ...capacitorFlags };
   }
-  
-  // Try localStorage
+
   const localStorageFlags = loadFromLocalStorage();
   if (localStorageFlags) {
-    return { ...initializeDefaults(), ...localStorageFlags };
+    return { ...defaults, ...localStorageFlags };
   }
-  
-  // Fall back to defaults
-  return initializeDefaults();
+
+  return defaults;
 }
 
-// Save to all available storage methods
-async function persistFlags(flags: Record<FlagKey, FlagValue>): Promise<void> {
+async function persistFlags(): Promise<void> {
+  const snapshot: Record<FlagKey, FlagValue> = { ...DEFAULT_FLAG_VALUES };
+  for (const [key, value] of Object.entries(remoteFlagValues) as [
+    FlagKey,
+    FlagValue,
+  ][]) {
+    snapshot[key] = value;
+  }
+
   const cache: FlagCache = {
-    flags,
-    updatedAt: Date.now()
+    flags: snapshot,
+    updatedAt: Date.now(),
   };
-  
-  // Save to all available storage methods
+
   await Promise.allSettled([
     saveToIndexedDB(cache),
-    saveToCapacitorPreferences(flags),
-    Promise.resolve(saveToLocalStorage(flags))
+    saveToCapacitorPreferences(snapshot),
+    Promise.resolve(saveToLocalStorage(snapshot)),
   ]);
 }
 
-// Merge flags with priority: local override > remote > default
-function mergeFlags(
-  defaults: Record<FlagKey, FlagValue>,
-  remote: Record<FlagKey, FlagValue> = {},
-  local: Record<FlagKey, FlagValue> = {}
-): Record<FlagKey, FlagValue> {
-  const merged = { ...defaults };
-  
-  // Apply remote overrides
-  for (const [key, value] of Object.entries(remote)) {
-    if (key in FLAG_REGISTRY) {
-      merged[key] = value;
-    }
-  }
-  
-  // Apply local overrides (highest priority)
-  for (const [key, value] of Object.entries(local)) {
-    if (key in FLAG_REGISTRY) {
-      merged[key] = value;
-    }
-  }
-  
-  return merged;
-}
-
-// Update current flags and notify listeners
-function updateFlags(newFlags: Record<FlagKey, FlagValue>): void {
-  currentFlags = newFlags;
-  listeners.forEach(listener => {
-    try {
-      listener(currentFlags);
-    } catch (error) {
-      console.error('Error in flag listener:', error);
-    }
-  });
-}
-
-// Public API
 export function getFlag(key: FlagKey): FlagValue {
-  // Local override has highest priority
-  if (localOverrides.has(key)) {
-    return localOverrides.get(key)!;
+  if (runtime[key]) {
+    return runtime[key].value;
   }
-  
-  // Return from current flags or default
-  return currentFlags[key] ?? FLAG_REGISTRY[key]?.default ?? false;
+  return DEFAULT_FLAG_VALUES[key] ?? false;
 }
 
 export function getAllFlags(): Record<FlagKey, FlagValue> {
-  const result = { ...currentFlags };
-  
-  // Apply local overrides
-  for (const [key, value] of localOverrides) {
-    result[key] = value;
-  }
-  
-  return result;
+  return getAllRuntimeFlags();
 }
 
 export function setLocalOverride(key: FlagKey, value: FlagValue): void {
@@ -276,25 +276,34 @@ export function setLocalOverride(key: FlagKey, value: FlagValue): void {
     console.warn(`Unknown flag key: ${key}`);
     return;
   }
-  
-  localOverrides.set(key, value);
-  updateFlags(getAllFlags());
+
+  setRuntimeValue(key, value, 'local');
+  delete remoteFlagValues[key];
+  notifyListeners();
 }
 
 export function clearLocalOverride(key: FlagKey): void {
-  localOverrides.delete(key);
-  updateFlags(getAllFlags());
+  if (!(key in FLAG_REGISTRY)) {
+    return;
+  }
+
+  delete remoteFlagValues[key];
+  setRuntimeValue(key, DEFAULT_FLAG_VALUES[key], 'default');
+  notifyListeners();
 }
 
 export function clearAllLocalOverrides(): void {
-  localOverrides.clear();
-  updateFlags(getAllFlags());
+  for (const key of Object.keys(runtime) as FlagKey[]) {
+    if (runtime[key].source === 'local') {
+      delete remoteFlagValues[key];
+      setRuntimeValue(key, DEFAULT_FLAG_VALUES[key], 'default');
+    }
+  }
+  notifyListeners();
 }
 
 export function subscribe(listener: FlagListener): () => void {
   listeners.push(listener);
-  
-  // Return unsubscribe function
   return () => {
     const index = listeners.indexOf(listener);
     if (index > -1) {
@@ -303,51 +312,119 @@ export function subscribe(listener: FlagListener): () => void {
   };
 }
 
-// Initialize the flags system
 export async function initializeFlags(): Promise<void> {
   try {
     const cachedFlags = await loadCachedFlags();
-    updateFlags(cachedFlags);
+
+    for (const [key, value] of Object.entries(cachedFlags) as [
+      FlagKey,
+      FlagValue,
+    ][]) {
+      const defaultValue = DEFAULT_FLAG_VALUES[key];
+      if (value !== undefined) {
+        const source: FlagSource = value === defaultValue ? 'default' : 'remote';
+        setRuntimeValue(key, value, source);
+        if (source === 'remote') {
+          remoteFlagValues[key] = value;
+        } else {
+          delete remoteFlagValues[key];
+        }
+      }
+    }
+
+    notifyListeners();
   } catch (error) {
     console.error('Failed to initialize flags:', error);
-    updateFlags(initializeDefaults());
+    for (const key of Object.keys(DEFAULT_FLAG_VALUES) as FlagKey[]) {
+      setRuntimeValue(key, DEFAULT_FLAG_VALUES[key], 'default');
+      delete remoteFlagValues[key];
+    }
+    notifyListeners();
   }
 }
 
-// Apply remote config to current flags
-export async function applyRemoteConfig(remoteFlags: Record<FlagKey, FlagValue>): Promise<void> {
-  const defaults = initializeDefaults();
-  const localOverrideMap: Record<FlagKey, FlagValue> = {};
-  
-  // Convert local overrides map to object
-  for (const [key, value] of localOverrides) {
-    localOverrideMap[key] = value;
+export async function applyRemoteConfig(
+  payload: Partial<Record<FlagKey, FlagValue>>,
+): Promise<void> {
+  let updated = false;
+  const newlySeenUnknownKeys: string[] = [];
+
+  for (const [key, value] of Object.entries(payload) as [
+    FlagKey,
+    FlagValue,
+  ][]) {
+    if (!(key in FLAG_REGISTRY)) {
+      if (!loggedUnknownRemoteKeys.has(key)) {
+        loggedUnknownRemoteKeys.add(key);
+        newlySeenUnknownKeys.push(key);
+      }
+      continue;
+    }
+
+    remoteFlagValues[key] = value;
+
+    const entry = runtime[key];
+    if (entry?.source !== 'local') {
+      setRuntimeValue(key, value, 'remote');
+      updated = true;
+    }
   }
-  
-  const mergedFlags = mergeFlags(defaults, remoteFlags, localOverrideMap);
-  
-  // Persist merged flags (excluding local overrides)
-  const flagsToSave = mergeFlags(defaults, remoteFlags);
-  await persistFlags(flagsToSave);
-  
-  updateFlags(mergedFlags);
+
+  if (updated) {
+    notifyListeners();
+  }
+
+  if (newlySeenUnknownKeys.length > 0) {
+    console.warn(
+      'Ignoring unknown remote flag keys:',
+      newlySeenUnknownKeys.join(', '),
+    );
+  }
+
+  await persistFlags();
 }
 
-// Get flag metadata
 export function getFlagMeta(key: FlagKey): FlagDef | undefined {
   return FLAG_REGISTRY[key];
 }
 
-// Get flag source (default, remote, or local)
-export function getFlagSource(key: FlagKey): 'default' | 'remote' | 'local' {
-  if (localOverrides.has(key)) {
-    return 'local';
+export function getFlagSource(key: FlagKey): FlagSource {
+  return runtime[key]?.source ?? 'default';
+}
+
+export async function resetAllFlags(): Promise<void> {
+  for (const key of Object.keys(runtime) as FlagKey[]) {
+    setRuntimeValue(key, DEFAULT_FLAG_VALUES[key], 'default');
+    delete remoteFlagValues[key];
   }
-  
-  const flagDef = FLAG_REGISTRY[key];
-  if (flagDef && currentFlags[key] !== flagDef.default) {
-    return 'remote';
+  notifyListeners();
+  await persistFlags();
+}
+
+export async function removeAllPersistedFlags(): Promise<void> {
+  try {
+    await del(IDB_KEY);
+  } catch (error) {
+    console.warn('Failed to clear IndexedDB flags:', error);
   }
-  
-  return 'default';
+
+  try {
+    if (typeof window !== 'undefined' && (window as any).Capacitor) {
+      const { Preferences } = await import('@capacitor/preferences');
+      const removals = Object.keys(FLAG_REGISTRY).map(key =>
+        Preferences.remove({ key: `${CAPACITOR_PREFIX}${key}` }),
+      );
+      await Promise.allSettled(removals);
+    }
+  } catch (error) {
+    console.warn('Failed to clear Capacitor flags:', error);
+  }
+
+  try {
+    for (const key of Object.keys(FLAG_REGISTRY)) {
+      localStorage.removeItem(`${LOCALSTORAGE_PREFIX}${key}`);
+    }
+  } catch (error) {
+    console.warn('Failed to clear localStorage flags:', error);
+  }
 }

@@ -1,52 +1,67 @@
 name: CI
+
 on:
+  pull_request:
   push:
     branches: [ main ]
-  pull_request:
+
 jobs:
   lint:
     name: lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'pnpm'
+
       - uses: pnpm/action-setup@v4
         with:
           version: 9
+          run_install: false
+
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
 
   test:
-    name: test
+    name: test (Smoke)
     runs-on: ubuntu-latest
+    needs: [lint]
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'pnpm'
+
       - uses: pnpm/action-setup@v4
         with:
           version: 9
+          run_install: false
+
       - run: pnpm install --frozen-lockfile
-      # Smoke-Tests (required check, muss grün sein)
       - run: pnpm test
 
   test-full:
-  name: test-full
-  runs-on: ubuntu-latest
-  continue-on-error: true   # ✅ hier einfügen (Job-Ebene)
-  steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
-      with:
-        node-version: 20
-        cache: 'pnpm'
-    - uses: pnpm/action-setup@v4
-      with:
-        version: 9
-    - run: pnpm install --frozen-lockfile
-    - run: pnpm test:full
+    name: test-full
+    runs-on: ubuntu-latest
+    continue-on-error: true   # non-blocking
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: false
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test:full
+

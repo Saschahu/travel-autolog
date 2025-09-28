@@ -9,72 +9,55 @@ export interface ExcelJSLoadError {
   originalError?: unknown;
 }
 
-let excelJSModule: typeof import('exceljs') | null = null;
+let excelPromise: Promise<typeof import('exceljs')> | null = null;
 
-/**
- * Timeout+retry helper with exponential backoff
- */
-async function withRetry<T>(
-  fn: () => Promise<T>,
-  retries = 1,
-  delay = 250
-): Promise<T> {
-  try {
-    return await fn();
-  } catch (error) {
-    if (retries > 0) {
-      if (import.meta.env.DEV) {
-        console.warn(`[exceljs-loader] Retrying after ${delay}ms...`, error);
+export const EXCELJS_DEFAULT_RETRIES = 3;
+export const EXCELJS_DEFAULT_DELAY_MS = 300;
+
+export function resetExcelJSLoader(): void {
+  excelPromise = null;
+}
+
+export async function loadExcelJS(opts?: {
+  retries?: number;
+  delayMs?: number;
+}): Promise<typeof import('exceljs')> {
+  if (!excelPromise) {
+    const retries = opts?.retries ?? EXCELJS_DEFAULT_RETRIES;
+    const delayMs = opts?.delayMs ?? EXCELJS_DEFAULT_DELAY_MS;
+
+    excelPromise = (async () => {
+      let attempt = 0;
+
+      // eslint-disable-next-line no-constant-condition
+      while (true) {
+        try {
+          const mod = await import('exceljs');
+          const resolved = (mod as any).default ?? mod;
+          return resolved;
+        } catch (error) {
+          attempt += 1;
+          if (attempt > retries) {
+            const err = new Error(
+              'Failed to load ExcelJS. Excel export functionality will be unavailable.',
+            ) as ExcelJSLoadError;
+            const message =
+              error instanceof Error ? error.message.toLowerCase() : String(error);
+            err.code = message.includes('timeout') ? 'E_IMPORT_TIMEOUT' : 'E_IMPORT_FAILED';
+            err.originalError = error;
+            throw err;
+          }
+
+          await new Promise(resolve => setTimeout(resolve, delayMs));
+        }
       }
-      await new Promise(resolve => setTimeout(resolve, delay));
-      return withRetry(fn, retries - 1, Math.min(delay * 1.5, 500));
-    }
+    })();
+  }
+
+  try {
+    return await excelPromise;
+  } catch (error) {
+    excelPromise = null;
     throw error;
   }
-}
-
-/**
- * Load ExcelJS module with timeout and retry
- */
-export async function loadExcelJS(): Promise<typeof import('exceljs')> {
-  if (excelJSModule) return excelJSModule;
-
-  try {
-    excelJSModule = await withRetry(async () => {
-      const timeoutPromise = new Promise<never>((_, reject) => {
-        setTimeout(() => reject(new Error('Import timeout')), 4000);
-      });
-
-      const importPromise = import('exceljs');
-      
-      return Promise.race([importPromise, timeoutPromise]);
-    });
-
-    if (import.meta.env.DEV) {
-      console.log('[exceljs-loader] Successfully loaded ExcelJS');
-    }
-
-    return excelJSModule;
-  } catch (error) {
-    const loadError: ExcelJSLoadError = {
-      code: error instanceof Error && error.message.includes('timeout') 
-        ? 'E_IMPORT_TIMEOUT' 
-        : 'E_IMPORT_FAILED',
-      message: 'Failed to load ExcelJS. Excel export functionality will be unavailable.',
-      originalError: error
-    };
-
-    if (import.meta.env.DEV) {
-      console.warn('[exceljs-loader] Module load failed:', loadError);
-    }
-
-    throw loadError;
-  }
-}
-
-/**
- * Reset loader state (useful for testing)
- */
-export function resetExcelJSLoader(): void {
-  excelJSModule = null;
 }

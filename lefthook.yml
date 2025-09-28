@@ -1,0 +1,4 @@
+pre-push:
+  commands:
+    test-ci:
+      run: pnpm test:ci

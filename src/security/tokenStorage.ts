@@ -88,6 +88,18 @@ export async function markMigrationComplete(): Promise<void> {
   }
 }
 
+export async function migrateLegacyToken(
+  local: Storage,
+  kv: { set: (key: string, value: any) => Promise<void> },
+): Promise<void> {
+  const lsToken = local.getItem(MAPBOX_TOKEN_KEY);
+  if (!lsToken) return;
+
+  await kv.set(MAPBOX_TOKEN_KEY, lsToken);
+  local.removeItem(MAPBOX_TOKEN_KEY);
+  await kv.set(MIGRATION_KEY, true);
+}
+
 /**
  * Migrates token from localStorage to IndexedDB (idempotent)
  */
@@ -100,18 +112,29 @@ export async function migrateTokenStorage(): Promise<void> {
   try {
     // Get token from localStorage
     const lsToken = localStorage.getItem(MAPBOX_TOKEN_KEY);
+    let attemptedValidMigration = false;
+    let migrationSucceeded = false;
+
     if (lsToken) {
       const validation = validateMapboxToken(lsToken);
       if (validation.isValid && validation.token) {
-        // Store in IndexedDB
-        await writeTokenToIDB(validation.token);
-        // Remove from localStorage
-        localStorage.removeItem(MAPBOX_TOKEN_KEY);
+        attemptedValidMigration = true;
+        try {
+          await writeTokenToIDB(validation.token);
+          // Remove from localStorage only after successful write
+          localStorage.removeItem(MAPBOX_TOKEN_KEY);
+          migrationSucceeded = true;
+        } catch (writeError) {
+          console.error('Token migration failed during IndexedDB write:', writeError);
+          // Leave the token in localStorage so a future run can retry the migration
+          throw writeError;
+        }
       }
     }
 
-    // Mark migration as complete
-    await markMigrationComplete();
+    if (!attemptedValidMigration || migrationSucceeded) {
+      await markMigrationComplete();
+    }
   } catch (error) {
     console.error('Error during token migration:', error);
     throw error;

@@ -103,5 +103,19 @@ export default {
   buttons: {
     save: 'Lagre',
     cancel: 'Avbryt'
-  }
+  },
+  
+  // Job entry form
+  customerData: 'Kundedata',
+  machineData: 'Maskindata',
+  hotelData: 'Hotelldata',
+  travel: 'Reise',
+  timesTitle: 'Tider',
+  travelPerDay: 'Reise per dag',
+  days: 'Dager',
+  travelThere: 'Reise dit',
+  travelBack: 'Hjemreise',
+  jobEditing: 'Rediger jobb',
+  jobIdShort: 'Jobb-ID',
+  newJobStarted: 'Ny jobb startet'
 } as const;

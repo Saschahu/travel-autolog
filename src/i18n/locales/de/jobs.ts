@@ -103,5 +103,19 @@ export default {
   buttons: {
     save: 'Speichern',
     cancel: 'Abbrechen'
-  }
+  },
+  
+  // Job entry form
+  customerData: 'Kundendaten',
+  machineData: 'Maschinendaten',
+  hotelData: 'Hoteldaten',
+  travel: 'Reise',
+  timesTitle: 'Zeiten',
+  travelPerDay: 'Reise pro Tag',
+  days: 'Tage',
+  travelThere: 'Hinreise',
+  travelBack: 'Rückreise',
+  jobEditing: 'Auftrag bearbeiten',
+  jobIdShort: 'Auftrags-ID',
+  newJobStarted: 'Neuer Auftrag gestartet'
 } as const;

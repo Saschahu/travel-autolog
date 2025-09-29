@@ -103,5 +103,19 @@ export default {
   buttons: {
     save: 'Save',
     cancel: 'Cancel'
-  }
+  },
+  
+  // Job entry form
+  customerData: 'Customer Data',
+  machineData: 'Machine Data',
+  hotelData: 'Hotel Data',
+  travel: 'Travel',
+  timesTitle: 'Times',
+  travelPerDay: 'Travel per Day',
+  days: 'Days',
+  travelThere: 'Travel There',
+  travelBack: 'Travel Back',
+  jobEditing: 'Job Editing',
+  jobIdShort: 'Job ID',
+  newJobStarted: 'New job started'
 } as const;

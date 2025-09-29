@@ -26,6 +26,12 @@ const resources = {
 
 // Configure i18next with robust fallback and detection
 const initI18n = async () => {
+  // Only initialize if not already done
+  if (i18n.isInitialized) {
+    console.log('i18n already initialized');
+    return i18n;
+  }
+
   await i18n
     .use(LanguageDetector)
     .use(initReactI18next)
@@ -33,11 +39,11 @@ const initI18n = async () => {
       resources,
       
       // Language detection order: URL > stored preference > browser > fallback
-      lng: undefined, // Let LanguageDetector determine
-      fallbackLng: 'en', // International standard fallback
+      lng: 'de', // Default to German as requested
+      fallbackLng: ['en', 'de'], // Robust fallback chain
       
       // Namespace configuration
-      ns: ['common', 'dashboard', 'jobs', 'export', 'gps', 'settings', 'privacy', 'reports'],
+      ns: ['common', 'jobs', 'dashboard', 'export', 'gps', 'settings', 'privacy', 'reports'],
       defaultNS: 'common',
       
       // Detection configuration
@@ -59,6 +65,9 @@ const initI18n = async () => {
           return value;
         }
       },
+      
+      // Prevent showing keys
+      returnEmptyString: false,
       
       // React integration
       react: {

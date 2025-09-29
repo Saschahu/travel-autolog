@@ -138,5 +138,25 @@ export default {
   maxDaysReached: 'Maximale Anzahl Tage erreicht',
   sendReport: 'Bericht senden',
   totalJobs: 'Aufträge gesamt',
-  totalOvertime: 'Überstunden gesamt'
+  totalOvertime: 'Überstunden gesamt',
+  
+  // Job form sections (moved from jobs namespace)
+  customerData: 'Kundendaten',
+  machineData: 'Maschinendaten',
+  hotelData: 'Hoteldaten',
+  travel: 'Reise',
+  times: 'Zeiten',
+  travelPerDay: 'Reise pro Tag',
+  travelThere: 'Hinreise',
+  travelBack: 'Rückreise',
+  jobEditing: 'Auftrag bearbeiten',
+  jobIdShort: 'Auftrags-ID',
+  newJobStarted: 'Neuer Auftrag gestartet',
+  
+  // Additional form labels
+  editJob: 'Auftrag bearbeiten',
+  newJob: 'Neuer Auftrag',
+  overtime: 'Überstunden',
+  report: 'Bericht',
+  tollsNorwegian: 'Mautgebühren'
 } as const;

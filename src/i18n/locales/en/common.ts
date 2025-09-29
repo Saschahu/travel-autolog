@@ -138,5 +138,25 @@ export default {
   maxDaysReached: 'Maximum days reached',
   sendReport: 'Send Report',
   totalJobs: 'Total Jobs',
-  totalOvertime: 'Total Overtime'
+  totalOvertime: 'Total Overtime',
+  
+  // Job form sections (moved from jobs namespace)
+  customerData: 'Customer Data',
+  machineData: 'Machine Data',
+  hotelData: 'Hotel Data',
+  travel: 'Travel',
+  times: 'Times',
+  travelPerDay: 'Travel per Day',
+  travelThere: 'Travel There',
+  travelBack: 'Travel Back',
+  jobEditing: 'Job Editing',
+  jobIdShort: 'Job ID',
+  newJobStarted: 'New job started',
+  
+  // Additional form labels
+  editJob: 'Edit Job',
+  newJob: 'New Job',
+  overtime: 'Overtime',
+  report: 'Report',
+  tollsNorwegian: 'Toll Fees'
 } as const;

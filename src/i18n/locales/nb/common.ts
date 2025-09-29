@@ -138,5 +138,25 @@ export default {
   maxDaysReached: 'Maksimale dager nådd',
   sendReport: 'Send rapport',
   totalJobs: 'Jobber totalt',
-  totalOvertime: 'Overtid totalt'
+  totalOvertime: 'Overtid totalt',
+  
+  // Job form sections (moved from jobs namespace)
+  customerData: 'Kundedata',
+  machineData: 'Maskindata',
+  hotelData: 'Hotelldata',
+  travel: 'Reise',
+  times: 'Tider',
+  travelPerDay: 'Reise per dag',
+  travelThere: 'Reise dit',
+  travelBack: 'Hjemreise',
+  jobEditing: 'Rediger jobb',
+  jobIdShort: 'Jobb-ID',
+  newJobStarted: 'Ny jobb startet',
+  
+  // Additional form labels
+  editJob: 'Rediger jobb',
+  newJob: 'Ny jobb',
+  overtime: 'Overtid',
+  report: 'Rapport',
+  tollsNorwegian: 'Bomavgifter'
 } as const;

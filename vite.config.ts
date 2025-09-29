@@ -24,9 +24,8 @@ export default defineConfig(({ mode }) => ({
   optimizeDeps: {
     include: ['react', 'react-dom']
   },
-  esbuild: {
-    // Disable TypeScript checking for now to get basic app running
-    include: /\.(ts|tsx)$/,
-    exclude: []
+  define: {
+    // Ensure web preview mode is available
+    'import.meta.env.VITE_WEB_PREVIEW': JSON.stringify(process.env.VITE_WEB_PREVIEW || '1')
   }
 }))

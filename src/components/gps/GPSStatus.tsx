@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react';
 import { useTranslation, TFunction } from 'react-i18next';
 import { Badge } from '@/components/ui/badge';

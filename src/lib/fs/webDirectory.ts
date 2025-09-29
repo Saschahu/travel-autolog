@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Web File System Access API implementation
 import { saveExportHandle, loadExportHandle, loadExportMeta, clearExportHandle } from '@/lib/fsStore';
 

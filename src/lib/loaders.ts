@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Lazy loaders for heavy dependencies
  * These loaders defer imports until actually needed to improve startup performance

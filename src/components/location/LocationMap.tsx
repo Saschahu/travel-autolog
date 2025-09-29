@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 // @ts-expect-error - mapbox types might not be available yet

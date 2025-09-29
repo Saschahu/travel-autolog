@@ -217,3 +217,7 @@ export function createWorksheetFromData(data: Record<string, unknown>[]): unknow
 
   return rows;
 }
+
+// Legacy exports for backwards compatibility
+export const readWorkbook = readExcelFile;
+export const exportWorkbook = writeExcelFile;

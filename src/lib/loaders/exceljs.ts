@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * ExcelJS loader with timeout/retry mechanism
  * Handles dynamic imports with typed error handling

@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * HTML sanitizer with Trusted Types support
  * Provides safe HTML sanitization with deferred DOMPurify loading

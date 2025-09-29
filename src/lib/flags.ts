@@ -10,3 +10,11 @@ export function isSmartGpsEnabled(): boolean {
   const flag = import.meta.env.VITE_ENABLE_SMART_GPS;
   return flag === 'true';
 }
+
+/**
+ * Check if XLSX feature is enabled
+ * @returns {boolean} Always true for now
+ */
+export function isXlsxEnabled(): boolean {
+  return true;
+}

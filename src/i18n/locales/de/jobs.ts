@@ -117,5 +117,37 @@ export default {
   travelBack: 'Rückreise',
   jobEditing: 'Auftrag bearbeiten',
   jobIdShort: 'Auftrags-ID',
-  newJobStarted: 'Neuer Auftrag gestartet'
+  newJobStarted: 'Neuer Auftrag gestartet',
+
+  // Edit form structure
+  edit: {
+    form: {
+      title: 'Titel',
+      customer: 'Kunde',
+      description: 'Beschreibung',
+      plannedDays: 'Geplante Tage',
+      day: 'Tag',
+      contact: 'Ansprechpartner',
+      contactPhone: 'Telefon (Ansprechpartner)',
+      tabs: {
+        details: 'Details',
+        times: 'Zeiten'
+      },
+      times: {
+        startTime: 'Startzeit',
+        endTime: 'Endzeit',
+        break: 'Pause',
+        totalHours: 'Gesamtstunden'
+      },
+      save: 'Speichern',
+      cancel: 'Abbrechen',
+      placeholders: {
+        title: 'Titel eingeben',
+        customer: 'Kundennamen eingeben',
+        description: 'Beschreibung eingeben',
+        contact: 'Kontaktname eingeben',
+        contactPhone: 'Kontakttelefon eingeben'
+      }
+    }
+  }
 } as const;

@@ -117,5 +117,37 @@ export default {
   travelBack: 'Travel Back',
   jobEditing: 'Job Editing',
   jobIdShort: 'Job ID',
-  newJobStarted: 'New job started'
+  newJobStarted: 'New job started',
+
+  // Edit form structure
+  edit: {
+    form: {
+      title: 'Title',
+      customer: 'Customer',
+      description: 'Description',
+      plannedDays: 'Planned days',
+      day: 'Day',
+      contact: 'Contact',
+      contactPhone: 'Contact phone',
+      tabs: {
+        details: 'Details',
+        times: 'Times'
+      },
+      times: {
+        startTime: 'Start time',
+        endTime: 'End time',
+        break: 'Break',
+        totalHours: 'Total hours'
+      },
+      save: 'Save',
+      cancel: 'Cancel',
+      placeholders: {
+        title: 'Enter title',
+        customer: 'Enter customer name',
+        description: 'Enter description',
+        contact: 'Enter contact name',
+        contactPhone: 'Enter contact phone'
+      }
+    }
+  }
 } as const;

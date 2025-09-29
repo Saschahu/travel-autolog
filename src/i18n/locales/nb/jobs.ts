@@ -117,5 +117,37 @@ export default {
   travelBack: 'Hjemreise',
   jobEditing: 'Rediger jobb',
   jobIdShort: 'Jobb-ID',
-  newJobStarted: 'Ny jobb startet'
+  newJobStarted: 'Ny jobb startet',
+
+  // Edit form structure
+  edit: {
+    form: {
+      title: 'Tittel',
+      customer: 'Kunde',
+      description: 'Beskrivelse',
+      plannedDays: 'Planlagte dager',
+      day: 'Dag',
+      contact: 'Kontakt',
+      contactPhone: 'Kontakttelefon',
+      tabs: {
+        details: 'Detaljer',
+        times: 'Tider'
+      },
+      times: {
+        startTime: 'Starttid',
+        endTime: 'Sluttid',
+        break: 'Pause',
+        totalHours: 'Totaltimer'
+      },
+      save: 'Lagre',
+      cancel: 'Avbryt',
+      placeholders: {
+        title: 'Skriv inn tittel',
+        customer: 'Skriv inn kundenavn',
+        description: 'Skriv inn beskrivelse',
+        contact: 'Skriv inn kontaktnavn',
+        contactPhone: 'Skriv inn kontakttelefon'
+      }
+    }
+  }
 } as const;

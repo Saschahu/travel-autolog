@@ -94,7 +94,8 @@ const mapRowToForm = (row: unknown): FormState => {
 };
 
 export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('jobs', { keyPrefix: 'edit.form' });
+  const { t: tCommon } = useTranslation('common');
   const [jobData, setJobData] = useState<Partial<JobData>>({ plannedDays: 1, estimatedDays: 1 });
   const [form, setForm] = useState<FormState>({ title: '', estimatedDays: 1, days: [] });
   const [currentStep, setCurrentStep] = useState<'customer' | 'machine' | 'times' | 'hotel' | 'travel' | 'overtime' | 'report' | 'finish'>('customer');
@@ -193,8 +194,8 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
         } catch (error) {
           console.error('Error loading job:', error);
           toast({
-            title: t('error'),
-            description: t('errorLoadingJob'),
+            title: tCommon('error'),
+            description: tCommon('errorLoadingJob'),
             variant: 'destructive'
           });
         } finally {
@@ -249,7 +250,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
     
       
       if (!user) {
-        throw new Error(t('userNotLoggedIn'));
+        throw new Error(tCommon('userNotLoggedIn'));
       }
 
       const jobPayload = {
@@ -360,18 +361,18 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
       if (error) throw error;
 
       toast({
-        title: t('successfullySaved'),
+        title: tCommon('successfullySaved'),
         description: isPartialSave 
-          ? t('jobDataSaved')
-          : t('jobCompleted')
+          ? tCommon('jobDataSaved')
+          : tCommon('jobCompleted')
       });
 
       // After saving customer data, automatically go to next step
       if (isPartialSave && currentStep === 'customer' && !error && data) {
         setCurrentStep('machine');
         toast({
-          title: t('customerSavedGoMachineTitle'),
-          description: t('customerSavedGoMachineDesc')
+          title: tCommon('customerSavedGoMachineTitle'),
+          description: tCommon('customerSavedGoMachineDesc')
         });
       }
 
@@ -392,8 +393,8 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
       console.error('Error message:', error.message);
       console.error('Error details:', JSON.stringify(error, null, 2));
       toast({
-        title: t('error'),
-        description: t('errorSaving'),
+        title: tCommon('error'),
+        description: tCommon('errorSaving'),
         variant: 'destructive'
       });
       return false; // Indicate failure
@@ -412,8 +413,8 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
     setIsCreatingNewJob(true);
     setIsEditingJob(false);
     toast({
-      title: t('newJob'),
-      description: t('newJobStarted')
+      title: tCommon('newJob'),
+      description: tCommon('newJobStarted')
     });
   };
 
@@ -428,7 +429,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
           <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-lg">
             <CalendarIcon className="h-5 w-5 text-primary" />
-            {t('times')}
+            {tCommon('times')}
           </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -452,12 +453,12 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
         {Array.from({ length: plannedDays }, (_, dayIndex) => (
           <Card key={dayIndex} className="border-muted">
             <CardHeader className="pb-2">
-              <CardTitle className="text-base">{`${t('timesTitle')} ${dayIndex + 1}/${plannedDays}`}</CardTitle>
+              <CardTitle className="text-base">{`${tCommon('timesTitle')} ${dayIndex + 1}/${plannedDays}`}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">{/* Reduced spacing */}
               {/* Datum für den ganzen Tag */}
               <div className="mb-3">
-                <Label htmlFor={`day-date-${dayIndex}`} className="text-xs font-medium text-muted-foreground mb-1 block">{t('date')}</Label>
+                <Label htmlFor={`day-date-${dayIndex}`} className="text-xs font-medium text-muted-foreground mb-1 block">{tCommon('date')}</Label>
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button
@@ -472,7 +473,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                         <span className="text-xs">
                           {jobData[`dayDate${dayIndex}` as keyof JobData]
                             ? parseYmdToLocalDate(jobData[`dayDate${dayIndex}` as keyof JobData] as string)?.toLocaleDateString('de-DE')
-                            : t('times.selectDate')
+                            : tCommon('selectDate')
                           }
                         </span>
                       </Button>
@@ -498,7 +499,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
               <div className="space-y-3">
                 {/* Anreise */}
                 <div className="bg-muted/20 rounded-lg p-3">
-                  <Label className="text-xs font-medium text-muted-foreground mb-2 block">{t('times.arrival')}</Label>
+                  <Label className="text-xs font-medium text-muted-foreground mb-2 block">{tCommon('arrival')}</Label>
                   <div className="grid grid-cols-2 gap-2">
                     <div>
                       <Label htmlFor={`travel-start-${dayIndex}`} className="text-xs text-muted-foreground">{t('times.startTime')}</Label>
@@ -525,7 +526,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
 
                 {/* Arbeit */}
                 <div className="bg-primary/5 rounded-lg p-3">
-                  <Label className="text-xs font-medium text-muted-foreground mb-2 block">{t('times.work')}</Label>
+                  <Label className="text-xs font-medium text-muted-foreground mb-2 block">{tCommon('work')}</Label>
                   <div className="grid grid-cols-2 gap-2">
                     <div>
                       <Label htmlFor={`work-start-${dayIndex}`} className="text-xs text-muted-foreground">{t('times.startTime')}</Label>
@@ -552,7 +553,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
 
                 {/* Abreise */}
                 <div className="bg-muted/20 rounded-lg p-3">
-                  <Label className="text-xs font-medium text-muted-foreground mb-2 block">{t('times.departure')}</Label>
+                  <Label className="text-xs font-medium text-muted-foreground mb-2 block">{tCommon('departure')}</Label>
                   <div className="grid grid-cols-2 gap-2">
                     <div>
                       <Label htmlFor={`departure-start-${dayIndex}`} className="text-xs text-muted-foreground">{t('times.startTime')}</Label>
@@ -587,7 +588,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                   size="sm"
                   className="w-full"
                 >
-                  {isLoading ? t('saving') : `Zeiten für Tag ${dayIndex + 1} speichern`}
+                  {isLoading ? tCommon('saving') : `${t('save')} ${t('day')} ${dayIndex + 1}`}
                 </Button>
               </div>
             </CardContent>
@@ -602,7 +603,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
       return (
         <Card className="border-primary/20">
           <CardContent className="pt-6">
-            <p className="text-muted-foreground">{t('saveJobFirst')}</p>
+            <p className="text-muted-foreground">{tCommon('saveJobFirst')}</p>
           </CardContent>
         </Card>
       );
@@ -622,7 +623,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
       return (
         <Card className="border-primary/20">
           <CardContent className="pt-6">
-            <p className="text-muted-foreground">{t('saveJobFirst')}</p>
+            <p className="text-muted-foreground">{tCommon('saveJobFirst')}</p>
           </CardContent>
         </Card>
       );
@@ -636,7 +637,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
       return (
         <Card className="border-primary/20">
           <CardContent className="pt-6">
-            <p className="text-muted-foreground">{t('saveJobFirst')}</p>
+            <p className="text-muted-foreground">{tCommon('saveJobFirst')}</p>
           </CardContent>
         </Card>
       );
@@ -656,17 +657,17 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-lg">
           <User className="h-5 w-5 text-primary" />
-          {t('customerData')}
+          {tCommon('customerData')}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div>
           <Label htmlFor="customer-name" className="text-sm font-medium">
-            {t('customerName')} <Badge variant="destructive" className="ml-1 text-xs">{t('required')}</Badge>
+            {tCommon('customerName')} <Badge variant="destructive" className="ml-1 text-xs">{tCommon('required')}</Badge>
           </Label>
           <Input
             id="customer-name"
-            placeholder={t('customerName')}
+            placeholder={tCommon('customerName')}
             value={jobData.customerName || ''}
             onChange={(e) => updateField('customerName', e.target.value)}
             className="mt-1"
@@ -674,11 +675,11 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
           />
         </div>
         <div>
-          <Label htmlFor="customer-address" className="text-sm font-medium">{t('customerAddress')}</Label>
+          <Label htmlFor="customer-address" className="text-sm font-medium">{tCommon('customerAddress')}</Label>
           <div className="flex gap-2 mt-1">
             <Input
               id="customer-address"
-              placeholder={t('customerAddress')}
+              placeholder={tCommon('customerAddress')}
               value={jobData.customerAddress || ''}
               onChange={(e) => updateField('customerAddress', e.target.value)}
               className="flex-1"
@@ -690,10 +691,10 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
         </div>
         
         <div>
-          <Label htmlFor="contact-name" className="text-sm font-medium">Kontaktperson</Label>
+          <Label htmlFor="contact-name" className="text-sm font-medium">{t('contact')}</Label>
           <Input
             id="contact-name"
-            placeholder="z. B. Max Mustermann"
+            placeholder={t('placeholders.contact')}
             value={jobData.contactName || ''}
             onChange={(e) => updateField('contactName', e.target.value)}
             className="mt-1"
@@ -701,10 +702,10 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
         </div>
         
         <div>
-          <Label htmlFor="contact-phone" className="text-sm font-medium">Telefon (Kontaktperson)</Label>
+          <Label htmlFor="contact-phone" className="text-sm font-medium">{t('contactPhone')}</Label>
           <Input
             id="contact-phone"
-            placeholder="z. B. +49 171 1234567"
+            placeholder={t('placeholders.contactPhone')}
             value={jobData.contactPhone || ''}
             onChange={(e) => updateField('contactPhone', e.target.value)}
             className="mt-1"
@@ -713,10 +714,10 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
         </div>
         
         <div>
-          <Label htmlFor="evatic-no" className="text-sm font-medium">{t('evaticNo')}</Label>
+          <Label htmlFor="evatic-no" className="text-sm font-medium">{tCommon('evaticNo')}</Label>
           <Input
             id="evatic-no"
-            placeholder={t('evaticNo')}
+            placeholder={tCommon('evaticNo')}
             value={jobData.evaticNo || ''}
             onChange={(e) => updateField('evaticNo', e.target.value)}
             className="mt-1"
@@ -731,36 +732,36 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-lg">
           <Wrench className="h-5 w-5 text-primary" />
-          {t('machineData')}
+          {tCommon('machineData')}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid grid-cols-1 gap-3">
           <div>
-            <Label htmlFor="manufacturer" className="text-sm font-medium">{t('manufacturer')}</Label>
+            <Label htmlFor="manufacturer" className="text-sm font-medium">{tCommon('manufacturer')}</Label>
             <Input
               id="manufacturer"
-              placeholder={t('manufacturer')}
+              placeholder={tCommon('manufacturer')}
               value={jobData.manufacturer || ''}
               onChange={(e) => updateField('manufacturer', e.target.value)}
               className="mt-1"
             />
           </div>
           <div>
-            <Label htmlFor="model" className="text-sm font-medium">{t('model')}</Label>
+            <Label htmlFor="model" className="text-sm font-medium">{tCommon('model')}</Label>
             <Input
               id="model"
-              placeholder={t('model')}
+              placeholder={tCommon('model')}
               value={jobData.model || ''}
               onChange={(e) => updateField('model', e.target.value)}
               className="mt-1"
             />
           </div>
           <div>
-            <Label htmlFor="serial" className="text-sm font-medium">{t('serialNumber')}</Label>
+            <Label htmlFor="serial" className="text-sm font-medium">{tCommon('serialNumber')}</Label>
             <Input
               id="serial"
-              placeholder={t('serialNumber')}
+              placeholder={tCommon('serialNumber')}
               value={jobData.serialNumber || ''}
               onChange={(e) => updateField('serialNumber', e.target.value)}
               className="mt-1"
@@ -768,10 +769,10 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
           </div>
         </div>
         <div>
-          <Label htmlFor="work-performed" className="text-sm font-medium">{t('workPerformed')}</Label>
+          <Label htmlFor="work-performed" className="text-sm font-medium">{tCommon('workPerformed')}</Label>
           <Textarea
             id="work-performed"
-            placeholder={t('workPerformedPlaceholder')}
+            placeholder={tCommon('workPerformedPlaceholder')}
             value={jobData.workPerformed || ''}
             onChange={(e) => updateField('workPerformed', e.target.value)}
             className="mt-1 min-h-20"
@@ -786,16 +787,16 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-lg">
           <Hotel className="h-5 w-5 text-primary" />
-          {t('hotelData')}
+          {tCommon('hotelData')}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-3">
           <div>
-            <Label htmlFor="hotel-name" className="text-sm font-medium">{t('customer.hotelName')}</Label>
+            <Label htmlFor="hotel-name" className="text-sm font-medium">{tCommon('customer.hotelName')}</Label>
             <Input
               id="hotel-name"
-              placeholder={t('customer.hotelNamePlaceholder')}
+              placeholder={tCommon('customer.hotelNamePlaceholder')}
               value={jobData.hotelName || ''}
               onChange={(e) => updateField('hotelName', e.target.value)}
               className="mt-1"

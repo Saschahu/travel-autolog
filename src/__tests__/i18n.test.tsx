@@ -26,6 +26,23 @@ const TestComponent = () => {
   );
 };
 
+// Test component for job form translations
+const JobFormTestComponent = () => {
+  const { useTranslation } = require('react-i18next');
+  const { t } = useTranslation('jobs', { keyPrefix: 'edit.form' });
+  
+  return (
+    <div>
+      <h2 data-testid="form-title">{t('title')}</h2>
+      <label data-testid="contact-label">{t('contact')}</label>
+      <label data-testid="contact-phone-label">{t('contactPhone')}</label>
+      <input data-testid="contact-input" placeholder={t('placeholders.contact')} />
+      <button data-testid="form-save">{t('save')}</button>
+      <button data-testid="form-cancel">{t('cancel')}</button>
+    </div>
+  );
+};
+
 // Setup test i18n instance
 const setupI18n = async (language: string) => {
   const testI18n = i18n.createInstance();
@@ -139,6 +156,71 @@ describe('i18n Translation Tests', () => {
       await waitFor(() => {
         expect(screen.getByTestId('edit-job')).toHaveTextContent('Auftrag bearbeiten');
         expect(screen.getByTestId('customer-data')).toHaveTextContent('Kundendaten');
+      });
+    });
+  });
+
+  describe('JobEntryForm Translations', () => {
+    describe('English Job Form', () => {
+      it('should render job form labels in English', async () => {
+        const testI18n = await setupI18n('en');
+        
+        render(
+          <I18nextProvider i18n={testI18n}>
+            <JobFormTestComponent />
+          </I18nextProvider>
+        );
+
+        await waitFor(() => {
+          expect(screen.getByTestId('form-title')).toHaveTextContent('Title');
+          expect(screen.getByTestId('contact-label')).toHaveTextContent('Contact');
+          expect(screen.getByTestId('contact-phone-label')).toHaveTextContent('Contact phone');
+          expect(screen.getByTestId('contact-input')).toHaveAttribute('placeholder', 'Enter contact name');
+          expect(screen.getByTestId('form-save')).toHaveTextContent('Save');
+          expect(screen.getByTestId('form-cancel')).toHaveTextContent('Cancel');
+        });
+      });
+    });
+
+    describe('German Job Form', () => {
+      it('should render job form labels in German', async () => {
+        const testI18n = await setupI18n('de');
+        
+        render(
+          <I18nextProvider i18n={testI18n}>
+            <JobFormTestComponent />
+          </I18nextProvider>
+        );
+
+        await waitFor(() => {
+          expect(screen.getByTestId('form-title')).toHaveTextContent('Titel');
+          expect(screen.getByTestId('contact-label')).toHaveTextContent('Ansprechpartner');
+          expect(screen.getByTestId('contact-phone-label')).toHaveTextContent('Telefon (Ansprechpartner)');
+          expect(screen.getByTestId('contact-input')).toHaveAttribute('placeholder', 'Kontaktname eingeben');
+          expect(screen.getByTestId('form-save')).toHaveTextContent('Speichern');
+          expect(screen.getByTestId('form-cancel')).toHaveTextContent('Abbrechen');
+        });
+      });
+    });
+
+    describe('Norwegian Job Form', () => {
+      it('should render job form labels in Norwegian', async () => {
+        const testI18n = await setupI18n('nb');
+        
+        render(
+          <I18nextProvider i18n={testI18n}>
+            <JobFormTestComponent />
+          </I18nextProvider>
+        );
+
+        await waitFor(() => {
+          expect(screen.getByTestId('form-title')).toHaveTextContent('Tittel');
+          expect(screen.getByTestId('contact-label')).toHaveTextContent('Kontakt');
+          expect(screen.getByTestId('contact-phone-label')).toHaveTextContent('Kontakttelefon');
+          expect(screen.getByTestId('contact-input')).toHaveAttribute('placeholder', 'Skriv inn kontaktnavn');
+          expect(screen.getByTestId('form-save')).toHaveTextContent('Lagre');
+          expect(screen.getByTestId('form-cancel')).toHaveTextContent('Avbryt');
+        });
       });
     });
   });

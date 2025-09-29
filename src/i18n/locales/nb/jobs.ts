@@ -124,11 +124,21 @@ export default {
     form: {
       title: 'Tittel',
       customer: 'Kunde',
+      customerData: 'Kundedata',
+      customerName: 'Kundenavn',
+      customerAddress: 'Kundeadresse',
       description: 'Beskrivelse',
       plannedDays: 'Planlagte dager',
       day: 'Dag',
       contact: 'Kontakt',
       contactPhone: 'Kontakttelefon',
+      evaticNo: 'EVATIC-nummer',
+      manufacturer: 'Produsent',
+      model: 'Modell/Type',
+      serialNumber: 'Serienummer',
+      workPerformed: 'Arbeid som skal utføres',
+      machineData: 'Maskindata',
+      hotelData: 'Hotelldata',
       tabs: {
         details: 'Detaljer',
         times: 'Tider'
@@ -144,9 +154,16 @@ export default {
       placeholders: {
         title: 'Skriv inn tittel',
         customer: 'Skriv inn kundenavn',
+        customerName: 'Navn på kunden',
+        customerAddress: 'Fullstendig adresse til kunden',
         description: 'Skriv inn beskrivelse',
         contact: 'Skriv inn kontaktnavn',
-        contactPhone: 'Skriv inn kontakttelefon'
+        contactPhone: 'Skriv inn kontakttelefon',
+        evaticNo: 'EVATIC-nummer (hvis tilgjengelig)',
+        manufacturer: 'f.eks. Siemens, ABB, Schneider',
+        model: 'f.eks. S7-1200, CP1E',
+        serialNumber: 'Serienummer på maskinen/systemet',
+        workPerformed: 'Beskriv arbeidet som skal utføres...'
       }
     }
   }

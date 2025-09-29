@@ -124,11 +124,21 @@ export default {
     form: {
       title: 'Title',
       customer: 'Customer',
+      customerData: 'Customer Data',
+      customerName: 'Customer Name',
+      customerAddress: 'Customer Address',
       description: 'Description',
       plannedDays: 'Planned days',
       day: 'Day',
       contact: 'Contact',
       contactPhone: 'Contact phone',
+      evaticNo: 'EVATIC Number',
+      manufacturer: 'Manufacturer',
+      model: 'Model/Type',
+      serialNumber: 'Serial Number',
+      workPerformed: 'Work to Perform',
+      machineData: 'Machine Data',
+      hotelData: 'Hotel Data',
       tabs: {
         details: 'Details',
         times: 'Times'
@@ -144,9 +154,16 @@ export default {
       placeholders: {
         title: 'Enter title',
         customer: 'Enter customer name',
+        customerName: 'Name of the customer',
+        customerAddress: 'Full address of the customer',
         description: 'Enter description',
         contact: 'Enter contact name',
-        contactPhone: 'Enter contact phone'
+        contactPhone: 'Enter contact phone',
+        evaticNo: 'EVATIC number (if available)',
+        manufacturer: 'e.g. Siemens, ABB, Schneider',
+        model: 'e.g. S7-1200, CP1E',
+        serialNumber: 'Serial number of the machine/system',
+        workPerformed: 'Describe the work to perform...'
       }
     }
   }

@@ -124,11 +124,21 @@ export default {
     form: {
       title: 'Titel',
       customer: 'Kunde',
+      customerData: 'Kundendaten',
+      customerName: 'Kundenname',
+      customerAddress: 'Kundenadresse',
       description: 'Beschreibung',
       plannedDays: 'Geplante Tage',
       day: 'Tag',
       contact: 'Ansprechpartner',
       contactPhone: 'Telefon (Ansprechpartner)',
+      evaticNo: 'EVATIC-Nummer',
+      manufacturer: 'Hersteller',
+      model: 'Modell/Typ',
+      serialNumber: 'Seriennummer',
+      workPerformed: 'Zu leistende Arbeiten',
+      machineData: 'Maschinendaten',
+      hotelData: 'Hoteldaten',
       tabs: {
         details: 'Details',
         times: 'Zeiten'
@@ -144,9 +154,16 @@ export default {
       placeholders: {
         title: 'Titel eingeben',
         customer: 'Kundennamen eingeben',
+        customerName: 'Name des Kunden',
+        customerAddress: 'Vollständige Adresse des Kunden',
         description: 'Beschreibung eingeben',
         contact: 'Kontaktname eingeben',
-        contactPhone: 'Kontakttelefon eingeben'
+        contactPhone: 'Kontakttelefon eingeben',
+        evaticNo: 'EVATIC-Nummer (falls vorhanden)',
+        manufacturer: 'z.B. Siemens, ABB, Schneider',
+        model: 'z.B. S7-1200, CP1E',
+        serialNumber: 'Seriennummer der Maschine/Anlage',
+        workPerformed: 'Beschreiben Sie die geplanten/zu leistenden Arbeiten...'
       }
     }
   }

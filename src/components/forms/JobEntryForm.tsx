@@ -657,17 +657,17 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-lg">
           <User className="h-5 w-5 text-primary" />
-          {tCommon('customerData')}
+          {t('customerData')}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div>
           <Label htmlFor="customer-name" className="text-sm font-medium">
-            {tCommon('customerName')} <Badge variant="destructive" className="ml-1 text-xs">{tCommon('required')}</Badge>
+            {t('customerName')} <Badge variant="destructive" className="ml-1 text-xs">{tCommon('required')}</Badge>
           </Label>
           <Input
             id="customer-name"
-            placeholder={tCommon('customerName')}
+            placeholder={t('placeholders.customerName')}
             value={jobData.customerName || ''}
             onChange={(e) => updateField('customerName', e.target.value)}
             className="mt-1"
@@ -675,11 +675,11 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
           />
         </div>
         <div>
-          <Label htmlFor="customer-address" className="text-sm font-medium">{tCommon('customerAddress')}</Label>
+          <Label htmlFor="customer-address" className="text-sm font-medium">{t('customerAddress')}</Label>
           <div className="flex gap-2 mt-1">
             <Input
               id="customer-address"
-              placeholder={tCommon('customerAddress')}
+              placeholder={t('placeholders.customerAddress')}
               value={jobData.customerAddress || ''}
               onChange={(e) => updateField('customerAddress', e.target.value)}
               className="flex-1"
@@ -714,10 +714,10 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
         </div>
         
         <div>
-          <Label htmlFor="evatic-no" className="text-sm font-medium">{tCommon('evaticNo')}</Label>
+          <Label htmlFor="evatic-no" className="text-sm font-medium">{t('evaticNo')}</Label>
           <Input
             id="evatic-no"
-            placeholder={tCommon('evaticNo')}
+            placeholder={t('placeholders.evaticNo')}
             value={jobData.evaticNo || ''}
             onChange={(e) => updateField('evaticNo', e.target.value)}
             className="mt-1"
@@ -732,36 +732,36 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-lg">
           <Wrench className="h-5 w-5 text-primary" />
-          {tCommon('machineData')}
+          {t('machineData')}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid grid-cols-1 gap-3">
           <div>
-            <Label htmlFor="manufacturer" className="text-sm font-medium">{tCommon('manufacturer')}</Label>
+            <Label htmlFor="manufacturer" className="text-sm font-medium">{t('manufacturer')}</Label>
             <Input
               id="manufacturer"
-              placeholder={tCommon('manufacturer')}
+              placeholder={t('placeholders.manufacturer')}
               value={jobData.manufacturer || ''}
               onChange={(e) => updateField('manufacturer', e.target.value)}
               className="mt-1"
             />
           </div>
           <div>
-            <Label htmlFor="model" className="text-sm font-medium">{tCommon('model')}</Label>
+            <Label htmlFor="model" className="text-sm font-medium">{t('model')}</Label>
             <Input
               id="model"
-              placeholder={tCommon('model')}
+              placeholder={t('placeholders.model')}
               value={jobData.model || ''}
               onChange={(e) => updateField('model', e.target.value)}
               className="mt-1"
             />
           </div>
           <div>
-            <Label htmlFor="serial" className="text-sm font-medium">{tCommon('serialNumber')}</Label>
+            <Label htmlFor="serial" className="text-sm font-medium">{t('serialNumber')}</Label>
             <Input
               id="serial"
-              placeholder={tCommon('serialNumber')}
+              placeholder={t('placeholders.serialNumber')}
               value={jobData.serialNumber || ''}
               onChange={(e) => updateField('serialNumber', e.target.value)}
               className="mt-1"
@@ -769,10 +769,10 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
           </div>
         </div>
         <div>
-          <Label htmlFor="work-performed" className="text-sm font-medium">{tCommon('workPerformed')}</Label>
+          <Label htmlFor="work-performed" className="text-sm font-medium">{t('workPerformed')}</Label>
           <Textarea
             id="work-performed"
-            placeholder={tCommon('workPerformedPlaceholder')}
+            placeholder={t('placeholders.workPerformed')}
             value={jobData.workPerformed || ''}
             onChange={(e) => updateField('workPerformed', e.target.value)}
             className="mt-1 min-h-20"
@@ -787,7 +787,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-lg">
           <Hotel className="h-5 w-5 text-primary" />
-          {tCommon('hotelData')}
+          {t('hotelData')}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">

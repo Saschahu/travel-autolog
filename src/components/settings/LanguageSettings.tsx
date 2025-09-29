@@ -5,11 +5,12 @@ import { useSettingsStore, type LocaleCode } from '@/state/settingsStore';
 import { Languages } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
-const languages = [
-  { code: 'de', name: 'Deutsch' },
-  { code: 'en', name: 'English' },
-  { code: 'nb', name: 'Norsk' }
-];
+import { SUPPORTED_LOCALES, LOCALE_NAMES } from '@/i18n';
+
+const languages = SUPPORTED_LOCALES.map(code => ({
+  code,
+  name: LOCALE_NAMES[code]
+}));
 
 export const LanguageSettings = () => {
   const { t } = useTranslation();

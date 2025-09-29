@@ -24,8 +24,8 @@ function AppContent() {
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#f0f9ff' }}>
         <div className="p-8 text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-500 border-t-transparent mx-auto mb-4"></div>
-          <p className="text-lg font-semibold text-blue-900">App wird geladen...</p>
-          <p className="text-sm text-blue-700 mt-2">Bitte warten...</p>
+          <p className="text-lg font-semibold text-blue-900">Loading...</p>
+          <p className="text-sm text-blue-700 mt-2">Please wait...</p>
         </div>
       </div>
     );

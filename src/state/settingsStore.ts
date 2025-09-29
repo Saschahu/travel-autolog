@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { ExportFolderRef } from '@/lib/fs/directoryPicker';
 
-export type LocaleCode = 'de' | 'en' | 'nb' | 'sv' | 'da';
+export type LocaleCode = 'de' | 'en' | 'nb';
 
 export interface SettingsState {
   locale: LocaleCode;

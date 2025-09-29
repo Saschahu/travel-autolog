@@ -118,5 +118,25 @@ export default {
   activeJobsFilter: 'Aktive Aufträge',
   completedJobsFilter: 'Abgeschlossene Aufträge',
   completedSentJobs: 'Abgeschlossene & Gesendete Aufträge',
-  allJobs: 'Alle Aufträge'
+  allJobs: 'Alle Aufträge',
+  
+  // Time tracking
+  workTime: 'Arbeitszeit',
+  travelTime: 'Reisezeit',
+  departureTime: 'Abreisezeit',
+  workTimes: 'Arbeitszeiten',
+  total: 'Gesamt',
+  totalHours: 'Gesamtstunden',
+  
+  // UI Labels
+  details: 'Details',
+  startDateLabel: 'Startdatum',
+  workStartLabel: 'Arbeitsbeginn',
+  workEndLabel: 'Arbeitsende',
+  progress: 'Fortschritt',
+  daysLabel: 'Tage',
+  maxDaysReached: 'Maximale Anzahl Tage erreicht',
+  sendReport: 'Bericht senden',
+  totalJobs: 'Aufträge gesamt',
+  totalOvertime: 'Überstunden gesamt'
 } as const;

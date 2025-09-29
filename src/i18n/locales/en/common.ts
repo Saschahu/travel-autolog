@@ -118,5 +118,25 @@ export default {
   activeJobsFilter: 'Active Jobs',
   completedJobsFilter: 'Completed Jobs',
   completedSentJobs: 'Completed & Sent Jobs',
-  allJobs: 'All Jobs'
+  allJobs: 'All Jobs',
+  
+  // Time tracking
+  workTime: 'Work Time',
+  travelTime: 'Travel Time',
+  departureTime: 'Departure Time',
+  workTimes: 'Work Times',
+  total: 'Total',
+  totalHours: 'Total Hours',
+  
+  // UI Labels
+  details: 'Details',
+  startDateLabel: 'Start Date',
+  workStartLabel: 'Work Start',
+  workEndLabel: 'Work End',
+  progress: 'Progress',
+  daysLabel: 'Days',
+  maxDaysReached: 'Maximum days reached',
+  sendReport: 'Send Report',
+  totalJobs: 'Total Jobs',
+  totalOvertime: 'Total Overtime'
 } as const;

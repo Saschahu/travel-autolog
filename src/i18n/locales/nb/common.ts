@@ -118,5 +118,25 @@ export default {
   activeJobsFilter: 'Aktive jobber',
   completedJobsFilter: 'Fullførte jobber',
   completedSentJobs: 'Fullførte & sendte jobber',
-  allJobs: 'Alle jobber'
+  allJobs: 'Alle jobber',
+  
+  // Time tracking
+  workTime: 'Arbeidstid',
+  travelTime: 'Reisetid',
+  departureTime: 'Avreisetid',
+  workTimes: 'Arbeidstider',
+  total: 'Total',
+  totalHours: 'Totale timer',
+  
+  // UI Labels
+  details: 'Detaljer',
+  startDateLabel: 'Startdato',
+  workStartLabel: 'Arbeidsstart',
+  workEndLabel: 'Arbeidsslutt',
+  progress: 'Fremgang',
+  daysLabel: 'Dager',
+  maxDaysReached: 'Maksimale dager nådd',
+  sendReport: 'Send rapport',
+  totalJobs: 'Jobber totalt',
+  totalOvertime: 'Overtid totalt'
 } as const;

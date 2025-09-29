@@ -110,5 +110,13 @@ export default {
   none: 'Keine',
   
   // Language
-  language: 'Sprache'
+  language: 'Sprache',
+  
+  // Job filtering
+  filterJobs: 'Aufträge filtern',
+  openJobs: 'Offene Aufträge',
+  activeJobsFilter: 'Aktive Aufträge',
+  completedJobsFilter: 'Abgeschlossene Aufträge',
+  completedSentJobs: 'Abgeschlossene & Gesendete Aufträge',
+  allJobs: 'Alle Aufträge'
 } as const;

@@ -110,5 +110,13 @@ export default {
   none: 'Ingen',
   
   // Language
-  language: 'Språk'
+  language: 'Språk',
+  
+  // Job filtering
+  filterJobs: 'Filtrer jobber',
+  openJobs: 'Åpne jobber',
+  activeJobsFilter: 'Aktive jobber',
+  completedJobsFilter: 'Fullførte jobber',
+  completedSentJobs: 'Fullførte & sendte jobber',
+  allJobs: 'Alle jobber'
 } as const;

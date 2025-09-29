@@ -110,5 +110,13 @@ export default {
   none: 'None',
   
   // Language
-  language: 'Language'
+  language: 'Language',
+  
+  // Job filtering
+  filterJobs: 'Filter Jobs',
+  openJobs: 'Open Jobs',
+  activeJobsFilter: 'Active Jobs',
+  completedJobsFilter: 'Completed Jobs',
+  completedSentJobs: 'Completed & Sent Jobs',
+  allJobs: 'All Jobs'
 } as const;

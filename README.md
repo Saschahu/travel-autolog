@@ -72,6 +72,24 @@ npm run dev
 npm run build
 ```
 
+## CI & Tests
+
+This project uses GitHub Actions for Continuous Integration (CI). On every push or pull request, the following checks are automatically performed:
+
+1.  **Linting**: `npm run lint` checks the code for style and quality issues.
+2.  **Testing**: `npm test` runs the test suite using Vitest.
+3.  **Building**: `npm run build` ensures the project can be successfully built for production.
+
+A simple smoke test is in place to ensure the test runner is configured correctly.
+
+### Running Tests Locally
+
+To run the test suite on your local machine, use the following command:
+
+```sh
+npm test
+```
+
 ## Verfügbare Scripts
 
 - `npm run android:run` - **Hauptbefehl**: Build → Sync → Install → Start

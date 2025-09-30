@@ -662,7 +662,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
   };
 
   const renderFinishSection = () => {
-    if (!isEditingJob || !currentJobId) {
+    if (!isEditingJob || !currentJobId || !currentJob) {
       return (
         <Card className="border-primary/20">
           <CardContent className="pt-6">
@@ -672,13 +672,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
       );
     }
 
-    const mockJob = {
-      id: currentJobId,
-      customer_name: jobData.customerName || '',
-      // Add other required fields for the FinishJobTab
-    };
-
-    return <FinishJobTab job={mockJob as unknown} onJobUpdate={() => {}} onCloseDialog={() => {}} />;
+    return <FinishJobTab job={currentJob as any} onJobUpdate={handleJobUpdate as any} onCloseDialog={() => {}} />;
   };
 
   const renderCustomerSection = () => (

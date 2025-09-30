@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { validateEmailInput } from '@/lib/email';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -84,7 +83,7 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
         if (isFileSystemAccessSupported()) {
           const handle = await loadHandle();
           if (handle) {
-            const name = handle.name || 'Ausgewählter Ordner';
+            const name = (handle as any)?.name || 'Ausgewählter Ordner';
             setExportSettings(prev => ({
               ...prev,
               directoryHandle: handle as any,

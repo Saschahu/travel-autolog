@@ -195,5 +195,24 @@ export default {
     consentNote: 'Sie können Ihre Einstellungen jederzeit in den Einstellungen ändern',
     readFullPolicy: 'Vollständige Datenschutzerklärung lesen',
     saving: 'Speichern...'
+  },
+  
+  // Overtime calculations
+  recalculate: 'Neu berechnen',
+  timeBreakdown: 'Zeitaufschlüsselung',
+  guaranteedHours: 'Garantierte Stunden',
+  actualWorked: 'Tatsächlich gearbeitet',
+  regularHours: 'Reguläre Stunden',
+  overtimeHours: 'Überstunden',
+  overtimeCalculation: 'Überstundenberechnung',
+  overtimeExplanation: 'Berechnung basiert auf',
+  hoursMinimum: 'Stunden Minimum',
+  overtimeTypes: {
+    '8to12hours': 'Überstunden 8–12h',
+    over12hours: 'Überstunden über 12h',
+    saturday: 'Samstag',
+    sundayHoliday: 'Sonntag/Feiertag',
+    surcharge: 'Zuschlag',
+    credit: 'Gutschrift'
   }
 } as const;

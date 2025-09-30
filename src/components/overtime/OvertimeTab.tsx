@@ -15,7 +15,7 @@ interface OvertimeTabProps {
 }
 
 export const OvertimeTab = ({ job }: OvertimeTabProps) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
   const { toast } = useToast();
   const { calculateOvertime, calculateTimeBreakdown, formatMinutesToHours, overtimeSettings, forceRecalculation, recalcTrigger } = useOvertimeCalculation();
   
@@ -116,13 +116,13 @@ export const OvertimeTab = ({ job }: OvertimeTabProps) => {
             {splits.ot50Split && (
               <div className="bg-orange-500/10 border border-orange-500/20 rounded-lg p-3">
                 <div className="text-sm text-muted-foreground mb-2">
-                  {t('overtime.8to12hours', 'Überstunden 8–12h')} ({splits.ot50Split.rate}%)
+                  {t('overtimeTypes.8to12hours', 'Überstunden 8–12h')} ({splits.ot50Split.rate}%)
                 </div>
                 <div className="text-lg font-semibold text-orange-600 mb-1">
                   {formatHours(splits.ot50Split.baseMinutes)}
                 </div>
                 <div className="text-xs text-muted-foreground">
-                  +{formatHours(splits.ot50Split.surchargeMinutes)} {t('overtime.surcharge')} • ={formatHours(splits.ot50Split.creditMinutes)} {t('overtime.credit')}
+                  +{formatHours(splits.ot50Split.surchargeMinutes)} {t('overtimeTypes.surcharge')} • ={formatHours(splits.ot50Split.creditMinutes)} {t('overtimeTypes.credit')}
                 </div>
               </div>
             )}
@@ -130,13 +130,13 @@ export const OvertimeTab = ({ job }: OvertimeTabProps) => {
             {splits.ot100Split && (
               <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-3">
                 <div className="text-sm text-muted-foreground mb-2">
-                  {t('overtime.over12hours', 'Überstunden über 12h')} ({splits.ot100Split.rate}%)
+                  {t('overtimeTypes.over12hours', 'Überstunden über 12h')} ({splits.ot100Split.rate}%)
                 </div>
                 <div className="text-lg font-semibold text-red-600 mb-1">
                   {formatHours(splits.ot100Split.baseMinutes)}
                 </div>
                 <div className="text-xs text-muted-foreground">
-                  +{formatHours(splits.ot100Split.surchargeMinutes)} {t('overtime.surcharge')} • ={formatHours(splits.ot100Split.creditMinutes)} {t('overtime.credit')}
+                  +{formatHours(splits.ot100Split.surchargeMinutes)} {t('overtimeTypes.surcharge')} • ={formatHours(splits.ot100Split.creditMinutes)} {t('overtimeTypes.credit')}
                 </div>
               </div>
             )}
@@ -144,13 +144,13 @@ export const OvertimeTab = ({ job }: OvertimeTabProps) => {
             {splits.saturdaySplit && (
               <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-3">
                 <div className="text-sm text-muted-foreground mb-2">
-                  {t('overtime.saturday', 'Samstag')} ({splits.saturdaySplit.rate}%)
+                  {t('overtimeTypes.saturday', 'Samstag')} ({splits.saturdaySplit.rate}%)
                 </div>
                 <div className="text-lg font-semibold text-blue-600 mb-1">
                   {formatHours(splits.saturdaySplit.baseMinutes)}
                 </div>
                 <div className="text-xs text-muted-foreground">
-                  +{formatHours(splits.saturdaySplit.surchargeMinutes)} {t('overtime.surcharge')} • ={formatHours(splits.saturdaySplit.creditMinutes)} {t('overtime.credit')}
+                  +{formatHours(splits.saturdaySplit.surchargeMinutes)} {t('overtimeTypes.surcharge')} • ={formatHours(splits.saturdaySplit.creditMinutes)} {t('overtimeTypes.credit')}
                 </div>
               </div>
             )}
@@ -158,13 +158,13 @@ export const OvertimeTab = ({ job }: OvertimeTabProps) => {
             {splits.sundaySplit && (
               <div className="bg-purple-500/10 border border-purple-500/20 rounded-lg p-3">
                 <div className="text-sm text-muted-foreground mb-2">
-                  {t('overtime.sundayHoliday', 'Sonntag/Feiertag')} ({splits.sundaySplit.rate}%)
+                  {t('overtimeTypes.sundayHoliday', 'Sonntag/Feiertag')} ({splits.sundaySplit.rate}%)
                 </div>
                 <div className="text-lg font-semibold text-purple-600 mb-1">
                   {formatHours(splits.sundaySplit.baseMinutes)}
                 </div>
                 <div className="text-xs text-muted-foreground">
-                  +{formatHours(splits.sundaySplit.surchargeMinutes)} {t('overtime.surcharge')} • ={formatHours(splits.sundaySplit.creditMinutes)} {t('overtime.credit')}
+                  +{formatHours(splits.sundaySplit.surchargeMinutes)} {t('overtimeTypes.surcharge')} • ={formatHours(splits.sundaySplit.creditMinutes)} {t('overtimeTypes.credit')}
                 </div>
               </div>
             )}

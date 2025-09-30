@@ -195,5 +195,24 @@ export default {
     consentNote: 'Du kan endre innstillingene når som helst i Innstillinger',
     readFullPolicy: 'Les fullstendig personvernerklæring',
     saving: 'Lagrer...'
+  },
+  
+  // Overtime calculations
+  recalculate: 'Beregn på nytt',
+  timeBreakdown: 'Tidsfordeling',
+  guaranteedHours: 'Garanterte timer',
+  actualWorked: 'Faktisk arbeidet',
+  regularHours: 'Vanlige timer',
+  overtimeHours: 'Overtidstimer',
+  overtimeCalculation: 'Overtidsberegning',
+  overtimeExplanation: 'Beregning basert på',
+  hoursMinimum: 'timer minimum',
+  overtimeTypes: {
+    '8to12hours': 'Overtid 8–12t',
+    over12hours: 'Overtid over 12t',
+    saturday: 'Lørdag',
+    sundayHoliday: 'Søndag/Helligdag',
+    surcharge: 'Tillegg',
+    credit: 'Godtgjørelse'
   }
 } as const;

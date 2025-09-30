@@ -232,5 +232,29 @@ export default {
     sundayHoliday: 'Sunday/Holiday',
     surcharge: 'Surcharge',
     credit: 'Credit'
+  },
+  
+  // Location tracking
+  locationTracking: {
+    active: 'Active',
+    stopped: 'Stopped',
+    atHome: 'At Home',
+    onTheGo: 'On the Go',
+    permissionGranted: 'Permission Granted',
+    permissionMissing: 'Permission Missing',
+    currentPosition: 'Current Position',
+    homeLocation: 'Home Location',
+    latitude: 'Latitude',
+    longitude: 'Longitude',
+    radius: 'Radius',
+    timestamp: 'Timestamp',
+    requestPermission: 'Request Permission',
+    gpsPosition: 'GPS Position',
+    ipPosition: 'IP Position',
+    setAsHome: 'Set as Home',
+    startTracking: 'Start Tracking',
+    stopTracking: 'Stop Tracking',
+    locationError: 'Could not determine location',
+    permissionDenied: 'GPS permission was denied. Please allow location access in your browser settings.'
   }
 } as const;

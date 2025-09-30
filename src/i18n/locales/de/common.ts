@@ -232,5 +232,29 @@ export default {
     sundayHoliday: 'Sonntag/Feiertag',
     surcharge: 'Zuschlag',
     credit: 'Gutschrift'
+  },
+  
+  // Location tracking
+  locationTracking: {
+    active: 'Aktiv',
+    stopped: 'Gestoppt',
+    atHome: 'Zuhause',
+    onTheGo: 'Unterwegs',
+    permissionGranted: 'Berechtigung erteilt',
+    permissionMissing: 'Berechtigung fehlt',
+    currentPosition: 'Aktuelle Position',
+    homeLocation: 'Home-Standort',
+    latitude: 'Breitengrad',
+    longitude: 'Längengrad',
+    radius: 'Radius',
+    timestamp: 'Zeitstempel',
+    requestPermission: 'Berechtigung anfordern',
+    gpsPosition: 'GPS Position',
+    ipPosition: 'IP Position',
+    setAsHome: 'Als Zuhause festlegen',
+    startTracking: 'Tracking starten',
+    stopTracking: 'Tracking stoppen',
+    locationError: 'Standort konnte nicht ermittelt werden',
+    permissionDenied: 'GPS-Berechtigung wurde verweigert. Bitte erlaube den Standortzugriff in den Browser-Einstellungen.'
   }
 } as const;

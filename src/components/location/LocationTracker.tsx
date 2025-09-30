@@ -14,7 +14,7 @@ interface LocationData {
 }
 
 export const LocationTracker: React.FC = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
   const {
     currentLocation,
     homeLocation,
@@ -50,15 +50,15 @@ export const LocationTracker: React.FC = () => {
           {/* Status Badges */}
           <div className="flex flex-wrap gap-2">
             <Badge variant={isTracking ? "default" : "secondary"}>
-              {isTracking ? "Aktiv" : "Gestoppt"}
+              {isTracking ? t('locationTracking.active') : t('locationTracking.stopped')}
             </Badge>
             {isAtHome !== null && (
               <Badge variant={isAtHome ? "default" : "secondary"}>
-                {isAtHome ? "Zuhause" : "Unterwegs"}
+                {isAtHome ? t('locationTracking.atHome') : t('locationTracking.onTheGo')}
               </Badge>
             )}
             <Badge variant={hasPermissions ? "default" : "destructive"}>
-              {hasPermissions ? "Berechtigung erteilt" : "Berechtigung fehlt"}
+              {hasPermissions ? t('locationTracking.permissionGranted') : t('locationTracking.permissionMissing')}
             </Badge>
           </div>
 
@@ -72,11 +72,11 @@ export const LocationTracker: React.FC = () => {
           {/* Current Location Info */}
           {currentLocation && (
             <div className="space-y-2">
-              <h4 className="font-medium">Aktuelle Position:</h4>
+              <h4 className="font-medium">{t('locationTracking.currentPosition')}:</h4>
               <div className="text-sm text-muted-foreground space-y-1">
-                <div>Breitengrad: {currentLocation.latitude.toFixed(6)}</div>
-                <div>{t('longitude')}: {currentLocation.longitude.toFixed(6)}</div>
-                <div>Zeitstempel: {currentLocation.timestamp.toLocaleString('de-DE')}</div>
+                <div>{t('locationTracking.latitude')}: {currentLocation.latitude.toFixed(6)}</div>
+                <div>{t('locationTracking.longitude')}: {currentLocation.longitude.toFixed(6)}</div>
+                <div>{t('locationTracking.timestamp')}: {currentLocation.timestamp.toLocaleString('de-DE')}</div>
               </div>
             </div>
           )}
@@ -84,11 +84,11 @@ export const LocationTracker: React.FC = () => {
           {/* Home Location Info */}
           {homeLocation && (
             <div className="space-y-2">
-              <h4 className="font-medium">Home-Standort:</h4>
+              <h4 className="font-medium">{t('locationTracking.homeLocation')}:</h4>
               <div className="text-sm text-muted-foreground space-y-1">
-                <div>Breitengrad: {homeLocation.latitude.toFixed(6)}</div>
-                <div>{t('longitude')}: {homeLocation.longitude.toFixed(6)}</div>
-                <div>Radius: {homeLocation.radius}m</div>
+                <div>{t('locationTracking.latitude')}: {homeLocation.latitude.toFixed(6)}</div>
+                <div>{t('locationTracking.longitude')}: {homeLocation.longitude.toFixed(6)}</div>
+                <div>{t('locationTracking.radius')}: {homeLocation.radius}m</div>
               </div>
             </div>
           )}
@@ -98,36 +98,36 @@ export const LocationTracker: React.FC = () => {
             {!hasPermissions && (
               <Button onClick={requestPermissions} variant="outline">
                 <MapPin className="h-4 w-4 mr-2" />
-                Berechtigung anfordern
+                {t('locationTracking.requestPermission')}
               </Button>
             )}
             
             <Button onClick={() => getCurrentPosition()} variant="outline">
               <MapPin className="h-4 w-4 mr-2" />
-              GPS Position
+              {t('locationTracking.gpsPosition')}
             </Button>
 
             <Button onClick={() => getCurrentPosition(true)} variant="outline">
               <Globe className="h-4 w-4 mr-2" />
-              IP Position
+              {t('locationTracking.ipPosition')}
             </Button>
 
             {currentLocation && !homeLocation && (
               <Button onClick={() => setCurrentAsHome()} variant="outline">
                 <Home className="h-4 w-4 mr-2" />
-                Als Zuhause festlegen
+                {t('locationTracking.setAsHome')}
               </Button>
             )}
 
             {!isTracking ? (
               <Button onClick={handleStartTracking}>
                 <Play className="h-4 w-4 mr-2" />
-                Tracking starten
+                {t('locationTracking.startTracking')}
               </Button>
             ) : (
               <Button onClick={() => stopTracking()} variant="outline">
                 <Square className="h-4 w-4 mr-2" />
-                Tracking stoppen
+                {t('locationTracking.stopTracking')}
               </Button>
             )}
           </div>

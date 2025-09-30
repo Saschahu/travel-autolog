@@ -232,5 +232,29 @@ export default {
     sundayHoliday: 'Søndag/Helligdag',
     surcharge: 'Tillegg',
     credit: 'Godtgjørelse'
+  },
+  
+  // Location tracking
+  locationTracking: {
+    active: 'Aktiv',
+    stopped: 'Stoppet',
+    atHome: 'Hjemme',
+    onTheGo: 'På reise',
+    permissionGranted: 'Tillatelse gitt',
+    permissionMissing: 'Tillatelse mangler',
+    currentPosition: 'Nåværende posisjon',
+    homeLocation: 'Hjemmeposisjon',
+    latitude: 'Breddegrad',
+    longitude: 'Lengdegrad',
+    radius: 'Radius',
+    timestamp: 'Tidsstempel',
+    requestPermission: 'Be om tillatelse',
+    gpsPosition: 'GPS Posisjon',
+    ipPosition: 'IP Posisjon',
+    setAsHome: 'Sett som hjem',
+    startTracking: 'Start sporing',
+    stopTracking: 'Stopp sporing',
+    locationError: 'Kunne ikke bestemme posisjon',
+    permissionDenied: 'GPS-tillatelse ble nektet. Vennligst tillat posisjonstilgang i nettleserinnstillingene.'
   }
 } as const;

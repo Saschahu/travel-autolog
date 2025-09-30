@@ -14,7 +14,6 @@ import { Switch } from '@/components/ui/switch';
 import { User, MapPin, Settings, Home, Clock, FolderOpen, AlertTriangle, Mail } from 'lucide-react';
 import { OvertimeSettings } from '@/components/settings/OvertimeSettings';
 import { HolidaySettings } from '@/components/settings/HolidaySettings';
-import { GPSSettingsComponent } from '@/components/gps/GPSSettingsComponent';
 import { ExportSettings } from './ExportSettings';
 import { LanguageSettings } from './LanguageSettings';
 import { FeatureFlagsPanel } from './FeatureFlagsPanel';
@@ -39,7 +38,6 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
     homeAddress: '',
     email: '',
     preferredEmailApp: 'default',
-    gpsEnabled: false,
     localStoragePath: '',
     reportTo: '',
     reportCc: '',
@@ -59,30 +57,13 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
     exportDirUri: undefined
   });
   
-  // GPS settings state (separate from profile data)
-  const [gpsSettings, setGpsSettings] = useState({
-    styleId: 'mapbox://styles/mapbox/streets-v12',
-    homeGeofence: {
-      latitude: null as number | null,
-      longitude: null as number | null,
-      radius: 100
-    }
-  });
-  
   const [saving, setSaving] = useState(false);
   const [emailErrors, setEmailErrors] = useState<{ [key: string]: string[] }>({});
 
-  // Load GPS and export settings from storage on mount
+  // Load export settings from storage on mount
   useEffect(() => {
     const loadSettings = async () => {
       try {
-        // Load GPS settings
-        const savedGps = localStorage.getItem('gps-settings');
-        if (savedGps) {
-          const parsed = JSON.parse(savedGps);
-          setGpsSettings(prev => ({ ...prev, ...parsed }));
-        }
-
         // Load export settings
         const savedExportProvider = localStorage.getItem('preferred-email-provider');
         const savedExportUri = localStorage.getItem('android-export-dir-uri');
@@ -126,7 +107,6 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
       homeAddress: profile.homeAddress,
       email: profile.email,
       preferredEmailApp: profile.preferredEmailApp,
-      gpsEnabled: profile.gpsEnabled,
       localStoragePath: profile.localStoragePath,
       reportTo: profile.reportTo || '',
       reportCc: profile.reportCc || '',
@@ -174,8 +154,7 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
       
       await updateProfile(formData);
       
-      // Save GPS and export settings to localStorage
-      localStorage.setItem('gps-settings', JSON.stringify(gpsSettings));
+      // Save export settings to localStorage
       localStorage.setItem('preferred-email-provider', exportSettings.preferredEmailProvider);
       if (exportSettings.exportDirUri) {
         localStorage.setItem('android-export-dir-uri', exportSettings.exportDirUri);
@@ -241,10 +220,9 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
         </DialogHeader>
 
         <Tabs defaultValue="profile" className="w-full">
-          <TabsList className="grid w-full grid-cols-7">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="profile">{t('profile')}</TabsTrigger>
             <TabsTrigger value="export">{t('export')}</TabsTrigger>
-            <TabsTrigger value="gps">{t('gps')}</TabsTrigger>
             <TabsTrigger value="overtime">{t('overtime')}</TabsTrigger>
             <TabsTrigger value="holidays">{t('holidays')}</TabsTrigger>
             <TabsTrigger value="advanced">{t('advanced')}</TabsTrigger>
@@ -414,13 +392,6 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
             <ExportSettings 
               settings={exportSettings}
               onSettingsChange={setExportSettings}
-            />
-          </TabsContent>
-
-          <TabsContent value="gps" className="space-y-6">
-            <GPSSettingsComponent 
-              settings={gpsSettings}
-              onSettingsChange={setGpsSettings}
             />
           </TabsContent>
 

@@ -17,9 +17,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { LeavingHomeDialog } from '@/components/location/LeavingHomeDialog';
-import { GPSPage } from '@/components/gps/GPSPage';
-import { useLocation } from '@/hooks/useLocation';
 import { useUserProfile } from '@/contexts/user-profile-context.helpers';
 import { useToast } from '@/hooks/use-toast';
 import { useJobs, type Job } from '@/hooks/useJobs';
@@ -67,8 +64,6 @@ const Index = () => {
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
   const [newJobOpen, setNewJobOpen] = useState(false);
-  const [leavingHomeOpen, setLeavingHomeOpen] = useState(false);
-  const { hasLeftHome } = useLocation();
   const { toast } = useToast();
   const [editData, setEditData] = useState({
     customerName: '',
@@ -457,21 +452,6 @@ const Index = () => {
     return job.status === jobFilter;
   });
 
-  const handleLeavingHomeSelection = (type: 'work' | 'private') => {
-    if (type === 'work') {
-      setNewJobOpen(true);
-      toast({
-        title: t('workTripStarted'),
-        description: t('newJobDescription'),
-      });
-    } else {
-      toast({
-        title: t('privateTrip'),
-        description: t('privateTripDescription'),
-      });
-    }
-  };
-
   // Fetch jobs on component mount and when activeTab changes to dashboard
   useEffect(() => {
     if (activeTab === 'dashboard') {
@@ -492,13 +472,6 @@ const Index = () => {
       }
     }
   }, [jobs]);
-
-  // Monitor leaving home status
-  React.useEffect(() => {
-    if (hasLeftHome && !leavingHomeOpen) {
-      setLeavingHomeOpen(true);
-    }
-  }, [hasLeftHome, leavingHomeOpen]);
 
   const renderDashboard = () => (
     <div className="space-y-6">
@@ -541,14 +514,10 @@ const Index = () => {
       
       <div className="flex-1 overflow-y-auto">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full h-full flex flex-col">
-          <TabsList className="grid w-full grid-cols-3 mx-4 mt-4">
+          <TabsList className="grid w-full grid-cols-2 mx-4 mt-4">
             <TabsTrigger value="dashboard" className="flex items-center gap-2">
               <BarChart3 className="h-4 w-4" />
               {t('dashboard')}
-            </TabsTrigger>
-            <TabsTrigger value="location" className="flex items-center gap-2">
-              <Navigation className="h-4 w-4" />
-              {t('location')}
             </TabsTrigger>
             <TabsTrigger value="export" className="flex items-center gap-2">
               <FileText className="h-4 w-4" />
@@ -559,10 +528,6 @@ const Index = () => {
           <div className="flex-1 overflow-y-auto">
             <TabsContent value="dashboard" className="p-4 mt-6 h-full">
               {renderDashboard()}
-            </TabsContent>
-            
-            <TabsContent value="location" className="mt-6 h-full">
-              <GPSPage />
             </TabsContent>
             
             <TabsContent value="export" className="mt-6 h-full">
@@ -625,13 +590,6 @@ const Index = () => {
             )}
           </DialogContent>
         </Dialog>
-
-        {/* Leaving Home Dialog */}
-        <LeavingHomeDialog
-          isOpen={leavingHomeOpen}
-          onClose={() => setLeavingHomeOpen(false)}
-          onSelection={handleLeavingHomeSelection}
-        />
 
         {/* Settings Dialog */}
         <SettingsDialog

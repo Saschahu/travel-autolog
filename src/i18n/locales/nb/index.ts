@@ -1,11 +1,11 @@
 import common from './common';
 import dashboard from './dashboard';
 import jobs from './jobs';
-import gps from './gps';
+import trip from './trip';
 
 export default {
   common,
   dashboard,
   jobs,
-  gps
+  trip
 };

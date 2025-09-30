@@ -8,6 +8,9 @@ import {
 
 export type RemoteConfigPayload = Partial<Record<FlagKey, FlagValue>>;
 
+/** Default route source: manual (no GPS tracking) */
+export const DEFAULT_ROUTE_SOURCE: 'manual' | 'gps' = 'manual';
+
 export interface RemoteConfigResponse {
   flags?: Record<string, unknown>;
   version?: string;

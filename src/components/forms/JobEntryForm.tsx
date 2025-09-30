@@ -187,7 +187,36 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
 
             setJobData(newJobData);
             setCurrentJobId(job.id);
-            setCurrentJob(job);
+            
+            // Transform DB job to match Job interface (like in useJobs)
+            const transformedJob = {
+              id: job.id,
+              customerName: job.customer_name,
+              status: job.status,
+              startDate: new Date(job.created_at),
+              estimatedDays: job.estimated_days,
+              currentDay: job.current_day,
+              days: Array.isArray(job.days_data) ? job.days_data : [],
+              customerAddress: job.customer_address,
+              contactName: job.contact_name,
+              contactPhone: job.contact_phone,
+              evaticNo: job.evatic_no,
+              manufacturer: job.manufacturer,
+              model: job.model,
+              serialNumber: job.serial_number,
+              workPerformed: job.work_performed,
+              hotelName: job.hotel_name,
+              hotelAddress: job.hotel_address,
+              hotelNights: job.hotel_nights,
+              hotelPrice: job.hotel_price,
+              kilometersOutbound: job.kilometers_outbound,
+              kilometersReturn: job.kilometers_return,
+              tollAmount: job.toll_amount,
+              reports: job.reports || [],
+              workReport: job.work_report,
+            };
+            
+            setCurrentJob(transformedJob);
             setIsEditingJob(true);
             setCurrentStep('customer'); // Start at customer tab for consistency
           }

@@ -158,5 +158,42 @@ export default {
   newJob: 'Ny jobb',
   overtime: 'Overtid',
   report: 'Rapport',
-  tollsNorwegian: 'Bomavgifter'
+  tollsNorwegian: 'Bomavgifter',
+  
+  // Time tracking labels
+  arrival: 'Ankomst',
+  work: 'Arbeid',
+  departure: 'Avreise',
+  selectDate: 'Velg dato',
+  timesTitle: 'Tider',
+  
+  // Job form messages
+  saveJobFirst: 'Vennligst lagre jobben først',
+  userNotLoggedIn: 'Bruker ikke innlogget',
+  successfullySaved: 'Vellykket lagret',
+  jobDataSaved: 'Jobbdata lagret',
+  jobCompleted: 'Jobb fullført',
+  customerSavedGoMachineTitle: 'Kunde lagret',
+  customerSavedGoMachineDesc: 'Du kan nå legge inn maskindata',
+  
+  // Customer/Hotel fields
+  customer: {
+    hotelName: 'Hotellnavn',
+    hotelNamePlaceholder: 'Navn på hotellet',
+    hotelAddress: 'Hotelladresse',
+    hotelAddressPlaceholder: 'Adresse til hotellet',
+    hotelNights: 'Hotellnetter',
+    hotelPrice: 'Hotellpris (per natt eller totalt)'
+  },
+  
+  // Privacy
+  privacy: {
+    consentTitle: 'Personvern & Datainnsamling',
+    consentSubtitle: 'Vi verdsetter ditt personvern og ønsker å være transparente om datainnsamling',
+    acceptTelemetry: 'Aksepter & Fortsett',
+    declineTelemetry: 'Avslå',
+    consentNote: 'Du kan endre innstillingene når som helst i Innstillinger',
+    readFullPolicy: 'Les fullstendig personvernerklæring',
+    saving: 'Lagrer...'
+  }
 } as const;

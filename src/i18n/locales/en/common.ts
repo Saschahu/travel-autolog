@@ -158,5 +158,42 @@ export default {
   newJob: 'New Job',
   overtime: 'Overtime',
   report: 'Report',
-  tollsNorwegian: 'Toll Fees'
+  tollsNorwegian: 'Toll Fees',
+  
+  // Time tracking labels
+  arrival: 'Arrival',
+  work: 'Work',
+  departure: 'Departure',
+  selectDate: 'Select date',
+  timesTitle: 'Times',
+  
+  // Job form messages
+  saveJobFirst: 'Please save the job first',
+  userNotLoggedIn: 'User not logged in',
+  successfullySaved: 'Successfully saved',
+  jobDataSaved: 'Job data saved',
+  jobCompleted: 'Job completed',
+  customerSavedGoMachineTitle: 'Customer saved',
+  customerSavedGoMachineDesc: 'You can now enter machine data',
+  
+  // Customer/Hotel fields
+  customer: {
+    hotelName: 'Hotel Name',
+    hotelNamePlaceholder: 'Name of the hotel',
+    hotelAddress: 'Hotel Address',
+    hotelAddressPlaceholder: 'Address of the hotel',
+    hotelNights: 'Hotel Nights',
+    hotelPrice: 'Hotel Price (per night or total)'
+  },
+  
+  // Privacy
+  privacy: {
+    consentTitle: 'Privacy & Data Collection',
+    consentSubtitle: 'We value your privacy and want to be transparent about data collection',
+    acceptTelemetry: 'Accept & Continue',
+    declineTelemetry: 'Decline',
+    consentNote: 'You can change your preferences anytime in Settings',
+    readFullPolicy: 'Read full privacy policy',
+    saving: 'Saving...'
+  }
 } as const;

@@ -17,7 +17,7 @@ interface ConsentDialogProps {
  * Privacy consent dialog shown on first app launch
  */
 export const ConsentDialog = ({ open, onConsentGiven }: ConsentDialogProps) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
   const [isProcessing, setIsProcessing] = useState(false);
 
   const handleConsent = async (accepted: boolean) => {

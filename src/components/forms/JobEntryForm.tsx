@@ -909,7 +909,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
   const editJobStepsRow1 = [
     { id: 'customer', label: t('customerData'), icon: User },
     { id: 'machine', label: t('machineData'), icon: Wrench },
-    { id: 'times', label: t('times'), icon: CalendarIcon },
+    { id: 'times', label: tCommon('times'), icon: CalendarIcon },
     { id: 'hotel', label: t('hotelData'), icon: Hotel },
   ] as const;
 
@@ -1092,7 +1092,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
             onClick={() => onJobSaved?.()}
             disabled={isLoading}
           >
-            Dashboard
+            {t('dashboard')}
           </Button>
           
           {/* Right: Next/Action button */}

@@ -158,5 +158,42 @@ export default {
   newJob: 'Neuer Auftrag',
   overtime: 'Überstunden',
   report: 'Bericht',
-  tollsNorwegian: 'Mautgebühren'
+  tollsNorwegian: 'Mautgebühren',
+  
+  // Time tracking labels
+  arrival: 'Anreise',
+  work: 'Arbeit',
+  departure: 'Abreise',
+  selectDate: 'Datum wählen',
+  timesTitle: 'Zeiten',
+  
+  // Job form messages
+  saveJobFirst: 'Bitte speichern Sie den Auftrag zuerst',
+  userNotLoggedIn: 'Benutzer nicht angemeldet',
+  successfullySaved: 'Erfolgreich gespeichert',
+  jobDataSaved: 'Auftragsdaten gespeichert',
+  jobCompleted: 'Auftrag abgeschlossen',
+  customerSavedGoMachineTitle: 'Kunde gespeichert',
+  customerSavedGoMachineDesc: 'Sie können jetzt Maschinendaten eingeben',
+  
+  // Customer/Hotel fields
+  customer: {
+    hotelName: 'Hotel Name',
+    hotelNamePlaceholder: 'Name des Hotels',
+    hotelAddress: 'Hotel Adresse',
+    hotelAddressPlaceholder: 'Adresse des Hotels',
+    hotelNights: 'Anzahl Nächte',
+    hotelPrice: 'Hotel Preis (pro Nacht oder gesamt)'
+  },
+  
+  // Privacy
+  privacy: {
+    consentTitle: 'Datenschutz & Datenerfassung',
+    consentSubtitle: 'Wir legen Wert auf Ihre Privatsphäre und möchten transparent über die Datenerfassung sein',
+    acceptTelemetry: 'Akzeptieren & Fortfahren',
+    declineTelemetry: 'Ablehnen',
+    consentNote: 'Sie können Ihre Einstellungen jederzeit in den Einstellungen ändern',
+    readFullPolicy: 'Vollständige Datenschutzerklärung lesen',
+    saving: 'Speichern...'
+  }
 } as const;

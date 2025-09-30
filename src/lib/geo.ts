@@ -90,22 +90,30 @@ export const clearHomeGeofence = (): void => {
 };
 
 export const getCurrentPosition = (options?: PositionOptions): Promise<GeolocationPosition> => {
-  return new Promise((resolve, reject) => {
-    if (!navigator.geolocation) {
-      reject(new Error('Geolocation wird von diesem Browser nicht unterstützt'));
-      return;
-    }
-
-    navigator.geolocation.getCurrentPosition(
-      resolve,
-      reject,
-      {
-        enableHighAccuracy: true,
-        timeout: 30000, // 30 seconds for GPS fix
-        maximumAge: 600000, // Accept 10-minute-old position
-        ...options
+  const attempt = (opts: PositionOptions) =>
+    new Promise<GeolocationPosition>((resolve, reject) => {
+      if (!navigator.geolocation) {
+        reject(new Error('Geolocation wird von diesem Browser nicht unterstützt'));
+        return;
       }
-    );
+      navigator.geolocation.getCurrentPosition(resolve, reject, opts);
+    });
+
+  const highAccuracy: PositionOptions = {
+    enableHighAccuracy: true,
+    timeout: 15000,
+    maximumAge: 600000,
+    ...options
+  };
+
+  return attempt(highAccuracy).catch((err) => {
+    console.debug('[geo] High accuracy attempt failed, retrying with coarse mode...', err);
+    const coarse: PositionOptions = {
+      enableHighAccuracy: false,
+      timeout: 15000,
+      maximumAge: 600000,
+    };
+    return attempt({ ...coarse, ...options });
   });
 };
 

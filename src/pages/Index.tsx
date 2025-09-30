@@ -44,8 +44,8 @@ type DayData = {
 };
 
 const Index = () => {
-  const { t: tJob } = useTranslation('job');
-  const { t } = useTranslation();
+  const { t: tJob } = useTranslation('jobs');
+  const { t } = useTranslation('common');
   const { profile } = useUserProfile();
   const [activeTab, setActiveTab] = useState(() => localStorage.getItem('activeTab') || 'dashboard');
   const [settingsOpen, setSettingsOpen] = useState(false);

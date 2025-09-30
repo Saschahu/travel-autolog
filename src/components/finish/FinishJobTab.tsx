@@ -61,7 +61,7 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
   const navigate = useNavigate();
   const { detectDayType } = useDayTypeDetection();
   const { profile } = useUserProfile();
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
   const exportSettings = useExportSettings();
 
   const { calculateOvertime, recalcTrigger } = useOvertimeCalculation();

@@ -15,7 +15,7 @@ export function formatDayTitle(dr: DayReport, i: number, locale = 'de'): string 
 export function buildReportSummary(reports: DayReport[], locale = 'de'): string {
   return reports
     .filter(dr => dr.text && dr.text.trim().length > 0)
-    .map((dr, i) => `${formatDayTitle(dr, i, locale)}\n${dr.text.trim()}`)
+    .map(dr => `${formatDayTitle(dr, dr.dayIndex, locale)}\n${dr.text.trim()}`)
     .join('\n\n');
 }
 

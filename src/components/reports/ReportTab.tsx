@@ -20,7 +20,7 @@ interface ReportTabProps {
 }
 
 export const ReportTab = ({ job, onJobUpdate }: ReportTabProps) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('jobs');
   const { toast } = useToast();
   const [currentDayIndex, setCurrentDayIndex] = useState(0);
   const [currentText, setCurrentText] = useState('');

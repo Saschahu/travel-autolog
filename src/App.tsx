@@ -6,6 +6,9 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { UserProfileProvider } from "@/contexts/UserProfileContext";
 import { useAuth } from "@/contexts/auth-context.helpers";
 import { ConsentWrapper } from "@/components/privacy/ConsentWrapper";
+import { useSettingsStore } from "@/state/settingsStore";
+import { useTranslation } from "react-i18next";
+import { useEffect } from "react";
 import Index from "./pages/Index";
 import { Auth } from "./pages/Auth";
 import NotFound from "./pages/NotFound";
@@ -15,6 +18,15 @@ const queryClient = new QueryClient();
 
 function AppContent() {
   const { user, loading } = useAuth();
+  const { locale } = useSettingsStore();
+  const { i18n } = useTranslation();
+
+  // Sync locale changes with i18next
+  useEffect(() => {
+    if (i18n.language !== locale) {
+      i18n.changeLanguage(locale);
+    }
+  }, [locale, i18n]);
 
   console.log('AppContent render:', { user: !!user, loading });
 

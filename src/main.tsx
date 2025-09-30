@@ -1,7 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { AuthProvider } from '@/contexts/AuthContext';
-import './i18n/config'; // Initialize i18n early
+import './i18n'; // Initialize i18n early (auto-init)
 import './i18n/missingKeyLogger'; // Setup missing key logger in dev
 import App from './App';
 import './index.css';

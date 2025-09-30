@@ -160,6 +160,24 @@ export default {
   report: 'Rapport',
   tollsNorwegian: 'Bomavgifter',
   
+  // Email and reporting
+  reportSent: 'Rapport sendt',
+  reportSentSuccess: 'Rapport sendt vellykket',
+  directShareSupported: 'Direkte deling støttet',
+  errorSendingReport: 'Feil ved sending av rapport',
+  selectFolderFirst: 'Vennligst velg en mappe først',
+  emailAppError: 'E-post app-feil',
+  sending: 'Sender...',
+  pdfSaved: 'PDF lagret',
+  savedTo: 'Lagret i {{folder}}',
+  needFolder: 'Mappevalg nødvendig',
+  downloadingFile: 'Laster ned fil...',
+  pdfDownloadSuccess: 'PDF-nedlasting vellykket',
+  failed: 'Mislyktes',
+  creatingPdf: 'Oppretter PDF...',
+  reportPreparingBackground: 'Forbereder rapport i bakgrunnen...',
+  shareSupported: 'Deling støttet',
+  
   // Time tracking labels
   arrival: 'Ankomst',
   work: 'Arbeid',

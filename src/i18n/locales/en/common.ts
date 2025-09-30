@@ -160,6 +160,24 @@ export default {
   report: 'Report',
   tollsNorwegian: 'Toll Fees',
   
+  // Email and reporting
+  reportSent: 'Report sent',
+  reportSentSuccess: 'Report sent successfully',
+  directShareSupported: 'Direct share supported',
+  errorSendingReport: 'Error sending report',
+  selectFolderFirst: 'Please select a folder first',
+  emailAppError: 'Email app error',
+  sending: 'Sending...',
+  pdfSaved: 'PDF saved',
+  savedTo: 'Saved to {{folder}}',
+  needFolder: 'Folder selection needed',
+  downloadingFile: 'Downloading file...',
+  pdfDownloadSuccess: 'PDF download successful',
+  failed: 'Failed',
+  creatingPdf: 'Creating PDF...',
+  reportPreparingBackground: 'Preparing report in background...',
+  shareSupported: 'Share supported',
+  
   // Time tracking labels
   arrival: 'Arrival',
   work: 'Work',

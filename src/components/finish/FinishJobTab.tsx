@@ -61,7 +61,7 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
   const navigate = useNavigate();
   const { detectDayType } = useDayTypeDetection();
   const { profile } = useUserProfile();
-  const { t } = useTranslation('common');
+  const { t } = useTranslation(['common', 'jobs']);
   const exportSettings = useExportSettings();
 
   const { calculateOvertime, recalcTrigger } = useOvertimeCalculation();
@@ -270,12 +270,12 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <FileCheck className="h-5 w-5" />
-              {tt(t, 'job.finish.title', 'Auftrag abschließen')}
+              {t('jobs.finish.title', 'Auftrag abschließen')}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <Label htmlFor="work-report-summary">{tt(t, 'job.finish.reportSummaryLabel', 'Arbeitsbericht Zusammenfassung')}</Label>
+              <Label htmlFor="work-report-summary">{t('jobs.finish.reportLabel', 'Arbeitsbericht')}</Label>
               <div 
                 data-testid="report-summary"
                 className="mt-2 min-h-[120px] p-3 border rounded-md bg-muted/10 text-sm whitespace-pre-wrap font-mono"
@@ -296,7 +296,7 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
               className="mt-3 flex items-center gap-2"
             >
               <Save className="h-4 w-4" />
-              {isSaving ? t('saving') : tt(t, 'job.finish.btnSaveReport', 'Arbeitsbericht speichern')}
+              {isSaving ? t('saving') : t('jobs.finish.btnSaveReport', 'Arbeitsbericht speichern')}
             </Button>
             
             {/* Action row with Preview and Email buttons */}
@@ -308,7 +308,7 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
                 className="flex items-center gap-2"
               >
                 <Eye className="h-4 w-4" />
-                {tt(t, 'job.finish.btnPreview', 'Report Vorschau')}
+                {t('jobs.finish.btnPreview', 'Bericht Vorschau')}
               </Button>
               
               <Button 
@@ -320,7 +320,7 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
                 title={canShareFiles() ? t('directShareSupported') : t('errorSendingReport')}
               >
                 <Mail className="h-4 w-4" />
-                {isSending ? t('sending') : tt(t, 'job.finish.btnEmail', 'Per E-Mail versenden')}
+                {isSending ? t('sending') : t('jobs.finish.btnEmail', 'Per E-Mail versenden')}
               </Button>
               
                {!isPdfReady && (
@@ -345,7 +345,7 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
                 className="flex items-center gap-2"
               >
                 <LayoutDashboard className="h-4 w-4" />
-                {tt(t, 'job.finish.btnDashboard', 'Dashboard')}
+                {t('jobs.finish.btnDashboard', 'Dashboard')}
               </Button>
             </div>
           </CardContent>

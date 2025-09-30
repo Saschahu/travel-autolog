@@ -160,6 +160,24 @@ export default {
   report: 'Bericht',
   tollsNorwegian: 'Mautgebühren',
   
+  // Email and reporting
+  reportSent: 'Bericht gesendet',
+  reportSentSuccess: 'Bericht erfolgreich gesendet',
+  directShareSupported: 'Direktes Teilen unterstützt',
+  errorSendingReport: 'Fehler beim Senden des Berichts',
+  selectFolderFirst: 'Bitte wählen Sie zuerst einen Ordner',
+  emailAppError: 'E-Mail-App-Fehler',
+  sending: 'Sende...',
+  pdfSaved: 'PDF gespeichert',
+  savedTo: 'Gespeichert in {{folder}}',
+  needFolder: 'Ordnerauswahl erforderlich',
+  downloadingFile: 'Datei wird heruntergeladen...',
+  pdfDownloadSuccess: 'PDF-Download erfolgreich',
+  failed: 'Fehlgeschlagen',
+  creatingPdf: 'PDF wird erstellt...',
+  reportPreparingBackground: 'Bericht wird im Hintergrund vorbereitet...',
+  shareSupported: 'Teilen unterstützt',
+  
   // Time tracking labels
   arrival: 'Anreise',
   work: 'Arbeit',

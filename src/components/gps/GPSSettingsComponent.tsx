@@ -53,6 +53,24 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
     isWatching: false
   });
 
+  // Helper functions - defined before useEffects
+  const updateSettings = (updates: Partial<GPSSettingsData>) => {
+    onSettingsChange({ ...settings, ...updates });
+  };
+
+  const updateNestedSettings = useCallback(<K extends keyof GPSSettingsData>(
+    key: K, 
+    updates: Partial<GPSSettingsData[K]>
+  ) => {
+    const currentValue = settings[key];
+    if (typeof currentValue === 'object' && currentValue !== null) {
+      onSettingsChange({
+        ...settings,
+        [key]: { ...currentValue, ...updates }
+      });
+    }
+  }, [settings, onSettingsChange]);
+
   // Load saved home geofence on mount
   useEffect(() => {
     const savedHome = loadHomeGeofence();
@@ -83,23 +101,6 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
       geofenceMonitor.stopWatching();
     };
   }, [geofenceMonitor]);
-
-  const updateSettings = (updates: Partial<GPSSettingsData>) => {
-    onSettingsChange({ ...settings, ...updates });
-  };
-
-  const updateNestedSettings = useCallback(<K extends keyof GPSSettingsData>(
-    key: K, 
-    updates: Partial<GPSSettingsData[K]>
-  ) => {
-    const currentValue = settings[key];
-    if (typeof currentValue === 'object' && currentValue !== null) {
-      onSettingsChange({
-        ...settings,
-        [key]: { ...currentValue, ...updates }
-      });
-    }
-  }, [settings, onSettingsChange]);
 
   const setCurrentAsHome = async () => {
     setIsGettingLocation(true);

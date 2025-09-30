@@ -246,6 +246,29 @@ export default {
     credit: 'Credit'
   },
   
+  // Overtime settings
+  overtimeSettingsSaved: 'Overtime settings saved successfully',
+  overtimeSettingsTitle: 'Overtime Settings',
+  hourBasedOvertime: 'Hour-Based Overtime',
+  overtimeDescription: 'Configure overtime thresholds and surcharge rates',
+  firstOvertimeFrom: 'First Overtime From (hours)',
+  surcharge8to12h: 'Surcharge 8-12h (%)',
+  secondOvertimeFrom: 'Second Overtime From (hours)',
+  surchargeOver12h: 'Surcharge over 12h (%)',
+  weekendSurcharges: 'Weekend Surcharges',
+  weekendDescription: 'Enable additional surcharges for weekend work',
+  saturdaySurcharge: 'Saturday Surcharge (%)',
+  sundayHolidaySurcharge: 'Sunday/Holiday Surcharge (%)',
+  guaranteedHoursConfig: 'Guaranteed Hours',
+  guaranteedHoursDescription: 'Minimum hours guaranteed per day',
+  guaranteedHoursPerDay: 'Guaranteed Hours per Day',
+  notesSection: 'Notes & Rules',
+  overtimeRules: 'Overtime rules:',
+  rule8to12: '8-12 hours: 50% surcharge',
+  ruleOver12: 'Over 12 hours: 100% surcharge',
+  weekendRules: 'Weekend work: Additional surcharge on Saturday and Sunday/Holidays',
+  payment: 'Payment is calculated based on the guaranteed hours and actual hours worked',
+  
   // Location tracking
   locationTracking: {
     active: 'Active',

@@ -246,6 +246,29 @@ export default {
     credit: 'Godtgjørelse'
   },
   
+  // Overtime settings
+  overtimeSettingsSaved: 'Overtidsinnstillinger lagret',
+  overtimeSettingsTitle: 'Overtidsinnstillinger',
+  hourBasedOvertime: 'Timebasert overtid',
+  overtimeDescription: 'Konfigurer overtidsterskler og tilleggssatser',
+  firstOvertimeFrom: 'Første overtid fra (timer)',
+  surcharge8to12h: 'Tillegg 8-12t (%)',
+  secondOvertimeFrom: 'Andre overtid fra (timer)',
+  surchargeOver12h: 'Tillegg over 12t (%)',
+  weekendSurcharges: 'Helgetillegg',
+  weekendDescription: 'Aktiver ekstra tillegg for helgearbeid',
+  saturdaySurcharge: 'Lørdagstillegg (%)',
+  sundayHolidaySurcharge: 'Søndag/Helligdagstillegg (%)',
+  guaranteedHoursConfig: 'Garanterte timer',
+  guaranteedHoursDescription: 'Minimum garanterte timer per dag',
+  guaranteedHoursPerDay: 'Garanterte timer per dag',
+  notesSection: 'Notater & Regler',
+  overtimeRules: 'Overtidsregler:',
+  rule8to12: '8-12 timer: 50% tillegg',
+  ruleOver12: 'Over 12 timer: 100% tillegg',
+  weekendRules: 'Helgearbeid: Ekstra tillegg på lørdag og søndag/helligdager',
+  payment: 'Betaling beregnes basert på garanterte timer og faktisk arbeidede timer',
+  
   // Location tracking
   locationTracking: {
     active: 'Aktiv',

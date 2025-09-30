@@ -246,6 +246,29 @@ export default {
     credit: 'Gutschrift'
   },
   
+  // Overtime settings
+  overtimeSettingsSaved: 'Überstundeneinstellungen erfolgreich gespeichert',
+  overtimeSettingsTitle: 'Überstundeneinstellungen',
+  hourBasedOvertime: 'Stundenbasierte Überstunden',
+  overtimeDescription: 'Konfigurieren Sie Überstundenschwellen und Zuschlagsätze',
+  firstOvertimeFrom: 'Erste Überstunden ab (Stunden)',
+  surcharge8to12h: 'Zuschlag 8-12h (%)',
+  secondOvertimeFrom: 'Zweite Überstunden ab (Stunden)',
+  surchargeOver12h: 'Zuschlag über 12h (%)',
+  weekendSurcharges: 'Wochenendzuschläge',
+  weekendDescription: 'Aktivieren Sie zusätzliche Zuschläge für Wochenendarbeit',
+  saturdaySurcharge: 'Samstag Zuschlag (%)',
+  sundayHolidaySurcharge: 'Sonntag/Feiertag Zuschlag (%)',
+  guaranteedHoursConfig: 'Garantierte Stunden',
+  guaranteedHoursDescription: 'Mindestanzahl garantierter Stunden pro Tag',
+  guaranteedHoursPerDay: 'Garantierte Stunden pro Tag',
+  notesSection: 'Hinweise & Regeln',
+  overtimeRules: 'Überstundenregeln:',
+  rule8to12: '8-12 Stunden: 50% Zuschlag',
+  ruleOver12: 'Über 12 Stunden: 100% Zuschlag',
+  weekendRules: 'Wochenendarbeit: Zusätzlicher Zuschlag an Samstag und Sonntag/Feiertagen',
+  payment: 'Die Bezahlung wird auf Basis der garantierten Stunden und tatsächlich geleisteten Stunden berechnet',
+  
   // Location tracking
   locationTracking: {
     active: 'Aktiv',

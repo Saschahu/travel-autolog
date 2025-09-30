@@ -173,7 +173,7 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
       } else {
         // Both failed
         const code = typeof err === 'object' && err?.code != null ? Number(err.code) : undefined;
-        const friendly =
+        let friendly =
           code === 1
             ? 'GPS-Berechtigung verweigert. Bitte erlaube den Standortzugriff in den Browser-Einstellungen.'
             : code === 2
@@ -181,6 +181,13 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
             : code === 3
             ? 'GPS-Zeitüberschreitung. Versuchen Sie es draußen oder am Fenster erneut.'
             : (err?.message || 'Standort konnte nicht ermittelt werden');
+
+        // Extra hint for embedded preview (iframes often block geolocation unless explicitly allowed)
+        try {
+          if (window.top !== window) {
+            friendly += ' Hinweis: Im eingebetteten Vorschaufenster blockiert der Browser oft Geolocation. Öffnen Sie die Vorschau in einem neuen Tab oder testen Sie auf einem Gerät.';
+          }
+        } catch {}
 
         toast({
           title: 'Fehler beim Abrufen der Position',

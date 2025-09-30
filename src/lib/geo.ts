@@ -101,8 +101,8 @@ export const getCurrentPosition = (options?: PositionOptions): Promise<Geolocati
       reject,
       {
         enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 300000,
+        timeout: 30000, // 30 seconds for GPS fix
+        maximumAge: 600000, // Accept 10-minute-old position
         ...options
       }
     );

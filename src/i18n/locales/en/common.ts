@@ -256,5 +256,32 @@ export default {
     stopTracking: 'Stop Tracking',
     locationError: 'Could not determine location',
     permissionDenied: 'GPS permission was denied. Please allow location access in your browser settings.'
+  },
+  
+  // GPS Settings
+  gpsSettings: {
+    mapboxSettings: 'Mapbox Settings',
+    mapboxPublicToken: 'Mapbox Public Token',
+    mapboxTokenSaved: 'Token saved',
+    getTokenFromMapbox: 'Get token from',
+    mapStyleId: 'Map Style ID',
+    mapStyleDefault: 'Default: mapbox://styles/mapbox/streets-v12',
+    tokenConfig: 'Token Configuration',
+    tokenConfigDesc: 'A Mapbox token is required for map display. Create a free account at mapbox.com',
+    homeGeofence: 'Home Geofence',
+    homePositionSet: 'Home position set',
+    radius: 'Radius',
+    atHome: 'At Home',
+    away: 'Away',
+    stopMonitoring: 'Stop Monitoring',
+    startMonitoring: 'Start Monitoring',
+    noHomePosition: 'No home position set yet. Use current location or enter coordinates manually.',
+    latitude: 'Latitude',
+    longitude: 'Longitude',
+    radiusLabel: 'Radius (Meters)',
+    radiusDefault: 'Default: 100m, recommended: 50-200m',
+    getCurrentLocation: 'Use Current Location',
+    gettingLocation: 'Getting location...',
+    geofenceWarning: 'Geofence monitoring runs in the background and requires location permissions.'
   }
 } as const;

@@ -256,5 +256,32 @@ export default {
     stopTracking: 'Tracking stoppen',
     locationError: 'Standort konnte nicht ermittelt werden',
     permissionDenied: 'GPS-Berechtigung wurde verweigert. Bitte erlaube den Standortzugriff in den Browser-Einstellungen.'
+  },
+  
+  // GPS Settings
+  gpsSettings: {
+    mapboxSettings: 'Mapbox-Einstellungen',
+    mapboxPublicToken: 'Mapbox Public Token',
+    mapboxTokenSaved: 'Token gespeichert',
+    getTokenFromMapbox: 'Token abrufen von',
+    mapStyleId: 'Karten-Style ID',
+    mapStyleDefault: 'Standard: mapbox://styles/mapbox/streets-v12',
+    tokenConfig: 'Token-Konfiguration',
+    tokenConfigDesc: 'Ein Mapbox-Token wird für die Kartendarstellung benötigt. Erstellen Sie ein kostenloses Konto auf mapbox.com',
+    homeGeofence: 'Heimat-Geofence',
+    homePositionSet: 'Heimatposition festgelegt',
+    radius: 'Radius',
+    atHome: 'Zuhause',
+    away: 'Unterwegs',
+    stopMonitoring: 'Überwachung stoppen',
+    startMonitoring: 'Überwachung starten',
+    noHomePosition: 'Noch keine Heimatposition festgelegt. Verwenden Sie die aktuelle Position oder geben Sie Koordinaten manuell ein.',
+    latitude: 'Breitengrad',
+    longitude: 'Längengrad',
+    radiusLabel: 'Radius (Meter)',
+    radiusDefault: 'Standard: 100m, empfohlen: 50-200m',
+    getCurrentLocation: 'Aktuelle Position verwenden',
+    gettingLocation: 'Position wird abgerufen...',
+    geofenceWarning: 'Die Geofence-Überwachung läuft im Hintergrund und benötigt Standortberechtigungen.'
   }
 } as const;

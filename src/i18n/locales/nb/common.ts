@@ -256,5 +256,32 @@ export default {
     stopTracking: 'Stopp sporing',
     locationError: 'Kunne ikke bestemme posisjon',
     permissionDenied: 'GPS-tillatelse ble nektet. Vennligst tillat posisjonstilgang i nettleserinnstillingene.'
+  },
+  
+  // GPS Settings
+  gpsSettings: {
+    mapboxSettings: 'Mapbox-innstillinger',
+    mapboxPublicToken: 'Mapbox Public Token',
+    mapboxTokenSaved: 'Token lagret',
+    getTokenFromMapbox: 'Få token fra',
+    mapStyleId: 'Kartstil-ID',
+    mapStyleDefault: 'Standard: mapbox://styles/mapbox/streets-v12',
+    tokenConfig: 'Token-konfigurasjon',
+    tokenConfigDesc: 'Et Mapbox-token er nødvendig for kartvisning. Opprett en gratis konto på mapbox.com',
+    homeGeofence: 'Hjemme-Geofence',
+    homePositionSet: 'Hjemmeposisjon angitt',
+    radius: 'Radius',
+    atHome: 'Hjemme',
+    away: 'Borte',
+    stopMonitoring: 'Stopp overvåking',
+    startMonitoring: 'Start overvåking',
+    noHomePosition: 'Ingen hjemmeposisjon angitt ennå. Bruk nåværende posisjon eller angi koordinater manuelt.',
+    latitude: 'Breddegrad',
+    longitude: 'Lengdegrad',
+    radiusLabel: 'Radius (meter)',
+    radiusDefault: 'Standard: 100m, anbefalt: 50-200m',
+    getCurrentLocation: 'Bruk nåværende posisjon',
+    gettingLocation: 'Henter posisjon...',
+    geofenceWarning: 'Geofence-overvåking kjører i bakgrunnen og krever posisjonstillatelser.'
   }
 } as const;

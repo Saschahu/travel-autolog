@@ -188,7 +188,7 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
   const handleTokenSave = () => {
     localStorage.setItem('mapbox_token', mapboxToken);
     toast({
-      title: t('mapboxTokenSaved'),
+      title: t('common:gpsSettings.mapboxTokenSaved'),
       description: 'Token wurde erfolgreich gespeichert'
     });
   };
@@ -200,12 +200,12 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
             <MapPin className="h-4 w-4 text-primary" />
-            {t('mapboxSettings')}
+            {t('common:gpsSettings.mapboxSettings')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="mapbox-token">{t('mapboxPublicToken')}</Label>
+            <Label htmlFor="mapbox-token">{t('common:gpsSettings.mapboxPublicToken')}</Label>
             <div className="flex gap-2">
               <Input
                 id="mapbox-token"
@@ -216,16 +216,16 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
                 className="flex-1"
               />
               <Button onClick={handleTokenSave} variant="outline">
-                {t('save')}
+                {t('common:save')}
               </Button>
             </div>
             <p className="text-xs text-muted-foreground">
-              {t('getTokenFromMapbox')} <a href="https://mapbox.com" target="_blank" rel="noopener noreferrer" className="underline">mapbox.com</a>
+              {t('common:gpsSettings.getTokenFromMapbox')} <a href="https://mapbox.com" target="_blank" rel="noopener noreferrer" className="underline">mapbox.com</a>
             </p>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="mapbox-style">{t('mapStyleId')}</Label>
+            <Label htmlFor="mapbox-style">{t('common:gpsSettings.mapStyleId')}</Label>
             <Input
               id="mapbox-style"
               placeholder="mapbox://styles/mapbox/streets-v12"
@@ -233,7 +233,7 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
               onChange={(e) => updateSettings({ styleId: e.target.value })}
             />
             <p className="text-xs text-muted-foreground">
-              {t('mapStyleDefault')}
+              {t('common:gpsSettings.mapStyleDefault')}
             </p>
           </div>
 
@@ -241,9 +241,9 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
             <div className="flex items-start gap-2">
               <AlertTriangle className="h-4 w-4 text-warning mt-0.5" />
               <div className="text-xs">
-                <p className="font-medium">{t('tokenConfig')}</p>
+                <p className="font-medium">{t('common:gpsSettings.tokenConfig')}</p>
                 <p className="text-muted-foreground mt-1">
-                  {t('tokenConfigDesc')}
+                  {t('common:gpsSettings.tokenConfigDesc')}
                 </p>
               </div>
             </div>
@@ -256,7 +256,7 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
             <Home className="h-4 w-4 text-primary" />
-            {t('homeGeofence')}
+            {t('common:gpsSettings.homeGeofence')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -265,14 +265,14 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
             <div className="space-y-3">
               <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                 <div>
-                  <p className="font-medium text-sm">{t('homePositionSet')}</p>
+                  <p className="font-medium text-sm">{t('common:gpsSettings.homePositionSet')}</p>
                   <p className="text-xs text-muted-foreground">
                     {formatCoordinates(settings.homeGeofence.latitude, settings.homeGeofence.longitude)} 
-                    • {t('radius')}: {settings.homeGeofence.radius}m
+                    • {t('common:gpsSettings.radius')}: {settings.homeGeofence.radius}m
                   </p>
                 </div>
                 <Badge variant={geofenceStatus.isAtHome ? 'default' : 'secondary'}>
-                  {geofenceStatus.isAtHome ? t('atHome') : t('away')}
+                  {geofenceStatus.isAtHome ? t('common:gpsSettings.atHome') : t('common:gpsSettings.away')}
                   {geofenceStatus.distance && (
                     <span className="ml-1">({formatDistance(geofenceStatus.distance)})</span>
                   )}
@@ -286,7 +286,7 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
                   size="sm"
                 >
                   <Target className="h-4 w-4 mr-2" />
-                  {geofenceStatus.isWatching ? t('stopMonitoring') : t('startMonitoring')}
+                  {geofenceStatus.isWatching ? t('common:gpsSettings.stopMonitoring') : t('common:gpsSettings.startMonitoring')}
                 </Button>
               </div>
             </div>
@@ -294,7 +294,7 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
             <Alert>
               <Home className="h-4 w-4" />
               <AlertDescription>
-                {t('noHomePosition')}
+                {t('common:gpsSettings.noHomePosition')}
               </AlertDescription>
             </Alert>
           )}
@@ -302,7 +302,7 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
           {/* Configuration */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="home-lat">{t('latitude')}</Label>
+              <Label htmlFor="home-lat">{t('common:gpsSettings.latitude')}</Label>
               <Input
                 id="home-lat"
                 type="number"
@@ -316,7 +316,7 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
             </div>
             
             <div className="space-y-2">
-              <Label htmlFor="home-lng">{t('longitude')}</Label>
+              <Label htmlFor="home-lng">{t('common:gpsSettings.longitude')}</Label>
               <Input
                 id="home-lng"
                 type="number"
@@ -331,7 +331,7 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="home-radius">{t('radiusLabel')}</Label>
+            <Label htmlFor="home-radius">{t('common:gpsSettings.radiusLabel')}</Label>
             <Input
               id="home-radius"
               type="number"
@@ -343,7 +343,7 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
               })}
             />
             <p className="text-xs text-muted-foreground">
-              {t('radiusDefault')}
+              {t('common:gpsSettings.radiusDefault')}
             </p>
           </div>
 
@@ -354,7 +354,7 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
               className="flex-1"
             >
               <Navigation className="h-4 w-4 mr-2" />
-              {isGettingLocation ? t('gettingLocation') : t('getCurrentLocation')}
+              {isGettingLocation ? t('common:gpsSettings.gettingLocation') : t('common:gpsSettings.getCurrentLocation')}
             </Button>
             
             <Button
@@ -362,14 +362,14 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
               disabled={!settings.homeGeofence.latitude || !settings.homeGeofence.longitude}
               variant="outline"
             >
-              {t('save')}
+              {t('common:save')}
             </Button>
           </div>
 
           <Alert>
             <AlertTriangle className="h-4 w-4" />
             <AlertDescription className="text-xs">
-              {t('geofenceWarning')}
+              {t('common:gpsSettings.geofenceWarning')}
             </AlertDescription>
           </Alert>
         </CardContent>

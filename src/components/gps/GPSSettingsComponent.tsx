@@ -106,7 +106,7 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
     setIsGettingLocation(true);
     try {
       const position = await getCurrentPosition();
-      
+
       const homeGeofence = {
         latitude: position.coords.latitude,
         longitude: position.coords.longitude,
@@ -127,17 +127,56 @@ export const GPSSettingsComponent: React.FC<GPSSettingsProps> = ({
         description: `Position: ${formatCoordinates(homeGeofence.latitude, homeGeofence.longitude)}`
       });
 
-    } catch (error) {
+    } catch (err: any) {
+      // Map common geolocation errors to human-friendly text
+      const code = typeof err === 'object' && err?.code != null ? Number(err.code) : undefined;
+      const friendly =
+        code === 1
+          ? 'GPS-Berechtigung verweigert. Bitte erlaube den Standortzugriff in den Browser-Einstellungen.'
+          : code === 2
+          ? 'Standortinformationen sind nicht verfügbar.'
+          : code === 3
+          ? 'Zeitüberschreitung beim GPS-Abruf.'
+          : (err?.message || 'Unbekannter Fehler');
+
+      // Try IP-based fallback (very imprecise, but better than nothing)
+      try {
+        const resp = await fetch('https://ipapi.co/json/');
+        const data = await resp.json();
+        if (data?.latitude && data?.longitude) {
+          const homeGeofence = {
+            latitude: Number(data.latitude),
+            longitude: Number(data.longitude),
+            radius: settings.homeGeofence.radius
+          };
+
+          updateNestedSettings('homeGeofence', {
+            latitude: homeGeofence.latitude,
+            longitude: homeGeofence.longitude
+          });
+
+          saveHomeGeofence(homeGeofence);
+          geofenceMonitor.setHome(homeGeofence);
+
+          toast({
+            title: 'Home-Position (ungefähr) gesetzt',
+            description: `Position (IP): ${formatCoordinates(homeGeofence.latitude, homeGeofence.longitude)} — Genauigkeit gering`
+          });
+          return;
+        }
+      } catch (_) {
+        // ignore IP fallback error and show primary error below
+      }
+
       toast({
         title: 'Fehler beim Abrufen der Position',
-        description: error instanceof Error ? error.message : 'Unbekannter Fehler',
+        description: friendly,
         variant: 'destructive'
       });
     } finally {
       setIsGettingLocation(false);
     }
   };
-
   const saveHomeSettings = () => {
     const { latitude, longitude, radius } = settings.homeGeofence;
     

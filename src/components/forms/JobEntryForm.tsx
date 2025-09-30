@@ -802,30 +802,30 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
               className="mt-1"
             />
           </div>
-          <div>
-            <Label htmlFor="hotel-address" className="text-sm font-medium">{t('customer.hotelAddress')}</Label>
-            <Input
-              id="hotel-address"
-              placeholder={t('customer.hotelAddressPlaceholder')}
-              value={jobData.hotelAddress || ''}
-              onChange={(e) => updateField('hotelAddress', e.target.value)}
-              className="mt-1"
-            />
-          </div>
-          <div>
-            <Label htmlFor="hotel-nights" className="text-sm font-medium">{t('customer.hotelNights')}</Label>
-            <Input
-              id="hotel-nights"
-              type="number"
-              min="0"
-              placeholder="0"
-              value={jobData.hotelNights || ''}
-              onChange={(e) => updateField('hotelNights', parseInt(e.target.value) || 0)}
-              className="mt-1"
-            />
-          </div>
-          <div>
-            <Label htmlFor="hotel-price" className="text-sm font-medium">{t('customer.hotelPrice')}</Label>
+        <div>
+          <Label htmlFor="hotel-address" className="text-sm font-medium">{tCommon('customer.hotelAddress')}</Label>
+          <Input
+            id="hotel-address"
+            placeholder={tCommon('customer.hotelAddressPlaceholder')}
+            value={jobData.hotelAddress || ''}
+            onChange={(e) => updateField('hotelAddress', e.target.value)}
+            className="mt-1"
+          />
+        </div>
+        <div>
+          <Label htmlFor="hotel-nights" className="text-sm font-medium">{tCommon('customer.hotelNights')}</Label>
+          <Input
+            id="hotel-nights"
+            type="number"
+            min="0"
+            placeholder="0"
+            value={jobData.hotelNights || ''}
+            onChange={(e) => updateField('hotelNights', parseInt(e.target.value) || 0)}
+            className="mt-1"
+          />
+        </div>
+        <div>
+          <Label htmlFor="hotel-price" className="text-sm font-medium">{tCommon('customer.hotelPrice')}</Label>
             <Input
               id="hotel-price"
               type="number"

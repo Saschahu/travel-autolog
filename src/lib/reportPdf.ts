@@ -103,6 +103,9 @@ export async function buildReportPdf(data: ReportData): Promise<Blob> {
         document.body.removeChild(container);
         reject(error);
       }
+    } catch (error) {
+      reject(error);
+    }
     })();
   });
 }

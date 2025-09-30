@@ -16,6 +16,8 @@ export default {
   export: 'Eksport',
   settings: 'Innstillinger',
   location: 'Posisjon',
+  advanced: 'Avansert',
+  developer: 'Utvikler',
   
   // Common actions
   save: 'Lagre',
@@ -66,10 +68,20 @@ export default {
   name: 'Navn',
   email: 'E-post',
   address: 'Adresse',
+  homeAddress: 'Hjemmeadresse',
   phone: 'Telefon',
   description: 'Beskrivelse',
   note: 'Notat',
   notes: 'Notater',
+  userProfile: 'Brukerprofil',
+  emailSendSettings: 'E-postinnstillinger',
+  defaultRecipient: 'Standard mottaker',
+  emailSeparatorNote: 'Skill flere adresser med komma eller semikolon',
+  emailNote: 'Disse adressene vil være forhåndsutfylt ved sending av rapporter',
+  advancedSettings: 'Avanserte innstillinger',
+  resetAppData: 'Tilbakestill appdata',
+  resetAppDescription: 'Slett alle lokale data og tilbakestill appen til opprinnelig tilstand',
+  deleteAppData: 'Slett appdata',
   
   // Messages
   noData: 'Ingen data tilgjengelig',

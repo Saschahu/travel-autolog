@@ -225,7 +225,7 @@ export const SettingsDialog = ({ open, onOpenChange, onSaved, onGoDashboard }: S
             <TabsTrigger value="overtime">{t('overtime')}</TabsTrigger>
             <TabsTrigger value="holidays">{t('holidays')}</TabsTrigger>
             <TabsTrigger value="advanced">{t('advanced')}</TabsTrigger>
-            <TabsTrigger value="experiments">{t('experiments')}</TabsTrigger>
+            <TabsTrigger value="experiments">{t('developer')}</TabsTrigger>
           </TabsList>
 
           <TabsContent value="profile" className="space-y-6">

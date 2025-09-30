@@ -16,6 +16,8 @@ export default {
   export: 'Export',
   settings: 'Einstellungen',
   location: 'Standort',
+  advanced: 'Erweitert',
+  developer: 'Entwickler',
   
   // Common actions
   save: 'Speichern',
@@ -66,10 +68,20 @@ export default {
   name: 'Name',
   email: 'E-Mail',
   address: 'Adresse',
+  homeAddress: 'Heimatadresse',
   phone: 'Telefon',
   description: 'Beschreibung',
   note: 'Notiz',
   notes: 'Notizen',
+  userProfile: 'Benutzerprofil',
+  emailSendSettings: 'E-Mail-Einstellungen',
+  defaultRecipient: 'Standard-Empfänger',
+  emailSeparatorNote: 'Mehrere Adressen mit Komma oder Semikolon trennen',
+  emailNote: 'Diese Adressen werden beim Senden von Berichten vorausgefüllt',
+  advancedSettings: 'Erweiterte Einstellungen',
+  resetAppData: 'App-Daten zurücksetzen',
+  resetAppDescription: 'Alle lokalen Daten löschen und App auf Anfangszustand zurücksetzen',
+  deleteAppData: 'App-Daten löschen',
   
   // Messages
   noData: 'Keine Daten verfügbar',

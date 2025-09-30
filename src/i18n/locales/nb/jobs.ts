@@ -96,7 +96,10 @@ export default {
     btnSaveReport: 'Lagre arbeidsrapport',
     btnPreview: 'Rapportforhåndsvisning',
     btnEmail: 'Send på e-post',
-    btnDashboard: 'Dashbord'
+    btnDashboard: 'Dashbord',
+    noReports: 'Ingen rapporter opprettet',
+    editInReportTab: 'Rapporter kan redigeres i Rapport-fanen.',
+    editReportsInfo: 'Rapporter redigeres i Rapport-fanen'
   },
   
   // Actions

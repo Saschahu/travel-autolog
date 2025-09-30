@@ -96,7 +96,10 @@ export default {
     btnSaveReport: 'Save Work Report',
     btnPreview: 'Report preview',
     btnEmail: 'Send by email',
-    btnDashboard: 'Dashboard'
+    btnDashboard: 'Dashboard',
+    noReports: 'No reports created',
+    editInReportTab: 'Reports can be edited in the Report tab.',
+    editReportsInfo: 'Reports are edited in the Report tab'
   },
   
   // Actions

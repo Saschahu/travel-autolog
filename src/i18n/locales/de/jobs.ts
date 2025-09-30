@@ -96,7 +96,10 @@ export default {
     btnSaveReport: 'Arbeitsbericht speichern',
     btnPreview: 'Bericht Vorschau',
     btnEmail: 'Per E-Mail versenden',
-    btnDashboard: 'Dashboard'
+    btnDashboard: 'Dashboard',
+    noReports: 'Keine Reports erstellt',
+    editInReportTab: 'Reports können im "Report" Tab bearbeitet werden.',
+    editReportsInfo: 'Reports werden im Report-Tab bearbeitet'
   },
   
   // Actions

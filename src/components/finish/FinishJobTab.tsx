@@ -105,7 +105,7 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
     // This is now handled by the Report tab
     toast({
       title: t('info'),
-      description: 'Reports werden im Report-Tab bearbeitet',
+      description: t('jobs.finish.editReportsInfo', 'Reports werden im Report-Tab bearbeitet'),
     });
   };
 
@@ -280,10 +280,10 @@ export const FinishJobTab = ({ job, onJobUpdate, onCloseDialog }: FinishJobTabPr
                 data-testid="report-summary"
                 className="mt-2 min-h-[120px] p-3 border rounded-md bg-muted/10 text-sm whitespace-pre-wrap font-mono"
               >
-                {workReport || 'Keine Reports erstellt'}
+                {workReport || t('jobs.finish.noReports', 'Keine Reports erstellt')}
               </div>
               <p className="text-xs text-muted-foreground mt-1">
-                Reports können im "Report" Tab bearbeitet werden.
+                {t('jobs.finish.editInReportTab', 'Reports können im "Report" Tab bearbeitet werden.')}
               </p>
             </div>
             

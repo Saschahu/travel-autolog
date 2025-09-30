@@ -27,12 +27,6 @@ const CAPACITOR_PREFIX = 'flags_';
 const LOCALSTORAGE_PREFIX = 'travel_flags_';
 
 export const FLAG_REGISTRY: Record<FlagKey, FlagDef> = {
-  'gps.enhancedTelemetry': {
-    key: 'gps.enhancedTelemetry',
-    default: false,
-    description: 'Enable enhanced GPS telemetry collection',
-    since: '2024-01-01',
-  },
   'ui.experimentalPdf': {
     key: 'ui.experimentalPdf',
     default: false,

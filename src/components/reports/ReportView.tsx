@@ -184,7 +184,7 @@ export default function ReportView({
       </div>
 
       {/* Travel & Accommodation Information */}
-      {(job.hotelName || job.hotelNights || job.hotelPrice || job.kilometersOutbound || job.kilometersReturn || job.tollAmount) && (
+      {!!(job.hotelName || (job.hotelNights && job.hotelNights > 0) || (job.hotelPrice && job.hotelPrice > 0) || (job.kilometersOutbound && job.kilometersOutbound > 0) || (job.kilometersReturn && job.kilometersReturn > 0) || (job.tollAmount && job.tollAmount > 0)) && (
         <div className="section mb-6">
           <h2 className="text-lg font-bold mb-3 text-gray-900">{t('travelAndAccommodation')}</h2>
           <div className="border border-gray-300 p-3">

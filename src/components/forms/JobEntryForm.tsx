@@ -864,6 +864,16 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
               className="mt-1"
             />
           </div>
+          <div>
+            <Label htmlFor="addons" className="text-sm font-medium">Addons</Label>
+            <Input
+              id="addons"
+              placeholder="Spezielle Ausstattungen"
+              value={jobData.addons || ''}
+              onChange={(e) => updateField('addons', e.target.value)}
+              className="mt-1"
+            />
+          </div>
         </div>
         <div>
           <Label htmlFor="work-performed" className="text-sm font-medium">{t('workPerformed')}</Label>

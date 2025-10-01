@@ -63,6 +63,7 @@ export type Database = {
       }
       jobs: {
         Row: {
+          addons: string | null
           contact_name: string | null
           contact_phone: string | null
           created_at: string
@@ -103,6 +104,7 @@ export type Database = {
           work_start_time: string | null
         }
         Insert: {
+          addons?: string | null
           contact_name?: string | null
           contact_phone?: string | null
           created_at?: string
@@ -143,6 +145,7 @@ export type Database = {
           work_start_time?: string | null
         }
         Update: {
+          addons?: string | null
           contact_name?: string | null
           contact_phone?: string | null
           created_at?: string

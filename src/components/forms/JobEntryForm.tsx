@@ -677,13 +677,48 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
       );
     }
 
+    // Build days array from jobData fields
+    const plannedDays = jobData.plannedDays || 1;
+    const daysArray = [];
+    
+    for (let i = 0; i < plannedDays; i++) {
+      const dayData: any = {};
+      
+      if (jobData[`dayDate${i}`]) dayData.date = jobData[`dayDate${i}`];
+      if (jobData[`travelStart${i}`]) dayData.travelStart = jobData[`travelStart${i}`];
+      if (jobData[`travelEnd${i}`]) dayData.travelEnd = jobData[`travelEnd${i}`];
+      if (jobData[`workStart${i}`]) dayData.workStart = jobData[`workStart${i}`];
+      if (jobData[`workEnd${i}`]) dayData.workEnd = jobData[`workEnd${i}`];
+      if (jobData[`departureStart${i}`]) dayData.departureStart = jobData[`departureStart${i}`];
+      if (jobData[`departureEnd${i}`]) dayData.departureEnd = jobData[`departureEnd${i}`];
+      
+      // Only add day data if at least one field is filled
+      if (Object.keys(dayData).length > 0) {
+        daysArray.push(dayData);
+      }
+    }
+
     const mockJob = {
       id: currentJobId,
-      customer_name: jobData.customerName || '',
-      // Add other required fields for the OvertimeTab
+      customerName: jobData.customerName || '',
+      days: daysArray,
+      estimatedDays: jobData.estimatedDays || plannedDays,
+      // Add top-level time fields as fallback
+      travelStart: jobData.travelStart,
+      travelStartDate: jobData.travelStartDate,
+      travelEnd: jobData.travelEnd,
+      travelEndDate: jobData.travelEndDate,
+      workStart: jobData.workStart,
+      workStartDate: jobData.workStartDate,
+      workEnd: jobData.workEnd,
+      workEndDate: jobData.workEndDate,
+      departureStart: jobData.departureStart,
+      departureStartDate: jobData.departureStartDate,
+      departureEnd: jobData.departureEnd,
+      departureEndDate: jobData.departureEndDate,
     };
 
-    return <OvertimeTab job={mockJob as unknown} />;
+    return <OvertimeTab job={mockJob as any} />;
   };
 
   const renderReportSection = () => {

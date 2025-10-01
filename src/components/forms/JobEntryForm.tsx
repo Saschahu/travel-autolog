@@ -568,8 +568,8 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                 {/* Anreise */}
                 <div className="bg-muted/20 rounded-lg p-3">
                   <Label className="text-xs font-medium text-muted-foreground mb-2 block">{tCommon('arrival')}</Label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div>
+                  <div className="flex gap-2">
+                    <div className="w-32">
                       <Label htmlFor={`travel-start-${dayIndex}`} className="text-xs text-muted-foreground">{t('times.startTime')}</Label>
                       <Input
                         id={`travel-start-${dayIndex}`}
@@ -579,7 +579,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                         className="h-8 text-xs"
                       />
                     </div>
-                    <div>
+                    <div className="w-32">
                       <Label htmlFor={`travel-end-${dayIndex}`} className="text-xs text-muted-foreground">{t('times.endTime')}</Label>
                       <Input
                         id={`travel-end-${dayIndex}`}
@@ -595,8 +595,8 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                 {/* Arbeit */}
                 <div className="bg-primary/5 rounded-lg p-3">
                   <Label className="text-xs font-medium text-muted-foreground mb-2 block">{tCommon('work')}</Label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div>
+                  <div className="flex gap-2">
+                    <div className="w-32">
                       <Label htmlFor={`work-start-${dayIndex}`} className="text-xs text-muted-foreground">{t('times.startTime')}</Label>
                       <Input
                         id={`work-start-${dayIndex}`}
@@ -606,7 +606,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                         className="h-8 text-xs"
                       />
                     </div>
-                    <div>
+                    <div className="w-32">
                       <Label htmlFor={`work-end-${dayIndex}`} className="text-xs text-muted-foreground">{t('times.endTime')}</Label>
                       <Input
                         id={`work-end-${dayIndex}`}
@@ -622,8 +622,8 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                 {/* Abreise */}
                 <div className="bg-muted/20 rounded-lg p-3">
                   <Label className="text-xs font-medium text-muted-foreground mb-2 block">{tCommon('departure')}</Label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div>
+                  <div className="flex gap-2">
+                    <div className="w-32">
                       <Label htmlFor={`departure-start-${dayIndex}`} className="text-xs text-muted-foreground">{t('times.startTime')}</Label>
                       <Input
                         id={`departure-start-${dayIndex}`}
@@ -633,7 +633,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                         className="h-8 text-xs"
                       />
                     </div>
-                    <div>
+                    <div className="w-32">
                       <Label htmlFor={`departure-end-${dayIndex}`} className="text-xs text-muted-foreground">{t('times.endTime')}</Label>
                       <Input
                         id={`departure-end-${dayIndex}`}

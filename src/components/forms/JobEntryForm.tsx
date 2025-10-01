@@ -93,6 +93,49 @@ const mapRowToForm = (row: unknown): FormState => {
   };
 };
 
+// Date picker component that auto-closes on selection
+const DatePickerWithAutoClose = ({ value, onChange }: { value?: string; onChange: (date: string) => void }) => {
+  const [open, setOpen] = useState(false);
+  const { t: tCommon } = useTranslation('common');
+  
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          size="sm"
+          className={cn(
+            "w-full justify-start text-left font-normal h-8",
+            !value && "text-muted-foreground"
+          )}
+        >
+          <CalendarIcon className="mr-2 h-3 w-3" />
+          <span className="text-xs">
+            {value
+              ? parseYmdToLocalDate(value)?.toLocaleDateString('de-DE')
+              : tCommon('selectDate')
+            }
+          </span>
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-auto p-0" align="start">
+        <Calendar
+          mode="single"
+          selected={parseYmdToLocalDate(value)}
+          onSelect={(date) => {
+            if (date) {
+              onChange(formatLocalToYmd(date));
+              setOpen(false);
+            }
+          }}
+          initialFocus
+          className="p-3 pointer-events-auto"
+        />
+      </PopoverContent>
+    </Popover>
+  );
+};
+
 export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
   const { t } = useTranslation('jobs', { keyPrefix: 'edit.form' });
   const { t: tCommon } = useTranslation('common');
@@ -282,6 +325,27 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
         throw new Error(tCommon('userNotLoggedIn'));
       }
 
+      // Build days_data array from jobData fields
+      const plannedDays = jobData.plannedDays || 1;
+      const daysData = [];
+      
+      for (let i = 0; i < plannedDays; i++) {
+        const dayData: any = {};
+        
+        if (jobData[`dayDate${i}`]) dayData.date = jobData[`dayDate${i}`];
+        if (jobData[`travelStart${i}`]) dayData.travelStart = jobData[`travelStart${i}`];
+        if (jobData[`travelEnd${i}`]) dayData.travelEnd = jobData[`travelEnd${i}`];
+        if (jobData[`workStart${i}`]) dayData.workStart = jobData[`workStart${i}`];
+        if (jobData[`workEnd${i}`]) dayData.workEnd = jobData[`workEnd${i}`];
+        if (jobData[`departureStart${i}`]) dayData.departureStart = jobData[`departureStart${i}`];
+        if (jobData[`departureEnd${i}`]) dayData.departureEnd = jobData[`departureEnd${i}`];
+        
+        // Only add day data if at least one field is filled
+        if (Object.keys(dayData).length > 0) {
+          daysData.push(dayData);
+        }
+      }
+
       const jobPayload = {
         user_id: user.id,
         customer_name: jobData.customerName || '',
@@ -312,6 +376,8 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
         departure_start_date: jobData.departureStartDate || null,
         departure_end_time: jobData.departureEnd || null,
         departure_end_date: jobData.departureEndDate || null,
+        days_data: daysData.length > 0 ? daysData : [],
+        estimated_days: jobData.estimatedDays || plannedDays,
         status: isPartialSave ? 'open' : 'completed'
       };
 
@@ -488,40 +554,13 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
               {/* Datum für den ganzen Tag */}
               <div className="mb-3">
                 <Label htmlFor={`day-date-${dayIndex}`} className="text-xs font-medium text-muted-foreground mb-1 block">{tCommon('date')}</Label>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className={cn(
-                          "w-full justify-start text-left font-normal h-8",
-                          !jobData[`dayDate${dayIndex}` as keyof JobData] && "text-muted-foreground"
-                        )}
-                      >
-                        <CalendarIcon className="mr-2 h-3 w-3" />
-                        <span className="text-xs">
-                          {jobData[`dayDate${dayIndex}` as keyof JobData]
-                            ? parseYmdToLocalDate(jobData[`dayDate${dayIndex}` as keyof JobData] as string)?.toLocaleDateString('de-DE')
-                            : tCommon('selectDate')
-                          }
-                        </span>
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={parseYmdToLocalDate(jobData[`dayDate${dayIndex}` as keyof JobData] as string)}
-                        onSelect={(date) => {
-                          if (date) {
-                            const fieldName = `dayDate${dayIndex}` as keyof JobData;
-                            updateField(fieldName, formatLocalToYmd(date));
-                          }
-                        }}
-                        initialFocus
-                        className="p-3 pointer-events-auto"
-                      />
-                    </PopoverContent>
-                  </Popover>
+                  <DatePickerWithAutoClose
+                    value={jobData[`dayDate${dayIndex}` as keyof JobData] as string}
+                    onChange={(date) => {
+                      const fieldName = `dayDate${dayIndex}` as keyof JobData;
+                      updateField(fieldName, date);
+                    }}
+                  />
               </div>
 
               {/* Kompakte Zeit-Eingaben */}

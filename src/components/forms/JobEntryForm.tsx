@@ -875,6 +875,19 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
             className="mt-1 min-h-20"
           />
         </div>
+        
+        {/* Speichern Button */}
+        <div className="flex justify-end pt-4">
+          <Button 
+            onClick={() => saveJobData(true)}
+            disabled={isLoading || !customerName}
+            variant="outline"
+            size="sm"
+            className="min-w-24"
+          >
+            {isLoading ? t('saving') : t('save')}
+          </Button>
+        </div>
       </CardContent>
     </Card>
   );

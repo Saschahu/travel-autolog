@@ -988,8 +988,8 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                   </div>
                 </div>
                 
-                <div>
-                  <Label className="text-sm font-medium">{t('tollsNorwegian')}</Label>
+                <div className="w-32">
+                  <Label className="text-sm font-medium">{t('tollsNorwegian')} (NOK)</Label>
                   <Input
                     type="number"
                     min="0"

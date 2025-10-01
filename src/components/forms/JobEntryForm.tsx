@@ -864,10 +864,10 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
         <div className="flex justify-end pt-4">
           <Button 
             onClick={saveJobData}
-            disabled={saving}
+            disabled={isLoading}
             className="min-w-24"
           >
-            {saving ? t('saving') : t('save')}
+            {isLoading ? t('saving') : t('save')}
           </Button>
         </div>
       </CardContent>

@@ -954,14 +954,14 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
 
   const steps = (isEditingJob && !isCreatingNewJob) ? [...editJobStepsRow1, ...editJobStepsRow2] : newJobSteps;
 
-  // Auto-navigate to Hotel tab when a hotel name is entered
+  // Auto-navigate to Hotel tab when a hotel name is entered (only on initial load)
   useEffect(() => {
     const has = Boolean(jobData.hotelName && jobData.hotelName.trim().length > 0);
     console.info('UI: hasHotel changed', { hotelName: jobData.hotelName, has });
-    if (isEditingJob && has && currentStep !== 'hotel') {
+    if (isEditingJob && has && currentStep === 'customer') {
       setCurrentStep('hotel');
     }
-  }, [jobData.hotelName, isEditingJob, currentStep]);
+  }, [jobData.hotelName, isEditingJob]);
 
   return (
     <div className="h-full flex flex-col">

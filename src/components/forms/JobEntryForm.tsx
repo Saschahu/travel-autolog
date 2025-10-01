@@ -1228,14 +1228,16 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
             {t('back')}
           </Button>
           
-          {/* Center: Dashboard button */}
-          <Button
-            variant="outline"
-            onClick={() => onJobSaved?.()}
-            disabled={isLoading}
-          >
-            {t('dashboard')}
-          </Button>
+          {/* Center: Dashboard button - hide on machine step for new jobs */}
+          {!(currentStep === 'machine' && isCreatingNewJob) && (
+            <Button
+              variant="outline"
+              onClick={() => onJobSaved?.()}
+              disabled={isLoading}
+            >
+              {t('dashboard')}
+            </Button>
+          )}
           
           {/* Right: Next/Action button */}
           <Button

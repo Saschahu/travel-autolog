@@ -967,8 +967,8 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                 <CardTitle className="text-sm">{t('day')} {index + 1}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
+                <div className="flex gap-2">
+                  <div className="w-32">
                     <Label className="text-sm font-medium">{t('travelThere')}</Label>
                     <Input
                       type="number"
@@ -977,7 +977,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                       className="mt-1"
                     />
                   </div>
-                  <div>
+                  <div className="w-32">
                     <Label className="text-sm font-medium">{t('travelBack')}</Label>
                     <Input
                       type="number"

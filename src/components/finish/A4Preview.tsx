@@ -43,6 +43,13 @@ const A4PrintStyles: React.FC = () => {
       @page {
         size: A4;
         margin: 15mm;
+        counter-reset: page 1;
+      }
+      
+      /* Hide default page numbers */
+      @page {
+        @top-center { content: none; }
+        @bottom-center { content: none; }
       }
       
       @media print {

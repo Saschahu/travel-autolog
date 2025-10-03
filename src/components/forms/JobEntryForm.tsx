@@ -378,7 +378,8 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
         departure_end_date: jobData.departureEndDate || null,
         days_data: daysData.length > 0 ? daysData : [],
         estimated_days: jobData.estimatedDays || plannedDays,
-        status: isPartialSave ? 'open' : 'completed'
+        // New jobs or partial saves should always be 'open', only explicit completion sets 'completed'
+        status: (!currentJobId || isPartialSave) ? 'open' : 'completed'
       };
 
       let data, error;

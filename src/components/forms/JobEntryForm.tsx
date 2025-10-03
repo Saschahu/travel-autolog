@@ -61,6 +61,7 @@ interface JobData {
   tollAmount: number;
   plannedDays: number;
   estimatedDays: number;
+  expenses: string;
   // Dynamic time fields for multiple days
   days: unknown[]; // Will contain day-specific data
 }
@@ -141,7 +142,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
   const { t: tCommon } = useTranslation('common');
   const [jobData, setJobData] = useState<Partial<JobData>>({ plannedDays: 1, estimatedDays: 1 });
   const [form, setForm] = useState<FormState>({ title: '', estimatedDays: 1, days: [] });
-  const [currentStep, setCurrentStep] = useState<'customer' | 'machine' | 'times' | 'hotel' | 'travel' | 'overtime' | 'report' | 'finish'>('customer');
+  const [currentStep, setCurrentStep] = useState<'customer' | 'machine' | 'times' | 'hotel' | 'travel' | 'expenses' | 'overtime' | 'report' | 'finish'>('customer');
   const [isLoading, setIsLoading] = useState(false);
   const [currentJobId, setCurrentJobId] = useState<string | null>(jobId || null);
   const [isEditingJob, setIsEditingJob] = useState(!!jobId);
@@ -198,6 +199,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
               kilometersOutbound: job.kilometers_outbound || 0,
               kilometersReturn: job.kilometers_return || 0,
               tollAmount: job.toll_amount || 0,
+              expenses: job.expenses || '',
               plannedDays: daysData.length || 1,
               estimatedDays: job.estimated_days || 1,
             };
@@ -364,6 +366,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
         kilometers_outbound: jobData.kilometersOutbound || 0,
         kilometers_return: jobData.kilometersReturn || 0,
         toll_amount: jobData.tollAmount || 0,
+        expenses: jobData.expenses || null,
         travel_start_time: jobData.travelStart || null,
         travel_start_date: jobData.travelStartDate || null,
         travel_end_time: jobData.travelEnd || null,
@@ -750,6 +753,41 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
     return <FinishJobTab job={currentJob as any} onJobUpdate={handleJobUpdate as any} onCloseDialog={() => {}} />;
   };
 
+  const renderExpensesSection = () => (
+    <Card className="border-primary/20">
+      <CardHeader className="pb-3">
+        <CardTitle className="flex items-center gap-2 text-lg">
+          <MapPin className="h-5 w-5 text-primary" />
+          {t('expenses')}
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div>
+          <Label className="text-sm font-medium">{t('expensesDescription')}</Label>
+          <Textarea
+            placeholder={t('expensesPlaceholder')}
+            value={jobData.expenses || ''}
+            onChange={(e) => updateField('expenses', e.target.value)}
+            className="mt-1 min-h-32"
+          />
+        </div>
+        
+        {/* Speichern Button */}
+        <div className="flex justify-end pt-4">
+          <Button 
+            onClick={() => saveJobData(true)}
+            disabled={isLoading || !customerName}
+            variant="outline"
+            size="sm"
+            className="min-w-24"
+          >
+            {isLoading ? t('saving') : t('save')}
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+
   const renderCustomerSection = () => (
     <Card className="border-primary/20">
       <CardHeader className="pb-3">
@@ -1058,12 +1096,16 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
 
   const editJobStepsRow2 = [
     { id: 'travel', label: t('travel'), icon: Car },
+    { id: 'expenses', label: t('expenses'), icon: MapPin },
     { id: 'overtime', label: t('overtime'), icon: BarChart3 },
     { id: 'report', label: t('report'), icon: FileText },
+  ] as const;
+
+  const editJobStepsRow3 = [
     { id: 'finish', label: t('finish'), icon: CheckCircle },
   ] as const;
 
-  const steps = (isEditingJob && !isCreatingNewJob) ? [...editJobStepsRow1, ...editJobStepsRow2] : newJobSteps;
+  const steps = (isEditingJob && !isCreatingNewJob) ? [...editJobStepsRow1, ...editJobStepsRow2, ...editJobStepsRow3] : newJobSteps;
 
   // Auto-navigate to Hotel tab when a hotel name is entered (only on initial load)
   useEffect(() => {
@@ -1095,14 +1137,14 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
 
         {/* Step Navigation */}
         {(isEditingJob && !isCreatingNewJob) ? (
-          // 2-row layout for editing mode
+          // 3-row layout for editing mode
           <div className="space-y-2">
             {/* Row 1: Customer, Machine, Times, Hotel */}
             <div className="flex justify-between items-center gap-1">
               {editJobStepsRow1.map((step, index) => {
                 const Icon = step.icon;
                 const isActive = currentStep === step.id;
-                const isCompleted = [...editJobStepsRow1, ...editJobStepsRow2].findIndex(s => s.id === currentStep) > [...editJobStepsRow1, ...editJobStepsRow2].indexOf(step);
+                const isCompleted = [...editJobStepsRow1, ...editJobStepsRow2, ...editJobStepsRow3].findIndex(s => s.id === currentStep) > [...editJobStepsRow1, ...editJobStepsRow2, ...editJobStepsRow3].indexOf(step);
                 
                 return (
                   <Button
@@ -1119,12 +1161,34 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
               })}
             </div>
             
-            {/* Row 2: Travel, Overtime, Report, Finish */}
+            {/* Row 2: Travel, Expenses, Overtime, Report */}
             <div className="flex justify-between items-center gap-1">
               {editJobStepsRow2.map((step, index) => {
                 const Icon = step.icon;
                 const isActive = currentStep === step.id;
-                const isCompleted = [...editJobStepsRow1, ...editJobStepsRow2].findIndex(s => s.id === currentStep) > [...editJobStepsRow1, ...editJobStepsRow2].indexOf(step);
+                const isCompleted = [...editJobStepsRow1, ...editJobStepsRow2, ...editJobStepsRow3].findIndex(s => s.id === currentStep) > [...editJobStepsRow1, ...editJobStepsRow2, ...editJobStepsRow3].indexOf(step);
+                
+                return (
+                  <Button
+                    key={step.id}
+                    variant={isActive ? "default" : isCompleted ? "secondary" : "outline"}
+                    size="sm"
+                    onClick={() => setCurrentStep(step.id as typeof currentStep)}
+                    className="flex-1 mx-0.5"
+                  >
+                    <Icon className="h-4 w-4 mr-1" />
+                    <span className="hidden sm:inline">{step.label}</span>
+                  </Button>
+                );
+              })}
+            </div>
+            
+            {/* Row 3: Finish */}
+            <div className="flex justify-between items-center gap-1">
+              {editJobStepsRow3.map((step, index) => {
+                const Icon = step.icon;
+                const isActive = currentStep === step.id;
+                const isCompleted = [...editJobStepsRow1, ...editJobStepsRow2, ...editJobStepsRow3].findIndex(s => s.id === currentStep) > [...editJobStepsRow1, ...editJobStepsRow2, ...editJobStepsRow3].indexOf(step);
                 
                 return (
                   <Button
@@ -1197,6 +1261,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
         {currentStep === 'times' && renderTimesSection()}
         {currentStep === 'hotel' && renderHotelSection()}
         {currentStep === 'travel' && renderTravelSection()}
+        {currentStep === 'expenses' && renderExpensesSection()}
         {currentStep === 'overtime' && renderOvertimeSection()}
         {currentStep === 'report' && renderReportSection()}
         {currentStep === 'finish' && renderFinishSection()}

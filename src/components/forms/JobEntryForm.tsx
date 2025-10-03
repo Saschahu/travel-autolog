@@ -62,6 +62,13 @@ interface JobData {
   plannedDays: number;
   estimatedDays: number;
   expenses: string;
+  expensesList: Array<{
+    id: string;
+    category: string;
+    description: string;
+    location: string;
+    price: number;
+  }>;
   // Dynamic time fields for multiple days
   days: unknown[]; // Will contain day-specific data
 }
@@ -200,6 +207,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
               kilometersReturn: job.kilometers_return || 0,
               tollAmount: job.toll_amount || 0,
               expenses: job.expenses || '',
+              expensesList: Array.isArray(job.expenses_list) ? job.expenses_list : [],
               plannedDays: daysData.length || 1,
               estimatedDays: job.estimated_days || 1,
             };
@@ -367,6 +375,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
         kilometers_return: jobData.kilometersReturn || 0,
         toll_amount: jobData.tollAmount || 0,
         expenses: jobData.expenses || null,
+        expenses_list: jobData.expensesList || [],
         travel_start_time: jobData.travelStart || null,
         travel_start_date: jobData.travelStartDate || null,
         travel_end_time: jobData.travelEnd || null,
@@ -753,40 +762,138 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
     return <FinishJobTab job={currentJob as any} onJobUpdate={handleJobUpdate as any} onCloseDialog={() => {}} />;
   };
 
-  const renderExpensesSection = () => (
-    <Card className="border-primary/20">
-      <CardHeader className="pb-3">
-        <CardTitle className="flex items-center gap-2 text-lg">
-          <MapPin className="h-5 w-5 text-primary" />
-          {t('expenses')}
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div>
-          <Label className="text-sm font-medium">{t('expensesDescription')}</Label>
-          <Textarea
-            placeholder={t('expensesPlaceholder')}
-            value={jobData.expenses || ''}
-            onChange={(e) => updateField('expenses', e.target.value)}
-            className="mt-1 min-h-32"
-          />
-        </div>
-        
-        {/* Speichern Button */}
-        <div className="flex justify-end pt-4">
-          <Button 
-            onClick={() => saveJobData(true)}
-            disabled={isLoading || !customerName}
-            variant="outline"
-            size="sm"
-            className="min-w-24"
-          >
-            {isLoading ? t('saving') : t('save')}
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
-  );
+  const renderExpensesSection = () => {
+    const expensesList = Array.isArray(jobData.expensesList) ? jobData.expensesList : [];
+    
+    const addExpense = () => {
+      const newExpense = {
+        id: Date.now().toString(),
+        category: 'tool',
+        description: '',
+        location: '',
+        price: 0
+      };
+      updateField('expensesList', [...expensesList, newExpense]);
+    };
+    
+    const updateExpense = (id: string, field: string, value: any) => {
+      const updated = expensesList.map((exp: any) => 
+        exp.id === id ? { ...exp, [field]: value } : exp
+      );
+      updateField('expensesList', updated);
+    };
+    
+    const removeExpense = (id: string) => {
+      const updated = expensesList.filter((exp: any) => exp.id !== id);
+      updateField('expensesList', updated);
+    };
+    
+    return (
+      <Card className="border-primary/20">
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <MapPin className="h-5 w-5 text-primary" />
+            {t('edit.form.expensesTab')}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {expensesList.length === 0 ? (
+            <div className="text-sm text-muted-foreground text-center py-8">
+              {t('expensesDescription')}
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {expensesList.map((expense: any, index: number) => (
+                <Card key={expense.id} className="p-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                      <Label className="text-sm font-medium">{t('edit.form.expenseCategory')}</Label>
+                      <select
+                        value={expense.category || 'tool'}
+                        onChange={(e) => updateExpense(expense.id, 'category', e.target.value)}
+                        className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      >
+                        <option value="tool">{t('edit.form.expenseCategories.tool')}</option>
+                        <option value="consumable">{t('edit.form.expenseCategories.consumable')}</option>
+                        <option value="rental_car">{t('edit.form.expenseCategories.rental_car')}</option>
+                        <option value="flight">{t('edit.form.expenseCategories.flight')}</option>
+                        <option value="taxi">{t('edit.form.expenseCategories.taxi')}</option>
+                        <option value="other">{t('edit.form.expenseCategories.other')}</option>
+                      </select>
+                    </div>
+                    
+                    <div>
+                      <Label className="text-sm font-medium">{t('edit.form.expensePrice')}</Label>
+                      <Input
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        placeholder="0.00"
+                        value={expense.price || 0}
+                        onChange={(e) => updateExpense(expense.id, 'price', parseFloat(e.target.value) || 0)}
+                        className="mt-1"
+                      />
+                    </div>
+                    
+                    <div>
+                      <Label className="text-sm font-medium">{t('edit.form.expenseLocation')}</Label>
+                      <Input
+                        placeholder="z.B. Bauhaus, Amazon"
+                        value={expense.location || ''}
+                        onChange={(e) => updateExpense(expense.id, 'location', e.target.value)}
+                        className="mt-1"
+                      />
+                    </div>
+                    
+                    <div>
+                      <Label className="text-sm font-medium">{t('edit.form.expenseDescription')}</Label>
+                      <Input
+                        placeholder="z.B. Bohrmaschine, Kabel 10m"
+                        value={expense.description || ''}
+                        onChange={(e) => updateExpense(expense.id, 'description', e.target.value)}
+                        className="mt-1"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="flex justify-end mt-3">
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => removeExpense(expense.id)}
+                    >
+                      Entfernen
+                    </Button>
+                  </div>
+                </Card>
+              ))}
+            </div>
+          )}
+          
+          <div className="flex gap-2 pt-4">
+            <Button 
+              onClick={addExpense}
+              variant="outline"
+              size="sm"
+              className="flex-1"
+            >
+              + {t('edit.form.addExpense')}
+            </Button>
+            
+            <Button 
+              onClick={() => saveJobData(true)}
+              disabled={isLoading || !customerName}
+              variant="default"
+              size="sm"
+              className="min-w-24"
+            >
+              {isLoading ? t('saving') : t('save')}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  };
 
   const renderCustomerSection = () => (
     <Card className="border-primary/20">

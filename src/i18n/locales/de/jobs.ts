@@ -138,6 +138,9 @@ export default {
     other: 'Sonstiges'
   },
   removeExpense: 'Entfernen',
+  noExpensesRecorded: 'Keine Ausgaben erfasst',
+  expenseLocationPlaceholder: 'z.B. Bauhaus, Amazon',
+  expenseDescriptionPlaceholder: 'z.B. Bohrmaschine, Kabel 10m',
   expensesDescription: 'Werkzeuge und Verbrauchsmaterial',
   expensesPlaceholder: 'Beschreiben Sie verwendete Werkzeuge, Verbrauchsmaterial und sonstige Ausgaben...',
   timesTitle: 'Zeiten',

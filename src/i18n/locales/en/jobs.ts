@@ -138,6 +138,9 @@ export default {
     other: 'Other'
   },
   removeExpense: 'Remove',
+  noExpensesRecorded: 'No expenses recorded',
+  expenseLocationPlaceholder: 'e.g. Hardware store, Amazon',
+  expenseDescriptionPlaceholder: 'e.g. Drill, Cable 10m',
   expensesDescription: 'Tools and Consumables',
   expensesPlaceholder: 'Describe used tools, consumables and other expenses...',
   timesTitle: 'Times',

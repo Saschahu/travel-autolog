@@ -793,13 +793,13 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-lg">
             <MapPin className="h-5 w-5 text-primary" />
-            {t('edit.form.expensesTab')}
+            {t('expensesTab')}
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           {expensesList.length === 0 ? (
             <div className="text-sm text-muted-foreground text-center py-8">
-              {t('edit.form.noExpensesRecorded')}
+              {t('noExpensesRecorded')}
             </div>
           ) : (
             <div className="space-y-4">
@@ -807,23 +807,23 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                 <Card key={expense.id} className="p-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div>
-                      <Label className="text-sm font-medium">{t('edit.form.expenseCategory')}</Label>
+                      <Label className="text-sm font-medium">{t('expenseCategory')}</Label>
                       <select
                         value={expense.category || 'tool'}
                         onChange={(e) => updateExpense(expense.id, 'category', e.target.value)}
                         className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                       >
-                        <option value="tool">{t('edit.form.expenseCategories.tool')}</option>
-                        <option value="consumable">{t('edit.form.expenseCategories.consumable')}</option>
-                        <option value="rental_car">{t('edit.form.expenseCategories.rental_car')}</option>
-                        <option value="flight">{t('edit.form.expenseCategories.flight')}</option>
-                        <option value="taxi">{t('edit.form.expenseCategories.taxi')}</option>
-                        <option value="other">{t('edit.form.expenseCategories.other')}</option>
+                        <option value="tool">{t('expenseCategories.tool')}</option>
+                        <option value="consumable">{t('expenseCategories.consumable')}</option>
+                        <option value="rental_car">{t('expenseCategories.rental_car')}</option>
+                        <option value="flight">{t('expenseCategories.flight')}</option>
+                        <option value="taxi">{t('expenseCategories.taxi')}</option>
+                        <option value="other">{t('expenseCategories.other')}</option>
                       </select>
                     </div>
                     
                     <div>
-                      <Label className="text-sm font-medium">{t('edit.form.expensePrice')}</Label>
+                      <Label className="text-sm font-medium">{t('expensePrice')}</Label>
                       <Input
                         type="number"
                         min="0"
@@ -836,9 +836,9 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                     </div>
                     
                     <div>
-                      <Label className="text-sm font-medium">{t('edit.form.expenseLocation')}</Label>
+                      <Label className="text-sm font-medium">{t('expenseLocation')}</Label>
                       <Input
-                        placeholder={t('edit.form.expenseLocationPlaceholder')}
+                        placeholder={t('expenseLocationPlaceholder')}
                         value={expense.location || ''}
                         onChange={(e) => updateExpense(expense.id, 'location', e.target.value)}
                         className="mt-1"
@@ -846,9 +846,9 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                     </div>
                     
                     <div>
-                      <Label className="text-sm font-medium">{t('edit.form.expenseDescription')}</Label>
+                      <Label className="text-sm font-medium">{t('expenseDescription')}</Label>
                       <Input
-                        placeholder={t('edit.form.expenseDescriptionPlaceholder')}
+                        placeholder={t('expenseDescriptionPlaceholder')}
                         value={expense.description || ''}
                         onChange={(e) => updateExpense(expense.id, 'description', e.target.value)}
                         className="mt-1"
@@ -862,7 +862,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                       size="sm"
                       onClick={() => removeExpense(expense.id)}
                     >
-                      {t('edit.form.removeExpense')}
+                      {t('removeExpense')}
                     </Button>
                   </div>
                 </Card>
@@ -877,7 +877,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
               size="sm"
               className="flex-1"
             >
-              + {t('edit.form.addExpense')}
+              + {t('addExpense')}
             </Button>
             
             <Button 

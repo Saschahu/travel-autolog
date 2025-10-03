@@ -138,6 +138,9 @@ export default {
     other: 'Annet'
   },
   removeExpense: 'Fjern',
+  noExpensesRecorded: 'Ingen utgifter registrert',
+  expenseLocationPlaceholder: 'f.eks. Byggvarehandel, Amazon',
+  expenseDescriptionPlaceholder: 'f.eks. Drill, Kabel 10m',
   expensesDescription: 'Verktøy og Forbruksmateriell',
   expensesPlaceholder: 'Beskriv brukte verktøy, forbruksmateriell og andre utgifter...',
   timesTitle: 'Tider',

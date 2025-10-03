@@ -555,19 +555,17 @@ const Index = () => {
             </DialogHeader>
             <div className="space-y-2 text-sm">
               <div><span className="font-medium">{t('customer')}:</span> {selectedJob?.customerName}</div>
-              <div><span className="font-medium">{t('status')}:</span> {selectedJob?.status}</div>
-              <div><span className="font-medium">{t('startDate')}:</span> {selectedJob ? selectedJob.startDate.toLocaleDateString() : ''}</div>
-              {selectedJob?.estimatedDays !== undefined && (
-                <div><span className="font-medium">{t('days')}:</span> {selectedJob?.currentDay}/{selectedJob?.estimatedDays}</div>
+              {selectedJob?.contactName && (
+                <div><span className="font-medium">{t('contactName')}:</span> {selectedJob.contactName}</div>
               )}
-              {selectedJob?.workStartTime && (
-                <div><span className="font-medium">{t('workStart')}:</span> {selectedJob.workStartTime}</div>
+              {selectedJob?.contactPhone && (
+                <div><span className="font-medium">{t('contactPhone')}:</span> {selectedJob.contactPhone}</div>
               )}
-              {selectedJob?.workEndTime && (
-                <div><span className="font-medium">{t('workEnd')}:</span> {selectedJob.workEndTime}</div>
+              {selectedJob?.manufacturer && (
+                <div><span className="font-medium">{t('manufacturer')}:</span> {selectedJob.manufacturer}</div>
               )}
-              {selectedJob?.totalHours && (
-                <div><span className="font-medium">{t('totalHours')}:</span> {selectedJob.totalHours}h</div>
+              {selectedJob?.model && (
+                <div><span className="font-medium">{t('model')}:</span> {selectedJob.model}</div>
               )}
             </div>
             <DialogFooter>

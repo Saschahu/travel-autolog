@@ -194,6 +194,9 @@ export default {
         other: 'Other'
       },
       removeExpense: 'Remove',
+      noExpensesRecorded: 'No expenses recorded',
+      expenseLocationPlaceholder: 'e.g. Hardware store, Amazon',
+      expenseDescriptionPlaceholder: 'e.g. Drill, Cable 10m',
       editJob: 'Edit Job',
       newJob: 'New Job',
       jobEditing: 'Job Editing',

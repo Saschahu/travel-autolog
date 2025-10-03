@@ -194,6 +194,9 @@ export default {
         other: 'Sonstiges'
       },
       removeExpense: 'Entfernen',
+      noExpensesRecorded: 'Keine Ausgaben erfasst',
+      expenseLocationPlaceholder: 'z.B. Bauhaus, Amazon',
+      expenseDescriptionPlaceholder: 'z.B. Bohrmaschine, Kabel 10m',
       editJob: 'Auftrag bearbeiten',
       newJob: 'Neuer Auftrag',
       jobEditing: 'Auftrag bearbeiten',

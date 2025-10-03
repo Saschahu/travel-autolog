@@ -194,6 +194,9 @@ export default {
         other: 'Annet'
       },
       removeExpense: 'Fjern',
+      noExpensesRecorded: 'Ingen utgifter registrert',
+      expenseLocationPlaceholder: 'f.eks. Byggvarehandel, Amazon',
+      expenseDescriptionPlaceholder: 'f.eks. Drill, Kabel 10m',
       editJob: 'Rediger jobb',
       newJob: 'Ny jobb',
       jobEditing: 'Rediger jobb',

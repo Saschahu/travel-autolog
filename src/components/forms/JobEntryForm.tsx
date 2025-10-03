@@ -799,7 +799,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
         <CardContent className="space-y-4">
           {expensesList.length === 0 ? (
             <div className="text-sm text-muted-foreground text-center py-8">
-              Keine Ausgaben erfasst
+              {t('edit.form.noExpensesRecorded')}
             </div>
           ) : (
             <div className="space-y-4">
@@ -838,7 +838,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                     <div>
                       <Label className="text-sm font-medium">{t('edit.form.expenseLocation')}</Label>
                       <Input
-                        placeholder="z.B. Bauhaus, Amazon"
+                        placeholder={t('edit.form.expenseLocationPlaceholder')}
                         value={expense.location || ''}
                         onChange={(e) => updateExpense(expense.id, 'location', e.target.value)}
                         className="mt-1"
@@ -848,7 +848,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                     <div>
                       <Label className="text-sm font-medium">{t('edit.form.expenseDescription')}</Label>
                       <Input
-                        placeholder="z.B. Bohrmaschine, Kabel 10m"
+                        placeholder={t('edit.form.expenseDescriptionPlaceholder')}
                         value={expense.description || ''}
                         onChange={(e) => updateExpense(expense.id, 'description', e.target.value)}
                         className="mt-1"

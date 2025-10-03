@@ -44,6 +44,13 @@ export default {
   // Actions
   details: 'Details',
   sendReport: 'Send Report',
+  reopen: 'Reopen',
+  
+  // Status changes
+  jobStarted: 'started',
+  jobPaused: 'paused',
+  jobReopened: 'reopened',
+  statusChanged: 'Status changed',
   
   // Job creation
   newJob: 'New Job',

@@ -389,7 +389,7 @@ const Index = () => {
     }
   };
 
-  const handleStatusChange = async (jobId: string, newStatus: 'open' | 'active') => {
+  const handleStatusChange = async (jobId: string, newStatus: 'open' | 'active' | 'completed') => {
     try {
       const { error } = await supabase
         .from('jobs')
@@ -399,10 +399,10 @@ const Index = () => {
       if (error) throw error;
 
       setJobs(prev => prev.map(j => 
-        j.id === jobId ? { ...j, status: newStatus } : j
+        j.id === jobId ? { ...j, status: newStatus as 'open' | 'active' | 'completed' | 'completed-sent' | 'pending' } : j
       ));
       
-      const statusText = newStatus === 'active' ? t('jobStarted') : t('jobPaused');
+      const statusText = newStatus === 'active' ? t('jobStarted') : newStatus === 'open' ? t('jobReopened') : t('jobPaused');
       toast({
         title: t('statusChanged'),
         description: `Job wurde ${statusText}`

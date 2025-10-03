@@ -202,6 +202,19 @@ export const JobStatusCard = (props: JobStatusCardProps) => {
             </Button>
           )}
           
+          {/* Reopen completed jobs */}
+          {status === 'completed' && onStatusChange && (
+            <Button 
+              size="sm" 
+              variant="outline"
+              onClick={() => onStatusChange(id, 'open')}
+              className="px-3"
+            >
+              <Play className="h-4 w-4 mr-1" />
+              {t('reopen')}
+            </Button>
+          )}
+          
           <Button variant="outline" size="sm" className="flex-1" onClick={onDetails}>
             {t('details')}
           </Button>

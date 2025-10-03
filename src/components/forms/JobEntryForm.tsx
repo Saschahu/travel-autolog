@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
-import { Clock, MapPin, User, Wrench, Hotel, Car, Calendar as CalendarIcon, BarChart3, FileText, CheckCircle } from 'lucide-react';
+import { Clock, MapPin, User, Wrench, Hotel, Car, Calendar as CalendarIcon, BarChart3, FileText, CheckCircle, Trash2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -862,7 +862,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                       size="sm"
                       onClick={() => removeExpense(expense.id)}
                     >
-                      {t('removeExpense')}
+                      <Trash2 className="h-4 w-4" />
                     </Button>
                   </div>
                 </Card>

@@ -862,7 +862,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
                       size="sm"
                       onClick={() => removeExpense(expense.id)}
                     >
-                      Entfernen
+                      {t('edit.form.removeExpense')}
                     </Button>
                   </div>
                 </Card>

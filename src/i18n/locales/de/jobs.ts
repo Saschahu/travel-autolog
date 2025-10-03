@@ -137,6 +137,7 @@ export default {
         taxi: 'Taxi',
         other: 'Sonstiges'
       },
+      removeExpense: 'Entfernen',
   expensesDescription: 'Werkzeuge und Verbrauchsmaterial',
   expensesPlaceholder: 'Beschreiben Sie verwendete Werkzeuge, Verbrauchsmaterial und sonstige Ausgaben...',
   timesTitle: 'Zeiten',

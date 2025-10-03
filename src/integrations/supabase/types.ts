@@ -78,6 +78,7 @@ export type Database = {
           estimated_days: number | null
           evatic_no: string | null
           expenses: string | null
+          expenses_list: Json | null
           hotel_address: string | null
           hotel_name: string | null
           hotel_nights: number | null
@@ -120,6 +121,7 @@ export type Database = {
           estimated_days?: number | null
           evatic_no?: string | null
           expenses?: string | null
+          expenses_list?: Json | null
           hotel_address?: string | null
           hotel_name?: string | null
           hotel_nights?: number | null
@@ -162,6 +164,7 @@ export type Database = {
           estimated_days?: number | null
           evatic_no?: string | null
           expenses?: string | null
+          expenses_list?: Json | null
           hotel_address?: string | null
           hotel_name?: string | null
           hotel_nights?: number | null

@@ -137,6 +137,7 @@ export default {
         taxi: 'Taxi',
         other: 'Annet'
       },
+      removeExpense: 'Fjern',
   expensesDescription: 'Verktøy og Forbruksmateriell',
   expensesPlaceholder: 'Beskriv brukte verktøy, forbruksmateriell og andre utgifter...',
   timesTitle: 'Tider',

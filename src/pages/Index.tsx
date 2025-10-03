@@ -567,6 +567,9 @@ const Index = () => {
               {selectedJob?.model && (
                 <div><span className="font-medium">{t('modelLabel', { ns: 'jobs' })}:</span> {selectedJob.model}</div>
               )}
+              {selectedJob?.workPerformed && (
+                <div><span className="font-medium">{t('machine.workPerformed', { ns: 'jobs' })}:</span> {selectedJob.workPerformed}</div>
+              )}
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setDetailsOpen(false)}>{t('close')}</Button>

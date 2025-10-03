@@ -554,18 +554,18 @@ const Index = () => {
               <DialogDescription>{t('jobDetailsDescription')}</DialogDescription>
             </DialogHeader>
             <div className="space-y-2 text-sm">
-              <div><span className="font-medium">{t('customer')}:</span> {selectedJob?.customerName}</div>
+              <div><span className="font-medium">{t('customerLabel', { ns: 'jobs' })}:</span> {selectedJob?.customerName}</div>
               {selectedJob?.contactName && (
-                <div><span className="font-medium">{t('contactName')}:</span> {selectedJob.contactName}</div>
+                <div><span className="font-medium">{t('contactName', { ns: 'jobs' })}:</span> {selectedJob.contactName}</div>
               )}
               {selectedJob?.contactPhone && (
-                <div><span className="font-medium">{t('contactPhone')}:</span> {selectedJob.contactPhone}</div>
+                <div><span className="font-medium">{t('contactPhone', { ns: 'jobs' })}:</span> {selectedJob.contactPhone}</div>
               )}
               {selectedJob?.manufacturer && (
-                <div><span className="font-medium">{t('manufacturer')}:</span> {selectedJob.manufacturer}</div>
+                <div><span className="font-medium">{t('manufacturerLabel', { ns: 'jobs' })}:</span> {selectedJob.manufacturer}</div>
               )}
               {selectedJob?.model && (
-                <div><span className="font-medium">{t('model')}:</span> {selectedJob.model}</div>
+                <div><span className="font-medium">{t('modelLabel', { ns: 'jobs' })}:</span> {selectedJob.model}</div>
               )}
             </div>
             <DialogFooter>

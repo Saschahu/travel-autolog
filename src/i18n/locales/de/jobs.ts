@@ -108,6 +108,13 @@ export default {
     cancel: 'Abbrechen'
   },
   
+  // Job details labels (for dialog)
+  customerLabel: 'Kunde',
+  contactName: 'Ansprechpartner',
+  contactPhone: 'Telefon',
+  manufacturerLabel: 'Hersteller',
+  modelLabel: 'Modell',
+  
   // Job entry form
   customerData: 'Kundendaten',
   machineData: 'Maschinendaten',

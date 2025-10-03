@@ -108,6 +108,13 @@ export default {
     cancel: 'Avbryt'
   },
   
+  // Job details labels (for dialog)
+  customerLabel: 'Kunde',
+  contactName: 'Kontakt',
+  contactPhone: 'Telefon',
+  manufacturerLabel: 'Produsent',
+  modelLabel: 'Modell',
+  
   // Job entry form
   customerData: 'Kundedata',
   machineData: 'Maskindata',

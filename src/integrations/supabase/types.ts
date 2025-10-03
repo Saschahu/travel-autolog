@@ -77,6 +77,7 @@ export type Database = {
           departure_start_time: string | null
           estimated_days: number | null
           evatic_no: string | null
+          expenses: string | null
           hotel_address: string | null
           hotel_name: string | null
           hotel_nights: number | null
@@ -118,6 +119,7 @@ export type Database = {
           departure_start_time?: string | null
           estimated_days?: number | null
           evatic_no?: string | null
+          expenses?: string | null
           hotel_address?: string | null
           hotel_name?: string | null
           hotel_nights?: number | null
@@ -159,6 +161,7 @@ export type Database = {
           departure_start_time?: string | null
           estimated_days?: number | null
           evatic_no?: string | null
+          expenses?: string | null
           hotel_address?: string | null
           hotel_name?: string | null
           hotel_nights?: number | null

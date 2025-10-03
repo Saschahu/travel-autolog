@@ -109,6 +109,8 @@ export default {
   },
   
   // Job details labels (for dialog)
+  jobDetails: 'Auftragsdetails',
+  jobDetailsDescription: 'Auftragsübersicht',
   customerLabel: 'Kunde',
   contactName: 'Ansprechpartner',
   contactPhone: 'Telefon',

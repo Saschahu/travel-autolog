@@ -550,8 +550,8 @@ const Index = () => {
         <Dialog open={detailsOpen} onOpenChange={setDetailsOpen}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>{t('jobDetails')}</DialogTitle>
-              <DialogDescription>{t('jobDetailsDescription')}</DialogDescription>
+              <DialogTitle>{t('jobDetails', { ns: 'jobs' })}</DialogTitle>
+              <DialogDescription>{t('jobDetailsDescription', { ns: 'jobs' })}</DialogDescription>
             </DialogHeader>
             <div className="space-y-2 text-sm">
               <div><span className="font-medium">{t('customerLabel', { ns: 'jobs' })}:</span> {selectedJob?.customerName}</div>

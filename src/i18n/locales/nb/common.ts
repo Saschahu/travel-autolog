@@ -175,6 +175,9 @@ export default {
   
   // Language
   language: 'Språk',
+  appLanguage: 'App-språk',
+  uiLanguage: 'Grensesnittspråk',
+  languageNote: 'Endre språket til applikasjonsgrensesnittet',
   
   // Job filtering
   filterJobs: 'Filtrer jobber',

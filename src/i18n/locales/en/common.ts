@@ -175,6 +175,9 @@ export default {
   
   // Language
   language: 'Language',
+  appLanguage: 'App Language',
+  uiLanguage: 'UI Language',
+  languageNote: 'Change the language of the application interface',
   
   // Job filtering
   filterJobs: 'Filter Jobs',

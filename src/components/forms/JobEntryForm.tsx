@@ -792,7 +792,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
       <Card className="border-primary/20">
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-lg">
-            <DollarSign className="h-5 w-5 text-primary" />
+            <MapPin className="h-5 w-5 text-primary" />
             {t('expensesTab')}
           </CardTitle>
         </CardHeader>
@@ -1203,7 +1203,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
 
   const editJobStepsRow2 = [
     { id: 'travel', label: t('travel'), icon: Car },
-    { id: 'expenses', label: t('expenses'), icon: MapPin },
+    { id: 'expenses', label: t('expenses'), icon: DollarSign },
     { id: 'overtime', label: t('overtime'), icon: BarChart3 },
     { id: 'report', label: t('report'), icon: FileText },
   ] as const;

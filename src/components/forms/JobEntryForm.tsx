@@ -792,7 +792,7 @@ export const JobEntryForm = ({ onJobSaved, jobId }: JobEntryFormProps) => {
       <Card className="border-primary/20">
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-lg">
-            <MapPin className="h-5 w-5 text-primary" />
+            <DollarSign className="h-5 w-5 text-primary" />
             {t('expensesTab')}
           </CardTitle>
         </CardHeader>
